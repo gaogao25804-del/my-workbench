@@ -1,0 +1,5286 @@
+{
+  "updated_at": "2026-08-26 17:25:01",
+  "tasks": {
+    "all": [
+      {
+        "id": "task-2026-07-20-0-sq9uhrmjm",
+        "summary": "学习飞书个人版课程",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-20 15:05:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-1-gxbjznaex",
+        "summary": "导出Claude两天聊天记录",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 17:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-2-d1fjetoav",
+        "summary": "导出语雀笔记转入飞书",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 21:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-3-3gq5m2dv6",
+        "summary": "得到笔记GET笔记200条导出",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 17:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-4-rocazamui",
+        "summary": "洗衣服被子鞋床单晾干整理房间",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-20 10:06:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-5-v96ny59qw",
+        "summary": "发现了Claude的聊天导出插件",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 12:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-6-bfuyscwd7",
+        "summary": "发现飞书格式支持docx无损转换飞书文档",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 12:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-7-6phzzwlsf",
+        "summary": "了解eagle素材管理工具",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-20 12:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-0-sdlwvwcgy",
+        "summary": "剪辑:理想i6大全套",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 12:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-1-x3bqrfikm",
+        "summary": "剪辑:理想前排仪表台储物盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 19:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-2-88cckh2h9",
+        "summary": "剪辑:数码:决色领航者皮壳",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 17:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-3-czc3ol7b1",
+        "summary": "拍视频:大号3条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 12:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-4-dqj9c4tne",
+        "summary": "剪辑：理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 13:16:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-5-ma465tjjk",
+        "summary": "看书:《说三分》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-21 09:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-6-59x98efbu",
+        "summary": "剪辑:理想L6官方车机链相机",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 19:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-7-9rjbh60im",
+        "summary": "剪辑理想今日主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 21:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-8-ncnncnxxq",
+        "summary": "学习数学一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-21 09:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-9-zz0obt4cq",
+        "summary": "搭建个人图书馆",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-21 13:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-10-op5omdzox",
+        "summary": "学习Python一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-21 10:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-11-70xbkhi05",
+        "summary": "学习英文",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-21 09:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-0-jksr3ahpe",
+        "summary": "剪辑:raptic卡包➕壳套装",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-22 12:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-1-78y473j2u",
+        "summary": "解决谷歌浏览器同步问题",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 11:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-2-xe0b6xttz",
+        "summary": "看书:《长安的荔枝》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 13:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-3-35yvr5m73",
+        "summary": "整理2022年所有图片➕回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-22 20:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-4-6exqfmy5s",
+        "summary": "剪辑:大号初号机视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-22 11:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-5-uzo2vw17p",
+        "summary": "Hermes优化图书馆",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 15:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-6-jbxs3i1w3",
+        "summary": "Hermes 分类谷歌浏览器书签",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 11:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-7-13u6fskr4",
+        "summary": "添加了Hermes agent 配置DeepSeek4Pro",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 11:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-8-wdp9kzu71",
+        "summary": "人生经历:优化1/2的同事",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 17:29:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-0-4t4kx3ne0",
+        "summary": "剪辑:两位数壳子清仓大甩卖",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 17:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-1-cao0tbob0",
+        "summary": "剪辑:理想l9加高纸巾盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 12:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-2-aijh09ajj",
+        "summary": "看一篇:obsidian➕codex知识库文章",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-23 15:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-3-2tyvs0h2m",
+        "summary": "剪辑:理想i6大全套➕脚垫",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 16:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-4-x6zs3ngdp",
+        "summary": "文案:优化两条文案有人味",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-23 20:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-5-8x6y803uj",
+        "summary": "文案:三星zfold8➕三款阔折叠",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-23 19:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-6-uoz6gou5t",
+        "summary": "上传:理想-大号主视频定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 15:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-7-nwbdb9i17",
+        "summary": "剪辑:理想冰箱垃圾桶",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 14:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-8-05lmqgb58",
+        "summary": "剪辑:puraxmax贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 11:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-9-psfadrdyc",
+        "summary": "整理数据组长安排的任务",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-23 16:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-10-nnznfbtde",
+        "summary": "剪辑：引流视频-7折活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 17:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-0-kde9j44d4",
+        "summary": "obsidian同步双端",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 17:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-1-4zf4jw1a3",
+        "summary": "测试traework新功能",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 20:33:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-2-09jd9byfe",
+        "summary": "剪辑:raptic壳子fold8新型号壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 14:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-3-lozzfej34",
+        "summary": "剪辑:图语钢化膜拍一发二",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 13:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-4-tleyp48ma",
+        "summary": "修改:今天大号视频挪到明天",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 19:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-5-28pbsp1li",
+        "summary": "拍摄:图语活动3条➕三星折叠屏新壳子raptic",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 11:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-6-8kzb3696e",
+        "summary": "上传:理想视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 18:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-7-0biv0xtzd",
+        "summary": "剪辑:郝金彪开店第二期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 08:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-8-s6lcagoqp",
+        "summary": "上传大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 10:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-9-x4wy2kxtd",
+        "summary": "搞定obsidian微信同步助手",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 12:29:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-10-4jjqveq50",
+        "summary": "学习:知识库搭建文章",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-24 13:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-11-9k33j02q0",
+        "summary": "提取:b站资源原稿➕get笔记原文",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-24 15:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-12-66p8pfws9",
+        "summary": "看书:《原子习惯》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 10:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-13-oty0w6zh1",
+        "summary": "知识库:跑通一个小流程",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 19:33:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-14-m9fr1pi66",
+        "summary": "学习英文",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-24 10:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-15-7n7r2pvx8",
+        "summary": "剪辑:数码小号insta360X6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 18:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-0-4bhrsbtv4",
+        "summary": "上传：百度云上传素材+本地素材转移",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 18:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-1-guzoqjisf",
+        "summary": "剪辑：带货：大疆相机车载支架",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 12:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-2-g0tz0g2ki",
+        "summary": "上传：图语两条活动+郝金彪3D打印机",
+        "status": "completed",
+        "category": "发布",
+        "completed_at": "2026-07-25 21:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-3-7ohn0jf7r",
+        "summary": "剪辑：3D打印机",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 15:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-4-cj9sq2rfh",
+        "summary": "剪辑：图语活动合集",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 18:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-5-sag4m3qy1",
+        "summary": "上传理想25-27主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 11:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-6-r7m48q3am",
+        "summary": "剪辑:图语活动凯夫拉半价",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 13:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-7-w2hwngovs",
+        "summary": "找公众号10个+小红书10个",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-25 11:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-8-wtvj6898f",
+        "summary": "尝试链接eagle分类素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 20:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-9-fuzzf25mv",
+        "summary": "下载eagle上传素材（1000条）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 10:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-10-htl0vm6lw",
+        "summary": "了解eagle素材管理工具",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 16:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-11-zkl9dshsy",
+        "summary": "看文章，Hermes",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-25 18:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-12-9fz559ewa",
+        "summary": "整理2023年所有图片➕回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-25 11:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-13-1da5f9hj9",
+        "summary": "学习英文",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-25 10:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-0-3x8xdvlzb",
+        "summary": "剪辑：理想L7（短视频）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 17:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-1-awistlfr8",
+        "summary": "拆解小红书图文，发现可画小红书图文模版",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-26 19:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-2-z1x8ia5o0",
+        "summary": "拆解麦尔斯的逐帧脚本（带图）",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-26 18:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-3-clyf30lfm",
+        "summary": "skill：数码老炮口播生成器",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-26 19:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-4-2q9zw3e6s",
+        "summary": "提取：郝金彪数码+理想：高赞视频汇总",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 14:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-5-gyzf0h4hg",
+        "summary": "剪辑：lipsky霸王别姬+上传27号数码视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 13:33:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-6-mba3hl3xa",
+        "summary": "拍摄：理想L9livis全套+数码lipsky霸王别姬+华为mate80promax贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 16:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-7-g92o8uxgf",
+        "summary": "下载obsidian俩插件：ChatGPT to Obsidian（导出gpt记录）--Obsidian Web Clipper（提取网页文章）Obsidian Easy Clipper（提取x文章+YouTube文字稿）Bilibili Obsidian Clipper（导出B站视频文稿）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 16:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-8-k1008o6rx",
+        "summary": "整理桌面更新应用处理图片素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 18:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-0-f1wap823w",
+        "summary": "整理2025的回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-27 13:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-1-kdzqky67z",
+        "summary": "整理2024回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-27 15:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-2-a3k39h7si",
+        "summary": "剪辑：华为mate80PM贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-27 11:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-3-rm8wc2xer",
+        "summary": "处理190篇知识点加入obsidian知识库",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-27 17:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-4-pslswyigr",
+        "summary": "剪辑：理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-27 17:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-5-dbotbvenk",
+        "summary": "定时：luna相机充电手柄",
+        "status": "completed",
+        "category": "发布",
+        "completed_at": "2026-07-27 12:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-0-fg5i1qee3",
+        "summary": "整理get笔记原文稿7篇",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-28 18:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-1-vxgio7jcj",
+        "summary": "剪辑2条蓝猩+9条差封面",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 18:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-2-0pnrcwuyu",
+        "summary": "定时：大号主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 20:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-3-avjxuusuv",
+        "summary": "拍摄：理想L8livis安装配件",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 10:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-4-6e1fze9eo",
+        "summary": "创建蓝猩商品链接+SKU",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 13:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-5-o60cdi1sv",
+        "summary": "处理190篇知识点加入obsidian知识库",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 14:37:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-6-tqkm2jzhm",
+        "summary": "上传理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 21:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-7-m8xolqopc",
+        "summary": "整理190篇知识点",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-28 18:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-8-j18zh3e7j",
+        "summary": "处理老高与小茉378个文章提取知识点",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 14:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-9-wbsypvumo",
+        "summary": "整理get笔记原文稿12篇",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-28 18:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-10-8xt0xbmuf",
+        "summary": "整理obsidian（三大系统）",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-28 10:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-11-9dj57bktg",
+        "summary": "写了一篇自己的理解",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 19:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-0-io3b2tu6r",
+        "summary": "剪辑：理想L9livis",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 16:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-1-xhjkdxnvu",
+        "summary": "剪辑：三星zfold8小号",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 13:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-2-3gizj07pu",
+        "summary": "剪辑：苹果折叠屏2条小号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 12:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-3-hb40kncbm",
+        "summary": "学习Python一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-29 21:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-4-g4qecm7b1",
+        "summary": "剪辑:郝金彪开店第二期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 21:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-5-gni97z1lt",
+        "summary": "剪辑：三星zfold8小号",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 20:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-6-j4jbxii5o",
+        "summary": "定时：大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 17:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-7-axo2z8x66",
+        "summary": "剪辑：LLC新壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 16:29:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-8-sfxwcwouw",
+        "summary": "拍摄:2条视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 17:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-9-hw899dp7b",
+        "summary": "剪辑:17promax",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 11:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-10-lrp8ebbhe",
+        "summary": "定时：luna相机充电手柄",
+        "status": "completed",
+        "category": "发布",
+        "completed_at": "2026-07-29 20:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-11-8lraqmm14",
+        "summary": "剪辑：LLC新壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 16:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-0-8odwwko13",
+        "summary": "剪辑：JBH引流视频2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 14:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-1-mimdnj7z2",
+        "summary": "拍摄：JBH引流视频2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 13:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-2-3m61pygoq",
+        "summary": "剪辑：蓝猩9条视频+定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 14:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-3-soin5boqb",
+        "summary": "剪辑：理想i6大全套配件",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 21:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-4-06w2gbk73",
+        "summary": "剪辑：理想小视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 12:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-5-p2h93swv8",
+        "summary": "上传：数码29~30号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 11:20:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-6-f6raljnxf",
+        "summary": "剪辑：华为mate80PM贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 21:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-0-wm2uwkaoy",
+        "summary": "剪辑：LLC新壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 12:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-1-esli30xfw",
+        "summary": "剪辑：BKT腰靠",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 10:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-2-z0wp9anlx",
+        "summary": "剪辑：图拉斯车载支架两条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 11:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-3-2g7d40c82",
+        "summary": "剪辑：理想L9livis",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 13:36:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-4-95lngk82b",
+        "summary": "定时：大号今日视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 16:30:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-5-psozzwnth",
+        "summary": "剪辑：苹果18全套配件",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 21:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-6-xzwbpeowg",
+        "summary": "看书：《锻炼》上",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-31 15:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-7-38xtfdmfn",
+        "summary": "定时：理想4条今日视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 14:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-8-h4tkfsmay",
+        "summary": "剪辑：理想引流脚垫2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 12:14:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-9-jrfabws7q",
+        "summary": "剪辑：平安结香囊",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 18:20:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-10-j4jg2rxp5",
+        "summary": "学python",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-31 17:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-11-y4pqcqcic",
+        "summary": "飞书任务表创建",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-31 14:00:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-12-wiffv1rgm",
+        "summary": "学完英语",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-31 18:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-0-uvuq66iys",
+        "summary": "定时：大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-01 12:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-1-34888m54q",
+        "summary": "剪辑：理想ota升级+定时视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-01 18:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-2-p5pgbsq6w",
+        "summary": "trae：工作台：图书馆功能完善（一直在修改）",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-01 17:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-3-mbba37gel",
+        "summary": "trae：制作一个工作台，界面完善",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-01 16:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-4-qjq6pkt5v",
+        "summary": "定时：理想1~2号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-01 16:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-02-0-n0wt4dz1x",
+        "summary": "搭建个人图书馆",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-02 17:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-0-l5lm91ckg",
+        "summary": "上传：大号视频定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 09:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-1-8gefkn24b",
+        "summary": "剪辑：lipsky苹果霸王别姬",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 18:36:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-2-rt1v0zl6w",
+        "summary": "配音：小号文案视频（苹果戒指）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 08:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-3-65q6mo11n",
+        "summary": "拍摄：2条大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 12:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-4-lh30vv6bo",
+        "summary": "扒8条数码热点文案用郝金彪skill提纯",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-03 09:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-5-s7vb39d4o",
+        "summary": "剪辑：理想L6新款：引流视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 12:19:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-6-x84t0z8nm",
+        "summary": "剪辑：带货视频：贝拉福云景杯架香薰",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 19:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-7-u9x51h09i",
+        "summary": "剪辑：带货视频：圆形小桌板",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 09:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-8-87f8ion7w",
+        "summary": "剪辑：带货视频：德尔曼香薰100克",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 12:06:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-9-0ny574s76",
+        "summary": "剪辑：理想L6新款",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 20:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-10-o5uk2wnk0",
+        "summary": "扒3条数码热点文案用郝金彪skill提纯",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-03 14:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-0-3ud26d79c",
+        "summary": "拍摄：大号2条+小号1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 13:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-1-chywh7u9z",
+        "summary": "学习：跑通郝金彪小号SOP流程（略显粗糙）",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-04 18:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-2-zz0j5kbqx",
+        "summary": "文案：用软件写了6条数码文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-04 15:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-3-940ydck8t",
+        "summary": "定时：大号主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 12:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-4-iwhapbg7x",
+        "summary": "剪辑：红魔散热器6Pro+",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 21:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-5-kzog9fby4",
+        "summary": "看书：《认知觉醒》30分钟",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-04 13:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-6-i6xydq1qw",
+        "summary": "定时：理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 13:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-7-8mpnt4bmv",
+        "summary": "剪辑：苹果戒指（有话说视频）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 21:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-0-0bpyl6j27",
+        "summary": "trae：制作一个工作台，界面完善",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-05 18:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-1-p8rg4o8tr",
+        "summary": "找到ChatGPT导出聊天记录插件（AI Chat Exporter）",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-05 10:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-2-jjcy6gcoe",
+        "summary": "剪辑：蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 16:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-3-vtzjsx2qx",
+        "summary": "剪辑:数码:决色领航者皮壳",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 18:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-4-qaex77nik",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 10:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-5-arqnxl916",
+        "summary": "拍摄：图语礼盒+蓝猩全套+引流万江红",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 17:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-6-p6zefud45",
+        "summary": "剪辑:puraxmax贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 19:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-7-rrz0edh6i",
+        "summary": "定时：理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 13:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-8-on0qeb7g7",
+        "summary": "AI:优化郝金彪skill（使用k3）",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-05 19:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-9-jtgvwlomg",
+        "summary": "剪辑理想今日主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 17:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-10-wulxazyrn",
+        "summary": "剪辑：理想抽奖视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 08:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-11-12bpcplpe",
+        "summary": "学习Python一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-05 17:19:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-0-1yu3fr1h0",
+        "summary": "剪辑：luna相机充电手柄",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 15:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-1-pz8up75r6",
+        "summary": "测试traework新功能",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-06 08:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-2-eb6vqyswb",
+        "summary": "剪辑：蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 16:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-3-w2x2jpvgz",
+        "summary": "剪辑：红魔散热器6Pro+",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 18:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-4-ebvcbvz3x",
+        "summary": "拍摄:3条数码视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 10:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-5-klyjupui2",
+        "summary": "剪辑：BKT腰靠",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 10:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-6-bpzxz0rdz",
+        "summary": "创建蓝猩商品链接+SKU",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-06 13:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-07-0-e46px9hb8",
+        "summary": "上传:理想-大号主视频定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-07 16:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-07-1-aj45zv4jk",
+        "summary": "整理2024回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-08-07 11:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-0-afy5rpk30",
+        "summary": "理想+大号主视频剪辑定时发布",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 18:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-1-ovay965po",
+        "summary": "拍摄新账号视频+杂活",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 12:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-2-8amd0hxs4",
+        "summary": "剪辑：荣耀robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 08:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-3-8xhat9vjn",
+        "summary": "剪辑：引流万江红",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 17:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-4-m1o7g5575",
+        "summary": "拍摄：图语礼盒+蓝猩全套+引流万江红",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 16:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-5-8bmkf4of7",
+        "summary": "剪辑：智能驾驶视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 08:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-6-luitylk0j",
+        "summary": "看书：《乌合之众》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-08 09:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-7-54nktrys9",
+        "summary": "剪辑：三星zflod8",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 17:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-8-tk073iqny",
+        "summary": "剪辑：理想抽奖视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 20:00:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-0-vk0dadz8y",
+        "summary": "剪辑:理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 09:05:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-1-5b9jekydi",
+        "summary": "剪辑:蓝猩视频6条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 09:01:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-2-vczlnzw4e",
+        "summary": "剪辑：华为mate80PM贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 11:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-3-3xwkgs3fj",
+        "summary": "剪辑:理想冰箱垃圾桶",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 10:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-4-oavydrh5o",
+        "summary": "文案：用软件写了6条数码文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-09 15:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-5-0yqpnhl8x",
+        "summary": "整理数据组长安排的任务",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-08-09 10:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-6-5n003xfn7",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 12:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-7-m4rhkoo6h",
+        "summary": "整理桌面更新应用处理图片素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 14:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-0-yox97qvu2",
+        "summary": "看一篇:obsidian➕codex知识库文章",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-11 08:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-1-kletst80l",
+        "summary": "发布:理想视频-撸车",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 08:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-2-mjfatjh1i",
+        "summary": "拆解麦尔斯的逐帧脚本（带图）",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-11 16:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-3-78o3hilu4",
+        "summary": "剪辑:苹果18四个颜色",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 13:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-4-faehw3c5z",
+        "summary": "定时：大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 21:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-5-h9q4nkkek",
+        "summary": "剪辑：三星zfold8小号",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 16:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-6-yk13z066l",
+        "summary": "拍摄:理想L9livis配件+脚垫，理想L8livis固特异脚垫",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 19:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-7-mio3ceuat",
+        "summary": "美化人生文档HTML",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-11 14:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-0-90y985846",
+        "summary": "整理2023年所有图片➕回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-08-12 20:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-1-13j6pdwz1",
+        "summary": "解决谷歌浏览器同步问题",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-12 13:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-2-hmqje7ixp",
+        "summary": "剪辑理想今日主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 10:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-3-jnd9m5klu",
+        "summary": "收集素材:找蓝猩素材去下载直播切片",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 12:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-4-iallgr2wj",
+        "summary": "下载:理想素材（下载不动）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 15:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-5-3empva5w9",
+        "summary": "剪辑:理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 09:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-6-8cum3kvo6",
+        "summary": "剪辑:大号视频-磁吸指环",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 09:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-7-tzlgw4mw7",
+        "summary": "剪辑:理想官方活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 11:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-8-xc3fwkpmo",
+        "summary": "导出Claude两天聊天记录",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-12 16:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-9-q6rna47sw",
+        "summary": "学习：KIMI脚本，ai对话聊天框",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-12 08:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-10-krjzcjucd",
+        "summary": "剪辑：荣耀robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 19:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-11-tuvoufj4z",
+        "summary": "用work去爬虫get笔记网页信息提取原始文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-12 17:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-0-d3rxrp58e",
+        "summary": "剪辑:理想l9加高纸巾盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 21:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-1-1zotr9mpi",
+        "summary": "学python",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-13 14:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-2-sn3wovoka",
+        "summary": "拍摄：大号2条+小号1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 15:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-3-z41lt3fwi",
+        "summary": "上传理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 13:46:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-4-qrpnuim1l",
+        "summary": "用work去爬虫get笔记网页信息提取原始文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-13 08:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-5-m1m05vlxr",
+        "summary": "上传大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 12:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-6-r0otjt7tp",
+        "summary": "文案：比亚迪秦MAX版本",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-13 15:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-7-kmf59ywyq",
+        "summary": "下载:理想素材（下载不动）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 17:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-0-2146r2ilm",
+        "summary": "剪辑：苹果折叠屏2条小号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 18:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-1-49ep6ezsb",
+        "summary": "拍摄：3条大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 21:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-2-bgrinvn6c",
+        "summary": "剪辑：蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 09:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-3-x6bggaoka",
+        "summary": "拍摄：苹果折叠屏+robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 20:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-4-z5ank9q7o",
+        "summary": "剪辑：理想视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 09:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-5-kn5tdqgme",
+        "summary": "剪辑：引流视频-蓝猩活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 11:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-6-srthw8la2",
+        "summary": "剪辑：引流视频-7折活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 21:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-7-iso18a5a6",
+        "summary": "剪辑：bangk 零感磁吸充电宝5000mAh",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 18:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-0-e42xj87mj",
+        "summary": "搞定obsidian微信同步助手",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-15 18:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-1-srn6boiba",
+        "summary": "剪辑:苹果18四个颜色",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-15 14:16:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-2-1ekhnnv7w",
+        "summary": "文案:三星zfold8➕三款阔折叠",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-15 10:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-3-hijdnklip",
+        "summary": "人生经历:优化1/2的同事",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-15 20:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-4-apbrqj4ty",
+        "summary": "看书：《乌合之众》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-15 15:20:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-5-hqgwjyt28",
+        "summary": "剪辑:理想前排仪表台储物盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-15 20:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-6-0c0eya0gt",
+        "summary": "拍摄:理想L9livis配件+脚垫，理想L8livis固特异脚垫",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-15 11:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-0-9noreea4o",
+        "summary": "AI：音色克隆",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-17 21:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-1-p28wwqnoz",
+        "summary": "文案：比亚迪秦MAX版本",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-17 20:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-2-ybhhpo3xy",
+        "summary": "拍摄：iPhone17promax",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 20:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-3-2of9lzg4c",
+        "summary": "剪辑：荣耀robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 09:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-4-69jq62du2",
+        "summary": "剪辑：华为mate80RS",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 10:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-5-nl82y7sdr",
+        "summary": "剪辑：蓝猩2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 18:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-0-9rb1dw59g",
+        "summary": "剪辑:金彪要周年",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 11:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-1-j1accdq5w",
+        "summary": "AI:即梦脚本",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-18 15:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-2-z1ue6tq0x",
+        "summary": "剪辑:蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 13:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-3-lzxgx97w7",
+        "summary": "剪辑:17promax",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 08:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-4-gagemvxla",
+        "summary": "剪辑:理想头枕",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 13:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-0-5y3b18tdo",
+        "summary": "拍摄:3条大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 10:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-1-mtewipvrz",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 19:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-2-057kpqmwj",
+        "summary": "剪辑:引流视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 21:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-3-a8pis1npk",
+        "summary": "剪辑:大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 16:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-4-xfhumqyee",
+        "summary": "拍摄:3条数码视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 18:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-5-d2ngy0wy5",
+        "summary": "剪辑:理想L9livis",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 10:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-6-9y2ud8nhv",
+        "summary": "拍摄:理想2条带货+干杂活当力工",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 20:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-0-pem9aed64",
+        "summary": "文案:小米折叠屏",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-20 11:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-1-f7atg4myt",
+        "summary": "剪辑:理想视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-20 20:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-2-c4dioay30",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-20 12:06:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-3-7aga664kb",
+        "summary": "剪辑:大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-20 14:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-0-q52wp9p53",
+        "summary": "剪辑:大号视频-米兰壳",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 13:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-1-9fmmkqt6o",
+        "summary": "剪辑:大号视频-奈盾指环扣",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 16:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-2-pouk6jxp7",
+        "summary": "剪辑:大号视频-VOKAMO表带",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 14:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-3-1lrgqc9gp",
+        "summary": "剪辑:理想视频-彪哥出发",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 20:37:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-4-7czznkvty",
+        "summary": "剪辑:理想视频-洗车？",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 21:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-5-3ptfkc08f",
+        "summary": "AI:优化郝金彪skill（使用k3）",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-21 20:14:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-6-dhyftu9tm",
+        "summary": "文案:华为puraxmax",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-21 08:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-7-mn7q80287",
+        "summary": "收集素材:找蓝猩素材去下载直播切片",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 18:36:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-8-hivgoenws",
+        "summary": "剪辑:蓝猩视频-1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 09:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-9-x5k8w6igd",
+        "summary": "剪辑:大号视频-磁吸指环",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 09:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-0-mkjistakw",
+        "summary": "剪辑:理想官方活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 19:05:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-1-rbnwqy8kr",
+        "summary": "AI:优化工作台",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-22 13:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-2-p6eakrcem",
+        "summary": "发布:蓝猩视频6条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 12:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-3-thbboikhu",
+        "summary": "剪辑:蓝猩视频6条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 13:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-4-pz0qywkyw",
+        "summary": "发布:理想视频-撸车",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 08:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-5-u0xy39rz3",
+        "summary": "发布:大号视频-VOKAMO表带",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 18:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-6-et7y6xs0w",
+        "summary": "下载:理想素材（下载不动）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 10:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-23-0-992bea2b",
+        "summary": "发布:理想旅行家活动1期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:42",
+        "due": "2026-08-23 10:20:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=992bea2b-61f0-4a3e-af31-e0a8403d93f7"
+      },
+      {
+        "id": "task-2026-08-23-1-a1e3d4d5",
+        "summary": "修改:理想旅行家活动2期",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-23 18:35:43",
+        "due": "2026-08-23 11:01:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=a1e3d4d5-6af1-4861-8815-2d2167a4d110"
+      },
+      {
+        "id": "task-2026-08-23-2-6089de65",
+        "summary": "发布:数码大号视频-指环支架",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:44",
+        "due": "2026-08-23 11:28:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=6089de65-d85e-47f2-b2de-22226fc52ec4"
+      },
+      {
+        "id": "task-2026-08-23-3-f4b90605",
+        "summary": "剪辑:理想旅行家活动3期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:46",
+        "due": "2026-08-23 11:53:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=f4b90605-92f1-42bd-b2d0-4d9f478b545e"
+      },
+      {
+        "id": "task-2026-08-23-4-8282348a",
+        "summary": "发布:数码大号视频-引流视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:46",
+        "due": "2026-08-23 12:02:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=8282348a-19f0-4027-b526-9ebee5bea505"
+      },
+      {
+        "id": "task-2026-08-23-5-25f5580c",
+        "summary": "AI:优化工作台",
+        "status": "completed",
+        "category": "AI",
+        "completed_at": "2026-08-23 18:35:48",
+        "due": "2026-08-23 12:10:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=25f5580c-1f0b-4cb0-a625-7f104c0dc2ec"
+      },
+      {
+        "id": "task-2026-08-23-6-4e9859cf",
+        "summary": "剪辑:数码大号视频-华为阔折叠",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:50",
+        "due": "2026-08-23 14:25:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=4e9859cf-f9a5-4820-8cd7-f63b2e7ec1e1"
+      },
+      {
+        "id": "task-2026-08-23-7-9426cf38",
+        "summary": "剪辑:数码大号视频-29磁吸指环",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:49",
+        "due": "2026-08-23 14:59:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=9426cf38-ac6d-4575-948c-2ed041649930"
+      },
+      {
+        "id": "task-2026-08-23-8-745d4b8c",
+        "summary": "剪辑:数码大号视频-华为matex7决色皮壳",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:51",
+        "due": "2026-08-23 15:22:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=745d4b8c-498f-4249-950b-0362d14a4dad"
+      },
+      {
+        "id": "task-2026-08-23-9-f27e83e1",
+        "summary": "发布:理想旅行家活动2期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:52",
+        "due": "2026-08-23 16:55:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=f27e83e1-5230-457d-8a61-58787a45182f"
+      },
+      {
+        "id": "task-2026-08-23-10-26524595",
+        "summary": "发布:理想旅行家活动3期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-23 18:35:53",
+        "due": "2026-08-23 17:07:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=26524595-4989-49d4-8ad2-f97f63148cfd"
+      },
+      {
+        "id": "task-2026-08-25-11-77e832d4",
+        "summary": "发布:数码大号视频-PuraXmax配件",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:19",
+        "due": "2026-08-25 10:11:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=77e832d4-f75f-4ff1-adea-1398d7fc9d92"
+      },
+      {
+        "id": "task-2026-08-25-12-94575a4a",
+        "summary": "审核:理想活动2期链接",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-25 18:25:21",
+        "due": "2026-08-25 10:11:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=94575a4a-035b-4000-a717-84ad77087132"
+      },
+      {
+        "id": "task-2026-08-25-13-362ac42d",
+        "summary": "剪辑:理想旅行家第四期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:22",
+        "due": "2026-08-25 10:55:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=362ac42d-2643-4d03-8046-c5220207151b"
+      },
+      {
+        "id": "task-2026-08-25-14-57ddcdad",
+        "summary": "下载:理想旅行家5~6期素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:23",
+        "due": "2026-08-25 11:04:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=57ddcdad-4625-4849-8a30-c7a4fe625bf7"
+      },
+      {
+        "id": "task-2026-08-25-15-7710382c",
+        "summary": "下载:直播回放3条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:25",
+        "due": "2026-08-25 11:59:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=7710382c-327c-48f2-9deb-b5106122f01b"
+      },
+      {
+        "id": "task-2026-08-25-16-5644c234",
+        "summary": "AI:修复工作台+更新工作台",
+        "status": "completed",
+        "category": "AI",
+        "completed_at": "2026-08-25 18:25:26",
+        "due": "2026-08-25 12:12:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=5644c234-2209-44a8-8874-97389c401c47"
+      },
+      {
+        "id": "task-2026-08-25-17-bfe1473d",
+        "summary": "导入:阔哥洗车素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:28",
+        "due": "2026-08-25 12:17:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=bfe1473d-006d-44f8-82ed-20b9c0cdbc92"
+      },
+      {
+        "id": "task-2026-08-25-18-0aa03a32",
+        "summary": "剪辑:理想旅行家5",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:29",
+        "due": "2026-08-25 13:46:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=0aa03a32-8558-4c3d-9c10-4127545d3f7c"
+      },
+      {
+        "id": "task-2026-08-25-19-6b6c4a2e",
+        "summary": "剪辑:理想旅行家6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:30",
+        "due": "2026-08-25 14:19:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=6b6c4a2e-7d56-48bc-9118-c3aeb0612334"
+      },
+      {
+        "id": "task-2026-08-25-20-187d59c0",
+        "summary": "剪辑:蓝猩8条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:32",
+        "due": "2026-08-25 16:16:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=187d59c0-3985-47cb-aef1-985898d812a9"
+      },
+      {
+        "id": "task-2026-08-25-21-c069ef78",
+        "summary": "发布:蓝猩8条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-25 18:25:33",
+        "due": "2026-08-25 16:53:00",
+        "url": "https://applink.feishu.cn/client/todo/detail?guid=c069ef78-c0ce-4c26-8eec-2e71e86e25b6"
+      }
+    ],
+    "completed": [
+      {
+        "id": "task-2026-07-20-0-sq9uhrmjm",
+        "summary": "学习飞书个人版课程",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-20 15:05:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-1-gxbjznaex",
+        "summary": "导出Claude两天聊天记录",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 17:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-2-d1fjetoav",
+        "summary": "导出语雀笔记转入飞书",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 21:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-3-3gq5m2dv6",
+        "summary": "得到笔记GET笔记200条导出",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 17:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-4-rocazamui",
+        "summary": "洗衣服被子鞋床单晾干整理房间",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-20 10:06:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-5-v96ny59qw",
+        "summary": "发现了Claude的聊天导出插件",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 12:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-6-bfuyscwd7",
+        "summary": "发现飞书格式支持docx无损转换飞书文档",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-20 12:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-20-7-6phzzwlsf",
+        "summary": "了解eagle素材管理工具",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-20 12:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-0-sdlwvwcgy",
+        "summary": "剪辑:理想i6大全套",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 12:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-1-x3bqrfikm",
+        "summary": "剪辑:理想前排仪表台储物盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 19:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-2-88cckh2h9",
+        "summary": "剪辑:数码:决色领航者皮壳",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 17:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-3-czc3ol7b1",
+        "summary": "拍视频:大号3条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 12:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-4-dqj9c4tne",
+        "summary": "剪辑：理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 13:16:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-5-ma465tjjk",
+        "summary": "看书:《说三分》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-21 09:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-6-59x98efbu",
+        "summary": "剪辑:理想L6官方车机链相机",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 19:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-7-9rjbh60im",
+        "summary": "剪辑理想今日主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-21 21:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-8-ncnncnxxq",
+        "summary": "学习数学一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-21 09:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-9-zz0obt4cq",
+        "summary": "搭建个人图书馆",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-21 13:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-10-op5omdzox",
+        "summary": "学习Python一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-21 10:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-21-11-70xbkhi05",
+        "summary": "学习英文",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-21 09:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-0-jksr3ahpe",
+        "summary": "剪辑:raptic卡包➕壳套装",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-22 12:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-1-78y473j2u",
+        "summary": "解决谷歌浏览器同步问题",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 11:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-2-xe0b6xttz",
+        "summary": "看书:《长安的荔枝》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 13:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-3-35yvr5m73",
+        "summary": "整理2022年所有图片➕回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-22 20:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-4-6exqfmy5s",
+        "summary": "剪辑:大号初号机视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-22 11:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-5-uzo2vw17p",
+        "summary": "Hermes优化图书馆",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 15:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-6-jbxs3i1w3",
+        "summary": "Hermes 分类谷歌浏览器书签",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 11:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-7-13u6fskr4",
+        "summary": "添加了Hermes agent 配置DeepSeek4Pro",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 11:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-22-8-wdp9kzu71",
+        "summary": "人生经历:优化1/2的同事",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-22 17:29:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-0-4t4kx3ne0",
+        "summary": "剪辑:两位数壳子清仓大甩卖",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 17:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-1-cao0tbob0",
+        "summary": "剪辑:理想l9加高纸巾盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 12:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-2-aijh09ajj",
+        "summary": "看一篇:obsidian➕codex知识库文章",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-23 15:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-3-2tyvs0h2m",
+        "summary": "剪辑:理想i6大全套➕脚垫",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 16:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-4-x6zs3ngdp",
+        "summary": "文案:优化两条文案有人味",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-23 20:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-5-8x6y803uj",
+        "summary": "文案:三星zfold8➕三款阔折叠",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-23 19:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-6-uoz6gou5t",
+        "summary": "上传:理想-大号主视频定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 15:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-7-nwbdb9i17",
+        "summary": "剪辑:理想冰箱垃圾桶",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 14:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-8-05lmqgb58",
+        "summary": "剪辑:puraxmax贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 11:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-9-psfadrdyc",
+        "summary": "整理数据组长安排的任务",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-23 16:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-23-10-nnznfbtde",
+        "summary": "剪辑：引流视频-7折活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-23 17:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-0-kde9j44d4",
+        "summary": "obsidian同步双端",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 17:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-1-4zf4jw1a3",
+        "summary": "测试traework新功能",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 20:33:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-2-09jd9byfe",
+        "summary": "剪辑:raptic壳子fold8新型号壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 14:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-3-lozzfej34",
+        "summary": "剪辑:图语钢化膜拍一发二",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 13:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-4-tleyp48ma",
+        "summary": "修改:今天大号视频挪到明天",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 19:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-5-28pbsp1li",
+        "summary": "拍摄:图语活动3条➕三星折叠屏新壳子raptic",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 11:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-6-8kzb3696e",
+        "summary": "上传:理想视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 18:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-7-0biv0xtzd",
+        "summary": "剪辑:郝金彪开店第二期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 08:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-8-s6lcagoqp",
+        "summary": "上传大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 10:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-9-x4wy2kxtd",
+        "summary": "搞定obsidian微信同步助手",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 12:29:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-10-4jjqveq50",
+        "summary": "学习:知识库搭建文章",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-24 13:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-11-9k33j02q0",
+        "summary": "提取:b站资源原稿➕get笔记原文",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-24 15:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-12-66p8pfws9",
+        "summary": "看书:《原子习惯》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 10:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-13-oty0w6zh1",
+        "summary": "知识库:跑通一个小流程",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-24 19:33:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-14-m9fr1pi66",
+        "summary": "学习英文",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-24 10:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-24-15-7n7r2pvx8",
+        "summary": "剪辑:数码小号insta360X6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-24 18:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-0-4bhrsbtv4",
+        "summary": "上传：百度云上传素材+本地素材转移",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 18:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-1-guzoqjisf",
+        "summary": "剪辑：带货：大疆相机车载支架",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 12:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-2-g0tz0g2ki",
+        "summary": "上传：图语两条活动+郝金彪3D打印机",
+        "status": "completed",
+        "category": "发布",
+        "completed_at": "2026-07-25 21:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-3-7ohn0jf7r",
+        "summary": "剪辑：3D打印机",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 15:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-4-cj9sq2rfh",
+        "summary": "剪辑：图语活动合集",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 18:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-5-sag4m3qy1",
+        "summary": "上传理想25-27主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 11:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-6-r7m48q3am",
+        "summary": "剪辑:图语活动凯夫拉半价",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 13:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-7-w2hwngovs",
+        "summary": "找公众号10个+小红书10个",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-25 11:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-8-wtvj6898f",
+        "summary": "尝试链接eagle分类素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 20:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-9-fuzzf25mv",
+        "summary": "下载eagle上传素材（1000条）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 10:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-10-htl0vm6lw",
+        "summary": "了解eagle素材管理工具",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-25 16:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-11-zkl9dshsy",
+        "summary": "看文章，Hermes",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-25 18:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-12-9fz559ewa",
+        "summary": "整理2023年所有图片➕回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-25 11:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-25-13-1da5f9hj9",
+        "summary": "学习英文",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-25 10:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-0-3x8xdvlzb",
+        "summary": "剪辑：理想L7（短视频）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 17:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-1-awistlfr8",
+        "summary": "拆解小红书图文，发现可画小红书图文模版",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-26 19:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-2-z1x8ia5o0",
+        "summary": "拆解麦尔斯的逐帧脚本（带图）",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-26 18:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-3-clyf30lfm",
+        "summary": "skill：数码老炮口播生成器",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-26 19:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-4-2q9zw3e6s",
+        "summary": "提取：郝金彪数码+理想：高赞视频汇总",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 14:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-5-gyzf0h4hg",
+        "summary": "剪辑：lipsky霸王别姬+上传27号数码视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 13:33:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-6-mba3hl3xa",
+        "summary": "拍摄：理想L9livis全套+数码lipsky霸王别姬+华为mate80promax贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 16:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-7-g92o8uxgf",
+        "summary": "下载obsidian俩插件：ChatGPT to Obsidian（导出gpt记录）--Obsidian Web Clipper（提取网页文章）Obsidian Easy Clipper（提取x文章+YouTube文字稿）Bilibili Obsidian Clipper（导出B站视频文稿）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 16:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-26-8-k1008o6rx",
+        "summary": "整理桌面更新应用处理图片素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-26 18:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-0-f1wap823w",
+        "summary": "整理2025的回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-27 13:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-1-kdzqky67z",
+        "summary": "整理2024回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-27 15:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-2-a3k39h7si",
+        "summary": "剪辑：华为mate80PM贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-27 11:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-3-rm8wc2xer",
+        "summary": "处理190篇知识点加入obsidian知识库",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-27 17:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-4-pslswyigr",
+        "summary": "剪辑：理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-27 17:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-27-5-dbotbvenk",
+        "summary": "定时：luna相机充电手柄",
+        "status": "completed",
+        "category": "发布",
+        "completed_at": "2026-07-27 12:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-0-fg5i1qee3",
+        "summary": "整理get笔记原文稿7篇",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-28 18:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-1-vxgio7jcj",
+        "summary": "剪辑2条蓝猩+9条差封面",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 18:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-2-0pnrcwuyu",
+        "summary": "定时：大号主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 20:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-3-avjxuusuv",
+        "summary": "拍摄：理想L8livis安装配件",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 10:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-4-6e1fze9eo",
+        "summary": "创建蓝猩商品链接+SKU",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 13:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-5-o60cdi1sv",
+        "summary": "处理190篇知识点加入obsidian知识库",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 14:37:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-6-tqkm2jzhm",
+        "summary": "上传理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-28 21:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-7-m8xolqopc",
+        "summary": "整理190篇知识点",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-28 18:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-8-j18zh3e7j",
+        "summary": "处理老高与小茉378个文章提取知识点",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 14:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-9-wbsypvumo",
+        "summary": "整理get笔记原文稿12篇",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-07-28 18:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-10-8xt0xbmuf",
+        "summary": "整理obsidian（三大系统）",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-07-28 10:38:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-28-11-9dj57bktg",
+        "summary": "写了一篇自己的理解",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-28 19:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-0-io3b2tu6r",
+        "summary": "剪辑：理想L9livis",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 16:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-1-xhjkdxnvu",
+        "summary": "剪辑：三星zfold8小号",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 13:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-2-3gizj07pu",
+        "summary": "剪辑：苹果折叠屏2条小号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 12:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-3-hb40kncbm",
+        "summary": "学习Python一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-29 21:15:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-4-g4qecm7b1",
+        "summary": "剪辑:郝金彪开店第二期",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 21:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-5-gni97z1lt",
+        "summary": "剪辑：三星zfold8小号",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 20:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-6-j4jbxii5o",
+        "summary": "定时：大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 17:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-7-axo2z8x66",
+        "summary": "剪辑：LLC新壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 16:29:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-8-sfxwcwouw",
+        "summary": "拍摄:2条视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 17:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-9-hw899dp7b",
+        "summary": "剪辑:17promax",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 11:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-10-lrp8ebbhe",
+        "summary": "定时：luna相机充电手柄",
+        "status": "completed",
+        "category": "发布",
+        "completed_at": "2026-07-29 20:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-29-11-8lraqmm14",
+        "summary": "剪辑：LLC新壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-29 16:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-0-8odwwko13",
+        "summary": "剪辑：JBH引流视频2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 14:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-1-mimdnj7z2",
+        "summary": "拍摄：JBH引流视频2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 13:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-2-3m61pygoq",
+        "summary": "剪辑：蓝猩9条视频+定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 14:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-3-soin5boqb",
+        "summary": "剪辑：理想i6大全套配件",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 21:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-4-06w2gbk73",
+        "summary": "剪辑：理想小视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 12:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-5-p2h93swv8",
+        "summary": "上传：数码29~30号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 11:20:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-30-6-f6raljnxf",
+        "summary": "剪辑：华为mate80PM贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-30 21:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-0-wm2uwkaoy",
+        "summary": "剪辑：LLC新壳子",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 12:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-1-esli30xfw",
+        "summary": "剪辑：BKT腰靠",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 10:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-2-z0wp9anlx",
+        "summary": "剪辑：图拉斯车载支架两条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 11:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-3-2g7d40c82",
+        "summary": "剪辑：理想L9livis",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 13:36:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-4-95lngk82b",
+        "summary": "定时：大号今日视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 16:30:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-5-psozzwnth",
+        "summary": "剪辑：苹果18全套配件",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 21:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-6-xzwbpeowg",
+        "summary": "看书：《锻炼》上",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-31 15:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-7-38xtfdmfn",
+        "summary": "定时：理想4条今日视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 14:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-8-h4tkfsmay",
+        "summary": "剪辑：理想引流脚垫2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 12:14:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-9-jrfabws7q",
+        "summary": "剪辑：平安结香囊",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-07-31 18:20:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-10-j4jg2rxp5",
+        "summary": "学python",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-07-31 17:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-11-y4pqcqcic",
+        "summary": "飞书任务表创建",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-31 14:00:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-07-31-12-wiffv1rgm",
+        "summary": "学完英语",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-07-31 18:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-0-uvuq66iys",
+        "summary": "定时：大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-01 12:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-1-34888m54q",
+        "summary": "剪辑：理想ota升级+定时视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-01 18:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-2-p5pgbsq6w",
+        "summary": "trae：工作台：图书馆功能完善（一直在修改）",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-01 17:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-3-mbba37gel",
+        "summary": "trae：制作一个工作台，界面完善",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-01 16:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-01-4-qjq6pkt5v",
+        "summary": "定时：理想1~2号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-01 16:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-02-0-n0wt4dz1x",
+        "summary": "搭建个人图书馆",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-02 17:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-0-l5lm91ckg",
+        "summary": "上传：大号视频定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 09:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-1-8gefkn24b",
+        "summary": "剪辑：lipsky苹果霸王别姬",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 18:36:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-2-rt1v0zl6w",
+        "summary": "配音：小号文案视频（苹果戒指）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 08:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-3-65q6mo11n",
+        "summary": "拍摄：2条大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 12:58:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-4-lh30vv6bo",
+        "summary": "扒8条数码热点文案用郝金彪skill提纯",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-03 09:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-5-s7vb39d4o",
+        "summary": "剪辑：理想L6新款：引流视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 12:19:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-6-x84t0z8nm",
+        "summary": "剪辑：带货视频：贝拉福云景杯架香薰",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 19:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-7-u9x51h09i",
+        "summary": "剪辑：带货视频：圆形小桌板",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 09:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-8-87f8ion7w",
+        "summary": "剪辑：带货视频：德尔曼香薰100克",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 12:06:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-9-0ny574s76",
+        "summary": "剪辑：理想L6新款",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-03 20:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-03-10-o5uk2wnk0",
+        "summary": "扒3条数码热点文案用郝金彪skill提纯",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-03 14:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-0-3ud26d79c",
+        "summary": "拍摄：大号2条+小号1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 13:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-1-chywh7u9z",
+        "summary": "学习：跑通郝金彪小号SOP流程（略显粗糙）",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-04 18:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-2-zz0j5kbqx",
+        "summary": "文案：用软件写了6条数码文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-04 15:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-3-940ydck8t",
+        "summary": "定时：大号主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 12:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-4-iwhapbg7x",
+        "summary": "剪辑：红魔散热器6Pro+",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 21:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-5-kzog9fby4",
+        "summary": "看书：《认知觉醒》30分钟",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-04 13:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-6-i6xydq1qw",
+        "summary": "定时：理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 13:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-04-7-8mpnt4bmv",
+        "summary": "剪辑：苹果戒指（有话说视频）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-04 21:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-0-0bpyl6j27",
+        "summary": "trae：制作一个工作台，界面完善",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-05 18:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-1-p8rg4o8tr",
+        "summary": "找到ChatGPT导出聊天记录插件（AI Chat Exporter）",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-05 10:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-2-jjcy6gcoe",
+        "summary": "剪辑：蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 16:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-3-vtzjsx2qx",
+        "summary": "剪辑:数码:决色领航者皮壳",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 18:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-4-qaex77nik",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 10:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-5-arqnxl916",
+        "summary": "拍摄：图语礼盒+蓝猩全套+引流万江红",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 17:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-6-p6zefud45",
+        "summary": "剪辑:puraxmax贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 19:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-7-rrz0edh6i",
+        "summary": "定时：理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 13:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-8-on0qeb7g7",
+        "summary": "AI:优化郝金彪skill（使用k3）",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-05 19:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-9-jtgvwlomg",
+        "summary": "剪辑理想今日主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 17:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-10-wulxazyrn",
+        "summary": "剪辑：理想抽奖视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-05 08:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-05-11-12bpcplpe",
+        "summary": "学习Python一节课",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-05 17:19:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-0-1yu3fr1h0",
+        "summary": "剪辑：luna相机充电手柄",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 15:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-1-pz8up75r6",
+        "summary": "测试traework新功能",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-06 08:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-2-eb6vqyswb",
+        "summary": "剪辑：蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 16:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-3-w2x2jpvgz",
+        "summary": "剪辑：红魔散热器6Pro+",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 18:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-4-ebvcbvz3x",
+        "summary": "拍摄:3条数码视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 10:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-5-klyjupui2",
+        "summary": "剪辑：BKT腰靠",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-06 10:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-06-6-bpzxz0rdz",
+        "summary": "创建蓝猩商品链接+SKU",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-06 13:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-07-0-e46px9hb8",
+        "summary": "上传:理想-大号主视频定时",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-07 16:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-07-1-aj45zv4jk",
+        "summary": "整理2024回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-08-07 11:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-0-afy5rpk30",
+        "summary": "理想+大号主视频剪辑定时发布",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 18:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-1-ovay965po",
+        "summary": "拍摄新账号视频+杂活",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 12:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-2-8amd0hxs4",
+        "summary": "剪辑：荣耀robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 08:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-3-8xhat9vjn",
+        "summary": "剪辑：引流万江红",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 17:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-4-m1o7g5575",
+        "summary": "拍摄：图语礼盒+蓝猩全套+引流万江红",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 16:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-5-8bmkf4of7",
+        "summary": "剪辑：智能驾驶视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 08:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-6-luitylk0j",
+        "summary": "看书：《乌合之众》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-08 09:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-7-54nktrys9",
+        "summary": "剪辑：三星zflod8",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 17:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-08-8-tk073iqny",
+        "summary": "剪辑：理想抽奖视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-08 20:00:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-0-vk0dadz8y",
+        "summary": "剪辑:理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 09:05:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-1-5b9jekydi",
+        "summary": "剪辑:蓝猩视频6条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 09:01:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-2-vczlnzw4e",
+        "summary": "剪辑：华为mate80PM贴膜",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 11:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-3-3xwkgs3fj",
+        "summary": "剪辑:理想冰箱垃圾桶",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 10:48:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-4-oavydrh5o",
+        "summary": "文案：用软件写了6条数码文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-09 15:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-5-0yqpnhl8x",
+        "summary": "整理数据组长安排的任务",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-08-09 10:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-6-5n003xfn7",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 12:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-09-7-m4rhkoo6h",
+        "summary": "整理桌面更新应用处理图片素材",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-09 14:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-0-yox97qvu2",
+        "summary": "看一篇:obsidian➕codex知识库文章",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-11 08:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-1-kletst80l",
+        "summary": "发布:理想视频-撸车",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 08:52:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-2-mjfatjh1i",
+        "summary": "拆解麦尔斯的逐帧脚本（带图）",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-11 16:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-3-78o3hilu4",
+        "summary": "剪辑:苹果18四个颜色",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 13:24:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-4-faehw3c5z",
+        "summary": "定时：大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 21:11:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-5-h9q4nkkek",
+        "summary": "剪辑：三星zfold8小号",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 16:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-6-yk13z066l",
+        "summary": "拍摄:理想L9livis配件+脚垫，理想L8livis固特异脚垫",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-11 19:12:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-11-7-mio3ceuat",
+        "summary": "美化人生文档HTML",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-11 14:56:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-0-90y985846",
+        "summary": "整理2023年所有图片➕回忆",
+        "status": "completed",
+        "category": "整理",
+        "completed_at": "2026-08-12 20:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-1-13j6pdwz1",
+        "summary": "解决谷歌浏览器同步问题",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-12 13:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-2-hmqje7ixp",
+        "summary": "剪辑理想今日主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 10:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-3-jnd9m5klu",
+        "summary": "收集素材:找蓝猩素材去下载直播切片",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 12:39:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-4-iallgr2wj",
+        "summary": "下载:理想素材（下载不动）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 15:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-5-3empva5w9",
+        "summary": "剪辑:理想i6",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 09:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-6-8cum3kvo6",
+        "summary": "剪辑:大号视频-磁吸指环",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 09:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-7-tzlgw4mw7",
+        "summary": "剪辑:理想官方活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 11:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-8-xc3fwkpmo",
+        "summary": "导出Claude两天聊天记录",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-12 16:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-9-q6rna47sw",
+        "summary": "学习：KIMI脚本，ai对话聊天框",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-12 08:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-10-krjzcjucd",
+        "summary": "剪辑：荣耀robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-12 19:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-12-11-tuvoufj4z",
+        "summary": "用work去爬虫get笔记网页信息提取原始文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-12 17:57:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-0-d3rxrp58e",
+        "summary": "剪辑:理想l9加高纸巾盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 21:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-1-1zotr9mpi",
+        "summary": "学python",
+        "status": "completed",
+        "category": "学习",
+        "completed_at": "2026-08-13 14:17:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-2-sn3wovoka",
+        "summary": "拍摄：大号2条+小号1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 15:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-3-z41lt3fwi",
+        "summary": "上传理想主视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 13:46:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-4-qrpnuim1l",
+        "summary": "用work去爬虫get笔记网页信息提取原始文案",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-13 08:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-5-m1m05vlxr",
+        "summary": "上传大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 12:50:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-6-r0otjt7tp",
+        "summary": "文案：比亚迪秦MAX版本",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-13 15:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-13-7-kmf59ywyq",
+        "summary": "下载:理想素材（下载不动）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-13 17:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-0-2146r2ilm",
+        "summary": "剪辑：苹果折叠屏2条小号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 18:41:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-1-49ep6ezsb",
+        "summary": "拍摄：3条大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 21:22:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-2-bgrinvn6c",
+        "summary": "剪辑：蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 09:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-3-x6bggaoka",
+        "summary": "拍摄：苹果折叠屏+robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 20:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-4-z5ank9q7o",
+        "summary": "剪辑：理想视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 09:51:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-5-kn5tdqgme",
+        "summary": "剪辑：引流视频-蓝猩活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 11:42:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-6-srthw8la2",
+        "summary": "剪辑：引流视频-7折活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 21:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-14-7-iso18a5a6",
+        "summary": "剪辑：bangk 零感磁吸充电宝5000mAh",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-14 18:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-0-e42xj87mj",
+        "summary": "搞定obsidian微信同步助手",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-15 18:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-1-srn6boiba",
+        "summary": "剪辑:苹果18四个颜色",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-15 14:16:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-2-1ekhnnv7w",
+        "summary": "文案:三星zfold8➕三款阔折叠",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-15 10:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-3-hijdnklip",
+        "summary": "人生经历:优化1/2的同事",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-15 20:27:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-4-apbrqj4ty",
+        "summary": "看书：《乌合之众》",
+        "status": "completed",
+        "category": "其他",
+        "completed_at": "2026-08-15 15:20:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-5-hqgwjyt28",
+        "summary": "剪辑:理想前排仪表台储物盒",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-15 20:59:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-15-6-0c0eya0gt",
+        "summary": "拍摄:理想L9livis配件+脚垫，理想L8livis固特异脚垫",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-15 11:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-0-9noreea4o",
+        "summary": "AI：音色克隆",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-17 21:23:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-1-p28wwqnoz",
+        "summary": "文案：比亚迪秦MAX版本",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-17 20:03:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-2-ybhhpo3xy",
+        "summary": "拍摄：iPhone17promax",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 20:45:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-3-2of9lzg4c",
+        "summary": "剪辑：荣耀robotphone",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 09:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-4-69jq62du2",
+        "summary": "剪辑：华为mate80RS",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 10:26:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-17-5-nl82y7sdr",
+        "summary": "剪辑：蓝猩2条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-17 18:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-0-9rb1dw59g",
+        "summary": "剪辑:金彪要周年",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 11:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-1-j1accdq5w",
+        "summary": "AI:即梦脚本",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-18 15:13:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-2-z1ue6tq0x",
+        "summary": "剪辑:蓝猩1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 13:02:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-3-lzxgx97w7",
+        "summary": "剪辑:17promax",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 08:07:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-18-4-gagemvxla",
+        "summary": "剪辑:理想头枕",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-18 13:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-0-5y3b18tdo",
+        "summary": "拍摄:3条大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 10:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-1-mtewipvrz",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 19:21:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-2-057kpqmwj",
+        "summary": "剪辑:引流视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 21:32:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-3-a8pis1npk",
+        "summary": "剪辑:大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 16:47:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-4-xfhumqyee",
+        "summary": "拍摄:3条数码视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 18:04:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-5-d2ngy0wy5",
+        "summary": "剪辑:理想L9livis",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 10:34:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-19-6-9y2ud8nhv",
+        "summary": "拍摄:理想2条带货+干杂活当力工",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-19 20:25:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-0-pem9aed64",
+        "summary": "文案:小米折叠屏",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-20 11:08:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-1-f7atg4myt",
+        "summary": "剪辑:理想视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-20 20:31:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-2-c4dioay30",
+        "summary": "剪辑:蓝猩视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-20 12:06:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-20-3-7aga664kb",
+        "summary": "剪辑:大号视频",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-20 14:53:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-0-q52wp9p53",
+        "summary": "剪辑:大号视频-米兰壳",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 13:35:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-1-9fmmkqt6o",
+        "summary": "剪辑:大号视频-奈盾指环扣",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 16:28:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-2-pouk6jxp7",
+        "summary": "剪辑:大号视频-VOKAMO表带",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 14:18:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-3-1lrgqc9gp",
+        "summary": "剪辑:理想视频-彪哥出发",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 20:37:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-4-7czznkvty",
+        "summary": "剪辑:理想视频-洗车？",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 21:44:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-5-3ptfkc08f",
+        "summary": "AI:优化郝金彪skill（使用k3）",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-21 20:14:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-6-dhyftu9tm",
+        "summary": "文案:华为puraxmax",
+        "status": "completed",
+        "category": "导出/笔记",
+        "completed_at": "2026-08-21 08:10:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-7-mn7q80287",
+        "summary": "收集素材:找蓝猩素材去下载直播切片",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 18:36:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-8-hivgoenws",
+        "summary": "剪辑:蓝猩视频-1条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 09:55:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-21-9-x5k8w6igd",
+        "summary": "剪辑:大号视频-磁吸指环",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-21 09:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-0-mkjistakw",
+        "summary": "剪辑:理想官方活动",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 19:05:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-1-rbnwqy8kr",
+        "summary": "AI:优化工作台",
+        "status": "completed",
+        "category": "AI/工作",
+        "completed_at": "2026-08-22 13:49:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-2-p6eakrcem",
+        "summary": "发布:蓝猩视频6条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 12:43:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-3-thbboikhu",
+        "summary": "剪辑:蓝猩视频6条",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 13:54:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-4-pz0qywkyw",
+        "summary": "发布:理想视频-撸车",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 08:40:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-5-u0xy39rz3",
+        "summary": "发布:大号视频-VOKAMO表带",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 18:09:00",
+        "due": null,
+        "url": null
+      },
+      {
+        "id": "task-2026-08-22-6-et7y6xs0w",
+        "summary": "下载:理想素材（下载不动）",
+        "status": "completed",
+        "category": "剪辑",
+        "completed_at": "2026-08-22 10:35:00",
+        "due": null,
+        "url": null
+      }
+    ],
+    "todo": [],
+    "stats": {
+      "total": 296,
+      "completed": 296,
+      "todo": 0
+    }
+  },
+  "calendar": {
+    "events": [],
+    "byDate": [
+      {
+        "date": "2026-07-20",
+        "count": 8
+      },
+      {
+        "date": "2026-07-21",
+        "count": 12
+      },
+      {
+        "date": "2026-07-22",
+        "count": 9
+      },
+      {
+        "date": "2026-07-23",
+        "count": 11
+      },
+      {
+        "date": "2026-07-24",
+        "count": 16
+      },
+      {
+        "date": "2026-07-25",
+        "count": 14
+      },
+      {
+        "date": "2026-07-26",
+        "count": 9
+      },
+      {
+        "date": "2026-07-27",
+        "count": 6
+      },
+      {
+        "date": "2026-07-28",
+        "count": 12
+      },
+      {
+        "date": "2026-07-29",
+        "count": 12
+      },
+      {
+        "date": "2026-07-30",
+        "count": 7
+      },
+      {
+        "date": "2026-07-31",
+        "count": 13
+      },
+      {
+        "date": "2026-08-01",
+        "count": 5
+      },
+      {
+        "date": "2026-08-02",
+        "count": 1
+      },
+      {
+        "date": "2026-08-03",
+        "count": 11
+      },
+      {
+        "date": "2026-08-04",
+        "count": 8
+      },
+      {
+        "date": "2026-08-05",
+        "count": 12
+      },
+      {
+        "date": "2026-08-06",
+        "count": 7
+      },
+      {
+        "date": "2026-08-07",
+        "count": 2
+      },
+      {
+        "date": "2026-08-08",
+        "count": 9
+      },
+      {
+        "date": "2026-08-09",
+        "count": 8
+      },
+      {
+        "date": "2026-08-11",
+        "count": 8
+      },
+      {
+        "date": "2026-08-12",
+        "count": 12
+      },
+      {
+        "date": "2026-08-13",
+        "count": 8
+      },
+      {
+        "date": "2026-08-14",
+        "count": 8
+      },
+      {
+        "date": "2026-08-15",
+        "count": 7
+      },
+      {
+        "date": "2026-08-17",
+        "count": 6
+      },
+      {
+        "date": "2026-08-18",
+        "count": 5
+      },
+      {
+        "date": "2026-08-19",
+        "count": 7
+      },
+      {
+        "date": "2026-08-20",
+        "count": 4
+      },
+      {
+        "date": "2026-08-21",
+        "count": 10
+      },
+      {
+        "date": "2026-08-22",
+        "count": 7
+      },
+      {
+        "date": "2026-08-23",
+        "count": 11
+      },
+      {
+        "date": "2026-08-25",
+        "count": 11
+      }
+    ]
+  }
+}

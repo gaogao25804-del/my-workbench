@@ -1,0 +1,7 @@
+# 大体积本地视频不上传（GitHub Pages 站点上限 1GB）
+视频/
+node_modules/
+Thumbs.db
+.DS_Store
+desktop.ini
+*.log

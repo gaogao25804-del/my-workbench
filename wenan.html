@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文案库 · 脚本/脚本文档汇总</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0b1120; }
+  .scrollbar-x::-webkit-scrollbar { height: 6px; }
+  .scrollbar-x::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+  .nav-link { padding: 6px 12px; border-radius: 8px; color: #cbd5e1; }
+  .nav-link:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-link.current { background: rgba(59,130,246,0.22); color: #93c5fd; }
+
+  .doc-card { transition: transform .15s ease, background-color .15s ease, border-color .15s ease; }
+  .doc-card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); }
+
+  /* 文档缩略图标背景 */
+  .doc-icon-bg {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(59,130,246,0.35), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(168,85,247,0.35), transparent 55%),
+      linear-gradient(135deg, #1e293b, #0f172a);
+  }
+</style>
+</head>
+<body class="text-slate-200 min-h-screen">
+
+<!-- ========== 顶部导航（三页通用结构） ========== -->
+<nav class="sticky top-0 z-50 backdrop-blur-md bg-[#0b1120]/80 border-b border-white/10">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4 flex-wrap">
+    <a href="index.html" class="font-bold text-white whitespace-nowrap text-lg tracking-wide flex items-center gap-2">
+      <span class="inline-block w-2 h-6 bg-gradient-to-b from-amber-400 to-purple-500 rounded"></span>
+      ARAM 英雄梯度
+    </a>
+    <div class="flex items-center gap-1 text-sm scrollbar-x overflow-x-auto flex-1 min-w-0">
+      <a href="index.html"  class="nav-link whitespace-nowrap">🎮 梯度榜</a>
+      <a href="wenan.html"  class="nav-link whitespace-nowrap current">📝 文案库</a>
+      <a href="shipin.html" class="nav-link whitespace-nowrap">🎬 视频库</a>
+    </div>
+    <div class="text-xs text-slate-400 whitespace-nowrap">个人工作台</div>
+  </div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <div class="mb-8">
+    <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">📝 文案库</h1>
+    <p class="text-sm text-slate-400">存放在本地 <code class="text-sky-400">文案/</code> 文件夹中的脚本文档（共 <span id="docCount" class="text-amber-300 font-semibold">—</span> 份）。点击卡片直接下载。</p>
+  </div>
+
+  <div id="docGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <!-- 由 JS 注入 -->
+  </div>
+
+  <div id="emptyTip" class="hidden text-center py-16 text-sm text-slate-500">未找到可展示的文案文件。</div>
+
+</main>
+
+<footer class="border-t border-white/10 mt-16 py-6 text-center text-xs text-slate-500">
+  文案仅用于工作流本地保存 · 请勿外传
+</footer>
+
+<script>
+/* ---------- 文案数据（来自本地 文案/ 文件夹） ---------- */
+const DOCS = [
+  { name:'KOC-账号名称-脚本-8月抖音',       date:'2026-08-17', size:'28KB', path:'文案/KOC-账号名称-脚本-8月抖音.docx', cat:'脚本', tag:'抖音/KOC' },
+  { name:'即梦图生视频提示词-结婚10周年',   date:'2026-08-18', size:'23KB', path:'文案/即梦图生视频提示词-结婚10周年.docx', cat:'提示词', tag:'即梦/婚礼' },
+  { name:'理想L7ULTRA一年用车小报告',      date:'2026-07-26', size:'14KB', path:'文案/理想L7ULTRA一年用车小报告.docx', cat:'评测', tag:'理想/用车' },
+  { name:'08.12_MateX8猜想',                date:'2026-08-13', size:'12KB', path:'文案/08.12_MateX8猜想.docx', cat:'数码', tag:'华为/折叠屏' },
+  { name:'08.12_MateX8猜想（备档）',        date:'2026-08-13', size:'12KB', path:'文案/08.12_MateX8猜想--------.docx', cat:'数码', tag:'备档' },
+  { name:'08.12_猜想Mate90RS',              date:'2026-08-13', size:'11KB', path:'文案/08.12_猜想Mate90RS.docx', cat:'数码', tag:'华为/Mate90RS' },
+  { name:'08.12_猜想Mate90RS（备档）',      date:'2026-08-13', size:'12KB', path:'文案/08.12_猜想Mate90RS-------.docx', cat:'数码', tag:'备档' },
+  { name:'08.12_拉米酷指环扣',              date:'2026-08-12', size:'11KB', path:'文案/08.12_拉米酷指环扣.docx', cat:'数码配件', tag:'指环扣' },
+  { name:'2026.7.23-三星zfold8',            date:'2026-07-23', size:'10KB', path:'文案/2026.7.23-三星zfold8.docx', cat:'数码', tag:'三星/Z Fold8' },
+  { name:'2026.7.23三台阔折叠对比',         date:'2026-07-23', size:'11KB', path:'文案/2026.7.23三台阔折叠对比.docx', cat:'数码', tag:'横向对比/折叠屏' },
+];
+
+const CAT_COLOR = {
+  '脚本':     'bg-rose-500/20    text-rose-300    border-rose-500/30',
+  '提示词':   'bg-violet-500/20  text-violet-300  border-violet-500/30',
+  '评测':     'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  '数码':     'bg-sky-500/20     text-sky-300     border-sky-500/30',
+  '数码配件': 'bg-amber-500/20   text-amber-300   border-amber-500/30',
+};
+
+function render(){
+  const grid = document.getElementById('docGrid');
+  document.getElementById('docCount').textContent = DOCS.length;
+  if (!DOCS.length) {
+    document.getElementById('emptyTip').classList.remove('hidden');
+    return;
+  }
+  const html = DOCS.map(d => {
+    const catCls = CAT_COLOR[d.cat] || 'bg-white/5 text-slate-300 border-white/20';
+    return `
+    <a href="${encodeURI(d.path)}" download class="doc-card block bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+      <div class="doc-icon-bg h-36 flex items-center justify-center relative">
+        <!-- Word 文件缩略符号 -->
+        <div class="text-center">
+          <svg viewBox="0 0 24 24" class="w-14 h-14 mx-auto opacity-90 drop-shadow-lg" fill="none" stroke="rgba(148,163,184,0.95)" stroke-width="1.2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="8" y1="13" x2="16" y2="13"/>
+            <line x1="8" y1="17" x2="16" y2="17"/>
+            <line x1="8" y1="9" x2="10" y2="9"/>
+          </svg>
+          <div class="text-xs text-slate-300/80 mt-2 font-medium tracking-wide">WORD · DOCX</div>
+        </div>
+        <span class="absolute top-3 right-3 text-[10px] px-2 py-0.5 rounded-md border ${catCls}">${d.cat}</span>
+      </div>
+      <div class="p-4">
+        <div class="text-white font-semibold truncate" title="${d.name}">${d.name}</div>
+        <div class="text-xs text-slate-500 mt-1"># ${d.tag}</div>
+        <div class="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs">
+          <span class="text-slate-400">${d.date}</span>
+          <div class="flex items-center gap-3">
+            <span class="text-slate-500">${d.size}</span>
+            <span class="inline-flex items-center gap-1 text-sky-300 hover:text-sky-200">
+              ⬇ 下载
+            </span>
+          </div>
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+  grid.innerHTML = html;
+}
+
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARAM 英雄梯度 - S/A/B/C/D 大乱斗排行</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bgMain: '#0b1120',
+          bgCard: 'rgba(255,255,255,0.05)',
+          tierS: '#f59e0b',
+          tierA: '#a855f7',
+          tierB: '#3b82f6',
+          tierC: '#22c55e',
+          tierD: '#6b7280',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0b1120; }
+  .tier-block { transition: all .2s ease; }
+  .champ-card { transition: background-color .15s ease, transform .15s ease; }
+  .champ-card:hover { background: rgba(255,255,255,0.10); transform: translateY(-1px); }
+  .role-btn.active { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); color: #fff; }
+  .loading-spinner {
+    width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.15);
+    border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.9s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .modal-backdrop { background: rgba(0,0,0,0.75); backdrop-filter: blur(2px); }
+  .scrollbar-x::-webkit-scrollbar { height: 6px; }
+  .scrollbar-x::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+  /* 导航链接 active 高亮 */
+  .nav-link {
+    padding: 6px 12px; border-radius: 8px; color: #cbd5e1;
+  }
+  .nav-link:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-link.current { background: rgba(59,130,246,0.22); color: #93c5fd; }
+</style>
+</head>
+<body class="text-slate-200 min-h-screen">
+
+<!-- ========== 顶部导航（三页通用结构） ========== -->
+<nav class="sticky top-0 z-50 backdrop-blur-md bg-[#0b1120]/80 border-b border-white/10">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4 flex-wrap">
+    <a href="index.html" class="font-bold text-white whitespace-nowrap text-lg tracking-wide flex items-center gap-2">
+      <span class="inline-block w-2 h-6 bg-gradient-to-b from-amber-400 to-purple-500 rounded"></span>
+      ARAM 英雄梯度
+    </a>
+    <div class="flex items-center gap-1 text-sm scrollbar-x overflow-x-auto flex-1 min-w-0">
+      <a href="index.html" class="nav-link whitespace-nowrap current">🎮 梯度榜</a>
+      <a href="wenan.html"  class="nav-link whitespace-nowrap">📝 文案库</a>
+      <a href="shipin.html" class="nav-link whitespace-nowrap">🎬 视频库</a>
+    </div>
+    <div class="text-xs text-slate-400 whitespace-nowrap">v16.15.5</div>
+  </div>
+</nav>
+
+<!-- ========== 主体 ========== -->
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <!-- 工具栏：搜索 + 角色筛选 -->
+  <div class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+      <div class="flex-1 min-w-0">
+        <h1 class="text-2xl md:text-3xl font-bold text-white">大乱斗英雄梯度榜</h1>
+        <p class="text-sm text-slate-400 mt-1">综合胜率 × 登场率计算 S/A/B/C/D 五档 · 可按职业筛选、中文名搜索</p>
+      </div>
+      <span id="sourceLabel" class="text-xs px-2.5 py-1 rounded-md border bg-slate-800/60 text-slate-400 border-white/10 shrink-0">数据源：检测中…</span>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-3 lg:items-center">
+      <!-- 搜索框 -->
+      <div class="relative lg:w-80 w-full">
+        <input id="searchInput" type="text" placeholder="🔍 搜索英雄中文名…"
+          class="w-full rounded-lg bg-white/5 border border-white/10 focus:border-sky-400 focus:ring-2 focus:ring-sky-400/30 outline-none px-4 py-2 text-sm placeholder:text-slate-500 text-white"/>
+      </div>
+      <!-- 筛选按钮 -->
+      <div id="roleFilters" class="flex gap-2 overflow-x-auto scrollbar-x flex-1 pb-1">
+        <button class="role-btn active whitespace-nowrap px-3 py-1.5 rounded-lg border border-white/10 text-sm bg-white/5 hover:bg-white/10" data-role="all">全部</button>
+        <button class="role-btn whitespace-nowrap px-3 py-1.5 rounded-lg border border-white/10 text-sm bg-white/5 hover:bg-white/10" data-role="tank">坦克</button>
+        <button class="role-btn whitespace-nowrap px-3 py-1.5 rounded-lg border border-white/10 text-sm bg-white/5 hover:bg-white/10" data-role="fighter">战士</button>
+        <button class="role-btn whitespace-nowrap px-3 py-1.5 rounded-lg border border-white/10 text-sm bg-white/5 hover:bg-white/10" data-role="assassin">刺客</button>
+        <button class="role-btn whitespace-nowrap px-3 py-1.5 rounded-lg border border-white/10 text-sm bg-white/5 hover:bg-white/10" data-role="mage">法师</button>
+        <button class="role-btn whitespace-nowrap px-3 py-1.5 rounded-lg border border-white/10 text-sm bg-white/5 hover:bg-white/10" data-role="marksman">射手</button>
+        <button class="role-btn whitespace-nowrap px-3 py-1.5 rounded-lg border border-white/10 text-sm bg-white/5 hover:bg-white/10" data-role="support">辅助</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加载 / 错误 -->
+  <div id="loadingState" class="py-20 flex flex-col items-center gap-3">
+    <div class="loading-spinner"></div>
+    <div class="text-slate-400 text-sm">数据加载中…</div>
+  </div>
+  <div id="errorState" class="hidden py-20 text-center">
+    <div class="text-rose-400 text-sm">数据加载失败，请刷新重试</div>
+    <button onclick="fetchAndRender(true)" class="mt-3 text-xs px-3 py-1.5 rounded bg-white/10 hover:bg-white/20">再试一次</button>
+  </div>
+
+  <!-- 梯度容器 -->
+  <div id="tierContainer"></div>
+
+</main>
+
+<!-- ========== 底部 ========== -->
+<footer class="border-t border-white/10 mt-16 py-6 text-center text-xs text-slate-500">
+  数据来源于 aramgg，仅供学习参考
+</footer>
+
+<!-- ========== 英雄详情 Modal ========== -->
+<div id="modal" class="fixed inset-0 z-[60] hidden items-center justify-center modal-backdrop px-4" onclick="closeModalIfMask(event)">
+  <div id="modalCard" class="bg-slate-900 border border-white/10 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+    <div class="flex items-start gap-4">
+      <img id="mIcon" src="" alt="" class="w-16 h-16 rounded-xl object-cover border border-white/10 bg-slate-800"/>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <h2 id="mName" class="text-xl font-bold text-white truncate"></h2>
+          <span id="mTier" class="text-xs px-2 py-0.5 rounded-md font-semibold"></span>
+        </div>
+        <p id="mTitle" class="text-sm text-slate-400 truncate"></p>
+        <div id="mRoles" class="mt-2 flex flex-wrap gap-1.5"></div>
+      </div>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xl leading-none w-8 h-8 rounded-md hover:bg-white/10">×</button>
+    </div>
+
+    <div class="mt-6 grid grid-cols-2 gap-3">
+      <div class="bg-white/5 rounded-xl p-4 text-center">
+        <div class="text-xs text-slate-400 mb-1">胜率</div>
+        <div id="mWin" class="text-3xl font-bold text-emerald-400"></div>
+      </div>
+      <div class="bg-white/5 rounded-xl p-4 text-center">
+        <div class="text-xs text-slate-400 mb-1">登场率</div>
+        <div id="mPick" class="text-3xl font-bold text-sky-400"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== JS ========== -->
+<script>
+/* -------------------- 常量与状态 -------------------- */
+const API_URL = 'https://haidou.vip/data/16.15.5/champions.json';
+// 如果本地有 champions-raw.json 可以兜底（走 file:// 协议 fetch 有时受限，这里给个内联 fallback 太小，所以改用 try 双源）
+const FALLBACK_URL = './champions-raw.json';
+
+const ROLE_CN = { tank:'坦克', fighter:'战士', assassin:'刺客', mage:'法师', marksman:'射手', support:'辅助' };
+const ROLE_COLORS = {
+  tank:    'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  fighter: 'bg-rose-500/20  text-rose-300  border-rose-500/30',
+  assassin:'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  mage:    'bg-sky-500/20    text-sky-300    border-sky-500/30',
+  marksman:'bg-lime-500/20   text-lime-300   border-lime-500/30',
+  support: 'bg-teal-500/20   text-teal-300   border-teal-500/30'
+};
+const TIER_META = {
+  1: { label:'S', cls: 'tierS', title:'最强 · 版本之子',
+      textCls:'text-tierS', bgSubtle:'bg-amber-500/10', borderCls:'border-l-tierS' },
+  2: { label:'A', cls: 'tierA', title:'强势 · 优选英雄',
+      textCls:'text-tierA', bgSubtle:'bg-purple-500/10', borderCls:'border-l-tierA' },
+  3: { label:'B', cls: 'tierB', title:'稳定 · 中规中矩',
+      textCls:'text-tierB', bgSubtle:'bg-blue-500/10', borderCls:'border-l-tierB' },
+  4: { label:'C', cls: 'tierC', title:'一般 · 阵容限制',
+      textCls:'text-tierC', bgSubtle:'bg-green-500/10', borderCls:'border-l-tierC' },
+  5: { label:'D', cls: 'tierD', title:'偏弱 · 不优先选',
+      textCls:'text-tierD', bgSubtle:'bg-gray-500/10', borderCls:'border-l-tierD' },
+};
+const TIER_ORDER = [1,2,3,4,5];
+
+let ALL_CHAMPS = [];        // 处理过的英雄数组
+let stateFilter = 'all';    // 当前筛选角色
+let stateSearch = '';       // 当前搜索词
+
+/* -------------------- 工具 -------------------- */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function pct(n){ return (Math.round((+n||0)*10000)/100).toFixed(2) + '%'; }
+
+/* -------------------- 数据获取 -------------------- */
+let dataSourceLabel = ''; // 用于在 header 展示当前数据来源
+async function fetchAndRender(retry){
+  setLoading(true); setError(false);
+  try {
+    let data = null;
+    let usedFallback = false;
+    try {
+      const r = await fetch(API_URL, { cache: 'no-cache' });
+      if (!r.ok) throw new Error('http ' + r.status);
+      data = await r.json();
+      dataSourceLabel = '实时数据 · haidou.vip';
+    } catch(err) {
+      // 尝试本地 fallback（file:// 或 haidou CORS/网络失败时常走这里）
+      try {
+        const r2 = await fetch(FALLBACK_URL);
+        if (!r2.ok) throw err;
+        data = await r2.json();
+        usedFallback = true;
+        dataSourceLabel = '本地缓存 · champions-raw.json（173 英雄）';
+      } catch {
+        throw err;
+      }
+    }
+    const raw = (data && data.data) || [];
+    // 规范化 + 按胜率降序
+    ALL_CHAMPS = raw.map(c => ({
+      id: c.id, name: c.name, title: c.title, alias: c.alias,
+      roles: c.roles || [], icon: c.iconUrl,
+      tier: (c.stats && c.stats.tier) || 5,
+      winRate: (c.stats && c.stats.winRate) || 0,
+      pickRate: (c.stats && c.stats.pickRate) || 0
+    })).sort((a,b)=>b.winRate-a.winRate);
+    render();
+    // 显示来源提示
+    const srcEl = document.getElementById('sourceLabel');
+    if (srcEl) {
+      srcEl.textContent = dataSourceLabel;
+      srcEl.className = 'text-xs px-2.5 py-1 rounded-md border ' +
+        (usedFallback ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30');
+    }
+  } catch(e) {
+    console.warn('[梯度榜] 数据加载失败（可能是离线环境，同时本地 champions-raw.json 也缺失）：', e);
+    setError(true);
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* -------------------- DOM 切换 -------------------- */
+function setLoading(s){ document.getElementById('loadingState').classList.toggle('hidden', !s); }
+function setError(s){ document.getElementById('errorState').classList.toggle('hidden', !s); }
+
+/* -------------------- 渲染 -------------------- */
+function render(){
+  const container = document.getElementById('tierContainer');
+  // 过滤 + 搜索
+  const list = ALL_CHAMPS.filter(c => {
+    if (stateFilter !== 'all' && !(c.roles || []).includes(stateFilter)) return false;
+    if (stateSearch) {
+      const q = stateSearch.toLowerCase();
+      const hay = (c.name + (c.title||'') + (c.alias||'')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // 按 tier 分桶
+  const buckets = {}; TIER_ORDER.forEach(t => buckets[t] = []);
+  list.forEach(c => { if (buckets[c.tier]) buckets[c.tier].push(c); });
+
+  let html = '';
+  TIER_ORDER.forEach(tierNum => {
+    const champs = buckets[tierNum];
+    const meta = TIER_META[tierNum];
+    html += `
+      <section class="tier-block mb-8 rounded-xl border-l-4 ${meta.borderCls} ${meta.bgSubtle} p-4 md:p-6">
+        <header class="flex items-baseline gap-3 mb-5">
+          <h2 class="text-3xl font-black tracking-tight ${meta.textCls}">${meta.label}</h2>
+          <div class="text-sm text-slate-400">${meta.title}</div>
+          <div class="ml-auto text-xs text-slate-500">共 ${champs.length} 位英雄</div>
+        </header>
+        <div class="grid
+            grid-cols-2 sm:grid-cols-2
+            md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6
+            gap-4">
+          ${champs.length ? champs.map(c => champCardHTML(c)).join('') :
+            `<div class="col-span-full text-sm text-slate-500 py-10 text-center">当前筛选下没有匹配的英雄</div>`}
+        </div>
+      </section>`;
+  });
+  container.innerHTML = html;
+
+  // 绑定卡片点击
+  container.querySelectorAll('[data-champ-id]').forEach(el => {
+    el.addEventListener('click', () => openModal(+el.dataset.champId));
+  });
+}
+
+function champCardHTML(c){
+  return `<div class="champ-card cursor-pointer bg-bgCard rounded-xl p-3 flex gap-3 border border-white/5" data-champ-id="${c.id}">
+    <img src="${esc(c.icon)}" alt="${esc(c.name)}" loading="lazy"
+         onerror="this.outerHTML='<div class=\\'w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold bg-white/5 border border-white/10 text-slate-300 shrink-0\\'>${esc(c.name.charAt(0))}</div>'"
+         class="w-12 h-12 rounded-lg object-cover shrink-0 border border-white/10 bg-slate-800"/>
+    <div class="min-w-0 flex-1">
+      <div class="font-bold text-white truncate">${esc(c.name)}</div>
+      <div class="text-xs text-slate-400 truncate">${esc(c.title||'')}</div>
+      <div class="text-xs mt-1 flex gap-3">
+        <span class="text-emerald-400 font-medium">${pct(c.winRate)}</span>
+        <span class="text-sky-400 font-medium">${pct(c.pickRate)}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* -------------------- 筛选 & 搜索事件 -------------------- */
+document.getElementById('roleFilters').addEventListener('click', e => {
+  const btn = e.target.closest('.role-btn');
+  if (!btn) return;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.toggle('active', b === btn));
+  stateFilter = btn.dataset.role;
+  render();
+});
+const si = document.getElementById('searchInput');
+let searchTimer = null;
+si.addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    stateSearch = (e.target.value || '').trim();
+    render();
+  }, 100);
+});
+
+/* -------------------- 模态框 -------------------- */
+function openModal(id){
+  const c = ALL_CHAMPS.find(x => x.id === id);
+  if (!c) return;
+  const meta = TIER_META[c.tier] || TIER_META[5];
+  document.getElementById('mIcon').src = c.icon || '';
+  document.getElementById('mName').textContent = c.name;
+  document.getElementById('mTitle').textContent = c.title || '';
+  const tierBadge = document.getElementById('mTier');
+  tierBadge.textContent = meta.label + ' 级';
+  tierBadge.className = 'text-xs px-2 py-0.5 rounded-md font-semibold text-[' + meta.cls + '] ' + meta.bgSubtle + ' border';
+  // 给 tier badge 手工上色（Tailwind 模板字符串不生效）
+  if (meta.cls==='tierS'){ tierBadge.style.color='#f59e0b'; tierBadge.style.borderColor='rgba(245,158,11,0.4)'; }
+  if (meta.cls==='tierA'){ tierBadge.style.color='#a855f7'; tierBadge.style.borderColor='rgba(168,85,247,0.4)'; }
+  if (meta.cls==='tierB'){ tierBadge.style.color='#3b82f6'; tierBadge.style.borderColor='rgba(59,130,246,0.4)'; }
+  if (meta.cls==='tierC'){ tierBadge.style.color='#22c55e'; tierBadge.style.borderColor='rgba(34,197,94,0.4)'; }
+  if (meta.cls==='tierD'){ tierBadge.style.color='#9ca3af'; tierBadge.style.borderColor='rgba(107,114,128,0.5)'; }
+
+  const rolesHTML = (c.roles || []).map(r =>
+    `<span class="text-[11px] px-2 py-0.5 rounded-md border ${ROLE_COLORS[r]||'bg-white/5 text-slate-300 border-white/20'}">${ROLE_CN[r]||r}</span>`
+  ).join('');
+  document.getElementById('mRoles').innerHTML = rolesHTML;
+  document.getElementById('mWin').textContent = pct(c.winRate);
+  document.getElementById('mPick').textContent = pct(c.pickRate);
+
+  const m = document.getElementById('modal');
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+}
+function closeModal(){
+  const m = document.getElementById('modal');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+function closeModalIfMask(e){
+  if (e.target.id === 'modal') closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* -------------------- 启动 -------------------- */
+fetchAndRender();
+</script>
+
+</body>
+</html>
