@@ -30,19 +30,16 @@ function ic(name, cls) {
 
 /* ---------------- 静态清单 ---------------- */
 const WENAN = [
-  { name: "KOC-账号名称-脚本-8月抖音", date: "2026-08-17", size: "28KB", path: "文案/KOC-账号名称-脚本-8月抖音.docx", cat: "脚本", tag: "抖音/KOC" },
-  { name: "即梦图生视频提示词-结婚10周年", date: "2026-08-18", size: "23KB", path: "文案/即梦图生视频提示词-结婚10周年.docx", cat: "提示词", tag: "即梦/婚礼" },
-  { name: "理想L7ULTRA一年用车小报告", date: "2026-07-26", size: "14KB", path: "文案/理想L7ULTRA一年用车小报告.docx", cat: "评测", tag: "理想/用车" },
-  { name: "08.12_MateX8猜想", date: "2026-08-13", size: "12KB", path: "文案/08.12_MateX8猜想.docx", cat: "数码", tag: "华为/折叠屏" },
-  { name: "08.12_MateX8猜想（备档）", date: "2026-08-13", size: "12KB", path: "文案/08.12_MateX8猜想--------.docx", cat: "数码", tag: "备档" },
-  { name: "08.12_猜想Mate90RS", date: "2026-08-13", size: "11KB", path: "文案/08.12_猜想Mate90RS.docx", cat: "数码", tag: "华为/Mate90RS" },
-  { name: "08.12_猜想Mate90RS（备档）", date: "2026-08-13", size: "12KB", path: "文案/08.12_猜想Mate90RS-------.docx", cat: "数码", tag: "备档" },
-  { name: "08.12_拉米酷指环扣", date: "2026-08-12", size: "11KB", path: "文案/08.12_拉米酷指环扣.docx", cat: "数码配件", tag: "指环扣" },
-  { name: "2026.7.23-三星zfold8", date: "2026-07-23", size: "10KB", path: "文案/2026.7.23-三星zfold8.docx", cat: "数码", tag: "三星/Z Fold8" },
-  { name: "2026.7.23三台阔折叠对比", date: "2026-07-23", size: "11KB", path: "文案/2026.7.23三台阔折叠对比.docx", cat: "数码", tag: "横向对比/折叠屏" }
+  { name: "一条视频五步做完（极简版）", date: "2026-11-01", size: "581KB", path: "文案/一条视频五步做完_极简版.docx", cat: "流程", tag: "拍摄/剪辑" },
+  { name: "账号流程标准", date: "2026-11-01", size: "3.5MB", path: "文案/账号流程标准.docx", cat: "流程", tag: "账号/标准" },
+  { name: "代买手机全流程", date: "2026-11-01", size: "11KB", path: "文案/代买手机全流程.docx", cat: "流程", tag: "代买/流程" },
+  { name: "千川引流视频创作规则参考（3C 数码类）", date: "2026-11-01", size: "9KB", path: "文案/千川引流视频创作规则参考（3C数码类）.docx", cat: "规则", tag: "千川/3C数码" },
+  { name: "郝金彪室内室外美颜参数", date: "2026-11-01", size: "4.1MB", path: "文案/郝金彪室内室外美颜参数.docx", cat: "参数", tag: "美颜/参数" },
+  { name: "6G哥专用的表格", date: "2026-11-01", size: "767KB", path: "文案/6G哥专用的表格.xlsx", cat: "表格", tag: "表格/模板" },
+  { name: "9月视频数据统计", date: "2026-11-01", size: "35KB", path: "文案/9月视频数据统计.xlsx", cat: "数据", tag: "数据/月度" }
 ];
 
-const FILE_ICON = { '脚本': 'file', '提示词': 'file', '评测': 'file', '数码': 'file', '数码配件': 'file' };
+const FILE_ICON = { '流程': 'file', '规则': 'file', '参数': 'file', '表格': 'file', '数据': 'file' };
 
 /* ---------------- 页面配置 ---------------- */
 const PAGES = {
@@ -712,11 +709,25 @@ function openWenan(idx) {
   const d = WENAN[idx];
   if (!d) return;
 
+  const isSheet = /\.(xlsx|xls)$/i.test(d.path);
+  const dlBtn = '<a class="btn btn-sm" href="' + encodeURI(d.path) + '" download>' + ic('download', 'ico-14') + '<span>下载</span></a>';
+
+  if (isSheet) {
+    openModal({
+      title: d.name,
+      meta: [d.cat, d.date, d.size, d.tag],
+      tools: dlBtn,
+      body: '<div class="kv"><div class="k">文件类型</div><div class="v">Excel 表格（.xlsx）</div></div>' +
+            '<div class="kv"><div class="k">文件大小</div><div class="v">' + esc(d.size) + '</div></div>' +
+            '<div class="modal-note">表格暂不支持在线预览，点击右上角「下载」获取原文件用 Excel / WPS 打开。</div>'
+    });
+    return;
+  }
+
   openModal({
     title: d.name,
     meta: [d.cat, d.date, d.size, d.tag],
-    tools: '<button class="btn btn-sm" data-copy>' + ic('copy', 'ico-14') + '<span>复制</span></button>' +
-           '<a class="btn btn-sm" href="' + encodeURI(d.path) + '" download>下载</a>',
+    tools: '<button class="btn btn-sm" data-copy>' + ic('copy', 'ico-14') + '<span>复制</span></button>' + dlBtn,
     body: '<div class="state"><div class="spinner"></div>正在读取文档…</div>'
   });
 
