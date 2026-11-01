@@ -628,7 +628,7 @@ function updateChrome() {
 function openModal(opt) {
   const root = document.getElementById('modalRoot');
   root.innerHTML =
-    '<div class="modal" id="modalMask">' +
+      '<div class="modal" id="modalMask">' +
       '<div class="modal-box' + (opt.wide ? ' modal-wide' : '') + '" role="dialog" aria-modal="true">' +
         '<div class="modal-head">' +
           '<div class="modal-head-main">' +
@@ -646,6 +646,17 @@ function openModal(opt) {
     '</div>';
 
   const mask = document.getElementById('modalMask');
+
+  // 「弹开」：以触发的卡片为原点展开（offset* 不受动画 transform 影响）
+  const box = mask.querySelector('.modal-box');
+  if (box && opt.from && opt.from.getBoundingClientRect) {
+    const r = opt.from.getBoundingClientRect();
+    const mr = mask.getBoundingClientRect();
+    const ox = r.left + r.width / 2 - (mr.left + box.offsetLeft);
+    const oy = r.top + r.height / 2 - (mr.top + box.offsetTop);
+    box.style.transformOrigin = ox + 'px ' + oy + 'px';
+  }
+
   mask.addEventListener('click', function (e) { if (e.target === mask) closeModal(); });
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.addEventListener('keydown', modalEsc);
@@ -663,18 +674,19 @@ function closeModal() {
 }
 
 /* ---------------- 详情：图书 / 文案 / 视频 / 英雄 ---------------- */
-function openBook(id) {
+function openBook(id, from) {
   const books = (st.library && st.library.books) || [];
   const b = books.filter(function (x) { return String(x.id || x.title) === String(id); })[0];
   if (!b) return;
   openModal({
     title: b.title || '未命名',
     meta: [b.author, b.date],
+    from: from,
     body:
-      '<div class="sec-title">书摘 / 大纲</div>' +
-      '<div style="white-space:pre-wrap;">' + esc(b.outline || '（暂无书摘）') + '</div>' +
-      '<div class="sec-title">个人思考</div>' +
-      '<div style="white-space:pre-wrap;">' + esc(b.think || '（暂无个人思考）') + '</div>' +
+      '<div class="doc-sec"><div class="doc-kicker">摘录 / Outline</div>' +
+        '<div style="white-space:pre-wrap;">' + esc(b.outline || '（暂无书摘）') + '</div></div>' +
+      '<div class="doc-sec"><div class="doc-kicker">我的思考 / Notes</div>' +
+        '<div style="white-space:pre-wrap;">' + esc(b.think || '（暂无个人思考）') + '</div></div>' +
       (!b.outline && !b.think ? '<div class="modal-note">该图书条目仅包含基础信息，暂无书摘与思考内容。</div>' : '')
   });
 }
@@ -736,13 +748,14 @@ function ensureXLSX() {
   return xlsxPromise;
 }
 
-function openSheet(d, dlBtn) {
+function openSheet(d, dlBtn, from) {
   sheetView = null;
   openModal({
     title: d.name,
     meta: [d.cat, d.date, d.size, d.tag],
     tools: dlBtn,
     wide: true,
+    from: from,
     body: '<div class="state"><div class="spinner"></div>正在解析表格…</div>'
   });
 
@@ -847,7 +860,7 @@ function renderSheet(name) {
   }
 }
 
-function openWenan(idx) {
+function openWenan(idx, from) {
   const d = WENAN[idx];
   if (!d) return;
 
@@ -855,7 +868,7 @@ function openWenan(idx) {
   const dlBtn = '<a class="btn btn-sm" href="' + encodeURI(d.path) + '" download>' + ic('download', 'ico-14') + '<span>下载</span></a>';
 
   if (isSheet) {
-    openSheet(d, dlBtn);
+    openSheet(d, dlBtn, from);
     return;
   }
 
@@ -863,6 +876,7 @@ function openWenan(idx) {
     title: d.name,
     meta: [d.cat, d.date, d.size, d.tag],
     tools: '<button class="btn btn-sm" data-copy>' + ic('copy', 'ico-14') + '<span>复制</span></button>' + dlBtn,
+    from: from,
     body: '<div class="state"><div class="spinner"></div>正在读取文档…</div>'
   });
 
@@ -874,7 +888,11 @@ function openWenan(idx) {
     .then(function (res) {
       plainText = (res.value || '').replace(/<[^>]+>/g, '').replace(/\n{3,}/g, '\n\n').trim();
       const body = document.getElementById('modalBody');
-      if (body) body.innerHTML = res.value || '<div class="state">文档内容为空</div>';
+      if (body) {
+        body.innerHTML = res.value
+          ? '<div class="doc-sec doc-flow">' + res.value + '</div>'
+          : '<div class="state">文档内容为空</div>';
+      }
     })
     .catch(function (err) {
       const body = document.getElementById('modalBody');
@@ -1010,9 +1028,9 @@ function onViewClick(e) {
 
   // 详情入口
   const bk = t.closest('.book-card');
-  if (bk) { openBook(bk.dataset.book); return; }
+  if (bk) { openBook(bk.dataset.book, bk); return; }
   const wd = t.closest('[data-wenan]');
-  if (wd) { openWenan(Number(wd.dataset.wenan)); return; }
+  if (wd) { openWenan(Number(wd.dataset.wenan), wd); return; }
 
   // 跳转
   const go = t.closest('[data-go]');
