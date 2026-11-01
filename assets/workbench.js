@@ -224,6 +224,28 @@ function renderHome() {
   ];
 
   return '' +
+    '<section class="home-hero">' +
+      '<div class="hero-copy">' +
+        '<div class="hero-head">' +
+          '<div class="hero-kicker"><span class="px-dot"></span>DIGITAL WORKBENCH · EST 2026</div>' +
+          '<div class="hero-badge">' +
+            '<svg viewBox="0 0 16 16"><g fill="#8ba0d8"><rect x="1" y="9" width="3" height="3"/><rect x="4" y="6" width="3" height="6"/><rect x="8" y="3" width="3" height="9"/></g><rect x="12" y="7" width="2" height="5" fill="#c9d4ee"/><rect x="1" y="12" width="13" height="1.5" fill="#3d4d85"/></svg>' +
+            '<span>EST. 2026<br>LOCAL FIRST</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="hero-title">你好，这里是<br>个人工作台<span class="px-mark">' +
+          '<svg viewBox="0 0 16 16"><g fill="#9fb0dd"><rect x="6" y="0" width="4" height="3"/><rect x="6" y="13" width="4" height="3"/><rect x="0" y="6" width="3" height="4"/><rect x="13" y="6" width="3" height="4"/><rect x="2" y="2" width="3" height="3"/><rect x="11" y="2" width="3" height="3"/><rect x="2" y="11" width="3" height="3"/><rect x="11" y="11" width="3" height="3"/></g><rect x="6" y="6" width="4" height="4" fill="#3d4d85"/></svg>' +
+        '</span></div>' +
+        '<div class="hero-rule"></div>' +
+        '<div class="hero-note">任务、藏书与文案，收在一张安静的桌面上。</div>' +
+        '<div class="hero-actions">' +
+          '<button class="btn hero-btn primary" data-go="tasks"><span>查看任务</span></button>' +
+          '<button class="btn hero-btn" data-go="library"><span>浏览藏书</span><i>✦</i></button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="hero-art"><img src="assets/img/px-flower.png" alt="" loading="lazy"></div>' +
+    '</section>' +
+    '<div class="ornament"><span>Made with care</span><i>✿</i><span>Pixel by pixel</span><i>✿</i><span>Built to last</span></div>' +
     '<div class="stat-grid">' +
       statItems.map(function (s) {
         return '<div class="stat"><div class="stat-label">' + esc(s.label) + '</div>' +
