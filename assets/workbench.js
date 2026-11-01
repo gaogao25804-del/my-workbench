@@ -210,10 +210,10 @@ function renderHome() {
   const recent = info.tasks.slice()
     .filter(function (t) { return t.completed_at; })
     .sort(function (a, b) { return String(b.completed_at).localeCompare(String(a.completed_at)); })
-    .slice(0, 8);
+    .slice(0, 6);
 
   const statItems = [
-    { label: '任务总数', value: ready ? info.total : '—', hint: '飞书任务清单' },
+    { label: '任务总数', value: ready ? info.total : '—', hint: ready ? (info.earliest + ' ~ ' + info.latest) : '飞书任务清单' },
     { label: '已完成', value: ready ? info.completed : '—', hint: '全部完成' },
     { label: '待办', value: ready ? info.pending : '—', hint: '当前无逾期' },
     { label: '藏书', value: st.library ? books.length : '—', hint: '含书摘与思考' },
@@ -227,14 +227,6 @@ function renderHome() {
   ];
 
   return '' +
-    '<div class="hero-block">' +
-      '<h2>个人工作台</h2>' +
-      '<p>任务、藏书与文案集中管理。左侧切换模块，数据来自本地飞书同步快照。</p>' +
-      '<div class="hero-meta">' +
-        '<span>同步时间 ' + esc(info.updated || '未知') + '</span>' +
-        '<span>数据范围 ' + esc(info.earliest || '—') + ' ~ ' + esc(info.latest || '—') + '</span>' +
-      '</div>' +
-    '</div>' +
     '<div class="stat-grid">' +
       statItems.map(function (s) {
         return '<div class="stat"><div class="stat-label">' + esc(s.label) + '</div>' +
@@ -375,19 +367,26 @@ function renderTasksPage() {
       cells.map(function (c) {
         const isToday = c.ds === todayStr;
         const isSel = c.ds === fmtDate(st.cal.selected);
-        const items = c.tasks.map(function (t) {
-          return { text: t.summary || '—', ev: false };
-        }).concat(c.events.map(function (e) {
-          return { text: e.summary || '日程', ev: true };
-        }));
-        const marks = items.slice(0, 2).map(function (it) {
-          return '<span class="cal-mark' + (it.ev ? ' ev' : '') + '">' + esc(it.text) + '</span>';
+        const total = c.tasks.length + c.events.length;
+        // 按分类聚合，避免每格塞入被截断的长标题
+        const grouped = {};
+        c.tasks.forEach(function (t) {
+          const k = t.category || '其他';
+          grouped[k] = (grouped[k] || 0) + 1;
+        });
+        const groups = Object.keys(grouped).map(function (k) {
+          return { label: k, n: grouped[k], ev: false };
+        }).sort(function (a, b) { return b.n - a.n; });
+        if (c.events.length) groups.push({ label: '日程', n: c.events.length, ev: true });
+
+        const marks = groups.slice(0, 2).map(function (g) {
+          return '<span class="cal-mark' + (g.ev ? ' ev' : '') + '">' + esc(g.label) + ' ' + g.n + '</span>';
         }).join('');
-        const more = items.length > 2 ? '<span class="cal-more">+' + (items.length - 2) + '</span>' : '';
+        const more = groups.length > 2 ? '<span class="cal-more">+' + (groups.length - 2) + '</span>' : '';
         return '<div class="cal-cell' + (c.other ? ' other' : '') + (isSel ? ' selected' : '') + (isToday ? ' today' : '') +
           '" data-date="' + c.ds + '">' +
           '<div class="cal-daynum">' + c.date.getDate() + '</div>' +
-          (items.length ? '<span class="cal-count">' + items.length + '</span>' : '') +
+          (total ? '<span class="cal-count">' + total + '</span>' : '') +
           '<div class="cal-marks">' + marks + more + '</div>' +
         '</div>';
       }).join('') +
