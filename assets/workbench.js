@@ -629,7 +629,7 @@ function openModal(opt) {
   const root = document.getElementById('modalRoot');
   root.innerHTML =
     '<div class="modal" id="modalMask">' +
-      '<div class="modal-box" role="dialog" aria-modal="true">' +
+      '<div class="modal-box' + (opt.wide ? ' modal-wide' : '') + '" role="dialog" aria-modal="true">' +
         '<div class="modal-head">' +
           '<div class="modal-head-main">' +
             '<div class="modal-title">' + esc(opt.title || '') + '</div>' +
@@ -705,6 +705,148 @@ function ensureMammoth() {
   return mammothPromise;
 }
 
+/* ---------- 表格在线预览 ---------- */
+const SHEET_PAGE_ROWS = 300;
+const SHEET_MAX_COLS = 40;
+let sheetView = null;
+let xlsxPromise = null;
+
+function ensureXLSX() {
+  if (window.XLSX) return Promise.resolve();
+  if (xlsxPromise) return xlsxPromise;
+  xlsxPromise = new Promise(function (resolve, reject) {
+    // 优先本地文件，失败再回退 CDN
+    const urls = [
+      'assets/vendor/xlsx.full.min.js',
+      'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'
+    ];
+    let i = 0;
+    function next() {
+      if (window.XLSX) { resolve(); return; }
+      if (i >= urls.length) { reject(new Error('表格解析组件加载失败，请检查网络')); return; }
+      const s = document.createElement('script');
+      s.src = urls[i++];
+      s.onload = function () { if (window.XLSX) resolve(); else next(); };
+      s.onerror = function () { next(); };
+      document.head.appendChild(s);
+    }
+    next();
+    setTimeout(function () { if (!window.XLSX) reject(new Error('表格解析组件加载超时')); }, 20000);
+  });
+  return xlsxPromise;
+}
+
+function openSheet(d, dlBtn) {
+  sheetView = null;
+  openModal({
+    title: d.name,
+    meta: [d.cat, d.date, d.size, d.tag],
+    tools: dlBtn,
+    wide: true,
+    body: '<div class="state"><div class="spinner"></div>正在解析表格…</div>'
+  });
+
+  fetch(encodeURI(d.path))
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); })
+    .then(function (buf) {
+      return ensureXLSX().then(function () {
+        const wb = window.XLSX.read(new Uint8Array(buf), { type: 'array' });
+        if (!wb.SheetNames.length) throw new Error('工作簿中没有工作表');
+        sheetView = { wb: wb, name: wb.SheetNames[0], shown: SHEET_PAGE_ROWS };
+        renderSheet(wb.SheetNames[0]);
+      });
+    })
+    .catch(function (err) {
+      const body = document.getElementById('modalBody');
+      if (body) {
+        body.innerHTML = '<div class="state"><strong>无法在线读取表格</strong>' +
+          '<div>' + esc(err.message || '未知错误') + '</div>' +
+          '<div class="modal-note">若线上文件缺失会返回 404，可点击右上角「下载」获取原文件。</div></div>';
+      }
+    });
+}
+
+function renderSheet(name) {
+  if (!sheetView || !sheetView.wb) return;
+  const XLSX = window.XLSX;
+  const ws = sheetView.wb.Sheets[name];
+  const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '', blankrows: false });
+  const totalRows = aoa.length;
+  // 只统计真正有内容的列，避免把右侧空白但带格式的列也渲染出来
+  let totalCols = 0;
+  aoa.forEach(function (r) {
+    for (let i = (r || []).length - 1; i >= 0; i--) {
+      if (String(r[i] == null ? '' : r[i]).trim()) { if (i + 1 > totalCols) totalCols = i + 1; break; }
+    }
+  });
+  const cols = Math.min(totalCols, SHEET_MAX_COLS);
+  const shown = Math.min(sheetView.shown, totalRows);
+
+  const body = document.getElementById('modalBody');
+  if (!body) return;
+
+  // 列宽策略：能压到 100px 以上就铺满容器，否则按 100px 固定并横向滚动
+  const avail = Math.max(320, body.clientWidth - 52);
+  const minColW = 100;
+  const fits = cols * minColW <= avail;
+  const tableStyle = fits ? 'width:100%' : 'width:' + (cols * minColW) + 'px';
+  const colgroup = fits ? ''
+    : '<colgroup>' + Array.from({ length: cols }, function () { return '<col style="width:' + minColW + 'px">'; }).join('') + '</colgroup>';
+
+  const tabs = sheetView.wb.SheetNames.map(function (n) {
+    return '<button class="sheet-tab' + (n === name ? ' active' : '') + '" data-sheet="' + esc(n) + '">' + esc(n) + '</button>';
+  }).join('');
+
+  let html = '<div class="sheet-bar">' +
+      '<div class="sheet-tabs">' + tabs + '</div>' +
+      '<div class="sheet-info">' + totalRows + ' 行 × ' + cols + ' 列' +
+        (shown < totalRows ? ' · 已显示 ' + shown + ' 行' : '') +
+        (totalCols > cols ? ' · 仅显示前 ' + cols + ' 列' : '') +
+      '</div>' +
+    '</div>';
+
+  if (!totalRows) {
+    html += '<div class="state"><strong>该工作表为空</strong><div>可切换其他工作表或下载原文件查看。</div></div>';
+  } else {
+    html += '<div class="sheet-wrap"><table class="sheet-table" style="' + tableStyle + '">' + colgroup;
+    for (let r = 0; r < shown; r++) {
+      const row = aoa[r] || [];
+      html += '<tr' + (r === 0 ? ' class="sheet-head"' : '') + '>';
+      for (let c = 0; c < cols; c++) {
+        const v = row[c] == null ? '' : String(row[c]);
+        html += '<td>' + esc(v) + '</td>';
+      }
+      html += '</tr>';
+    }
+    html += '</table></div>';
+    if (shown < totalRows) {
+      html += '<div class="sheet-more"><button class="btn btn-sm" data-sheet-more>显示更多（剩余 ' + (totalRows - shown) + ' 行）</button></div>';
+    }
+  }
+
+  html += '<div class="modal-note">表格按原值渲染，合并单元格、字体颜色与图片不保留；行列过多时会分批显示，完整内容请用右上角「下载」在 Excel / WPS 中打开。</div>';
+
+  body.innerHTML = html;
+  body.scrollTop = 0;
+
+  body.querySelectorAll('[data-sheet]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const n = btn.getAttribute('data-sheet');
+      if (n === sheetView.name) return;
+      sheetView.name = n;
+      sheetView.shown = SHEET_PAGE_ROWS;
+      renderSheet(n);
+    });
+  });
+  const more = body.querySelector('[data-sheet-more]');
+  if (more) {
+    more.addEventListener('click', function () {
+      sheetView.shown += SHEET_PAGE_ROWS;
+      renderSheet(sheetView.name);
+    });
+  }
+}
+
 function openWenan(idx) {
   const d = WENAN[idx];
   if (!d) return;
@@ -713,14 +855,7 @@ function openWenan(idx) {
   const dlBtn = '<a class="btn btn-sm" href="' + encodeURI(d.path) + '" download>' + ic('download', 'ico-14') + '<span>下载</span></a>';
 
   if (isSheet) {
-    openModal({
-      title: d.name,
-      meta: [d.cat, d.date, d.size, d.tag],
-      tools: dlBtn,
-      body: '<div class="kv"><div class="k">文件类型</div><div class="v">Excel 表格（.xlsx）</div></div>' +
-            '<div class="kv"><div class="k">文件大小</div><div class="v">' + esc(d.size) + '</div></div>' +
-            '<div class="modal-note">表格暂不支持在线预览，点击右上角「下载」获取原文件用 Excel / WPS 打开。</div>'
-    });
+    openSheet(d, dlBtn);
     return;
   }
 

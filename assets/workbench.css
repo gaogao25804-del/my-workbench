@@ -821,6 +821,64 @@ svg{ flex:0 0 auto; }
 }
 .sec-title:first-child{ margin-top:0; }
 
+/* ---------- 表格在线预览 ---------- */
+
+.modal-wide{ max-width:1000px; }
+
+.sheet-bar{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding-bottom:10px; margin-bottom:10px;
+  border-bottom:1px solid var(--line);
+}
+
+.sheet-tabs{ display:flex; flex-wrap:wrap; gap:4px; }
+
+.sheet-tab{
+  height:26px; padding:0 10px;
+  background:transparent; color:var(--ink-2);
+  border:1px solid transparent; border-radius:var(--r-xs);
+  font-size:12px; cursor:pointer; white-space:nowrap;
+  transition:background .14s, color .14s, border-color .14s;
+}
+.sheet-tab:hover{ background:var(--surface-3); color:var(--ink); }
+.sheet-tab.active{ background:var(--ink); color:#fff; border-color:var(--ink); font-weight:500; }
+
+.sheet-info{
+  margin-left:auto;
+  font-size:11.5px; color:var(--ink-3);
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+
+.sheet-wrap{
+  max-height:54vh; overflow:auto;
+  background:var(--surface);
+  border:1px solid var(--line); border-radius:var(--r-sm);
+}
+
+.sheet-table{
+  border-collapse:collapse;
+  table-layout:fixed;
+  font-size:12px; line-height:1.55; color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+.sheet-table td{
+  padding:6px 10px;
+  vertical-align:top;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  white-space:normal; overflow-wrap:anywhere;
+}
+.sheet-table td:last-child{ border-right:0; }
+.sheet-table tr:last-child td{ border-bottom:0; }
+.sheet-table tr.sheet-head td{
+  position:sticky; top:0; z-index:2;
+  background:var(--surface-3);
+  font-weight:600;
+  border-bottom:1px solid var(--line-strong);
+}
+
+.sheet-more{ margin-top:12px; text-align:center; }
+
 /* ============================================================
    Toast
    ============================================================ */
