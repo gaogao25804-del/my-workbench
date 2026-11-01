@@ -515,68 +515,6 @@ img{ display:block; }
 .row-right{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
 .row-right .btn{ height:26px; padding:0 9px; font-size:12px; }
 
-/* 视频卡片 */
-.video-grid{
-  display:grid; gap:12px;
-  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-}
-.video-card{
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--r); overflow:hidden; cursor:pointer;
-  transition:border-color .15s, box-shadow .15s, transform .15s;
-}
-.video-card:hover{ border-color:#cfd5dd; box-shadow:var(--shadow); transform:translateY(-1px); }
-.video-thumb{
-  aspect-ratio:16/9;
-  background:linear-gradient(145deg,#eef0f5,#e2e5ec);
-  display:flex; align-items:center; justify-content:center;
-  position:relative;
-}
-.video-thumb .vt-ico{ width:34px; height:34px; color:#a7aebb; }
-.video-thumb .vt-badge{
-  position:absolute; left:8px; top:8px;
-  font-size:10.5px; padding:1px 7px; border-radius:999px;
-  background:rgba(255,255,255,.86); color:var(--text-2); font-weight:600;
-}
-.video-thumb .vt-miss{
-  position:absolute; right:8px; bottom:8px;
-  font-size:10px; padding:1px 6px; border-radius:999px;
-  background:rgba(255,255,255,.86); color:var(--warn);
-}
-.video-body{ padding:10px 12px 12px; }
-.video-title{
-  font-size:13px; font-weight:600; line-height:1.45;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-}
-.video-meta{ display:flex; gap:10px; margin-top:6px; font-size:11px; color:var(--text-3); flex-wrap:wrap; }
-
-/* ============ 英雄联盟 ============ */
-.champ-grid{
-  display:grid; gap:8px;
-  grid-template-columns:repeat(auto-fill,minmax(84px,1fr));
-}
-.champ-card{
-  display:flex; flex-direction:column; align-items:center; gap:6px;
-  padding:10px 6px; border-radius:var(--r-sm);
-  border:1px solid transparent;
-  cursor:pointer;
-  transition:background .12s, border-color .12s;
-}
-.champ-card:hover{ background:var(--surface); border-color:var(--border); }
-.champ-img{
-  width:56px; height:56px; border-radius:50%;
-  object-fit:cover; background:var(--hover);
-  border:1px solid var(--border);
-}
-.champ-name{
-  font-size:11.5px; color:var(--text); text-align:center; line-height:1.3;
-  max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-.champ-sub{
-  font-size:10.5px; color:var(--text-3); text-align:center; line-height:1.2;
-  margin-top:-3px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-
 /* ============ 弹窗 ============ */
 .modal{
   position:fixed; inset:0; z-index:100;
@@ -702,9 +640,6 @@ img{ display:block; }
   .task-date{ font-size:11px; }
   .task-tag{ display:none; }
   .book-grid{ grid-template-columns:1fr; }
-  .video-grid{ grid-template-columns:1fr; }
-  .champ-grid{ grid-template-columns:repeat(auto-fill,minmax(72px,1fr)); gap:4px; }
-  .champ-img{ width:50px; height:50px; }
   .modal{ padding:10px; align-items:flex-end; }
   .modal-box{ max-height:88vh; border-radius:var(--r-lg); }
   .modal-head{ padding:13px 14px 10px; }

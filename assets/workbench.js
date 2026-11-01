@@ -1,6 +1,6 @@
 /* ============================================================
    个人工作台 · 应用逻辑
-   数据源：feishu-data.json / library-data.json / public/heroes.json
+   数据源：feishu-data.json / library-data.json / 文案/
    文案与视频为本地静态清单（含本地文件路径）
    ============================================================ */
 'use strict';
@@ -11,8 +11,6 @@ const ICON_PATHS = {
   calendar: '<rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/>',
   book: '<path d="M4 4.5h6a2.5 2.5 0 0 1 2.5 2.5v12.5a2.2 2.2 0 0 0-2.2-2.2H4z"/><path d="M20 4.5h-6a2.5 2.5 0 0 0-2.5 2.5v12.5a2.2 2.2 0 0 1 2.2-2.2H20z"/>',
   file: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
-  film: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 10h18M3 14h18"/>',
-  gamepad: '<rect x="2" y="6.5" width="20" height="11" rx="5.5"/><path d="M7 10.5v3.5M5.25 12.25h3.5"/><circle cx="16" cy="10.5" r="1.1"/><circle cx="18.2" cy="13.2" r="1.1"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   chevL: '<path d="M14.5 5.5 8 12l6.5 6.5"/>',
@@ -21,7 +19,6 @@ const ICON_PATHS = {
   refresh: '<path d="M20 11a8 8 0 1 0-2.4 6.4"/><path d="M20 5v6h-6"/>',
   copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   download: '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4 19.5h16"/>',
-  play: '<path d="M9 6.5v11l9-5.5z"/>',
   clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   inbox: '<path d="M3 12.5 5.5 5.5h13L21 12.5v6a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M3 12.5h5l1.5 2.5h5l1.5-2.5h5"/>'
 };
@@ -45,13 +42,6 @@ const WENAN = [
   { name: "2026.7.23三台阔折叠对比", date: "2026-07-23", size: "11KB", path: "文案/2026.7.23三台阔折叠对比.docx", cat: "数码", tag: "横向对比/折叠屏" }
 ];
 
-const SHIPIN = [
-  { title: "金彪要周年 - 3", date: "2026-08-18", size: "420.2MB", path: "视频/金彪要周年-3.mp4", cat: "短片/生活", tag: "周年纪念" },
-  { title: "7.2 拍摄：36岁重启人生", date: "2026-07-04", size: "391.9MB", path: "视频/7.2拍摄：36岁重启人生.mp4", cat: "Vlog / 人文", tag: "纪实 · 励志" },
-  { title: "6.28 拍摄：理想 L8 · 大片 2（LIVIS 成片）", date: "2026-07-02", size: "718.4MB", path: "视频/6.28拍摄：理想L8livis-大片2-成片成片2.mp4", cat: "汽车 / 大片", tag: "理想 · 航拍感剪辑" },
-  { title: "6.28 拍摄：理想 L8 · 大片 1（特斯河之赞成片）", date: "2026-07-03", size: "271.3MB", path: "视频/6.28拍摄：理想L8livis大片-1-特斯河之赞成片.mp4", cat: "汽车 / 大片", tag: "理想 · 旅行感剪辑" }
-];
-
 const FILE_ICON = { '脚本': 'file', '提示词': 'file', '评测': 'file', '数码': 'file', '数码配件': 'file' };
 
 /* ---------------- 页面配置 ---------------- */
@@ -59,26 +49,21 @@ const PAGES = {
   home:    { title: '主页',       desc: '工作台概览 · 数据来自飞书本地快照' },
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 支持筛选与分页', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
-  wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' },
-  shipin:  { title: '视频库',     desc: '成片清单 · 文件信息与本地路径' },
-  lol:     { title: '英雄联盟',   desc: '全英雄图鉴 · 图标与称号' }
+  wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' }
 };
 
-const PAGE_SIZE = { lib: 12, wenan: 10, shipin: 6, lol: 72, task: 20 };
+const PAGE_SIZE = { lib: 12, wenan: 10, task: 20 };
 
 /* ---------------- 全局状态 ---------------- */
 const st = {
   tab: 'home',
   feishu: null,
   library: null,
-  heroes: null,
-  load: { feishu: 'idle', library: 'idle', heroes: 'idle' },
-  err: { feishu: '', library: '', heroes: '' },
+  load: { feishu: 'idle', library: 'idle' },
+  err: { feishu: '', library: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
-  wenan: { q: '', cat: 'all', page: 1 },
-  shipin: { q: '', cat: 'all', page: 1 },
-  lol: { q: '', page: 1 }
+  wenan: { q: '', cat: 'all', page: 1 }
 };
 
 /* ---------------- 基础工具 ---------------- */
@@ -162,39 +147,6 @@ async function loadLibrary() {
   renderView();
 }
 
-async function loadHeroes() {
-  if (st.load.heroes === 'loading' || st.load.heroes === 'ready') return;
-  st.load.heroes = 'loading';
-  st.err.heroes = '';
-  renderView();
-  try {
-    const [icons, raw] = await Promise.all([
-      fetchJSON('public/heroes.json'),
-      fetchJSON('champions-raw.json')
-    ]);
-    const iconMap = {};
-    (Array.isArray(icons) ? icons : []).forEach(function (h) { iconMap[String(h.id)] = h.icon; });
-    const champs = (raw && Array.isArray(raw.data)) ? raw.data : [];
-    st.heroes = champs.filter(function (c) {
-      return iconMap[String(c.id)];
-    }).map(function (c) {
-      return {
-        id: c.id,
-        name: c.name || '',
-        title: c.title || '',
-        alias: c.alias || '',
-        icon: iconMap[String(c.id)]
-      };
-    });
-    st.load.heroes = 'ready';
-  } catch (e) {
-    st.load.heroes = 'error';
-    st.err.heroes = e.message || '加载失败';
-  }
-  updateChrome();
-  renderView();
-}
-
 /* ---------------- 飞书数据统计 ---------------- */
 function feishuInfo() {
   const f = st.feishu || {};
@@ -265,22 +217,19 @@ function renderHome() {
     { label: '已完成', value: ready ? info.completed : '—', hint: '全部完成' },
     { label: '待办', value: ready ? info.pending : '—', hint: '当前无逾期' },
     { label: '藏书', value: st.library ? books.length : '—', hint: '含书摘与思考' },
-    { label: '文案', value: WENAN.length, hint: '口播 / 提示词' },
-    { label: '视频', value: SHIPIN.length, hint: '本地成片' }
+    { label: '文案', value: WENAN.length, hint: '口播 / 提示词' }
   ];
 
   const quick = [
     { go: 'tasks', icon: 'calendar', title: '任务与日历', desc: '月历视图 · 按日期查看任务' },
     { go: 'library', icon: 'book', title: '图书馆', desc: '搜索书名 · 阅读书摘与思考' },
-    { go: 'wenan', icon: 'file', title: '文案库', desc: '脚本在线阅读 · 复制与下载' },
-    { go: 'shipin', icon: 'film', title: '视频库', desc: '成片信息 · 本地文件路径' },
-    { go: 'lol', icon: 'gamepad', title: '英雄联盟', desc: '全英雄图鉴 · 图标与称号' }
+    { go: 'wenan', icon: 'file', title: '文案库', desc: '脚本在线阅读 · 复制与下载' }
   ];
 
   return '' +
     '<div class="hero-block">' +
       '<h2>个人工作台</h2>' +
-      '<p>任务、藏书、文案与视频集中管理。左侧切换模块，数据来自本地飞书同步快照。</p>' +
+      '<p>任务、藏书与文案集中管理。左侧切换模块，数据来自本地飞书同步快照。</p>' +
       '<div class="hero-meta">' +
         '<span>同步时间 ' + esc(info.updated || '未知') + '</span>' +
         '<span>数据范围 ' + esc(info.earliest || '—') + ' ~ ' + esc(info.latest || '—') + '</span>' +
@@ -623,85 +572,6 @@ function renderWenanPage() {
   return toolbar + '<div class="card">' + rows + pagerHtml('wenan', st.wenan.page, PAGE_SIZE.wenan, list.length) + '</div>';
 }
 
-/* ---------------- 视频库 ---------------- */
-function renderShipinPage() {
-  const q = st.shipin.q.toLowerCase();
-  const cats = ['all'].concat(Array.from(new Set(SHIPIN.map(function (d) { return d.cat; }))));
-  const list = SHIPIN.filter(function (v) {
-    if (st.shipin.cat !== 'all' && v.cat !== st.shipin.cat) return false;
-    if (!q) return true;
-    return ((v.title || '') + ' ' + (v.tag || '') + ' ' + v.cat).toLowerCase().indexOf(q) >= 0;
-  });
-
-  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE.shipin));
-  if (st.shipin.page > totalPages) st.shipin.page = 1;
-  const pageList = list.slice((st.shipin.page - 1) * PAGE_SIZE.shipin, st.shipin.page * PAGE_SIZE.shipin);
-
-  const toolbar = '<div class="toolbar">' +
-    '<div class="search-wrap"><span class="search-ico">' + ic('search') + '</span>' +
-    '<input class="input" id="shipinSearch" type="search" placeholder="搜索成片名称 / 标签" value="' + esc(st.shipin.q) + '"></div>' +
-    '<span class="toolbar-note">共 ' + SHIPIN.length + ' 部</span>' +
-    '</div>' +
-    '<div class="toolbar">' + cats.map(function (c) {
-      return '<button class="chip' + (st.shipin.cat === c ? ' active' : '') + '" data-vcat="' + esc(c) + '">' + (c === 'all' ? '全部' : esc(c)) + '</button>';
-    }).join('') + '</div>';
-
-  const grid = pageList.length
-    ? '<div class="video-grid">' + pageList.map(function (v) {
-        const idx = SHIPIN.indexOf(v);
-        return '<div class="video-card" data-video="' + idx + '">' +
-          '<div class="video-thumb">' +
-            ic('play', 'vt-ico') +
-            '<span class="vt-badge">' + esc(v.cat) + '</span>' +
-            '<span class="vt-miss">本地文件</span>' +
-          '</div>' +
-          '<div class="video-body">' +
-            '<div class="video-title">' + esc(v.title) + '</div>' +
-            '<div class="video-meta"><span>' + esc(v.date) + '</span><span>' + esc(v.size) + '</span></div>' +
-          '</div></div>';
-      }).join('') + '</div>'
-    : stateHtml('empty', '没有匹配的视频', '换个关键词或分类', '清空筛选', 'data-action="clear-shipin"');
-
-  return toolbar +
-    '<div class="card" style="padding:12px;">' + grid + pagerHtml('shipin', st.shipin.page, PAGE_SIZE.shipin, list.length) + '</div>';
-}
-
-/* ---------------- 英雄联盟 ---------------- */
-function renderLolPage() {
-  if (st.load.heroes === 'loading') return stateHtml('loading', '正在载入英雄图鉴');
-  if (st.load.heroes === 'error') return stateHtml('error', '英雄数据加载失败', st.err.heroes, '重试', 'data-action="retry-heroes"');
-  if (!st.heroes || !st.heroes.length) return stateHtml('empty', '暂无英雄数据');
-
-  const q = st.lol.q.toLowerCase();
-  const list = st.heroes.filter(function (h) {
-    if (!q) return true;
-    const hay = [h.name, h.title, h.alias].join(' ').toLowerCase();
-    return hay.indexOf(q) >= 0;
-  });
-
-  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE.lol));
-  if (st.lol.page > totalPages) st.lol.page = 1;
-  const pageList = list.slice((st.lol.page - 1) * PAGE_SIZE.lol, st.lol.page * PAGE_SIZE.lol);
-
-  const toolbar = '<div class="toolbar">' +
-    '<div class="search-wrap"><span class="search-ico">' + ic('search') + '</span>' +
-    '<input class="input" id="lolSearch" type="search" placeholder="搜索英雄名称 / 称号 / 英文名" value="' + esc(st.lol.q) + '"></div>' +
-    '<span class="toolbar-note">共 ' + st.heroes.length + ' 位 · 当前 ' + list.length + ' 位</span>' +
-    '</div>';
-
-  const grid = pageList.length
-    ? '<div class="champ-grid">' + pageList.map(function (h) {
-        return '<div class="champ-card" data-hero="' + esc(h.id) + '">' +
-          '<img class="champ-img" src="' + esc(h.icon) + '" alt="' + esc(h.name) + '" loading="lazy">' +
-          '<div class="champ-name">' + esc(h.name) + '</div>' +
-          '<div class="champ-sub">' + esc(h.title) + '</div></div>';
-      }).join('') + '</div>'
-    : stateHtml('empty', '没有找到匹配的英雄', '换个关键词试试', '清空搜索', 'data-action="clear-lol"');
-
-  return toolbar +
-    '<div class="card" style="padding:12px;">' + grid + pagerHtml('lol', st.lol.page, PAGE_SIZE.lol, list.length) + '</div>';
-}
-
 /* ---------------- 视图渲染 ---------------- */
 function renderView() {
   const view = document.getElementById('view');
@@ -713,8 +583,6 @@ function renderView() {
     case 'tasks': html = renderTasksPage(); break;
     case 'library': html = renderLibraryPage(); break;
     case 'wenan': html = renderWenanPage(); break;
-    case 'shipin': html = renderShipinPage(); break;
-    case 'lol': html = renderLolPage(); break;
     default: html = renderHome();
   }
   view.innerHTML = html;
@@ -722,7 +590,6 @@ function renderView() {
   bindImgFallback();
 
   // 懒加载：进入模块时按需请求数据
-  if (st.tab === 'lol' && st.load.heroes === 'idle') loadHeroes();
   if (st.tab === 'library' && st.load.library === 'idle') loadLibrary();
 }
 
@@ -732,13 +599,6 @@ function bindImgFallback() {
       img.style.display = 'none';
       const fb = img.nextElementSibling;
       if (fb) fb.style.display = 'flex';
-    }, { once: true });
-  });
-  document.querySelectorAll('.champ-img').forEach(function (img) {
-    img.addEventListener('error', function () {
-      img.style.display = 'none';
-      const card = img.closest('.champ-card');
-      if (card) card.style.opacity = '.4';
     }, { once: true });
   });
 }
@@ -764,8 +624,6 @@ function updateChrome() {
   if (navTask) navTask.textContent = st.feishu ? feishuInfo().total : '—';
   const navLib = document.getElementById('navLibCount');
   if (navLib) navLib.textContent = st.library ? ((st.library.books || []).length) : '—';
-  const navLol = document.getElementById('navLolCount');
-  if (navLol && st.heroes) navLol.textContent = st.heroes.length;
   const sideUpd = document.getElementById('sideUpdated');
   if (sideUpd) sideUpd.textContent = (st.feishu && st.feishu.updated_at) ? ('同步于 ' + st.feishu.updated_at) : '尚未同步';
 }
@@ -911,39 +769,6 @@ function fallbackCopy(text) {
   ta.remove();
 }
 
-function openVideo(idx) {
-  const v = SHIPIN[idx];
-  if (!v) return;
-  openModal({
-    title: v.title,
-    meta: [v.cat, v.date, v.size],
-    body:
-      '<div class="kv"><div class="k">分类</div><div class="v">' + esc(v.cat) + '</div></div>' +
-      '<div class="kv"><div class="k">标签</div><div class="v">' + esc(v.tag) + '</div></div>' +
-      '<div class="kv"><div class="k">日期</div><div class="v">' + esc(v.date) + '</div></div>' +
-      '<div class="kv"><div class="k">大小</div><div class="v">' + esc(v.size) + '</div></div>' +
-      '<div class="kv"><div class="k">本地路径</div><div class="v">' + esc(v.path) + '</div></div>' +
-      '<div class="modal-note">视频文件未随站点部署（单文件最大 100MB，站点总量上限 1GB，本地素材约 1.8GB）。' +
-      '如需观看，请在本机打开工作台并确认 视频/ 目录中存在该文件。</div>'
-  });
-}
-
-function openHero(id) {
-  const h = (st.heroes || []).filter(function (x) { return String(x.id) === String(id); })[0];
-  if (!h) return;
-  const body = '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:6px 0 4px;">' +
-      '<img src="' + esc(h.icon) + '" alt="' + esc(h.name) + '" style="width:96px;height:96px;border-radius:50%;border:1px solid var(--border);object-fit:cover;">' +
-      '<div style="font-size:16px;font-weight:640;">' + esc(h.name) + '</div>' +
-      '<div style="font-size:12.5px;color:var(--text-3);">' + esc(h.title) + '</div>' +
-    '</div>' +
-    '<div class="kv"><div class="k">英雄名称</div><div class="v">' + esc(h.name) + '</div></div>' +
-    '<div class="kv"><div class="k">英文名</div><div class="v">' + esc(h.alias) + '</div></div>' +
-    '<div class="kv"><div class="k">英雄 ID</div><div class="v">' + esc(h.id) + '</div></div>' +
-    '<div class="kv"><div class="k">图标</div><div class="v">' + esc(h.icon) + '</div></div>' +
-    '<div class="modal-note">图鉴数据来源：champions-raw.json（zh-CN，版本 16.15）+ 本地图标。</div>';
-  openModal({ title: h.title ? h.title + ' · ' + h.name : h.name, meta: ['英雄图鉴'], body: body });
-}
-
 /* ---------------- 交互 ---------------- */
 function scrollKeep(fn) {
   const y = window.scrollY;
@@ -979,7 +804,7 @@ function onViewClick(e) {
     const scope = pg.dataset.pageScope;
     const page = Number(pg.dataset.page);
     if (scope === 'task') { if (page >= 1) { st.cal.page = page; } }
-    else if (['lib', 'wenan', 'shipin', 'lol'].indexOf(scope) >= 0) { st[scope].page = page; }
+    else if (['lib', 'wenan'].indexOf(scope) >= 0) { st[scope].page = page; }
     renderView();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
@@ -1026,9 +851,6 @@ function onViewClick(e) {
   // 文案分类
   const wc = t.closest('[data-wcat]');
   if (wc) { st.wenan.cat = wc.dataset.wcat; st.wenan.page = 1; renderView(); return; }
-  // 视频分类
-  const vc = t.closest('[data-vcat]');
-  if (vc) { st.shipin.cat = vc.dataset.vcat; st.shipin.page = 1; renderView(); return; }
 
   // 动作按钮
   const act = t.closest('[data-action]');
@@ -1037,22 +859,15 @@ function onViewClick(e) {
     if (a === 'refresh') { loadFeishu(true); return; }
     if (a === 'retry-feishu') { loadFeishu(true); return; }
     if (a === 'retry-library') { st.load.library = 'idle'; loadLibrary(); return; }
-    if (a === 'retry-heroes') { st.load.heroes = 'idle'; loadHeroes(); return; }
     if (a === 'clear-lib') { st.lib.q = ''; st.lib.page = 1; renderView(); return; }
     if (a === 'clear-wenan') { st.wenan.q = ''; st.wenan.cat = 'all'; st.wenan.page = 1; renderView(); return; }
-    if (a === 'clear-shipin') { st.shipin.q = ''; st.shipin.cat = 'all'; st.shipin.page = 1; renderView(); return; }
-    if (a === 'clear-lol') { st.lol.q = ''; st.lol.page = 1; renderView(); return; }
   }
 
   // 详情入口
   const bk = t.closest('.book-card');
   if (bk) { openBook(bk.dataset.book); return; }
-  const vd = t.closest('.video-card');
-  if (vd) { openVideo(Number(vd.dataset.video)); return; }
   const wd = t.closest('[data-wenan]');
   if (wd) { openWenan(Number(wd.dataset.wenan)); return; }
-  const hc = t.closest('.champ-card');
-  if (hc) { openHero(hc.dataset.hero); return; }
 
   // 跳转
   const go = t.closest('[data-go]');
@@ -1062,7 +877,7 @@ function onViewClick(e) {
 let searchTimer = null;
 function onViewInput(e) {
   const el = e.target;
-  const map = { libSearch: 'lib', wenanSearch: 'wenan', shipinSearch: 'shipin', lolSearch: 'lol' };
+  const map = { libSearch: 'lib', wenanSearch: 'wenan' };
   const scope = map[el.id];
   if (!scope) return;
   clearTimeout(searchTimer);
@@ -1125,7 +940,6 @@ function init() {
   renderView();
   loadFeishu();
   loadLibrary();
-  loadHeroes();
 
   window.addEventListener('hashchange', function () {
     const h = (location.hash || '').replace('#', '');
