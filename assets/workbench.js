@@ -112,7 +112,7 @@ async function loadFeishu(showToast) {
   if (st.load.feishu === 'loading') return;
   st.load.feishu = 'loading';
   st.err.feishu = '';
-  renderView();
+  renderView(true);
   try {
     st.feishu = await fetchJSON('feishu-data.json');
     st.load.feishu = 'ready';
@@ -121,7 +121,7 @@ async function loadFeishu(showToast) {
     st.err.feishu = e.message || '加载失败';
   }
   updateChrome();
-  renderView();
+  renderView(true);
   if (showToast) {
     if (st.load.feishu === 'ready') toast('数据已刷新', 'ok');
     else toast('刷新失败：' + st.err.feishu, 'err');
@@ -132,7 +132,7 @@ async function loadLibrary() {
   if (st.load.library === 'loading' || st.load.library === 'ready') return;
   st.load.library = 'loading';
   st.err.library = '';
-  renderView();
+  renderView(true);
   try {
     st.library = await fetchJSON('library-data.json');
     st.load.library = 'ready';
@@ -141,7 +141,7 @@ async function loadLibrary() {
     st.err.library = e.message || '加载失败';
   }
   updateChrome();
-  renderView();
+  renderView(true);
 }
 
 /* ---------------- 飞书数据统计 ---------------- */
@@ -253,7 +253,6 @@ function renderHome() {
           '<div class="stat-hint">' + esc(s.hint) + '</div></div>';
       }).join('') +
     '</div>' +
-    syncCard(info) +
     '<div class="quick-grid" style="margin-top:18px;">' +
       quick.map(function (q) {
         return '<div class="quick-card" data-go="' + q.go + '">' +
@@ -590,25 +589,44 @@ function renderWenanPage() {
   return toolbar + '<div class="card">' + rows + pagerHtml('wenan', st.wenan.page, PAGE_SIZE.wenan, list.length) + '</div>';
 }
 
-/* ---------------- 视图渲染 ---------------- */
-function renderView() {
+/* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
+const SECTIONS = [
+  { key: 'tasks', no: '01', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看', art: 'assets/img/px-octo.png' },
+  { key: 'library', no: '02', title: '图书馆', desc: '藏书、书摘与思考', art: 'assets/img/px-icons.png' },
+  { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' }
+];
+
+function secHead(s) {
+  return '<div class="sec-head">' +
+    '<div class="sec-head-copy">' +
+      '<div class="sec-kicker">' + s.no + ' · SECTION</div>' +
+      '<div class="sec-title">' + esc(s.title) + '</div>' +
+      '<div class="sec-desc">' + esc(s.desc) + '</div>' +
+    '</div>' +
+    (s.art ? '<div class="sec-art' + (s.key === 'library' ? ' framed' : '') + '"><img src="' + s.art + '" alt="" loading="lazy"></div>' : '') +
+  '</div>';
+}
+
+function renderView(keepScroll) {
   const view = document.getElementById('view');
   if (!view) return;
+  const y = window.scrollY;
 
-  let html = '';
-  switch (st.tab) {
-    case 'home': html = renderHome(); break;
-    case 'tasks': html = renderTasksPage(); break;
-    case 'library': html = renderLibraryPage(); break;
-    case 'wenan': html = renderWenanPage(); break;
-    default: html = renderHome();
-  }
+  let html = renderHome();
+  SECTIONS.forEach(function (s) {
+    let body = '';
+    if (s.key === 'tasks') body = renderTasksPage();
+    else if (s.key === 'library') body = renderLibraryPage();
+    else body = renderWenanPage();
+    html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
+  });
   view.innerHTML = html;
 
   bindImgFallback();
+  if (keepScroll) window.scrollTo(0, y);
 
-  // 懒加载：进入模块时按需请求数据
-  if (st.tab === 'library' && st.load.library === 'idle') loadLibrary();
+  // 懒加载：图书馆数据按需请求
+  if (st.load.library === 'idle') loadLibrary();
 }
 
 function bindImgFallback() {
@@ -622,17 +640,12 @@ function bindImgFallback() {
 }
 
 function updateChrome() {
-  const page = PAGES[st.tab] || PAGES.home;
-  document.getElementById('pageTitle').textContent = page.title;
-  document.getElementById('pageDesc').textContent = page.desc;
+  document.getElementById('pageTitle').textContent = '个人工作台';
+  document.getElementById('pageDesc').textContent = '任务 · 藏书 · 文案，一页看完';
 
   const actions = document.getElementById('pageActions');
-  if (page.actions && page.actions.indexOf('refresh') >= 0) {
-    actions.innerHTML = '<button class="btn btn-sm" data-action="refresh"' + (st.load.feishu === 'loading' ? ' disabled' : '') + '>' +
-      ic('refresh', 'ico-14') + '<span>刷新数据</span></button>';
-  } else {
-    actions.innerHTML = '';
-  }
+  actions.innerHTML = '<button class="btn btn-sm" data-action="refresh"' + (st.load.feishu === 'loading' ? ' disabled' : '') + '>' +
+    ic('refresh', 'ico-14') + '<span>刷新数据</span></button>';
 
   document.querySelectorAll('#sideNav .nav-item').forEach(function (el) {
     el.classList.toggle('active', el.dataset.nav === st.tab);
@@ -968,9 +981,28 @@ function switchTab(key) {
     try { history.replaceState(null, '', '#' + key); } catch (e) { location.hash = key; }
   }
   updateChrome();
-  renderView();
-  window.scrollTo({ top: 0, behavior: 'auto' });
+  scrollToSection(key);
   closeSidebar();
+}
+
+function scrollToSection(key, instant) {
+  const behavior = instant ? 'auto' : 'smooth';
+  if (key === 'home') { window.scrollTo({ top: 0, behavior: behavior }); return; }
+  const el = document.getElementById('sec-' + key);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 76;
+  window.scrollTo({ top: Math.max(0, top), behavior: behavior });
+}
+
+// 滚动时同步侧栏高亮
+function syncActiveSection() {
+  const probe = window.scrollY + 150;
+  let cur = 'home';
+  SECTIONS.forEach(function (s) {
+    const el = document.getElementById('sec-' + s.key);
+    if (el && el.getBoundingClientRect().top + window.scrollY <= probe) cur = s.key;
+  });
+  if (cur !== st.tab) { st.tab = cur; updateChrome(); }
 }
 
 function closeSidebar() {
@@ -990,8 +1022,7 @@ function onViewClick(e) {
     const page = Number(pg.dataset.page);
     if (scope === 'task') { if (page >= 1) { st.cal.page = page; } }
     else if (['lib', 'wenan'].indexOf(scope) >= 0) { st[scope].page = page; }
-    renderView();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    renderView(true);
     return;
   }
 
@@ -1008,7 +1039,7 @@ function onViewClick(e) {
       st.cal.cursor = new Date(base.getFullYear(), base.getMonth(), 1);
       st.cal.selected = base;
     }
-    renderView();
+    renderView(true);
     return;
   }
 
@@ -1022,20 +1053,20 @@ function onViewClick(e) {
       if (d.getFullYear() !== st.cal.cursor.getFullYear() || d.getMonth() !== st.cal.cursor.getMonth()) {
         st.cal.cursor = new Date(d.getFullYear(), d.getMonth(), 1);
       }
-      renderView();
+      renderView(true);
     }
     return;
   }
 
   // 任务 tab / 分类
   const tt = t.closest('[data-task-tab]');
-  if (tt) { st.cal.taskTab = tt.dataset.taskTab; st.cal.page = 1; renderView(); return; }
+  if (tt) { st.cal.taskTab = tt.dataset.taskTab; st.cal.page = 1; renderView(true); return; }
   const tc = t.closest('[data-task-cat]');
-  if (tc) { st.cal.taskCat = tc.dataset.taskCat; st.cal.page = 1; renderView(); return; }
+  if (tc) { st.cal.taskCat = tc.dataset.taskCat; st.cal.page = 1; renderView(true); return; }
 
   // 文案分类
   const wc = t.closest('[data-wcat]');
-  if (wc) { st.wenan.cat = wc.dataset.wcat; st.wenan.page = 1; renderView(); return; }
+  if (wc) { st.wenan.cat = wc.dataset.wcat; st.wenan.page = 1; renderView(true); return; }
 
   // 动作按钮
   const act = t.closest('[data-action]');
@@ -1044,8 +1075,8 @@ function onViewClick(e) {
     if (a === 'refresh') { loadFeishu(true); return; }
     if (a === 'retry-feishu') { loadFeishu(true); return; }
     if (a === 'retry-library') { st.load.library = 'idle'; loadLibrary(); return; }
-    if (a === 'clear-lib') { st.lib.q = ''; st.lib.page = 1; renderView(); return; }
-    if (a === 'clear-wenan') { st.wenan.q = ''; st.wenan.cat = 'all'; st.wenan.page = 1; renderView(); return; }
+    if (a === 'clear-lib') { st.lib.q = ''; st.lib.page = 1; renderView(true); return; }
+    if (a === 'clear-wenan') { st.wenan.q = ''; st.wenan.cat = 'all'; st.wenan.page = 1; renderView(true); return; }
   }
 
   // 详情入口
@@ -1069,9 +1100,7 @@ function onViewInput(e) {
   searchTimer = setTimeout(function () {
     st[scope].q = el.value.trim();
     st[scope].page = 1;
-    const y = window.scrollY;
-    renderView();
-    window.scrollTo(0, y);
+    renderView(true);
     const fresh = document.getElementById(el.id);
     if (fresh) {
       fresh.focus();
@@ -1115,23 +1144,25 @@ function init() {
 
   updateChrome();
 
-  // 支持 #模块 直接访问
-  const hash = (location.hash || '').replace('#', '');
-  if (hash && PAGES[hash]) {
-    st.tab = hash;
-    updateChrome();
-  }
-
   renderView();
   loadFeishu();
   loadLibrary();
 
+  // 滚动高亮 + 锚点直达
+  window.addEventListener('scroll', syncActiveSection, { passive: true });
+  const hash = (location.hash || '').replace('#', '');
+  if (hash && PAGES[hash] && hash !== 'home') {
+    st.tab = hash;
+    updateChrome();
+    setTimeout(function () { scrollToSection(hash, true); }, 400);
+  }
+
   window.addEventListener('hashchange', function () {
     const h = (location.hash || '').replace('#', '');
-    if (h && PAGES[h] && h !== st.tab) {
+    if (h && PAGES[h]) {
       st.tab = h;
       updateChrome();
-      renderView();
+      scrollToSection(h);
     }
   });
 }
