@@ -600,7 +600,7 @@ function secHead(s) {
   return '<div class="sec-head">' +
     '<div class="sec-head-copy">' +
       '<div class="sec-kicker">' + s.no + ' · SECTION</div>' +
-      '<div class="sec-title">' + esc(s.title) + '</div>' +
+      '<div class="sec-h-title">' + esc(s.title) + '</div>' +
       '<div class="sec-desc">' + esc(s.desc) + '</div>' +
     '</div>' +
     (s.art ? '<div class="sec-art' + (s.key === 'library' ? ' framed' : '') + '"><img src="' + s.art + '" alt="" loading="lazy"></div>' : '') +
@@ -1148,8 +1148,15 @@ function init() {
   loadFeishu();
   loadLibrary();
 
-  // 滚动高亮 + 锚点直达
-  window.addEventListener('scroll', syncActiveSection, { passive: true });
+  // 滚动高亮 + 回到顶部按钮 + 锚点直达
+  const fab = document.getElementById('fabTop');
+  if (fab) {
+    fab.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  }
+  window.addEventListener('scroll', function () {
+    syncActiveSection();
+    if (fab) fab.classList.toggle('show', window.scrollY > 420);
+  }, { passive: true });
   const hash = (location.hash || '').replace('#', '');
   if (hash && PAGES[hash] && hash !== 'home') {
     st.tab = hash;
