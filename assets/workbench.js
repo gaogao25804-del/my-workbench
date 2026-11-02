@@ -39,8 +39,6 @@ const WENAN = [
   { name: "9月视频数据统计", date: "2026-11-01", size: "35KB", path: "文案/9月视频数据统计.xlsx", cat: "数据", tag: "数据/月度" }
 ];
 
-const FILE_ICON = { '流程': 'file', '规则': 'file', '参数': 'file', '表格': 'file', '数据': 'file' };
-
 /* ---------------- 页面配置 ---------------- */
 const PAGES = {
   home:    { title: '主页',       desc: '工作台概览 · 数据来自飞书本地快照' },
@@ -696,19 +694,38 @@ function renderWenanPage() {
     }).join('') + '</div>';
 
   const rows = pageList.length
-    ? '<div class="row-list">' + pageList.map(function (d) {
-        const idx = WENAN.indexOf(d);
-        return '<div class="list-row" data-wenan="' + idx + '">' +
-          '<div class="row-ico">' + ic(FILE_ICON[d.cat] || 'file') + '</div>' +
-          '<div class="row-main"><div class="row-title">' + esc(d.name) + '</div>' +
-          '<div class="row-sub"><span class="row-tag">' + esc(d.cat) + '</span><span>' + esc(d.tag) + '</span>' +
-          '<span>' + esc(d.date) + '</span><span>' + esc(d.size) + '</span></div></div>' +
-          '<div class="row-right"><button class="btn btn-sm" data-wenan="' + idx + '">阅读</button></div>' +
-          '</div>';
-      }).join('') + '</div>'
+    ? wenanShelves(pageList)
     : stateHtml('empty', '没有匹配的文案', '换个关键词或分类', '清空筛选', 'data-action="clear-wenan"');
 
-  return toolbar + '<div class="card">' + rows + pagerHtml('wenan', st.wenan.page, PAGE_SIZE.wenan, list.length) + '</div>';
+  return toolbar + '<div class="card shelf-card">' + rows + pagerHtml('wenan', st.wenan.page, PAGE_SIZE.wenan, list.length) + '</div>';
+}
+
+/* 文案库：文档也立到书架上，用带大字的彩色书皮区分分类 */
+const WENAN_TONE = { '流程': 0, '规则': 1, '参数': 2, '表格': 3, '数据': 4 };
+
+function wenanShelves(list) {
+  const per = window.innerWidth <= 600 ? 3 : window.innerWidth <= 900 ? 3 : 4;
+  let out = '<div class="shelf-wrap">';
+  for (let i = 0; i < list.length; i += per) {
+    out += '<div class="shelf">' +
+      '<div class="shelf-books">' + list.slice(i, i + per).map(wenanBook).join('') + '</div>' +
+      '<div class="shelf-plank"></div>' +
+      '</div>';
+  }
+  return out + '</div>';
+}
+
+function wenanBook(d) {
+  const idx = WENAN.indexOf(d);
+  const tone = WENAN_TONE[d.cat] != null ? WENAN_TONE[d.cat] : 5;
+  return '<div class="wb-item kv' + bookVar(d.name) + '" data-wenan="' + idx + '" tabindex="0" role="button" aria-label="' + esc(d.name) + '">' +
+    '<div class="wb-cover wb-t' + tone + '">' +
+      '<span class="wb-cat">' + esc(d.cat) + '</span>' +
+      '<span class="wb-title">' + esc(d.name) + '</span>' +
+      '<span class="wb-foot"><i>' + esc(d.tag) + '</i><b>' + esc(d.size) + '</b></span>' +
+    '</div>' +
+    '<div class="book-tip"><strong>' + esc(d.name) + '</strong><span>' + esc(d.date) + ' · ' + esc(d.size) + '</span></div>' +
+  '</div>';
 }
 
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */

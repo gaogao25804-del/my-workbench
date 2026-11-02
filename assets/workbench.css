@@ -1653,6 +1653,143 @@ body{
 }
 
 /* ============================================================
+   文案库：彩色书皮的“词书墙”
+   ============================================================ */
+
+.wb-item{
+  position:relative;
+  display:flex; align-items:flex-end;
+  cursor:pointer; outline:none;
+}
+
+.wb-cover{
+  position:relative;
+  width:132px; height:176px;
+  padding:13px 13px 11px 20px;
+  display:flex; flex-direction:column;
+  border-radius:5px 10px 10px 5px;
+  overflow:hidden;
+  transform:rotateY(-6deg);
+  transform-origin:left bottom;
+  box-shadow:7px 10px 20px rgba(60,42,18,.26), inset 0 0 0 1px rgba(255,255,255,.22);
+  transition:transform .24s cubic-bezier(.3,.8,.3,1), box-shadow .24s ease;
+}
+
+.wb-item.kv0 .wb-cover{ width:122px; height:166px; transform:rotateY(-9deg); }
+.wb-item.kv1 .wb-cover{ width:132px; height:176px; transform:rotateY(-5deg); }
+.wb-item.kv2 .wb-cover{ width:126px; height:171px; transform:rotateY(-8deg); }
+.wb-item.kv3 .wb-cover{ width:138px; height:184px; transform:rotateY(-6deg); }
+
+.wb-cover::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:9px; z-index:2;
+  background:linear-gradient(90deg, rgba(0,0,0,.26), rgba(0,0,0,.1) 42%, rgba(255,255,255,.2) 72%, rgba(0,0,0,.08));
+  box-shadow:inset -1px 0 0 rgba(255,255,255,.3);
+}
+.wb-cover::after{
+  content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(106deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.04) 26%,
+    rgba(255,255,255,0) 48%, rgba(0,0,0,.1) 85%, rgba(0,0,0,.2) 100%);
+}
+
+/* 五种分类色 */
+.wb-t0{
+  background:
+    radial-gradient(circle at 82% 86%, rgba(255,255,255,.3) 0 33%, rgba(255,255,255,0) 34%),
+    linear-gradient(160deg, #9ecb95, #79a872);
+  color:#1e3a1f;
+}
+.wb-t1{
+  background:
+    radial-gradient(circle at 18% 88%, rgba(255,255,255,.26) 0 30%, rgba(255,255,255,0) 31%),
+    linear-gradient(160deg, #e78a58, #cd6a38);
+  color:#fff6ec;
+}
+.wb-t2{
+  background:
+    radial-gradient(circle at 78% 14%, rgba(255,255,255,.3) 0 26%, rgba(255,255,255,0) 27%),
+    linear-gradient(160deg, #8ab2da, #6b93c1);
+  color:#10283f;
+}
+.wb-t3{
+  background:
+    radial-gradient(circle at 22% 84%, rgba(255,255,255,.34) 0 28%, rgba(255,255,255,0) 29%),
+    linear-gradient(160deg, #f3d680, #e3bb52);
+  color:#4a3712;
+}
+.wb-t4{
+  background:
+    radial-gradient(circle at 84% 82%, rgba(255,255,255,.24) 0 30%, rgba(255,255,255,0) 31%),
+    linear-gradient(160deg, #a894c9, #8673ae);
+  color:#faf7ff;
+}
+.wb-t5{
+  background:linear-gradient(160deg, #d8c2a2, #bd9f78);
+  color:#3a2c18;
+}
+
+.wb-cat{
+  position:relative; z-index:3;
+  align-self:flex-start;
+  padding:1px 7px;
+  border:1px solid currentColor; border-radius:999px;
+  font-size:8.5px; letter-spacing:.14em; line-height:1.6;
+  opacity:.72;
+}
+
+.wb-title{
+  position:relative; z-index:3;
+  margin-top:14px;
+  font-size:16.5px; font-weight:700; line-height:1.32; letter-spacing:-.01em;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
+  overflow:hidden; word-break:break-word;
+  text-shadow:0 1px 0 rgba(255,255,255,.14);
+}
+
+.wb-foot{
+  position:relative; z-index:3;
+  margin-top:auto; padding-top:7px;
+  display:flex; flex-direction:column; gap:2px;
+  border-top:1px solid rgba(255,255,255,.4);
+  font-size:9.5px; letter-spacing:.03em; opacity:.82;
+}
+.wb-foot i{ font-style:normal; }
+.wb-foot b{ font-weight:500; opacity:.75; }
+
+.wb-item::after{
+  content:''; position:absolute; left:2px; right:-3px; bottom:-4px; height:9px; z-index:0;
+  background:radial-gradient(52% 100% at 50% 0%, rgba(48,34,14,.4), rgba(48,34,14,0) 72%);
+  filter:blur(2px);
+}
+
+.wb-item:hover .wb-cover,
+.wb-item:focus-visible .wb-cover{
+  transform:translateY(-8px) rotateY(-2deg);
+  box-shadow:7px 18px 30px rgba(60,42,18,.3), inset 0 0 0 1px rgba(255,255,255,.26);
+}
+
+@media (max-width:900px){
+  .shelf-books{ min-height:166px; }
+  .wb-cover, .wb-item.kv1 .wb-cover{ width:112px; height:152px; }
+  .wb-item.kv0 .wb-cover{ width:104px; height:143px; }
+  .wb-item.kv2 .wb-cover{ width:107px; height:147px; }
+  .wb-item.kv3 .wb-cover{ width:118px; height:160px; }
+  .wb-title{ font-size:14.5px; }
+  .wb-cat{ font-size:8px; padding:0 6px; }
+}
+
+@media (max-width:600px){
+  .shelf-books{ min-height:142px; }
+  .wb-cover, .wb-item.kv1 .wb-cover{ width:94px; height:130px; padding:10px 9px 9px 15px; }
+  .wb-item.kv0 .wb-cover{ width:88px; height:123px; }
+  .wb-item.kv2 .wb-cover{ width:90px; height:126px; }
+  .wb-item.kv3 .wb-cover{ width:98px; height:134px; }
+  .wb-title{ font-size:12px; margin-top:9px; -webkit-line-clamp:4; }
+  .wb-cat{ font-size:7px; padding:0 5px; letter-spacing:.1em; }
+  .wb-foot{ font-size:8px; padding-top:5px; }
+  .wb-cover::before{ width:7px; }
+}
+
+/* ============================================================
    任务中心：信息图海报（奶油纸 + 琥珀橙 + 衬线标题）
    ============================================================ */
 
