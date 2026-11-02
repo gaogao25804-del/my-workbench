@@ -184,6 +184,7 @@
   .acard{
     background:var(--paper); border:1px solid var(--line); border-radius:10px;
     box-shadow:var(--sh); padding:11px; margin-bottom:10px; position:relative;
+    overflow:hidden;
   }
   .acard.on{ border-color:var(--gold2); background:linear-gradient(180deg,#FFFCF4,#FFF9EC); }
   .arow{ display:flex; gap:11px; }
@@ -345,6 +346,163 @@
     padding:7px 14px; border:1px solid var(--line); border-radius:20px; background:#fff;
   }
   .folio p{ margin-top:12px; font-size:9.5px; color:var(--gray2); line-height:1.8; }
+
+  /* =========================================================
+     桌面端 / 平板适配
+     ========================================================= */
+  .wrap{ display:block; }
+  .side{ display:none; }
+  .main{ min-width:0; }
+  .hero-flex{ display:block; }
+  .hero-side{ display:none; }
+
+  /* —— 平板 —— */
+  @media (min-width:760px){
+    .app{ max-width:760px; }
+    .hero{ padding:28px 26px 24px; }
+    .hero h1{ font-size:34px; }
+    .models{ padding:0 26px 20px; }
+    .sec{ padding:28px 22px 0; }
+    .mgrid{ grid-template-columns:repeat(3,1fr); }
+    .folio{ padding:30px 22px 34px; }
+  }
+
+  /* —— 桌面 —— */
+  @media (min-width:1080px){
+    body{ padding-bottom:0; background:#F3EFE7; }
+    .app{ max-width:1240px; box-shadow:0 0 60px rgba(35,26,16,.07); }
+
+    .hero{ padding:46px 44px 36px; }
+    .hero h1{ font-size:44px; line-height:1.12; letter-spacing:.005em; }
+    .hero p{ font-size:13.5px; margin-top:12px; }
+    .hero .tagline{ margin-top:18px; }
+    .models{ padding:0 44px 24px; }
+    .models .lab{ padding:2px 0 10px; }
+    .mchips{ overflow:visible; flex-wrap:wrap; }
+    .mchip{ padding:10px 18px; font-size:13px; }
+
+    /* 标题右侧价格概览 */
+    .hero-flex{ display:flex; align-items:flex-end; justify-content:space-between; gap:44px; }
+    .hero-side{ display:flex; gap:40px; padding-bottom:6px; }
+    .hero-side div{ text-align:right; }
+    .hero-side span{
+      display:block; font-size:9.5px; color:rgba(250,248,244,.4); letter-spacing:.2em;
+    }
+    .hero-side b{
+      display:flex; align-items:baseline; justify-content:flex-end; margin-top:7px;
+      font-family:Arial,sans-serif; font-weight:700; font-size:27px; color:#fff; letter-spacing:-.025em;
+    }
+    .hero-side b i{ font-style:normal; font-size:13px; color:var(--gold); margin-right:2px; }
+    .hero-side b em{
+      font-style:normal; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+      font-size:10px; font-weight:400; color:rgba(250,248,244,.4); margin-left:3px;
+    }
+
+    .wrap{
+      display:grid; grid-template-columns:minmax(0,1fr) 400px;
+      gap:32px; padding:0 44px 44px; align-items:start;
+    }
+
+    .sec{ padding:30px 0 0; }
+    .shead h2{ font-size:19px; }
+    .shead{ padding:0 2px 15px; }
+
+    /* 车衣 / 玻璃膜 分组平铺成两列 */
+    #secCoat, #secFilm{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+    #secCoat .grp, #secFilm .grp{ margin-bottom:0; }
+    .grp{ margin-bottom:12px; }
+
+    .opt-grid{ gap:12px; }
+    .opt{ padding:16px 15px; }
+    .opt .nm{ font-size:15.5px; }
+    .opt .pr{ font-size:22px; }
+
+    .mgrid{ grid-template-columns:repeat(3,1fr); gap:12px; }
+    .mcard .mn{ font-size:12.5px; }
+
+    .acard{ padding:13px; }
+    #secAccBig{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+    #secAccBig .acard{ margin-bottom:0; }
+    #secAccBig + .mgrid{ margin-top:12px; }
+    .apic{ width:132px; height:104px; border-radius:6px; }
+    .arow{ gap:14px; }
+    .abody .an{ font-size:15px; }
+    .abody .as{ font-size:11px; margin-top:4px; }
+    .abody .ap{ font-size:22px; }
+    .gift{ margin:11px -13px -13px; padding:10px 14px; }
+    .gift span{ font-size:11px; }
+
+    /* 底部结算栏 → 右侧固定报价单 */
+    .bar{ display:none; }
+    .side{
+      display:block; position:sticky; top:24px;
+      animation:sideIn .4s ease both;
+    }
+    @keyframes sideIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+
+    .side-card{
+      background:#fff; border:1px solid var(--line); border-radius:13px;
+      box-shadow:0 10px 34px rgba(35,26,16,.09); overflow:hidden;
+    }
+    .side-hd{
+      padding:17px 19px 14px; display:flex; align-items:center; gap:9px;
+      background:
+        radial-gradient(120% 160% at 90% 0%, rgba(216,179,106,.18), rgba(216,179,106,0) 60%),
+        linear-gradient(160deg,#10261E,#0C1D17 70%,#0A1811);
+    }
+    .side-hd b{ color:#fff; font-size:15px; font-weight:800; letter-spacing:.08em; }
+    .side-hd span{ margin-left:auto; font-size:10.5px; color:rgba(250,248,244,.55); letter-spacing:.04em; }
+    .side-bd{ padding:2px 19px; max-height:min(56vh,556px); overflow-y:auto; }
+    .side-bd::-webkit-scrollbar{ width:4px; }
+    .side-bd::-webkit-scrollbar-thumb{ background:var(--line); border-radius:2px; }
+    .side-empty{
+      padding:36px 0; text-align:center; color:var(--gray2);
+      font-size:12.5px; line-height:2;
+    }
+    .sline{
+      display:flex; align-items:baseline; gap:10px; padding:11px 0;
+      border-bottom:1px dashed var(--line);
+    }
+    .sline:last-child{ border-bottom:none; }
+    .sline .sk{ flex:none; width:52px; font-size:9.5px; color:var(--gray2); letter-spacing:.03em; }
+    .sline .sv{ flex:1; min-width:0; font-size:12.5px; font-weight:600; line-height:1.45; }
+    .sline .sv small{ display:block; font-size:9.5px; color:var(--gray); font-weight:400; margin-top:2px; }
+    .sline .sp{ flex:none; font-family:Arial,sans-serif; font-weight:700; font-size:13.5px; letter-spacing:-.01em; }
+
+    .side-ft{ padding:15px 19px 18px; border-top:1px solid var(--line); background:#FDFBF6; }
+    .side-total{ display:flex; align-items:baseline; justify-content:space-between; }
+    .side-total .k{ font-size:11px; color:var(--gray); letter-spacing:.16em; }
+    .side-total .v{
+      display:flex; align-items:baseline;
+      font-family:Arial,sans-serif; font-weight:700; font-size:33px;
+      color:var(--green); letter-spacing:-.03em;
+    }
+    .side-total .v i{ font-style:normal; font-size:16px; color:var(--gold2); margin-right:2px; }
+    .side-copy{
+      width:100%; margin-top:13px; padding:13px; border-radius:7px;
+      font-size:13.5px; font-weight:800; letter-spacing:.1em;
+      background:linear-gradient(140deg,#EBD49C,#D8B36A 42%,#C89F52); color:#1A1208;
+      box-shadow:0 4px 16px rgba(200,159,82,.28); transition:.16s;
+    }
+    .side-copy:active{ transform:scale(.985); }
+    .side-qr{
+      display:flex; gap:12px; align-items:center;
+      margin-top:15px; padding-top:15px; border-top:1px dashed var(--line);
+    }
+    .side-qr img{ width:66px; height:66px; border-radius:4px; }
+    .side-qr .t b{ display:block; font-size:11.5px; font-weight:800; }
+    .side-qr .t span{ display:block; margin-top:4px; font-size:9.5px; color:var(--gray); line-height:1.7; }
+
+    .folio{ padding:34px 22px 40px; }
+    .folio a:hover{ border-color:var(--gold2); color:var(--gold2); }
+  }
+
+  /* 触屏 / 窄屏统一手感 */
+  @media (hover:hover){
+    .opt:hover, .mcard:hover{ border-color:#DCC9A0; }
+    .row:hover{ background:#FBF8F1; }
+    .acard:hover{ border-color:#DCC9A0; }
+  }
 </style>
 </head>
 <body>
@@ -359,9 +517,18 @@
       </div>
       <span>SAINT-GOBAIN</span>
     </div>
-    <h1>理想 <em id="heroModel">全系</em><br>全车配置报价</h1>
-    <p>钢化膜 · 车衣 · 玻璃膜 · 配件　按需勾选，实时算价</p>
-    <div class="tagline">一张单子，看清楚每一项</div>
+    <div class="hero-flex">
+      <div class="hero-main">
+        <h1>理想 <em id="heroModel">全系</em><br>全车配置报价</h1>
+        <p>钢化膜 · 车衣 · 玻璃膜 · 配件　按需勾选，实时算价</p>
+        <div class="tagline">一张单子，看清楚每一项</div>
+      </div>
+      <div class="hero-side">
+        <div><span>触屏钢化膜</span><b><i>¥</i>599<em>起</em></b></div>
+        <div><span>隐形车衣</span><b><i>¥</i>5,980<em>起</em></b></div>
+        <div><span>玻璃膜</span><b><i>¥</i>1,880<em>起</em></b></div>
+      </div>
+    </div>
   </header>
 
   <!-- 车型 -->
@@ -369,6 +536,9 @@
     <div class="lab">选择车型</div>
     <div class="mchips" id="mchips"></div>
   </div>
+
+  <div class="wrap">
+  <main class="main">
 
   <!-- 01 屏幕保护 -->
   <section class="sec">
@@ -416,6 +586,34 @@
   <div class="folio">
     <a href="poster.html">查看完整长图版 →</a>
     <p>郝金彪哥汽车用品经营部 · SolarGard 圣佳授权店<br>车衣 · 窗膜 · 改色 · 洗车　到店免费实测</p>
+  </div>
+
+  </main>
+
+  <aside class="side">
+    <div class="side-card">
+      <div class="side-hd">
+        <b>报价单</b>
+        <span id="sideCnt">未选项目</span>
+      </div>
+      <div class="side-bd" id="sideBody"></div>
+      <div class="side-ft">
+        <div class="side-total">
+          <span class="k">合计</span>
+          <span class="v"><i>¥</i><span id="sideVal">0</span></span>
+        </div>
+        <button class="side-copy" id="sideCopy">复制报价单</button>
+        <div class="side-qr">
+          <img src="asset/qr.png" alt="微信二维码">
+          <div class="t">
+            <b>加微信 · 直接问价</b>
+            <span>把单子发我，按你的车核一遍<br>到店免费实测，不合适不要钱</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
   </div>
 </div>
 
@@ -535,7 +733,10 @@ const state = { model:'i6', screen:null, coat:null, film:null, acc:new Set() };
 const $ = s => document.querySelector(s);
 const money = n => {
   const v = Math.round(n * 100) / 100;
-  return Number.isInteger(v) ? v.toLocaleString('en-US') : v.toFixed(1);
+  const s = Number.isInteger(v) ? String(v) : v.toFixed(1);
+  const [int, dec] = s.split('.');
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return dec ? grouped + '.' + dec : grouped;
 };
 const fmt = n => '¥' + money(n);
 
@@ -647,6 +848,26 @@ function refresh(){
   $('#sumCnt').textContent = list.length ? `已选 ${list.length} 项` : '未选项目';
   $('#btnSheet').classList.toggle('off', list.length === 0);
   renderSheet(list, total);
+  renderSide(list, total);
+}
+
+/* 桌面端右侧报价单 */
+function renderSide(list, total){
+  const body = $('#sideBody');
+  if (!body) return;
+  if (!list.length){
+    body.innerHTML = '<div class="side-empty">左侧勾选需要的项目<br>这里会实时生成报价单</div>';
+  } else {
+    body.innerHTML = list.map(x => `
+      <div class="sline">
+        <span class="sk">${x.k}</span>
+        <span class="sv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
+          ${x.gift?`<small style="color:#B98E3E">含赠品 · 全车硅胶套装</small>`:''}</span>
+        <span class="sp">${money(x.p)}</span>
+      </div>`).join('');
+  }
+  $('#sideVal').textContent = money(total);
+  $('#sideCnt').textContent = list.length ? `共 ${list.length} 项` : '未选项目';
 }
 
 function renderSheet(list, total){
@@ -781,6 +1002,13 @@ $('#btnSheet').onclick = () => {
 };
 $('#btnClose').onclick = closeSheet;
 $('#mask').onclick = closeSheet;
+
+$('#sideCopy').onclick = () => {
+  const list = picked();
+  if (!list.length){ toast('先在左侧勾选需要的项目'); return; }
+  const total = list.reduce((s, x) => s + x.p, 0);
+  copyQuote(list, total, MODELS.find(m => m.id === state.model));
+};
 
 /* ========================= 启动 ========================= */
 renderModels();
