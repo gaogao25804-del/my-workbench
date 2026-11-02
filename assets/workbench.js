@@ -458,20 +458,47 @@ function renderTasksPage() {
   const startIdx = (st.cal.page - 1) * PAGE_SIZE.task;
   const pageList = list.slice(startIdx, startIdx + PAGE_SIZE.task);
 
-  const taskHtml = '<div class="card">' +
-    '<div class="card-head"><div class="card-title">任务中心</div>' +
-      '<div class="card-sub">共 ' + info.total + ' 条 · 已完成 ' + info.completed + ' · 待办 ' + info.pending + '</div></div>' +
-    '<div class="task-tabs">' +
-      ['all:全部', 'pending:待办', 'completed:已完成'].map(function (pair) {
-        const k = pair.split(':')[0], label = pair.split(':')[1];
-        return '<button class="task-tab' + (st.cal.taskTab === k ? ' active' : '') + '" data-task-tab="' + k + '">' + label + '</button>';
-      }).join('') +
+  const catKeys = Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; });
+  const catMax = catKeys.length ? cats[catKeys[0]] : 1;
+
+  const taskHtml = '<div class="card poster-card">' +
+    '<div class="pz-head">' +
+      '<div class="pz-kicker">Task Center · ' + esc((info.latest || '2026').slice(0, 4)) + '</div>' +
+      '<div class="pz-title">任务中心</div>' +
+      (info.earliest ? '<div class="pz-sub">' + esc(info.earliest) + ' — ' + esc(info.latest) + '，按分类与月份归集的工作记录</div>' : '') +
+      '<div class="pz-stats">' +
+        '<div class="pz-stat"><b>' + info.total + '</b><span>Total · 全部</span></div>' +
+        '<div class="pz-stat"><b>' + info.completed + '</b><span>Done · 已完成</span></div>' +
+        '<div class="pz-stat"><b>' + info.pending + '</b><span>Pending · 待办</span></div>' +
+      '</div>' +
     '</div>' +
-    (Object.keys(cats).length ? '<div class="task-cats">' +
-      '<button class="chip' + (st.cal.taskCat === 'all' ? ' active' : '') + '" data-task-cat="all">全部</button>' +
-      Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; }).map(function (k) {
-        return '<button class="chip' + (st.cal.taskCat === k ? ' active' : '') + '" data-task-cat="' + esc(k) + '">' + esc(k) + ' ' + cats[k] + '</button>';
-      }).join('') + '</div>' : '') +
+    '<div class="pz-body">' +
+      '<div class="pz-left">' +
+        catCloud(cats, catKeys, catMax, st.cal.taskCat, info.total) +
+        '<div class="pz-sec"><i></i>按月分布</div>' +
+        '<div class="pz-bars">' + monthBars(info.tasks) + '</div>' +
+      '</div>' +
+      '<div class="pz-side">' +
+        '<div class="pz-sec"><i></i>按分类 · 点击筛选</div>' +
+        '<div class="pz-legend">' + catKeys.map(function (k) {
+          return '<button class="pz-leg' + (st.cal.taskCat === k ? ' on' : '') + '" data-task-cat="' + esc(k) + '">' +
+            '<span class="pz-dot"></span>' +
+            '<span class="pz-name">' + esc(k) + '</span>' +
+            '<span class="pz-bar"><i style="width:' + Math.round(cats[k] / catMax * 100) + '%"></i></span>' +
+            '<span class="pz-num">' + cats[k] + '</span>' +
+            '</button>';
+        }).join('') + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="pz-foot">' +
+      '<div class="task-tabs">' +
+        ['all:全部', 'pending:待办', 'completed:已完成'].map(function (pair) {
+          const k = pair.split(':')[0], label = pair.split(':')[1];
+          return '<button class="task-tab' + (st.cal.taskTab === k ? ' active' : '') + '" data-task-tab="' + k + '">' + label + '</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="pz-note">' + (st.cal.taskCat === 'all' ? '全部分类' : esc(st.cal.taskCat)) + ' · 共 ' + list.length + ' 条</div>' +
+    '</div>' +
     (pageList.length ? '<div class="task-list">' + pageList.map(function (t) { return taskRow(t); }).join('') + '</div>'
       : stateHtml('empty', '没有符合条件的任务', '换个筛选条件试试')) +
     pagerHtml('task', st.cal.page, PAGE_SIZE.task, list.length) +
@@ -491,6 +518,60 @@ function taskRow(t) {
     (t.category ? '<span class="task-tag">' + esc(t.category) + '</span>' : '') +
     (when ? '<div class="task-date">' + esc(when) + '</div>' : '') +
     '</div>';
+}
+
+/* 分类星图：按数量大小排成内外两圈气泡，点击即筛选 */
+function catCloud(cats, keys, max, active, total) {
+  const n = keys.length;
+  if (!n) return '';
+  const n1 = Math.floor(n / 2);
+  const n0 = n - n1;
+  let i0 = 0, i1 = 0;
+
+  const bubbles = keys.map(function (k, i) {
+    const outer = i % 2 === 1;
+    const count = outer ? n1 : n0;
+    const idx = outer ? i1++ : i0++;
+    const ring = outer ? 46 : 32;
+    const ang = (-90 + 360 * idx / Math.max(1, count)) * Math.PI / 180;
+    const cx = 50 + Math.cos(ang) * ring;
+    const cy = 50 + Math.sin(ang) * ring;
+    const size = Math.round(14 + Math.sqrt(cats[k] / max) * 44);
+
+    return '<button class="pz-bub' + (active === k ? ' on' : '') + '"' +
+      ' style="left:' + cx.toFixed(2) + '%;top:' + cy.toFixed(2) + '%;--bs:' + size + 'px"' +
+      ' data-task-cat="' + esc(k) + '" title="' + esc(k + ' · ' + cats[k] + ' 条') + '">' +
+      (size >= 26 ? '<b>' + cats[k] + '</b>' : '') + (size >= 44 ? '<i>' + esc(k) + '</i>' : '') +
+      '</button>';
+  }).join('');
+
+  return '<div class="pz-radial">' +
+    '<span class="pz-ring r1"></span><span class="pz-ring r2"></span>' +
+    '<button class="pz-center' + (active === 'all' ? ' on' : '') + '" data-task-cat="all" title="全部任务 ' + total + ' 条">' +
+      '<b>' + total + '</b><i>ALL</i></button>' +
+    bubbles +
+    '</div>';
+}
+
+/* 按月柱状：细柱 + 顶部数值，对应海报底部的细长条形图 */
+function monthBars(tasks) {
+  const map = {};
+  tasks.forEach(function (t) {
+    const m = String(t.completed_at || t.due || '').slice(0, 7);
+    if (m) map[m] = (map[m] || 0) + 1;
+  });
+  const months = Object.keys(map).sort();
+  if (!months.length) return '';
+  const max = Math.max.apply(null, months.map(function (m) { return map[m]; }));
+
+  return months.map(function (m) {
+    const mon = Number(m.slice(5, 7));
+    return '<div class="pz-col">' +
+      '<span class="pz-col-n">' + map[m] + '</span>' +
+      '<div class="pz-col-track"><span class="pz-col-bar" style="height:' + Math.max(2, Math.round(map[m] / max * 100)) + '%"></span></div>' +
+      '<span class="pz-col-l">' + mon + '月</span>' +
+      '</div>';
+  }).join('');
 }
 
 function dayTaskRow(t, done) {
