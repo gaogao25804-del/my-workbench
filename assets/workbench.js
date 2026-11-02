@@ -524,30 +524,45 @@ function renderLibraryPage() {
     '</div>';
 
   const grid = pageList.length
-    ? '<div class="book-grid">' + pageList.map(bookCard).join('') + '</div>'
+    ? shelfRows(pageList)
     : stateHtml('empty', '没有找到匹配的图书', '换个关键词试试', '清空搜索', 'data-action="clear-lib"');
 
-  return toolbar + '<div class="card" style="padding:12px;">' + grid + pagerHtml('lib', st.lib.page, PAGE_SIZE.lib, list.length) + '</div>';
+  return toolbar + '<div class="card shelf-card">' + grid + pagerHtml('lib', st.lib.page, PAGE_SIZE.lib, list.length) + '</div>';
 }
 
-function bookCard(b) {
-  const id = b.id || b.title;
-  const initial = (b.title || '?').charAt(0);
-  const hasCover = b.cover && b.hasCover !== false;
-  const cover = hasCover
-    ? '<img src="' + esc(b.cover) + '" alt="" loading="lazy"><div class="cover-fallback" style="display:none">' + esc(initial) + '</div>'
-    : '<div class="cover-fallback">' + esc(initial) + '</div>';
-  const snippet = (b.outline || b.think || '').slice(0, 60);
+function shelfRows(list) {
+  const per = window.innerWidth <= 600 ? 3 : window.innerWidth <= 900 ? 4 : 6;
+  let out = '<div class="shelf-wrap">';
+  for (let i = 0; i < list.length; i += per) {
+    out += '<div class="shelf">' +
+      '<div class="shelf-books">' + list.slice(i, i + per).map(bookSpine).join('') + '</div>' +
+      '<div class="shelf-plank"></div>' +
+      '</div>';
+  }
+  return out + '</div>';
+}
 
-  return '<div class="book-card" data-book="' + esc(id) + '">' +
-    '<div class="book-cover">' + cover + '</div>' +
-    '<div class="book-main">' +
-      '<div class="book-title">' + esc(b.title || '未命名') + '</div>' +
-      '<div class="book-author">' + esc(b.author || '未知作者') + '</div>' +
-      (snippet ? '<div class="book-snippet">' + esc(snippet) + ((b.outline || b.think || '').length > 60 ? '…' : '') + '</div>' : '') +
-      '<div class="book-foot"><span class="book-date">' + esc(b.date || '') + '</span>' +
-      (b.think ? '<span class="book-has">有思考</span>' : '') + '</div>' +
-    '</div></div>';
+/* 每本书按标题做确定性扰动：宽度/高度/倾角略有差别，像真实书架 */
+function bookVar(title) {
+  let h = 0;
+  const s = String(title || '');
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973;
+  return h % 4;
+}
+
+function bookSpine(b) {
+  const id = b.id || b.title;
+  const title = b.title || '未命名';
+  const author = b.author || '未知作者';
+  const hasCover = b.cover && b.hasCover !== false;
+  const face = hasCover
+    ? '<img src="' + esc(b.cover) + '" alt="' + esc(title) + '" loading="lazy">'
+    : '<div class="spine-fallback"><span>' + esc(title) + '</span><i>' + esc(author) + '</i></div>';
+
+  return '<div class="book-shelf-item kv' + bookVar(title) + '" data-book="' + esc(id) + '" tabindex="0" role="button" aria-label="' + esc(title) + '">' +
+    '<div class="book-face">' + face + '</div>' +
+    '<div class="book-tip"><strong>' + esc(title) + '</strong><span>' + esc(author) + (b.date ? ' · ' + esc(b.date) : '') + '</span></div>' +
+    '</div>';
 }
 
 /* ---------------- 文案库 ---------------- */
@@ -622,21 +637,10 @@ function renderView(keepScroll) {
   });
   view.innerHTML = html;
 
-  bindImgFallback();
   if (keepScroll) window.scrollTo(0, y);
 
   // 懒加载：图书馆数据按需请求
   if (st.load.library === 'idle') loadLibrary();
-}
-
-function bindImgFallback() {
-  document.querySelectorAll('.book-cover img').forEach(function (img) {
-    img.addEventListener('error', function () {
-      img.style.display = 'none';
-      const fb = img.nextElementSibling;
-      if (fb) fb.style.display = 'flex';
-    }, { once: true });
-  });
 }
 
 function updateChrome() {
@@ -1080,7 +1084,7 @@ function onViewClick(e) {
   }
 
   // 详情入口
-  const bk = t.closest('.book-card');
+  const bk = t.closest('.book-shelf-item');
   if (bk) { openBook(bk.dataset.book, bk); return; }
   const wd = t.closest('[data-wenan]');
   if (wd) { openWenan(Number(wd.dataset.wenan), wd); return; }
