@@ -389,17 +389,31 @@ function renderTasksPage() {
   }
 
   const weekdays = [['MON', '一'], ['TUE', '二'], ['WED', '三'], ['THU', '四'], ['FRI', '五'], ['SAT', '六'], ['SUN', '日']];
+
+  // 本月概览：只统计落在当前月份的格子
+  const monthCells = cells.filter(function (c) { return !c.other; });
+  let mTasks = 0, mDone = 0, mEvents = 0;
+  monthCells.forEach(function (c) {
+    mTasks += c.tasks.length;
+    mEvents += c.events.length;
+    c.tasks.forEach(function (t) { if (t.status === 'completed') mDone++; });
+  });
+
   const calHtml = '<div class="card cal-card">' +
     '<div class="cal-head">' +
-      '<div class="cal-month">' + st.cal.cursor.getFullYear() + ' 年 ' + (st.cal.cursor.getMonth() + 1) + ' 月</div>' +
+      '<div class="cal-head-main">' +
+        '<div class="cal-kicker">Schedule · Month</div>' +
+        '<div class="cal-monthbig">' + st.cal.cursor.getFullYear() + ' 年 ' + (st.cal.cursor.getMonth() + 1) + ' 月</div>' +
+        '<div class="cal-meta"><span>本月 <b>' + mTasks + '</b> 项</span><i></i><span>完成 <b>' + mDone + '</b></span><i></i><span>日程 <b>' + mEvents + '</b></span></div>' +
+      '</div>' +
       '<div class="cal-nav">' +
         '<button class="cal-arrow" data-cal="prev" aria-label="上个月">' + ic('chevL') + '</button>' +
         '<button class="cal-today" data-cal="today">今天</button>' +
         '<button class="cal-arrow" data-cal="next" aria-label="下个月">' + ic('chevR') + '</button>' +
       '</div>' +
     '</div>' +
-    '<div class="cal-weekdays">' + weekdays.map(function (w) {
-      return '<div><span>' + w[0] + '</span><i>' + w[1] + '</i></div>';
+    '<div class="cal-weekdays">' + weekdays.map(function (w, i) {
+      return '<div' + (i > 4 ? ' class="wk"' : '') + '><span>' + w[0] + '</span><i>' + w[1] + '</i></div>';
     }).join('') + '</div>' +
     '<div class="cal-grid">' +
       cells.map(function (c) {
@@ -423,9 +437,12 @@ function renderTasksPage() {
             '<em>' + esc(catShort(g.label)) + '</em><b>' + g.n + '</b></span>';
         }).join('');
         const more = groups.length > 3 ? '<span class="cal-more">+' + (groups.length - 3) + ' 类</span>' : '';
-        return '<div class="cal-cell' + (c.other ? ' other' : '') + (isSel ? ' selected' : '') + (isToday ? ' today' : '') +
+        const weekend = c.date.getDay() === 5 || c.date.getDay() === 6;
+        return '<div class="cal-cell' + (c.other ? ' other' : '') + (weekend ? ' weekend' : '') +
+          (isSel ? ' selected' : '') + (isToday ? ' today' : '') +
           '" data-date="' + c.ds + '">' +
-          '<div class="cal-top"><span class="cal-daynum">' + c.date.getDate() + '</span></div>' +
+          '<div class="cal-top"><span class="cal-daynum">' + c.date.getDate() + '</span>' +
+          (isToday ? '<span class="cal-flag">今天</span>' : '') + '</div>' +
           (total ? '<div class="cal-marks">' + marks + more + '</div>' : '') +
         '</div>';
       }).join('') +
@@ -438,26 +455,69 @@ function renderTasksPage() {
   const pendTasks = dayTasks.filter(function (t) { return t.status !== 'completed'; });
   const wd = ['日', '一', '二', '三', '四', '五', '六'][selCell.date.getDay()];
 
-  const dayHtml = '<div class="card">' +
+  // 任务与日程合成一条按时间排序的日程流
+  const agenda = dayTasks.map(function (t) {
+    const raw = String(t.completed_at || t.due || '');
+    const done = t.status === 'completed';
+    return {
+      sort: raw.slice(0, 16) || '0',
+      time: raw.slice(11, 16) || '—',
+      kind: done ? 'DONE' : 'TODO',
+      state: done ? '已完成' : '待办',
+      cat: t.category || '其他',
+      tone: catTone(t.category),
+      title: t.summary || '—'
+    };
+  }).concat(selCell.events.map(function (e) {
+    const d = e.start ? new Date(e.start) : null;
+    const ok = d && !isNaN(d.getTime());
+    const hm = ok ? pad2(d.getHours()) + ':' + pad2(d.getMinutes()) : '';
+    return {
+      sort: '0' + hm,
+      time: hm || '全天',
+      kind: 'EVENT',
+      state: '日程',
+      cat: '日程',
+      tone: 6,
+      title: e.summary || '—'
+    };
+  })).sort(function (a, b) { return String(a.sort).localeCompare(String(b.sort)); });
+
+  const dayTotal = dayTasks.length + selCell.events.length;
+  let dayPill = '';
+  if (dayTotal) {
+    if (!dayTasks.length) dayPill = '<span class="day-pill ev">日程 ' + selCell.events.length + '</span>';
+    else if (!pendTasks.length) dayPill = '<span class="day-pill ok">全部完成</span>';
+    else dayPill = '<span class="day-pill">' + pendTasks.length + ' 项待办</span>';
+  }
+
+  // 当日分类分布，放在面板底部压住留白
+  const dCats = {};
+  agenda.forEach(function (a) {
+    if (!dCats[a.cat]) dCats[a.cat] = { n: 0, tone: a.tone };
+    dCats[a.cat].n++;
+  });
+  const dayLegend = Object.keys(dCats).sort(function (a, b) { return dCats[b].n - dCats[a].n; })
+    .map(function (k) {
+      return '<span class="day-legend t' + dCats[k].tone + '"><i></i>' + esc(k) + ' <b>' + dCats[k].n + '</b></span>';
+    }).join('');
+
+  const dayHtml = '<div class="card day-panel">' +
     '<div class="day-head">' +
-      '<div class="day-title">' + fmtMD(fmtDate(selCell.date)) + '</div>' +
-      '<div class="day-sub">周' + wd + ' · ' + (dayTasks.length + selCell.events.length) + ' 项</div>' +
+      '<div class="day-num">' + pad2(selCell.date.getDate()) + '</div>' +
+      '<div class="day-head-main">' +
+        '<div class="day-title">周' + wd + '</div>' +
+        '<div class="day-sub">' + selCell.date.getFullYear() + ' 年 ' + (selCell.date.getMonth() + 1) + ' 月 · 共 ' + dayTotal + ' 项</div>' +
+      '</div>' +
+      dayPill +
     '</div>' +
     '<div class="day-body">' +
-      (pendTasks.length ? '<div class="day-group-title">待办 ' + pendTasks.length + '</div>' +
-        pendTasks.map(function (t) { return dayTaskRow(t, false); }).join('') : '') +
-      (doneTasks.length ? '<div class="day-group-title">已完成 ' + doneTasks.length + '</div>' +
-        doneTasks.map(function (t) { return dayTaskRow(t, true); }).join('') : '') +
-      (selCell.events.length ? '<div class="day-group-title">日程 ' + selCell.events.length + '</div>' +
-        selCell.events.map(function (e) {
-          const t = e.start ? new Date(e.start) : null;
-          const time = t && !isNaN(t.getTime()) ? pad2(t.getHours()) + ':' + pad2(t.getMinutes()) : '全天';
-          return '<div class="day-item t6"><div class="day-check"></div><div class="day-item-main">' +
-            '<div class="day-item-title">' + esc(e.summary || '—') + '</div>' +
-            '<div class="day-item-meta"><span class="day-cat">日程</span><span class="day-time">' + time + '</span></div></div></div>';
-        }).join('') : '') +
-      (!dayTasks.length && !selCell.events.length ? stateHtml('empty', '当日暂无任务与日程') : '') +
-    '</div></div>';
+      (agenda.length
+        ? '<div class="day-stream">' + agenda.map(dayAgendaRow).join('') + '</div>'
+        : stateHtml('empty', '当日暂无任务与日程', '点选其他日期看看')) +
+    '</div>' +
+    (dayLegend ? '<div class="day-foot">' + dayLegend + '</div>' : '') +
+    '</div>';
 
   // 任务中心
   const cats = {};
@@ -595,14 +655,14 @@ function monthBars(tasks) {
   }).join('');
 }
 
-function dayTaskRow(t, done) {
-  const when = done ? t.completed_at : (t.completed_at || t.due);
-  const hm = String(when || '').slice(11, 16);
-  return '<div class="day-item t' + catTone(t.category) + (done ? ' done' : '') + '">' +
-    '<div class="day-check' + (done ? ' done' : '') + '">' + (done ? ic('check', 'ico-12') : '') + '</div>' +
-    '<div class="day-item-main"><div class="day-item-title">' + esc(t.summary || '—') + '</div>' +
-    '<div class="day-item-meta"><span class="day-cat">' + esc(t.category || '其他') + '</span>' +
-    (hm ? '<span class="day-time">' + hm + '</span>' : '') + '</div></div></div>';
+function dayAgendaRow(x) {
+  return '<div class="day-item t' + x.tone + (x.kind === 'DONE' ? ' done' : '') + '">' +
+    '<div class="day-rail"><b>' + esc(x.time) + '</b><i>' + esc(x.kind) + '</i></div>' +
+    '<div class="day-item-card">' +
+      '<div class="day-item-head"><span class="day-cat">' + esc(x.cat) + '</span>' +
+        '<span class="day-state' + (x.kind === 'DONE' ? ' ok' : x.kind === 'EVENT' ? ' ev' : '') + '">' + esc(x.state) + '</span></div>' +
+      '<div class="day-item-title">' + esc(x.title) + '</div>' +
+    '</div></div>';
 }
 
 /* ---------------- 图书馆 ---------------- */
@@ -636,7 +696,7 @@ function renderLibraryPage() {
 }
 
 function shelfRows(list) {
-  const per = window.innerWidth <= 600 ? 3 : window.innerWidth <= 900 ? 4 : 6;
+  const per = window.innerWidth <= 600 ? 3 : window.innerWidth <= 1200 ? 4 : 6;
   let out = '<div class="shelf-wrap">';
   for (let i = 0; i < list.length; i += per) {
     out += '<div class="shelf">' +
