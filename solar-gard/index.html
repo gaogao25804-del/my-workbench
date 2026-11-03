@@ -1,274 +1,654 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0C1D17">
-<title>理想 i6 报价器 · 郝金彪哥汽车用品经营部</title>
+<html lang="zh-CN" data-page-node-id="vAPDXG3hStuHFq7KoP7D9E"><head data-page-node-id="zKdL7KFc5YEk4EoeHyvaUu">
+<meta charset="UTF-8" data-page-node-id="L8TE9xLTYcY4PLsP11AHBT">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" data-page-node-id="6f2EywtlvVGDlpNdHiEXF1">
+<meta name="theme-color" content="#0C1D17" data-page-node-id="JneE9xKrAWXfp2YduE9jbZ">
+<title>理想 i6 全车贴膜报价 · 郝金彪哥汽车用品经营部</title>
 <style>
-  :root{
-    --green:#0C1D17; --green2:#13291F; --green3:#1B3A2B;
-    --gold:#D8B36A; --gold2:#B98E3E; --goldsoft:#F2DFAE;
-    --ivory:#FAF8F4; --paper:#FFFFFF; --line:#EAE2D0; --line2:#F3EDDF;
-    --ink:#231A10; --ink2:#4A4136; --gray:#8C8676; --gray2:#A9A296;
-    --red:#A63B2A;
-    --sh:0 2px 14px rgba(35,26,16,.06);
-  }
   *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --ink:#141210;
+    --green:#0C1D17;
+    --gold:#D8B36A;
+    --gold2:#C09A4A;
+    --paper:#FFFFFF;
+    --bg:#FAF8F4;
+    --line:#E7E1D5;
+    --gray:#7C7568;
+    --red:#B23327;
+
+    /* 尺寸变量：手机基准，桌面按海报原值覆盖 */
+    --pad:18px;
+    --gap:9px;
+    --secg:38px;
+    --h2:22px;
+    --en:9px;
+    --hint:10.5px;
+  }
   html{ -webkit-text-size-adjust:100%; }
   body{
-    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;
-    background:var(--ivory); color:var(--ink); line-height:1.5;
-    padding-bottom:calc(96px + env(safe-area-inset-bottom));
+    font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    background:#EFEBE2; color:var(--ink); line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:calc(78px + env(safe-area-inset-bottom));
   }
   img{ display:block; max-width:100%; }
   button{ font-family:inherit; border:none; background:none; cursor:pointer; color:inherit; }
 
-  .app{ max-width:520px; margin:0 auto; background:var(--ivory); min-height:100vh; position:relative; }
+  .page{ max-width:1080px; margin:0 auto; background:var(--bg); position:relative; overflow-x:hidden; }
 
-  /* ============ 顶部 ============ */
+  .gd{
+    background:linear-gradient(100deg,#EBD49C 0%,#D8B36A 26%,#B98E3E 52%,#E6C886 74%,#C09A4A 100%);
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; color:transparent;
+  }
+  .grain{
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.55'/></svg>");
+    opacity:.075; mix-blend-mode:overlay;
+  }
+
+  /* ================= HERO ================= */
   .hero{
-    background:
-      radial-gradient(120% 80% at 80% 0%, rgba(216,179,106,.16) 0%, rgba(216,179,106,0) 58%),
-      linear-gradient(160deg,#10261E 0%,#0C1D17 62%,#091511 100%);
-    padding:22px 20px 20px; position:relative; overflow:hidden;
+    position:relative; overflow:hidden;
+    background:var(--green);
+    padding-bottom:178px;
+  }
+  .hero-bg{
+    position:absolute; left:0; right:0; bottom:0; height:100%;
+    background-image:url("asset/car_i6.png");
+    background-repeat:no-repeat;
+    background-position:center bottom;
+    background-size:182% auto;
+    filter:saturate(.46) contrast(1.05) brightness(.80);
+  }
+  .hero::before{
+    content:""; position:absolute; left:0; right:0; top:0; bottom:0; z-index:1;
+    background:linear-gradient(to bottom,
+      #0C1D17 0%, #0C1D17 24%,
+      rgba(12,29,23,.97) 34%, rgba(12,29,23,.90) 44%,
+      rgba(12,29,23,.66) 54%, rgba(12,29,23,.34) 64%,
+      rgba(12,29,23,.10) 74%, rgba(12,29,23,0) 82%);
   }
   .hero::after{
-    content:""; position:absolute; left:0; right:0; bottom:0; height:1px;
-    background:linear-gradient(90deg,transparent,rgba(216,179,106,.45),transparent);
+    content:""; position:absolute; left:0; right:0; bottom:0; height:52px; z-index:3;
+    background:linear-gradient(to bottom, rgba(12,29,23,0) 0%, rgba(12,29,23,.6) 62%, #0C1D17 100%);
   }
-  .brandrow{ display:flex; align-items:center; justify-content:space-between; }
+  .hero-glow{
+    position:absolute; left:0; right:0; top:26%; bottom:0; z-index:1;
+    background:radial-gradient(ellipse 58% 52% at 52% 62%, rgba(216,179,106,.16) 0%, rgba(216,179,106,0) 66%);
+  }
+  .hero-inner{ position:relative; z-index:2; padding:0 var(--pad); }
+
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding-top:20px; }
   .brand{ display:flex; align-items:center; gap:8px; }
-  .brand b{ color:#fff; font-size:13px; font-weight:800; letter-spacing:.12em; }
-  .brand span{ color:rgba(250,248,244,.42); font-size:9.5px; letter-spacing:.26em; }
-  .bmark{
-    width:22px; height:22px; border-radius:5px; font-size:11px; font-weight:800;
-    display:grid; place-items:center; color:#1A1208;
-    background:linear-gradient(135deg,#EBD49C,#B98E3E);
+  .mark{
+    width:32px; height:32px; border:1.2px solid var(--gold);
+    display:flex; align-items:center; justify-content:center; flex:none;
+    font-family:Arial; font-size:12px; font-weight:700; color:var(--gold);
+    letter-spacing:.04em;
+  }
+  .brand .en{ font-family:Arial; font-size:13px; letter-spacing:.18em; color:#fff; font-weight:700; }
+  .brand .cn{ font-size:9px; color:rgba(255,255,255,.62); letter-spacing:.3em; }
+  .topbar .right{ text-align:right; }
+  .topbar .shop{
+    font-family:Arial; font-size:8px; color:rgba(255,255,255,.72); letter-spacing:.18em;
+  }
+  .topbar .shop2{
+    margin-top:4px; font-family:Arial; font-size:7px; color:var(--gold);
+    letter-spacing:.14em; opacity:.78;
+  }
+
+  .kick{
+    margin-top:28px; display:flex; align-items:center; gap:9px;
+    font-size:10px; letter-spacing:.2em;
+    color:var(--gold); font-weight:600;
+  }
+  .kick::before{
+    content:""; width:20px; height:1px; flex:none;
+    background:linear-gradient(to right, rgba(216,179,106,0), var(--gold));
   }
   .hero h1{
-    margin-top:20px; font-size:30px; font-weight:800; letter-spacing:.01em;
-    color:#fff; line-height:1.16;
+    margin-top:10px; font-size:31px; line-height:1.1;
+    color:#fff; font-weight:800; letter-spacing:.01em;
   }
-  .hero h1 em{
-    font-style:normal;
-    background:linear-gradient(100deg,#EBD49C,#D8B36A 40%,#B98E3E 70%,#E6C886);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
+  .hero h1 em{ font-style:normal; }
+  .h1sub{
+    margin-top:3px; font-size:21px; font-weight:300;
+    color:rgba(255,255,255,.90); letter-spacing:.14em;
   }
-  .hero p{ margin-top:8px; font-size:12px; color:rgba(250,248,244,.5); letter-spacing:.06em; }
-  .hero .tagline{
-    display:inline-block; margin-top:14px; padding:5px 11px; border-radius:3px;
-    border:1px solid rgba(216,179,106,.34); color:var(--gold);
-    font-size:10.5px; letter-spacing:.14em;
+  .h1note{
+    margin-top:13px; font-size:10px; color:rgba(255,255,255,.5);
+    letter-spacing:.1em;
+  }
+  .h1note b{ color:var(--gold); font-weight:500; }
+
+  /* ================= 价格带 ================= */
+  .pricebar{
+    position:relative; background:var(--green);
+    border-top:1px solid rgba(216,179,106,.30);
+    display:flex; align-items:stretch;
+    padding:20px var(--pad) 22px;
+  }
+  .pb{ flex:1; min-width:0; padding:0 2px; }
+  .pb-lab{ font-size:10px; letter-spacing:.16em; color:rgba(255,255,255,.55); }
+  .pb-price{
+    margin-top:7px; display:flex; align-items:baseline; gap:1px;
+    font-family:Arial; font-weight:700; font-size:25px; line-height:1;
+    color:#fff; letter-spacing:-.035em;
+  }
+  .pb-price i{ font-style:normal; font-size:12px; color:var(--gold); align-self:flex-start; margin-top:5px; margin-right:2px; }
+  .pb-price span{
+    font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+    font-size:10px; font-weight:400; color:rgba(255,255,255,.5);
+    margin-left:4px; letter-spacing:.06em;
+  }
+  .pb-note{ margin-top:7px; font-size:8.5px; color:rgba(255,255,255,.4); letter-spacing:.02em; line-height:1.5; }
+  .pricebar::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:1px;
+    background:linear-gradient(to right, rgba(216,179,106,0), rgba(216,179,106,.34) 30%, rgba(216,179,106,.34) 70%, rgba(216,179,106,0));
+  }
+  .pb-div{
+    width:1px; background:linear-gradient(to bottom, rgba(216,179,106,0) 0%, rgba(216,179,106,.34) 50%, rgba(216,179,106,0) 100%);
+    margin:3px 10px;
   }
 
-  /* ============ 车型选择 ============ */
-  .models{ background:var(--green2); padding:0 20px 18px; }
-  .models .lab{
-    font-size:10px; color:rgba(250,248,244,.4); letter-spacing:.24em;
-    padding:2px 0 10px;
+  /* ================= 主理人 ================= */
+  .host{
+    background:var(--green);
+    border-top:1px solid rgba(216,179,106,.20);
+    overflow:hidden; position:relative;
+    display:flex; flex-direction:column;
   }
-  .mchips{ display:flex; gap:8px; overflow-x:auto; padding:10px 0 2px; scrollbar-width:none; }
-  .mchips::-webkit-scrollbar{ display:none; }
-  .mchip{
-    flex:none; padding:9px 14px; border-radius:6px; font-size:12.5px; font-weight:600;
-    background:rgba(250,248,244,.06); color:rgba(250,248,244,.72);
-    border:1px solid rgba(250,248,244,.1); position:relative; white-space:nowrap;
-    transition:.18s;
+  .host::before{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(ellipse 70% 90% at 18% 80%, rgba(216,179,106,.10) 0%, rgba(216,179,106,0) 62%);
   }
-  .mchip.on{
-    background:linear-gradient(160deg,#EBD49C,#C89F52); color:#1A1208;
-    border-color:transparent; font-weight:800;
-    box-shadow:0 4px 14px rgba(200,159,82,.3);
+  .host-photo{ width:100%; position:relative; z-index:2; }
+  .host-photo img{ width:100%; display:block; }
+  .host-txt{ position:relative; z-index:2; flex:1; padding:0 var(--pad) 30px; }
+  .host-kick{ font-size:8.5px; letter-spacing:.36em; color:var(--gold); font-weight:600; }
+  .host-hello{
+    margin-top:13px; font-size:11px; letter-spacing:.32em;
+    color:rgba(255,255,255,.44); font-weight:400;
   }
-  .mchip.soon{ color:rgba(250,248,244,.34); }
-  .mchip.soon::after{
-    content:"待开放"; position:absolute; top:-11px; right:-3px;
-    background:rgba(250,248,244,.14); color:rgba(250,248,244,.6);
-    font-size:8px; padding:1px 4px; border-radius:3px; letter-spacing:.02em;
+  .host h2{
+    margin-top:5px; font-size:29px; line-height:1.24;
+    color:#fff; font-weight:800; letter-spacing:.03em;
   }
-
-  /* ============ 区块 ============ */
-  .sec{ padding:26px 16px 0; }
-  .shead{ display:flex; align-items:baseline; gap:9px; padding:0 4px 13px; }
-  .sno{
-    font-family:Arial,sans-serif; font-size:11px; font-weight:700; color:var(--gold2);
-    letter-spacing:.06em; padding:2px 5px; border:1px solid rgba(185,142,62,.32); border-radius:3px;
+  .host h2 em{ font-style:normal; color:var(--gold); }
+  .host p{
+    margin-top:12px; font-size:11.5px; line-height:1.95; color:rgba(255,255,255,.66);
+    letter-spacing:.03em;
   }
-  .shead h2{ font-size:17px; font-weight:800; letter-spacing:.04em; }
-  .shead .en{
-    font-size:9px; color:var(--gray2); letter-spacing:.2em; text-transform:uppercase;
-    padding-bottom:2px;
+  .host-cta{
+    margin-top:15px; display:flex; align-items:center; gap:10px;
+    font-size:21px; font-weight:800; letter-spacing:.1em;
   }
-  .shead .opt{
-    margin-left:auto; font-size:10.5px; color:var(--gray);
-    padding:2px 7px; border:1px solid var(--line); border-radius:20px;
+  .host-cta::before{
+    content:""; width:20px; height:2px; flex:none;
+    background:linear-gradient(to right, rgba(216,179,106,.15), var(--gold));
   }
-
-  /* ============ 选项卡 ============ */
-  .opt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .opt{
-    background:var(--paper); border:1.5px solid var(--line); border-radius:9px;
-    padding:14px 13px; text-align:left; position:relative; transition:.18s;
-    box-shadow:var(--sh); overflow:hidden;
+  .host-sign{
+    margin-top:17px; padding-top:15px; border-top:1px solid rgba(216,179,106,.22);
+    display:flex; align-items:center; gap:12px;
   }
-  .opt.on{
-    border-color:var(--gold2);
-    background:linear-gradient(180deg,#FFFCF4,#FFF8E9);
-    box-shadow:0 4px 18px rgba(185,142,62,.16);
+  .host-name{ font-size:19px; font-weight:800; letter-spacing:.14em; color:#fff; line-height:1; }
+  .seal{
+    width:34px; height:34px; flex:none;
+    border:1.4px solid #C05943; border-radius:2px;
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+    place-items:center; padding:3px;
+    box-shadow:inset 0 0 0 1.5px rgba(192,89,67,.16);
   }
-  .opt .nm{ font-size:14.5px; font-weight:800; letter-spacing:.02em; }
-  .opt .ds{ margin-top:4px; font-size:10.5px; color:var(--gray); line-height:1.5; min-height:2.6em; }
-  .opt .pr{
-    margin-top:9px; font-family:Arial,sans-serif; font-weight:700; font-size:20px;
-    letter-spacing:-.02em; color:var(--ink);
-  }
-  .opt .pr i{ font-style:normal; font-size:12px; color:var(--gold2); margin-right:1px; }
-  .opt.on .pr{ color:var(--green); }
-  .opt .hot{
-    position:absolute; top:0; right:0; padding:3px 8px 4px;
-    background:linear-gradient(160deg,#EBD49C,#C89F52); color:#1A1208;
-    font-size:9px; font-weight:800; letter-spacing:.06em;
-    border-bottom-left-radius:7px;
-  }
-  .opt .tick{
-    position:absolute; right:10px; bottom:10px; width:17px; height:17px; border-radius:50%;
-    border:1.5px solid var(--line); display:grid; place-items:center;
-    font-size:10px; color:transparent; transition:.18s;
-  }
-  .opt.on .tick{ border-color:var(--gold2); background:var(--gold2); color:#fff; }
-  .opt-pic{
-    margin:-14px -13px 11px; aspect-ratio:16/9; overflow:hidden; background:#F5F2EA;
-    border-bottom:1px solid var(--line2);
-  }
-  .opt-pic img{ width:100%; height:100%; object-fit:cover; }
-
-  /* ============ 分组列表（车衣 / 玻璃膜） ============ */
-  .grp{ background:var(--paper); border:1px solid var(--line); border-radius:10px;
-        box-shadow:var(--sh); overflow:hidden; margin-bottom:10px; }
-  .grp-hd{
-    display:flex; align-items:center; gap:9px; padding:11px 14px;
-    background:linear-gradient(180deg,#FCFAF4,#F7F3E8); border-bottom:1px solid var(--line2);
-  }
-  .grp-hd b{ font-size:12.5px; font-weight:800; letter-spacing:.06em; }
-  .grp-hd .stars{ font-size:9px; color:var(--gold2); letter-spacing:.1em; }
-  .grp-hd .from{ margin-left:auto; font-size:10.5px; color:var(--gray); }
-  .grp-hd .from i{ font-style:normal; font-family:Arial; font-weight:700; color:var(--gold2); }
-
-  .row{
-    width:100%; display:flex; align-items:center; gap:10px;
-    padding:11px 14px; border-bottom:1px solid var(--line2); text-align:left;
-    transition:background .15s; position:relative;
-  }
-  .row:last-child{ border-bottom:none; }
-  .row.on{ background:linear-gradient(90deg,#FFF9EA,#FFFDF7); }
-  .row.on::before{
-    content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
-    background:linear-gradient(180deg,#D8B36A,#B98E3E);
-  }
-  .row .rc{
-    flex:none; width:19px; height:19px; border-radius:4px; border:1.5px solid var(--line);
-    display:grid; place-items:center; font-size:9.5px; font-weight:700; color:var(--gray2);
-    font-family:Arial;
-  }
-  .row.on .rc{ border-color:var(--gold2); background:var(--gold2); color:#fff; }
-  .row .rn{ font-size:13px; font-weight:600; letter-spacing:.01em; }
-  .row .rn small{ display:block; margin-top:2px; font-size:10px; color:var(--gray); font-weight:400; }
-  .row .rp{
-    margin-left:auto; font-family:Arial,sans-serif; font-weight:700; font-size:15px;
-    color:var(--ink); letter-spacing:-.01em; white-space:nowrap;
-  }
-  .row.on .rp{ color:var(--green); }
-
-  /* ============ 配件 ============ */
-  .acard{
-    background:var(--paper); border:1px solid var(--line); border-radius:10px;
-    box-shadow:var(--sh); padding:11px; margin-bottom:10px; position:relative;
-    overflow:hidden;
-  }
-  .acard.on{ border-color:var(--gold2); background:linear-gradient(180deg,#FFFCF4,#FFF9EC); }
-  .arow{ display:flex; gap:11px; }
-  .apic{
-    flex:none; width:88px; height:88px; border-radius:6px; overflow:hidden;
-    background:#F7F4EC; border:1px solid var(--line2);
-  }
-  .apic img{ width:100%; height:100%; object-fit:cover; }
-  .abody{ flex:1; min-width:0; display:flex; flex-direction:column; }
-  .abody .an{ font-size:13.5px; font-weight:800; letter-spacing:.01em; }
-  .abody .as{ margin-top:3px; font-size:10.5px; color:var(--gray); line-height:1.5; }
-  .abody .ap{
-    margin-top:auto; padding-top:6px;
-    font-family:Arial,sans-serif; font-weight:700; font-size:19px; letter-spacing:-.02em;
-  }
-  .abody .ap i{ font-style:normal; font-size:11px; color:var(--gold2); margin-right:1px; }
-  .abody .ap em{ font-style:normal; font-family:inherit; font-size:10px; font-weight:400; color:var(--gray); margin-left:5px; }
-  .atick{
-    position:absolute; right:11px; bottom:11px; width:19px; height:19px; border-radius:50%;
-    border:1.5px solid var(--line); display:grid; place-items:center; font-size:10px; color:transparent;
-    transition:.18s;
-  }
-  .acard.on .atick{ border-color:var(--gold2); background:var(--gold2); color:#fff; }
-  .gift{
-    margin:9px -11px -11px; padding:9px 12px; display:flex; align-items:center; gap:8px;
-    background:linear-gradient(100deg,#122A20,#0C1D17 62%,#0A1812);
-  }
-  .gift b{
-    flex:none; width:22px; height:22px; border-radius:50%; display:grid; place-items:center;
-    font-size:11px; font-weight:800; color:#1A1208;
-    background:linear-gradient(140deg,#EBD49C,#C89F52);
-  }
-  .gift span{ font-size:10.5px; color:rgba(250,248,244,.78); letter-spacing:.02em; }
-  .gift em{
-    margin-left:auto; flex:none; font-style:normal; font-size:10px; font-weight:700;
-    color:var(--gold); padding:2px 7px; border:1px solid rgba(216,179,106,.42); border-radius:3px;
+  .seal span{ font-size:9.5px; font-weight:700; color:#C8624B; line-height:1; font-family:"Microsoft YaHei",serif; }
+  .host-store{ margin-top:11px; font-size:12px; color:rgba(255,255,255,.82); letter-spacing:.06em; }
+  .host-badge{
+    display:inline-block; margin-top:9px; padding:4px 11px 3px;
+    border:1px solid rgba(216,179,106,.44); border-radius:2px;
+    font-size:9.5px; color:var(--gold); letter-spacing:.14em;
   }
 
-  .mgrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .mcard{
-    background:var(--paper); border:1.5px solid var(--line); border-radius:9px;
-    padding:9px; text-align:left; position:relative; box-shadow:var(--sh); transition:.18s;
+  /* ================= 区块 ================= */
+  .sec{ padding:0 var(--pad); }
+  .sec-head{
+    display:flex; align-items:flex-end; gap:9px; flex-wrap:wrap;
+    padding-bottom:12px; border-bottom:1px solid var(--line); margin-bottom:16px;
+    margin-top:var(--secg);
   }
-  .mcard.on{ border-color:var(--gold2); background:linear-gradient(180deg,#FFFCF4,#FFF9EC); }
-  .mcard .mp{
-    aspect-ratio:4/3; border-radius:5px; overflow:hidden; margin-bottom:8px;
-    background:#F8F4EA; border:1px solid var(--line2);
+  .sec-head .no{
+    font-family:Arial; font-size:12px; font-weight:700; color:var(--gold2);
+    letter-spacing:.06em; padding-bottom:4px;
   }
-  .mcard .mp img{ width:100%; height:100%; object-fit:cover; }
-  .mcard .mn{ font-size:12px; font-weight:700; line-height:1.35; min-height:2.7em; }
-  .mcard .ms{ margin-top:3px; font-size:9.5px; color:var(--gray); }
-  .mcard .mb{
-    margin-top:7px; display:flex; align-items:baseline;
-    font-family:Arial,sans-serif; font-weight:700; font-size:16px; letter-spacing:-.01em;
+  .sec-head h2{ font-size:var(--h2); font-weight:800; letter-spacing:.02em; line-height:1; }
+  .sec-head .en{
+    display:none;
+    font-family:Arial; font-size:var(--en); letter-spacing:.2em; color:#B4AC9C;
+    padding-bottom:3px; flex:1;
   }
-  .mcard .mb i{ font-style:normal; font-size:10px; color:var(--gold2); margin-right:1px; }
-  .mcard .atick{ right:9px; top:9px; bottom:auto; background:rgba(255,255,255,.9); }
-  .mcard.on .atick{ background:var(--gold2); }
+  .sec-head .hint{
+    font-size:var(--hint); color:var(--gray); letter-spacing:.04em; padding-bottom:3px;
+  }
 
-  /* ============ 底部结算栏 ============ */
+  /* ================= 01 屏幕保护 ================= */
+  .screen-card{
+    background:var(--paper); border:1px solid #EDE8DE; border-radius:3px; overflow:hidden;
+  }
+  .screen-head{ display:block; padding:18px 16px 16px; }
+  .sc-l{ min-width:0; }
+  .addon-k{
+    font-family:Arial; font-size:8.5px; font-weight:700;
+    letter-spacing:.24em; color:var(--gold2);
+  }
+  .sc-title{ font-size:20px; font-weight:800; letter-spacing:.02em; margin-top:8px; line-height:1.2; }
+  .sc-sub{ margin-top:7px; font-size:10.5px; line-height:1.75; color:#8C8676; letter-spacing:.02em; }
+  .sc-list{ margin-top:12px; }
+  .sc-list div{
+    display:flex; align-items:baseline; gap:12px;
+    padding:7px 0; border-bottom:1px solid #F2EDE2;
+  }
+  .sc-list div:last-child{ border-bottom:none; }
+  .sc-list b{ width:70px; flex:none; font-size:11.5px; font-weight:700; letter-spacing:.03em; }
+  .sc-list i{ font-style:normal; font-size:10px; color:#8C8676; letter-spacing:.02em; }
+
+  .sc-price{ margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+  .sc-tier{
+    position:relative; display:block; width:100%; text-align:left;
+    border:1px solid #E7E1D3; border-radius:3px; background:#fff;
+    padding:11px 13px 12px; transition:.16s;
+  }
+  .sc-tier--hl{ background:var(--green); border-color:var(--green); }
+  .sc-tier.on{ border-color:var(--gold); box-shadow:0 0 0 2px rgba(216,179,106,.55); }
+  .sc-tier .t-top{ display:flex; align-items:center; gap:7px; }
+  .sc-tier .t-lab{ font-size:11.5px; font-weight:800; letter-spacing:.1em; color:var(--ink); }
+  .sc-tier--hl .t-lab{ color:var(--gold); }
+  .sc-tier .t-set{ font-size:9.5px; color:#948D7C; letter-spacing:.02em; }
+  .sc-tier--hl .t-set{ color:rgba(255,255,255,.56); }
+  .sc-tier .t-reco{
+    margin-left:auto; flex:none;
+    font-size:8px; font-weight:700; letter-spacing:.08em; color:#3A2A0C;
+    background:linear-gradient(180deg,#F2DFAE,#E1C383);
+    padding:2px 6px 1px; border-radius:2px;
+  }
+  .sc-tier .t-num{
+    margin-top:6px; display:flex; align-items:baseline;
+    font-family:Arial; font-weight:700; font-size:30px; line-height:1;
+    letter-spacing:-.035em; color:var(--ink);
+  }
+  .sc-tier--hl .t-num{ color:#fff; }
+  .sc-tier .t-num i{ font-style:normal; font-size:14px; color:var(--gold2); margin-right:2px; align-self:flex-start; margin-top:5px; }
+  .sc-tier--hl .t-num i{ color:var(--gold); }
+  .sc-tier .t-ck{
+    position:absolute; right:11px; bottom:12px; width:16px; height:16px; border-radius:50%;
+    border:1px solid #DDD5C4; display:grid; place-items:center;
+    font-size:8px; color:transparent; transition:.16s;
+  }
+  .sc-tier--hl .t-ck{ border-color:rgba(216,179,106,.5); }
+  .sc-tier.on .t-ck{ background:var(--gold2); border-color:var(--gold2); color:#fff; }
+
+  .sc-grid{
+    display:flex; gap:8px; padding:0 14px 16px;
+    overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;
+  }
+  .sc-grid::-webkit-scrollbar{ display:none; }
+  .sc-item{
+    flex:none; width:64%; scroll-snap-align:start;
+    background:#fff; border:1px solid #EFE9DC; border-radius:3px; overflow:hidden;
+  }
+  .sc-pic{ aspect-ratio:800/430; overflow:hidden; background:#fff; }
+  .sc-pic img{ width:100%; height:100%; object-fit:cover; }
+  .sc-cap{ padding:8px 9px 9px; border-top:1px solid #F0EADD; display:flex; flex-wrap:wrap; gap:4px; align-items:baseline; }
+  .sc-cap b{ font-size:11px; font-weight:700; letter-spacing:.02em; }
+  .sc-cap span{ font-size:9px; color:#8C8676; letter-spacing:.02em; }
+
+  .sc-foot{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:12px 14px 13px; border-top:1px dashed rgba(192,154,74,.36);
+    background:linear-gradient(100deg,#FCF9F2 0%,#F8F1E1 100%);
+  }
+  .sc-foot b{ font-size:11.5px; font-weight:800; letter-spacing:.03em; color:var(--ink); }
+  .sc-foot b em{ font-style:normal; color:var(--red); }
+  .sc-foot span{ font-size:10px; color:#7A7264; letter-spacing:.02em; }
+
+  /* ================= 02 车衣 ================= */
+  .grid4{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .pcol{
+    background:var(--paper); border:1px solid #EDE8DE; border-radius:3px;
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .pcolhead{
+    display:flex; align-items:center; gap:7px;
+    padding:9px 10px; border-bottom:1px solid #F2EDE2;
+    background:linear-gradient(180deg,#FCFAF4,#F8F4E9);
+  }
+  .ptag{ font-size:11px; font-weight:800; letter-spacing:.06em; }
+  .pfrom{ margin-left:auto; font-family:Arial; font-size:10px; font-weight:700; color:var(--gold2); letter-spacing:-.01em; }
+  .pfrom s{ font-size:8px; color:#BCB4A4; margin-right:2px; font-weight:400; }
+
+  .prow{
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+    padding:9px 10px; border-bottom:1px solid #F5F0E6;
+    width:100%; text-align:left; transition:.14s; position:relative;
+  }
+  .prow:last-child{ border-bottom:none; }
+  .prow.on{ background:linear-gradient(90deg,rgba(216,179,106,.14),rgba(216,179,106,0)); }
+  .prow.on::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:2px;
+    background:linear-gradient(180deg,#D8B36A,#B98A32);
+  }
+  .pname{ flex:1 1 100%; font-size:11.5px; font-weight:700; letter-spacing:.01em; line-height:1.3; }
+  .prow.on .pname::after{ content:" ✓"; color:var(--gold2); font-weight:700; }
+  .pspec{ flex:1; min-width:0; font-size:9px; color:#948D7C; letter-spacing:.01em; }
+  .pprice{
+    flex:none; font-family:Arial; font-weight:700; font-size:13px;
+    letter-spacing:-.02em; white-space:nowrap;
+  }
+  .pprice i{ font-style:normal; font-size:9px; color:var(--gold2); margin-right:1px; }
+
+  /* ================= 03 玻璃膜 ================= */
+  .film-grid{ display:grid; grid-template-columns:1fr; gap:10px; }
+  .card{
+    position:relative; background:var(--paper);
+    border:1px solid #EDE8DE; border-radius:3px;
+    padding:0 15px 16px; display:flex; flex-direction:column;
+  }
+  .ctagline{ height:26px; flex:none; }
+  .card.hl{ background:var(--green); border-color:var(--green); }
+  .ctag{
+    position:absolute; top:-1px; left:-1px; z-index:2;
+    background:var(--gold); color:#3A2A0C;
+    font-size:9px; font-weight:700; letter-spacing:.1em;
+    padding:3px 8px 3px; border-radius:3px 0 3px 0;
+  }
+  .cname{
+    font-family:Arial; font-size:16px; font-weight:700; letter-spacing:.06em; color:var(--ink);
+    margin-top:4px;
+  }
+  .card.hl .cname{ color:#fff; }
+  .cstars{ margin-top:4px; font-size:11px; color:var(--gold2); letter-spacing:2px; }
+  .card.hl .cstars{ color:var(--gold); }
+  .cprice{
+    margin-top:8px; display:flex; align-items:baseline;
+    font-family:Arial; font-weight:700; font-size:30px; letter-spacing:-.035em; line-height:1;
+    color:var(--ink);
+  }
+  .card.hl .cprice{ color:#fff; }
+  .cprice i{ font-style:normal; font-size:14px; margin-right:2px; color:var(--gold2); }
+  .card.hl .cprice i{ color:var(--gold); }
+  .cprice small{
+    font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+    font-size:10px; font-weight:400; margin-left:4px; color:var(--gray);
+  }
+  .card.hl .cprice small{ color:rgba(255,255,255,.45); }
+  .cdesc{ margin-top:7px; font-size:10px; line-height:1.6; color:var(--gray); }
+  .card.hl .cdesc{ color:rgba(255,255,255,.5); }
+  .cline{ height:1px; background:var(--line); margin:10px 0 8px; }
+  .card.hl .cline{ background:rgba(216,179,106,.24); }
+
+  .crow{
+    display:flex; align-items:center; gap:8px; width:100%; text-align:left;
+    padding:6px 4px 6px 0; transition:.14s; border-radius:2px;
+  }
+  .crow span{
+    flex:none; width:17px; height:17px; display:grid; place-items:center;
+    border:1px solid #E3DCCB; border-radius:2px;
+    font-family:Arial; font-size:9px; font-weight:700; color:#948D7C;
+    transition:.14s;
+  }
+  .crow b{ flex:1; min-width:0; font-size:9.5px; font-weight:400; color:#5E574A; letter-spacing:.01em; line-height:1.4; }
+  .crow em{
+    flex:none; font-style:normal; font-family:Arial; font-weight:700;
+    font-size:12px; letter-spacing:-.01em; color:var(--ink);
+  }
+  .card.hl .crow b{ color:rgba(255,255,255,.62); }
+  .card.hl .crow em{ color:var(--gold); }
+  .card.hl .crow span{ border-color:rgba(216,179,106,.34); color:rgba(216,179,106,.7); }
+  .crow.on{ background:rgba(216,179,106,.14); }
+  .crow.on span{ background:var(--gold2); border-color:var(--gold2); color:#fff; }
+  .card.hl .crow.on{ background:rgba(216,179,106,.20); }
+  .card.hl .crow.on span{ background:var(--gold); border-color:var(--gold); color:#231A10; }
+
+  /* ================= 04 配件 ================= */
+  .addon-card{
+    display:flex; flex-direction:column;
+    background:var(--paper); border:1px solid #EDE8DE; border-radius:3px;
+    overflow:hidden; position:relative; transition:.16s;
+  }
+  .addon-card.on{ border-color:var(--gold); box-shadow:0 0 0 2px rgba(216,179,106,.5); }
+  .addon-top{ display:flex; flex-direction:column; }
+  .addon-pic{ width:100%; background:#fff; border-bottom:1px solid #F2EDE2; }
+  .addon-pic img{ width:100%; display:block; }
+  .addon-body{ padding:14px 15px 14px; display:flex; flex-direction:column; }
+  .addon-name{ font-size:19px; font-weight:800; letter-spacing:.02em; margin-top:7px; line-height:1.2; }
+  .addon-spec{ margin-top:7px; font-size:10.5px; line-height:1.7; color:#8C8676; letter-spacing:.01em; }
+  .addon-tags{ margin-top:9px; display:flex; gap:6px; flex-wrap:wrap; }
+  .addon-tags span{
+    font-size:9px; color:#6E6858; letter-spacing:.02em;
+    border:1px solid #E4DCCB; background:#FAF7F0; padding:3px 7px 2px; border-radius:2px;
+  }
+  .addon-note{ margin-top:7px; font-size:9.5px; color:#948D7C; line-height:1.6; }
+  .addon-buy{
+    margin-top:11px; padding-top:11px; border-top:1px solid var(--line);
+    display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+  }
+  .addon-price{
+    display:flex; align-items:baseline;
+    font-family:Arial; font-weight:700; font-size:25px; letter-spacing:-.035em; line-height:1;
+  }
+  .addon-price i{ font-style:normal; font-size:12px; color:var(--gold2); margin-right:2px; }
+  .addon-price span{
+    font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+    font-size:9px; font-weight:400; color:#948D7C; margin-left:4px;
+  }
+  .addon-mats{ text-align:right; font-size:9px; color:#948D7C; line-height:1.65; }
+  .addon-mats b{ color:var(--ink); font-weight:700; }
+  .addon-ck{
+    position:absolute; right:10px; top:10px; z-index:3;
+    width:20px; height:20px; border-radius:50%;
+    border:1px solid #DDD5C4; background:rgba(255,255,255,.94);
+    display:grid; place-items:center; font-size:9px; color:transparent; transition:.16s;
+  }
+  .addon-card.on .addon-ck,
+  .seat-card.on .addon-ck{ background:var(--gold2); border-color:var(--gold2); color:#fff; }
+
+  .gift-bar{
+    display:flex; align-items:center; gap:9px;
+    padding:11px 15px; background:var(--green);
+  }
+  .gift-tag{
+    flex:none; width:20px; height:20px; border-radius:50%;
+    background:linear-gradient(140deg,#EBD49C,#C89F52); color:#1A1208;
+    display:grid; place-items:center; font-size:9px; font-weight:800;
+  }
+  .gift-txt{ flex:1; min-width:0; }
+  .gift-txt b{ display:block; color:var(--gold); font-size:11px; font-weight:800; letter-spacing:.03em; }
+  .gift-txt span{ display:none; }
+  .gift-set{
+    flex:none; font-size:9px; font-weight:700; color:var(--gold);
+    border:1px solid rgba(216,179,106,.42); border-radius:2px; padding:2px 6px;
+  }
+
+  /* 展示带 */
+  .sub-block{ border-top:1px solid var(--line); background:#FAF8F2; padding:14px 13px 16px; }
+  .sub-head{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-bottom:11px; }
+  .sub-head::before{
+    content:""; width:3px; height:13px; flex:none; border-radius:2px;
+    background:linear-gradient(180deg,#D8B36A,#B98A32);
+  }
+  .sub-head b{ font-size:12.5px; font-weight:800; letter-spacing:.04em; }
+  .cnt{
+    font-style:normal; font-size:9px; font-weight:800; letter-spacing:.03em;
+    color:#231A10; background:linear-gradient(180deg,#F2DFAE,#E1C383);
+    padding:2px 7px 2px; border-radius:2px;
+  }
+  .sub-head span{ font-size:9.5px; color:var(--gray); letter-spacing:.01em; line-height:1.5; }
+  .sub-note{ margin:-2px 0 10px; font-size:9.5px; color:#948D7C; line-height:1.65; }
+  .sub-note b{ color:var(--gold2); font-weight:700; }
+
+  .fit-row{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .fit-item{ background:#fff; border:1px solid #EFE9DC; border-radius:3px; overflow:hidden; }
+  .pframe{ aspect-ratio:900/980; overflow:hidden; }
+  .pframe img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .pcap{
+    height:30px; display:grid; place-items:center;
+    background:#fff; border-top:1px solid #F0EADD;
+    font-size:10px; font-weight:700; letter-spacing:.04em; color:#3A3227;
+  }
+
+  .trio{ display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+  .trio-item{ background:#fff; border:1px solid #EFE9DC; border-radius:3px; overflow:hidden; }
+  .trio .pframe{ aspect-ratio:1696/1320; }
+  .trio .pframe img{ padding:5px; box-sizing:border-box; object-fit:contain; }
+
+  .mat-kit{
+    background:#fff; border:1px solid #EFE9DC; border-radius:3px;
+    padding:8px; margin-bottom:9px; overflow:hidden;
+  }
+  .mat-kit img{ display:block; width:100%; height:auto; }
+  .seat-card{
+    background:var(--paper); border:1px solid #EDE8DE; border-radius:3px;
+    overflow:hidden; position:relative; transition:.16s;
+  }
+  .seat-card.on{ border-color:var(--gold); box-shadow:0 0 0 2px rgba(216,179,106,.5); }
+  .seat-body{ padding:13px 14px 14px; }
+  .seat-body .sub-head{ row-gap:5px; }
+  .seat-body .sub-head > span:not(.cnt){ flex:1 1 100%; order:9; margin-top:1px; }
+  .sub-price{
+    margin-left:auto; font-style:normal; font-family:Arial; font-weight:700;
+    font-size:20px; letter-spacing:-.025em; color:var(--ink); line-height:1;
+    border-bottom:2px solid rgba(192,154,74,.6); padding-bottom:2px; white-space:nowrap;
+  }
+  .sub-price em{
+    font-style:normal; font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+    font-size:9px; font-weight:600; color:var(--gray); margin-left:4px; letter-spacing:.02em;
+  }
+
+  .acc-strip{ border-top:1px solid var(--line); background:#FAF8F2; padding:14px 13px 16px; }
+  .acc-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .acc-item{
+    display:flex; flex-direction:column; padding:6px 6px 0; position:relative;
+    background:#fff; border:1px solid #EFE9DC; border-radius:3px; overflow:hidden;
+    text-align:left; transition:.16s;
+  }
+  .acc-item.on{ border-color:var(--gold2); box-shadow:0 0 0 1px var(--gold2); }
+  .acc-pic{
+    flex:none; width:100%; aspect-ratio:4/3;
+    display:flex; align-items:center; justify-content:center;
+    background:#F8F4EA; border:1px solid #F0EADA; border-radius:2px;
+    padding:6px; overflow:hidden;
+  }
+  .acc-pic img{ width:100%; height:100%; object-fit:contain; min-width:0; }
+  .acc-pic--dual{ gap:4px; padding:5px; }
+  .acc-pic--dual img{
+    width:50%; padding:2px; box-sizing:border-box;
+    background:#F8F4EA; border:1px solid #EAE2CE; border-radius:2px;
+  }
+  .acc-n{ padding:9px 4px 11px; display:flex; flex-direction:column; flex:1; }
+  .acc-n b{ display:block; min-height:2.5em; font-size:11px; font-weight:700; line-height:1.26; letter-spacing:.01em; }
+  .acc-n span{ display:block; margin-top:4px; font-size:8.5px; color:#948D7C; line-height:1.4; }
+  .acc-n i{
+    display:inline-block; align-self:flex-start; margin-top:auto;
+    padding:7px 0 3px;
+    font-style:normal; font-family:Arial; font-weight:700;
+    font-size:16px; letter-spacing:-.02em; color:var(--ink); line-height:1;
+    border-bottom:2px solid rgba(192,154,74,.6);
+  }
+  .acc-ck{
+    position:absolute; right:6px; top:6px; z-index:2;
+    width:16px; height:16px; border-radius:50%;
+    border:1px solid #DDD5C4; background:rgba(255,255,255,.94);
+    display:grid; place-items:center; font-size:8px; color:transparent;
+  }
+  .acc-item.on .acc-ck{ background:var(--gold2); border-color:var(--gold2); color:#fff; }
+
+  @media (max-width:759px){
+    .sub-price{
+      display:flex; flex-direction:column; align-items:flex-end;
+      font-size:19px; white-space:normal; text-align:right;
+    }
+    .sub-price em{ margin-left:0; margin-top:3px; }
+    .acc-item:nth-last-child(2){
+      grid-column:span 2; flex-direction:row; align-items:stretch; padding:7px;
+    }
+    .acc-item:nth-last-child(2) .acc-pic{ width:40%; flex:none; margin-right:10px; aspect-ratio:auto; }
+    .acc-item:nth-last-child(2) .acc-n{ justify-content:center; padding:4px 4px 6px; }
+    .acc-item:nth-last-child(2) .acc-n i{ margin-top:6px; }
+  }
+
+  .acc-item--more{
+    grid-column:span 2; padding:14px 14px;
+    border:1px solid #0C1D17; border-radius:3px;
+    background:linear-gradient(125deg,#132A20 0%,#0C1D17 58%,#091510 100%);
+    display:flex; flex-direction:row; align-items:center; gap:12px;
+  }
+  .am-t{ flex:none; color:var(--gold); font-size:14px; font-weight:800; letter-spacing:.12em; }
+  .am-d{ flex:none; width:1px; height:32px; background:rgba(216,179,106,.4); }
+  .am-l{ flex:1; min-width:0; color:rgba(250,248,244,.7); font-size:9.5px; line-height:1.7; letter-spacing:.02em; }
+  .am-go{
+    flex:none; font-style:normal; display:flex; align-items:center; gap:7px;
+    color:var(--gold); font-size:10px; font-weight:700; letter-spacing:.04em;
+  }
+  .am-go b{
+    width:24px; height:24px; border-radius:50%;
+    border:1px solid rgba(216,179,106,.5); display:grid; place-items:center;
+    font-size:12px; font-weight:700; line-height:1;
+  }
+
+  /* ================= 页脚 ================= */
+  .foot{ padding:var(--secg) var(--pad) 0; }
+  .frow{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .fit{ padding:14px 0 14px; border-bottom:1px dashed var(--line); }
+  .fit:last-child{ border-bottom:none; }
+  .fit .k{ font-size:8.5px; letter-spacing:.2em; color:var(--gold2); font-weight:700; }
+  .fit .v{ margin-top:6px; font-size:14px; font-weight:700; color:var(--ink); line-height:1.4; }
+  .fit .s{ margin-top:4px; font-size:10px; color:var(--gray); line-height:1.6; }
+
+  .fbot{ padding:22px 0 8px; }
+  .fbot .lf h3{ font-size:17px; font-weight:800; letter-spacing:.06em; line-height:1.4; }
+  .fbot .lf p{ margin-top:9px; font-size:10px; line-height:1.9; color:var(--gray); letter-spacing:.03em; }
+  .qrbox{ display:flex; align-items:center; gap:14px; margin-top:15px; }
+  .qrbox .frame{
+    padding:6px; background:#fff; border-radius:3px;
+    box-shadow:0 2px 10px rgba(26,24,20,.07); flex:none; order:2;
+  }
+  .qrbox img{ width:88px; height:88px; display:block; }
+  .qrtip{ text-align:left; order:1; }
+  .qrtip b{ display:block; font-size:13px; font-weight:800; color:var(--ink); letter-spacing:.06em; line-height:1.5; }
+  .qrtip em{ display:block; margin-top:6px; font-style:normal; font-size:9.5px; color:var(--gray); letter-spacing:.06em; line-height:1.8; }
+
+  .disc{
+    padding:18px var(--pad) 28px;
+    font-size:9px; line-height:1.9; color:#A69E8E; letter-spacing:.01em;
+  }
+  .disc a{ color:var(--gold2); text-decoration:none; }
+
+  /* ================= 结算：手机底部栏 ================= */
   .bar{
-    position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:520px;
+    position:fixed; left:50%; transform:translateX(-50%); bottom:0;
+    width:100%; max-width:1080px;
     background:rgba(12,29,23,.97); backdrop-filter:blur(14px);
-    border-top:1px solid rgba(216,179,106,.22);
-    padding:11px 16px calc(11px + env(safe-area-inset-bottom));
+    border-top:1px solid rgba(216,179,106,.28);
+    padding:9px 16px calc(9px + env(safe-area-inset-bottom));
     display:flex; align-items:center; gap:12px; z-index:60;
   }
   .bar .sum{ flex:1; min-width:0; }
-  .bar .sum .k{ font-size:9.5px; color:rgba(250,248,244,.42); letter-spacing:.16em; }
+  .bar .sum .k{ font-size:8.5px; color:rgba(250,248,244,.42); letter-spacing:.14em; }
   .bar .sum .v{
     display:flex; align-items:baseline; margin-top:1px;
-    font-family:Arial,sans-serif; font-weight:700; font-size:27px; color:#fff; letter-spacing:-.03em;
+    font-family:Arial; font-weight:700; font-size:23px; color:#fff; letter-spacing:-.03em;
   }
-  .bar .sum .v i{ font-style:normal; font-size:14px; color:var(--gold); margin-right:2px; }
-  .bar .sum .n{ font-size:10px; color:rgba(250,248,244,.45); margin-left:7px; font-family:inherit; font-weight:400; }
+  .bar .sum .v i{ font-style:normal; font-size:12px; color:var(--gold); margin-right:2px; }
+  .bar .sum .n{ font-size:9px; color:rgba(250,248,244,.45); margin-left:6px; font-weight:400; }
   .bar .go{
-    flex:none; padding:12px 22px; border-radius:7px; font-size:14px; font-weight:800; letter-spacing:.06em;
+    flex:none; padding:10px 18px; border-radius:3px; font-size:12.5px; font-weight:800; letter-spacing:.06em;
     background:linear-gradient(140deg,#EBD49C,#D8B36A 42%,#C89F52); color:#1A1208;
-    box-shadow:0 5px 18px rgba(200,159,82,.34); transition:.16s;
+    box-shadow:0 4px 16px rgba(200,159,82,.3);
   }
-  .bar .go:active{ transform:scale(.97); }
   .bar .go.off{ opacity:.4; box-shadow:none; }
 
-  /* ============ 报价单弹层 ============ */
+  .dock{ display:none; }
+
+  /* ================= 报价单弹层 ================= */
   .mask{
     position:fixed; inset:0; background:rgba(9,18,14,.55); backdrop-filter:blur(3px);
     z-index:80; opacity:0; pointer-events:none; transition:.22s;
@@ -277,370 +657,949 @@
   .sheet{
     position:fixed; left:50%; bottom:0; transform:translate(-50%,102%);
     width:100%; max-width:520px; max-height:88vh; overflow-y:auto;
-    background:var(--ivory); border-radius:16px 16px 0 0; z-index:90;
+    background:var(--bg); border-radius:14px 14px 0 0; z-index:90;
     transition:transform .28s cubic-bezier(.22,.8,.28,1);
     padding-bottom:calc(18px + env(safe-area-inset-bottom));
   }
   .sheet.on{ transform:translate(-50%,0); }
   .sheet-hd{
-    position:sticky; top:0; background:var(--ivory); padding:16px 18px 12px;
+    position:sticky; top:0; background:var(--bg); padding:15px 18px 11px;
     border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; z-index:2;
   }
-  .sheet-hd h3{ font-size:16px; font-weight:800; letter-spacing:.03em; }
+  .sheet-hd h3{ font-size:15px; font-weight:800; letter-spacing:.06em; }
   .sheet-hd .x{
-    margin-left:auto; width:28px; height:28px; border-radius:50%; background:var(--line2);
-    display:grid; place-items:center; font-size:15px; color:var(--gray);
+    margin-left:auto; width:26px; height:26px; border-radius:50%; background:#F3EDDF;
+    display:grid; place-items:center; font-size:14px; color:var(--gray);
   }
-  .sheet-bd{ padding:14px 18px 0; }
+  .sheet-bd{ padding:13px 18px 0; }
   .qcar{
-    padding:10px 13px; border-radius:7px; background:#fff; border:1px solid var(--line);
-    font-size:12px; color:var(--ink2); margin-bottom:14px;
+    padding:9px 12px; border-radius:3px; background:#fff; border:1px solid var(--line);
+    font-size:11.5px; color:#4A4136; margin-bottom:12px;
   }
   .qcar b{ color:var(--ink); font-weight:800; }
-  .qline{
-    display:flex; align-items:baseline; gap:10px; padding:10px 0;
-    border-bottom:1px dashed var(--line);
-  }
-  .qline .qk{ flex:none; width:62px; font-size:10px; color:var(--gray); letter-spacing:.04em; }
-  .qline .qv{ flex:1; font-size:12.5px; font-weight:600; line-height:1.45; }
-  .qline .qv small{ display:block; font-size:10px; color:var(--gray); font-weight:400; margin-top:2px; }
-  .qline .qp{ font-family:Arial,sans-serif; font-weight:700; font-size:14px; white-space:nowrap; }
-  .qtotal{
-    display:flex; align-items:baseline; justify-content:space-between;
-    padding:16px 0 4px;
-  }
-  .qtotal .tk{ font-size:12px; color:var(--gray); letter-spacing:.1em; }
+  .qline{ display:flex; align-items:baseline; gap:9px; padding:9px 0; border-bottom:1px dashed var(--line); }
+  .qline .qk{ flex:none; width:58px; font-size:9px; color:var(--gray); letter-spacing:.04em; }
+  .qline .qv{ flex:1; font-size:12px; font-weight:600; line-height:1.45; }
+  .qline .qv small{ display:block; font-size:9.5px; color:var(--gray); font-weight:400; margin-top:2px; }
+  .qline .qp{ font-family:Arial; font-weight:700; font-size:13px; white-space:nowrap; }
+  .qtotal{ display:flex; align-items:baseline; justify-content:space-between; padding:14px 0 4px; }
+  .qtotal .tk{ font-size:11px; color:var(--gray); letter-spacing:.1em; }
   .qtotal .tv{
     display:flex; align-items:baseline;
-    font-family:Arial,sans-serif; font-weight:700; font-size:30px; color:var(--green); letter-spacing:-.03em;
+    font-family:Arial; font-weight:700; font-size:27px; color:var(--green); letter-spacing:-.03em;
   }
-  .qtotal .tv i{ font-style:normal; font-size:15px; color:var(--gold2); margin-right:2px; }
-  .qnote{ font-size:10px; color:var(--gray2); line-height:1.7; padding-bottom:14px; }
-  .qact{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .qtotal .tv i{ font-style:normal; font-size:14px; color:var(--gold2); margin-right:2px; }
+  .qnote{ font-size:9.5px; color:#A9A296; line-height:1.7; padding-bottom:13px; }
+  .qact{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
   .qbtn{
-    padding:13px; border-radius:7px; font-size:13px; font-weight:800; letter-spacing:.05em;
+    padding:12px; border-radius:3px; font-size:12.5px; font-weight:800; letter-spacing:.05em;
     background:linear-gradient(140deg,#EBD49C,#C89F52); color:#1A1208;
   }
-  .qbtn.ghost{ background:#fff; border:1.5px solid var(--line); color:var(--ink2); font-weight:700; }
-  .qempty{ text-align:center; padding:40px 0; color:var(--gray); font-size:13px; }
-
+  .qbtn.ghost{ background:#fff; border:1px solid var(--line); color:#4A4136; font-weight:700; }
+  .qempty{ text-align:center; padding:38px 0; color:var(--gray); font-size:12.5px; }
   .qrwrap{
-    margin-top:16px; padding:14px; border-radius:9px; background:#fff; border:1px solid var(--line);
-    display:flex; align-items:center; gap:14px;
+    margin-top:14px; padding:12px; border-radius:3px; background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; gap:12px;
   }
-  .qrwrap img{ width:96px; height:96px; border-radius:5px; }
-  .qrwrap .qt b{ display:block; font-size:13px; font-weight:800; }
-  .qrwrap .qt span{ display:block; margin-top:5px; font-size:10.5px; color:var(--gray); line-height:1.7; }
+  .qrwrap img{ width:84px; height:84px; border-radius:3px; }
+  .qrwrap .qt b{ display:block; font-size:12px; font-weight:800; }
+  .qrwrap .qt span{ display:block; margin-top:4px; font-size:10px; color:var(--gray); line-height:1.7; }
 
   .toast{
     position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.94);
-    background:rgba(12,29,23,.94); color:#fff; padding:12px 20px; border-radius:8px;
-    font-size:13px; z-index:120; opacity:0; pointer-events:none; transition:.2s;
+    background:rgba(12,29,23,.94); color:#fff; padding:11px 18px; border-radius:4px;
+    font-size:12.5px; z-index:120; opacity:0; pointer-events:none; transition:.2s;
     max-width:78%; text-align:center; line-height:1.6;
   }
   .toast.on{ opacity:1; transform:translate(-50%,-50%) scale(1); }
 
-  .folio{ padding:26px 20px 30px; text-align:center; }
-  .folio a{
-    display:inline-block; font-size:11px; color:var(--gray); text-decoration:none;
-    padding:7px 14px; border:1px solid var(--line); border-radius:20px; background:#fff;
+  /* =========================================================
+     平板：760 –
+     ========================================================= */
+  @media (min-width:760px){
+    :root{ --pad:32px; --gap:12px; --secg:52px; --h2:28px; --en:11px; --hint:12px; }
+    body{ padding-bottom:calc(84px + env(safe-area-inset-bottom)); }
+    .hero{ padding-bottom:240px; }
+    .hero-bg{ background-size:112% auto; }
+    .topbar{ padding-top:32px; }
+    .mark{ width:44px; height:44px; font-size:16px; }
+    .brand{ gap:12px; }
+    .brand .en{ font-size:18px; }
+    .brand .cn{ font-size:12px; }
+    .topbar .shop{ font-size:12px; }
+    .topbar .shop2{ font-size:9px; }
+    .kick{ margin-top:44px; font-size:13px; }
+    .kick::before{ width:32px; }
+    .hero h1{ font-size:52px; margin-top:14px; }
+    .h1sub{ font-size:34px; }
+    .h1note{ font-size:13px; margin-top:18px; }
+    .pricebar{ padding:32px var(--pad) 34px; }
+    .pb-lab{ font-size:13px; }
+    .pb-price{ font-size:42px; margin-top:9px; }
+    .pb-price i{ font-size:18px; margin-top:7px; }
+    .pb-price span{ font-size:14px; }
+    .pb-note{ font-size:11.5px; }
+    .pb-div{ margin:5px 22px; }
+    .host{ flex-direction:row; align-items:flex-end; min-height:420px; }
+    .host-photo{ width:386px; flex:none; align-self:flex-end; margin-left:-10px; }
+    .host-txt{ padding:0 var(--pad) 34px 0; }
+    .host-kick{ font-size:10px; }
+    .host-hello{ font-size:13px; margin-top:16px; }
+    .host h2{ font-size:34px; margin-top:6px; }
+    .host p{ font-size:12.5px; }
+    .host-cta{ font-size:24px; margin-top:16px; }
+    .host-name{ font-size:23px; }
+    .seal{ width:42px; height:42px; }
+    .seal span{ font-size:12px; }
+    .host-store{ font-size:14px; }
+    .host-badge{ font-size:11px; }
+    .sec-head{ gap:14px; padding-bottom:14px; margin-bottom:20px; }
+    .sec-head .en{ display:block; }
+    .sec-head .no{ font-size:14px; }
+    .screen-head{ display:flex; gap:26px; align-items:flex-start; padding:24px 22px 20px; }
+    .sc-l{ flex:1; }
+    .sc-title{ font-size:26px; }
+    .sc-sub{ font-size:12px; }
+    .sc-list b{ width:92px; font-size:14px; }
+    .sc-list i{ font-size:11.5px; }
+    .sc-price{ width:250px; flex:none; margin-top:0; }
+    .sc-tier{ padding:14px 16px 15px; }
+    .sc-tier .t-lab{ font-size:14px; }
+    .sc-tier .t-set{ font-size:11px; }
+    .sc-tier .t-num{ font-size:38px; margin-top:8px; }
+    .sc-tier .t-num i{ font-size:17px; }
+    .sc-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:0 22px 20px; overflow:visible; }
+    .sc-item{ width:auto; }
+    .sc-cap b{ font-size:12.5px; }
+    .sc-cap span{ font-size:10px; }
+    .sc-foot{ padding:14px 22px 15px; }
+    .sc-foot b{ font-size:14px; }
+    .sc-foot span{ font-size:11.5px; }
+    .grid4{ gap:var(--gap); }
+    .pcolhead{ padding:11px 12px; }
+    .ptag{ font-size:13px; }
+    .pfrom{ font-size:12px; }
+    .prow{ padding:10px 12px; gap:8px; }
+    .pname{ font-size:13px; }
+    .pspec{ font-size:10.5px; }
+    .pprice{ font-size:15px; }
+    .film-grid{ grid-template-columns:1fr 1fr; gap:var(--gap); }
+    .card{ padding:0 18px 18px; }
+    .ctagline{ height:34px; }
+    .cname{ font-size:19px; }
+    .cstars{ font-size:13px; }
+    .cprice{ font-size:36px; }
+    .cdesc{ font-size:11.5px; }
+    .crow b{ font-size:11px; }
+    .crow em{ font-size:14px; }
+    .crow span{ width:20px; height:20px; font-size:10px; }
+    .addon-top{ flex-direction:row; }
+    .addon-pic{ width:40%; flex:none; border-bottom:none; border-right:1px solid #F2EDE2; display:flex; align-items:center; }
+    .addon-body{ flex:1; padding:20px 22px 18px; justify-content:center; }
+    .addon-name{ font-size:24px; }
+    .addon-spec{ font-size:12px; }
+    .addon-price{ font-size:30px; }
+    .addon-mats{ font-size:11px; }
+    .gift-bar{ padding:13px 22px; gap:14px; }
+    .gift-txt b{ font-size:14px; }
+    .gift-txt span{ display:block; margin-top:4px; font-size:11px; color:rgba(250,248,244,.6); line-height:1.6; }
+    .gift-set{ font-size:11px; padding:3px 9px; }
+    .sub-block{ padding:20px 22px 22px; }
+    .sub-head b{ font-size:15px; }
+    .sub-head span{ font-size:11px; }
+    .sub-note{ font-size:11px; }
+    .fit-row{ grid-template-columns:repeat(4,1fr); gap:var(--gap); }
+    .trio{ gap:var(--gap); }
+    .trio .pframe img{ padding:8px; }
+    .pcap{ height:34px; font-size:11px; }
+    .mat-kit{ padding:12px; margin-bottom:12px; }
+    .seat-body{ padding:16px 18px 18px; }
+    .seat-body .sub-head > span:not(.cnt){ flex:0 1 auto; order:0; margin-top:0; }
+    .sub-price{ font-size:26px; }
+    .sub-price em{ font-size:11px; }
+    .acc-strip{ padding:20px 22px 22px; }
+    .acc-grid{ grid-template-columns:repeat(3,1fr); gap:var(--gap); }
+    .acc-item{ padding:8px 8px 0; }
+    .acc-pic{ padding:9px; }
+    .acc-n b{ font-size:13px; }
+    .acc-n span{ font-size:10px; }
+    .acc-n i{ font-size:20px; }
+    .acc-ck{ width:19px; height:19px; font-size:9px; right:8px; top:8px; }
+    .acc-item--more{ padding:0 26px; }
+    .am-t{ font-size:17px; }
+    .am-d{ height:40px; }
+    .am-l{ font-size:11.5px; }
+    .am-go{ font-size:12px; }
+    .frow{ display:flex; }
+    .fit{ flex:1; padding:20px 22px 20px 0; border-bottom:none; border-right:1px solid var(--line); }
+    .fit:last-child{ border-right:none; padding-right:0; }
+    .fit .k{ font-size:10px; }
+    .fit .v{ font-size:17px; }
+    .fit .s{ font-size:11.5px; }
+    .fbot{ display:flex; align-items:center; justify-content:space-between; gap:30px; padding:32px 0 8px; }
+    .fbot .lf h3{ font-size:24px; }
+    .fbot .lf p{ font-size:11.5px; }
+    .qrbox{ margin-top:0; }
+    .qrbox img{ width:120px; height:120px; }
+    .qrbox .frame{ order:2; }
+    .qrtip{ order:1; text-align:left; }
+    .disc{ font-size:10px; padding-bottom:34px; }
+    .bar{ padding:11px 22px calc(11px + env(safe-area-inset-bottom)); }
+    .bar .sum .k{ font-size:10px; }
+    .bar .sum .v{ font-size:28px; }
+    .bar .sum .v i{ font-size:14px; }
+    .bar .go{ padding:12px 24px; font-size:14px; }
   }
-  .folio p{ margin-top:12px; font-size:9.5px; color:var(--gray2); line-height:1.8; }
 
   /* =========================================================
-     桌面端 / 平板适配
+     桌面：1080 – 与海报 1:1
      ========================================================= */
-  .wrap{ display:block; }
-  .side{ display:none; }
-  .main{ min-width:0; }
-  .hero-flex{ display:block; }
-  .hero-side{ display:none; }
-
-  /* —— 平板 —— */
-  @media (min-width:760px){
-    .app{ max-width:760px; }
-    .hero{ padding:28px 26px 24px; }
-    .hero h1{ font-size:34px; }
-    .models{ padding:0 26px 20px; }
-    .sec{ padding:28px 22px 0; }
-    .mgrid{ grid-template-columns:repeat(3,1fr); }
-    .folio{ padding:30px 22px 34px; }
-  }
-
-  /* —— 桌面 —— */
   @media (min-width:1080px){
-    body{ padding-bottom:0; background:#F3EFE7; }
-    .app{ max-width:1240px; box-shadow:0 0 60px rgba(35,26,16,.07); }
-
-    .hero{ padding:46px 44px 36px; }
-    .hero h1{ font-size:44px; line-height:1.12; letter-spacing:.005em; }
-    .hero p{ font-size:13.5px; margin-top:12px; }
-    .hero .tagline{ margin-top:18px; }
-    .models{ padding:0 44px 24px; }
-    .models .lab{ padding:2px 0 10px; }
-    .mchips{ overflow:visible; flex-wrap:wrap; }
-    .mchip{ padding:10px 18px; font-size:13px; }
-
-    /* 标题右侧价格概览 */
-    .hero-flex{ display:flex; align-items:flex-end; justify-content:space-between; gap:44px; }
-    .hero-side{ display:flex; gap:40px; padding-bottom:6px; }
-    .hero-side div{ text-align:right; }
-    .hero-side span{
-      display:block; font-size:9.5px; color:rgba(250,248,244,.4); letter-spacing:.2em;
-    }
-    .hero-side b{
-      display:flex; align-items:baseline; justify-content:flex-end; margin-top:7px;
-      font-family:Arial,sans-serif; font-weight:700; font-size:27px; color:#fff; letter-spacing:-.025em;
-    }
-    .hero-side b i{ font-style:normal; font-size:13px; color:var(--gold); margin-right:2px; }
-    .hero-side b em{
-      font-style:normal; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
-      font-size:10px; font-weight:400; color:rgba(250,248,244,.4); margin-left:3px;
-    }
-
-    .wrap{
-      display:grid; grid-template-columns:minmax(0,1fr) 400px;
-      gap:32px; padding:0 44px 44px; align-items:start;
-    }
-
-    .sec{ padding:30px 0 0; }
-    .shead h2{ font-size:19px; }
-    .shead{ padding:0 2px 15px; }
-
-    /* 车衣 / 玻璃膜 分组平铺成两列 */
-    #secCoat, #secFilm{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
-    #secCoat .grp, #secFilm .grp{ margin-bottom:0; }
-    .grp{ margin-bottom:12px; }
-
-    .opt-grid{ gap:12px; }
-    .opt{ padding:16px 15px; }
-    .opt .nm{ font-size:15.5px; }
-    .opt .pr{ font-size:22px; }
-
-    .mgrid{ grid-template-columns:repeat(3,1fr); gap:12px; }
-    .mcard .mn{ font-size:12.5px; }
-
-    .acard{ padding:13px; }
-    #secAccBig{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
-    #secAccBig .acard{ margin-bottom:0; }
-    #secAccBig + .mgrid{ margin-top:12px; }
-    .apic{ width:132px; height:104px; border-radius:6px; }
-    .arow{ gap:14px; }
-    .abody .an{ font-size:15px; }
-    .abody .as{ font-size:11px; margin-top:4px; }
-    .abody .ap{ font-size:22px; }
-    .gift{ margin:11px -13px -13px; padding:10px 14px; }
-    .gift span{ font-size:11px; }
-
-    /* 底部结算栏 → 右侧固定报价单 */
+    :root{ --pad:64px; --gap:16px; --secg:76px; --h2:38px; --en:13px; --hint:14.5px; }
+    body{ padding-bottom:0; background:#E9E4DA; }
+    .page{ box-shadow:0 0 70px rgba(35,26,16,.10); }
     .bar{ display:none; }
-    .side{
-      display:block; position:sticky; top:24px;
-      animation:sideIn .4s ease both;
-    }
-    @keyframes sideIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
 
-    .side-card{
-      background:#fff; border:1px solid var(--line); border-radius:13px;
-      box-shadow:0 10px 34px rgba(35,26,16,.09); overflow:hidden;
-    }
-    .side-hd{
-      padding:17px 19px 14px; display:flex; align-items:center; gap:9px;
-      background:
-        radial-gradient(120% 160% at 90% 0%, rgba(216,179,106,.18), rgba(216,179,106,0) 60%),
-        linear-gradient(160deg,#10261E,#0C1D17 70%,#0A1811);
-    }
-    .side-hd b{ color:#fff; font-size:15px; font-weight:800; letter-spacing:.08em; }
-    .side-hd span{ margin-left:auto; font-size:10.5px; color:rgba(250,248,244,.55); letter-spacing:.04em; }
-    .side-bd{ padding:2px 19px; max-height:min(56vh,556px); overflow-y:auto; }
-    .side-bd::-webkit-scrollbar{ width:4px; }
-    .side-bd::-webkit-scrollbar-thumb{ background:var(--line); border-radius:2px; }
-    .side-empty{
-      padding:36px 0; text-align:center; color:var(--gray2);
-      font-size:12.5px; line-height:2;
-    }
-    .sline{
-      display:flex; align-items:baseline; gap:10px; padding:11px 0;
-      border-bottom:1px dashed var(--line);
-    }
-    .sline:last-child{ border-bottom:none; }
-    .sline .sk{ flex:none; width:52px; font-size:9.5px; color:var(--gray2); letter-spacing:.03em; }
-    .sline .sv{ flex:1; min-width:0; font-size:12.5px; font-weight:600; line-height:1.45; }
-    .sline .sv small{ display:block; font-size:9.5px; color:var(--gray); font-weight:400; margin-top:2px; }
-    .sline .sp{ flex:none; font-family:Arial,sans-serif; font-weight:700; font-size:13.5px; letter-spacing:-.01em; }
+    .hero{ padding-bottom:0; height:1000px; }
+    .hero-bg{ background-position:center 82%; background-size:100% auto; }
+    .topbar{ padding-top:44px; }
+    .mark{ width:52px; height:52px; font-size:20px; }
+    .brand{ gap:14px; }
+    .brand .en{ font-size:22px; letter-spacing:.2em; }
+    .brand .cn{ font-size:15px; letter-spacing:.34em; }
+    .topbar .shop{ font-size:14px; letter-spacing:.24em; }
+    .topbar .shop2{ margin-top:9px; font-size:10.5px; letter-spacing:.32em; }
+    .kick{ margin-top:66px; font-size:18px; letter-spacing:.26em; gap:16px; }
+    .kick::before{ width:44px; }
+    .hero h1{ margin-top:16px; font-size:80px; line-height:1.06; }
+    .h1sub{ margin-top:6px; font-size:52px; letter-spacing:.16em; }
+    .h1note{ margin-top:22px; font-size:16px; letter-spacing:.16em; }
 
-    .side-ft{ padding:15px 19px 18px; border-top:1px solid var(--line); background:#FDFBF6; }
-    .side-total{ display:flex; align-items:baseline; justify-content:space-between; }
-    .side-total .k{ font-size:11px; color:var(--gray); letter-spacing:.16em; }
-    .side-total .v{
+    .pricebar{ padding:44px 64px 50px; }
+    .pb{ padding:0 6px; }
+    .pb-lab{ font-size:17px; letter-spacing:.26em; }
+    .pb-price{ margin-top:10px; font-size:60px; }
+    .pb-price i{ font-size:26px; margin-top:9px; margin-right:3px; }
+    .pb-price span{ font-size:18px; margin-left:8px; }
+    .pb-note{ margin-top:12px; font-size:14.5px; }
+    .pb-div{ margin:6px 34px; }
+
+    .host{ flex-direction:row; align-items:flex-end; min-height:648px; }
+    .host-photo{ width:646px; margin-left:-24px; }
+    .host-txt{ padding:0 62px 64px 8px; }
+    .host-kick{ font-size:12px; letter-spacing:.42em; }
+    .host-hello{ font-size:20px; margin-top:22px; }
+    .host h2{ font-size:52px; margin-top:8px; }
+    .host p{ font-size:16px; margin-top:20px; line-height:1.95; }
+    .host-cta{ font-size:34px; margin-top:26px; gap:14px; }
+    .host-cta::before{ width:30px; }
+    .host-sign{ margin-top:28px; padding-top:24px; gap:18px; }
+    .host-name{ font-size:30px; }
+    .seal{ width:52px; height:52px; padding:4px; }
+    .seal span{ font-size:15px; }
+    .host-store{ margin-top:16px; font-size:17px; }
+    .host-badge{ margin-top:13px; padding:5px 15px 4px; font-size:12.5px; letter-spacing:.2em; }
+
+    .sec-head{ gap:18px; padding-bottom:20px; margin-bottom:30px; }
+    .sec-head .no{ font-size:17px; padding-bottom:7px; }
+    .sec-head .en{ padding-bottom:5px; letter-spacing:.26em; }
+    .sec-head .hint{ padding-bottom:5px; }
+
+    .screen-head{ padding:34px 40px 26px; gap:40px; }
+    .sc-title{ font-size:30px; margin-top:12px; }
+    .sc-sub{ font-size:13px; margin-top:10px; }
+    .sc-list{ margin-top:16px; }
+    .sc-list b{ width:104px; font-size:16px; }
+    .sc-list i{ font-size:13px; }
+    .sc-price{ width:328px; gap:11px; }
+    .sc-tier{ padding:16px 20px 18px; }
+    .sc-tier .t-lab{ font-size:15px; letter-spacing:.12em; }
+    .sc-tier .t-set{ font-size:12px; }
+    .sc-tier .t-reco{ font-size:10px; padding:2px 8px 1px; }
+    .sc-tier .t-num{ font-size:44px; margin-top:9px; }
+    .sc-tier .t-num i{ font-size:20px; margin-top:7px; }
+    .sc-tier .t-ck{ width:18px; height:18px; right:14px; bottom:16px; font-size:9px; }
+    .sc-grid{ padding:0 40px 34px; gap:16px; }
+    .sc-cap{ padding:10px 12px 11px; gap:8px; }
+    .sc-cap b{ font-size:14.5px; }
+    .sc-cap span{ font-size:11.5px; }
+    .sc-foot{ padding:20px 40px 22px; gap:16px; }
+    .sc-foot b{ font-size:15px; }
+    .sc-foot span{ font-size:12.5px; }
+
+    .grid4{ grid-template-columns:repeat(4,1fr); gap:16px; }
+    .pcolhead{ padding:13px 14px; gap:9px; }
+    .ptag{ font-size:14px; }
+    .pfrom{ font-size:13px; }
+    .prow{ padding:11px 14px; gap:10px; }
+    .pname{ flex:0 0 100%; font-size:14px; }
+    .pspec{ flex:1; font-size:11px; }
+    .pprice{ font-size:17px; }
+    .pprice i{ font-size:12px; }
+
+    .film-grid{ grid-template-columns:repeat(4,1fr); gap:16px; }
+    .card{ padding:0 20px 22px; min-height:360px; }
+    .ctagline{ height:46px; }
+    .ctag{ font-size:11.5px; padding:5px 12px 4px; letter-spacing:.14em; }
+    .cname{ font-size:20px; margin-top:10px; }
+    .cstars{ margin-top:7px; font-size:14px; }
+    .cprice{ margin-top:14px; font-size:43px; }
+    .cprice i{ font-size:19px; }
+    .cprice small{ font-size:13px; margin-left:5px; }
+    .cdesc{ margin-top:10px; font-size:12.5px; line-height:1.65; }
+    .cline{ margin:16px 0 14px; }
+    .crow{ padding:7px 6px 7px 0; gap:9px; }
+    .crow span{ width:20px; height:20px; font-size:10px; }
+    .crow b{ font-size:11.5px; }
+    .crow em{ font-size:14px; }
+
+    .addon-pic{ width:44%; }
+    .addon-body{ padding:34px 38px 30px; }
+    .addon-k{ font-size:10px; }
+    .addon-name{ font-size:30px; margin-top:12px; }
+    .addon-spec{ font-size:13px; margin-top:12px; }
+    .addon-tags{ margin-top:16px; gap:9px; }
+    .addon-tags span{ font-size:11px; padding:4px 10px 3px; }
+    .addon-note{ margin-top:10px; font-size:11px; }
+    .addon-buy{ margin-top:16px; padding-top:14px; }
+    .addon-price{ font-size:38px; }
+    .addon-price i{ font-size:21px; }
+    .addon-price span{ font-size:12px; margin-left:6px; }
+    .addon-mats{ font-size:11.5px; }
+    .addon-ck{ width:22px; height:22px; right:14px; top:14px; }
+    .gift-bar{ padding:14px 36px; gap:18px; }
+    .gift-tag{ width:26px; height:26px; font-size:12px; }
+    .gift-txt b{ font-size:16.5px; }
+    .gift-txt span{ font-size:12px; margin-top:4px; }
+    .gift-set{ font-size:12px; padding:4px 12px; }
+
+    .sub-block{ padding:26px 30px 28px; }
+    .sub-head{ gap:11px; padding-bottom:17px; }
+    .sub-head::before{ width:3px; height:16px; }
+    .sub-head b{ font-size:16px; }
+    .sub-head span{ font-size:12px; }
+    .cnt{ font-size:11.5px; padding:3px 9px 2px; }
+    .sub-note{ font-size:12px; margin-bottom:16px; }
+    .fit-row{ grid-template-columns:repeat(4,1fr); gap:16px; }
+    .pcap{ height:40px; font-size:12.5px; }
+    .trio .pframe img{ padding:8px; }
+    .seat-body{ padding:22px 24px 22px; }
+    .seat-body .sub-head > span:not(.cnt){ flex:0 1 auto; order:0; margin-top:0; }
+    .sub-price{ font-size:27px; }
+    .sub-price em{ font-size:11.5px; }
+    .acc-strip{ padding:26px 30px 28px; }
+    .acc-grid{ grid-template-columns:repeat(3,1fr); gap:16px; }
+    .acc-item{ padding:8px 8px 0; }
+    .acc-pic{ padding:9px; }
+    .acc-n{ padding:15px 7px 17px; }
+    .acc-n b{ font-size:15px; min-height:2.44em; }
+    .acc-n span{ font-size:11.5px; }
+    .acc-n i{ font-size:23px; padding:10px 0 4px; }
+    .acc-ck{ width:20px; height:20px; right:10px; top:10px; }
+    .acc-item--more{ padding:0 32px 0 34px; gap:24px; }
+    .am-t{ font-size:20px; }
+    .am-d{ height:44px; }
+    .am-l{ font-size:12.5px; line-height:1.9; }
+    .am-go{ font-size:13px; gap:11px; }
+    .am-go b{ width:34px; height:34px; font-size:15px; }
+
+    .foot{ padding:64px 64px 0; }
+    .fit{ padding:28px 30px 28px 0; }
+    .fit .k{ font-size:11.5px; }
+    .fit .v{ margin-top:12px; font-size:19px; }
+    .fit .s{ margin-top:7px; font-size:12.5px; }
+    .fbot{ padding:46px 0 8px; }
+    .fbot .lf h3{ font-size:30px; }
+    .fbot .lf p{ margin-top:12px; font-size:13px; }
+    .qrbox{ gap:26px; }
+    .qrbox img{ width:168px; height:168px; }
+    .qrbox .frame{ padding:9px; }
+    .qrtip b{ font-size:17px; }
+    .qrtip em{ font-size:12px; margin-top:9px; }
+    .disc{ padding:28px 64px 54px; font-size:11.5px; }
+
+    /* 右下浮动报价 */
+    .dock{
+      display:flex; align-items:center; gap:16px;
+      position:fixed; right:26px; bottom:26px; z-index:70;
+      padding:13px 15px 13px 20px;
+      background:rgba(12,29,23,.96); backdrop-filter:blur(12px);
+      border:1px solid rgba(216,179,106,.32); border-radius:5px;
+      box-shadow:0 12px 40px rgba(9,18,14,.34);
+      animation:dockIn .4s ease both;
+    }
+    @keyframes dockIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+    .dock .dk{ font-size:9px; color:rgba(250,248,244,.45); letter-spacing:.18em; }
+    .dock .dv{
       display:flex; align-items:baseline;
-      font-family:Arial,sans-serif; font-weight:700; font-size:33px;
-      color:var(--green); letter-spacing:-.03em;
+      font-family:Arial; font-weight:700; font-size:29px; color:#fff; letter-spacing:-.03em;
     }
-    .side-total .v i{ font-style:normal; font-size:16px; color:var(--gold2); margin-right:2px; }
-    .side-copy{
-      width:100%; margin-top:13px; padding:13px; border-radius:7px;
-      font-size:13.5px; font-weight:800; letter-spacing:.1em;
+    .dock .dv i{ font-style:normal; font-size:14px; color:var(--gold); margin-right:2px; }
+    .dock .dc{ font-size:10px; color:rgba(250,248,244,.45); }
+    .dock .db{
+      padding:11px 20px; border-radius:3px; font-size:13px; font-weight:800; letter-spacing:.06em;
       background:linear-gradient(140deg,#EBD49C,#D8B36A 42%,#C89F52); color:#1A1208;
-      box-shadow:0 4px 16px rgba(200,159,82,.28); transition:.16s;
+      box-shadow:0 5px 18px rgba(200,159,82,.3);
     }
-    .side-copy:active{ transform:scale(.985); }
-    .side-qr{
-      display:flex; gap:12px; align-items:center;
-      margin-top:15px; padding-top:15px; border-top:1px dashed var(--line);
-    }
-    .side-qr img{ width:66px; height:66px; border-radius:4px; }
-    .side-qr .t b{ display:block; font-size:11.5px; font-weight:800; }
-    .side-qr .t span{ display:block; margin-top:4px; font-size:9.5px; color:var(--gray); line-height:1.7; }
+    .dock .db.off{ opacity:.45; box-shadow:none; }
 
-    .folio{ padding:34px 22px 40px; }
-    .folio a:hover{ border-color:var(--gold2); color:var(--gold2); }
+    .sheet{ top:50%; bottom:auto; transform:translate(-50%,-46%) scale(.98); border-radius:6px; opacity:0; pointer-events:none; max-height:82vh; }
+    .sheet.on{ transform:translate(-50%,-50%) scale(1); opacity:1; pointer-events:auto; }
+    .sheet-hd{ padding:17px 20px 13px; }
+    .sheet-bd{ padding:15px 20px 0; }
   }
 
-  /* 触屏 / 窄屏统一手感 */
   @media (hover:hover){
-    .opt:hover, .mcard:hover{ border-color:#DCC9A0; }
-    .row:hover{ background:#FBF8F1; }
-    .acard:hover{ border-color:#DCC9A0; }
+    .prow:hover{ background:#FBF8F1; }
+    .crow:hover{ background:rgba(216,179,106,.08); }
+    .acc-item:hover{ border-color:#DCC9A0; }
+    .sc-tier:hover{ border-color:#DCC9A0; }
   }
 </style>
-</head>
-<body>
-<div class="app">
+<style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
+<body data-page-node-id="Xv6ShjYhBfZ5KwhUrdRc6d" style="">
+<div class="page" data-page-node-id="apW5Wc6B4WZAeatFPI4btD">
 
-  <!-- 顶部 -->
-  <header class="hero">
-    <div class="brandrow">
-      <div class="brand">
-        <div class="bmark">圣</div>
-        <b>SOLARGARD 圣佳</b>
+<!-- ================= HERO ================= -->
+<header class="hero" data-page-node-id="JApji14j9gE9wjh6UgM7g9">
+  <div class="hero-bg" data-page-node-id="EVZPBnLZjDw89rUFCwEoM1"></div>
+  <div class="hero-glow" data-page-node-id="m4DW0qCUwWhUdR7yO089AZ"></div>
+  <div class="hero-inner" data-page-node-id="WAaBUR34XmY1AXsYEnLe6P">
+    <div class="topbar" data-page-node-id="JiZYnucRsiV9eB7Jmk7rAK">
+      <div class="brand" data-page-node-id="pWIhBYUdNJIALIywq7936Q">
+        <div class="mark" data-page-node-id="ShNh1OpQ7PpqXXbcCk6ZMe">SG</div>
+        <div class="en" data-page-node-id="1XTLrnXqhIucNF52u4Rfto">SolarGard</div>
+        <div class="cn" data-page-node-id="QJtKgCqsw9na75PIKjbpUZ">圣佳</div>
       </div>
-      <span>SAINT-GOBAIN</span>
-    </div>
-    <div class="hero-flex">
-      <div class="hero-main">
-        <h1>理想 <em id="heroModel">全系</em><br>全车配置报价</h1>
-        <p>钢化膜 · 车衣 · 玻璃膜 · 配件　按需勾选，实时算价</p>
-        <div class="tagline">一张单子，看清楚每一项</div>
-      </div>
-      <div class="hero-side">
-        <div><span>触屏钢化膜</span><b><i>¥</i>599<em>起</em></b></div>
-        <div><span>隐形车衣</span><b><i>¥</i>5,980<em>起</em></b></div>
-        <div><span>玻璃膜</span><b><i>¥</i>1,880<em>起</em></b></div>
+      <div class="right" data-page-node-id="fGDMUqtdGxjgISmzDPOBWw">
+        <div class="shop" data-page-node-id="RKDodG8rFbjNulZ7CVxU9D">SAINT-GOBAIN · SOLARGARD</div>
+        <div class="shop2" data-page-node-id="24TE6vdwe0xDXD37cx1DAE">法国圣戈班 · 圣佳授权门店</div>
       </div>
     </div>
-  </header>
 
-  <!-- 车型 -->
-  <div class="models">
-    <div class="lab">选择车型</div>
-    <div class="mchips" id="mchips"></div>
+    <div class="kick" data-page-node-id="VXRiWdKHCjNPHIGRKoC403">郝金彪哥汽车用品经营部</div>
+    <h1 data-page-node-id="beDVEEREDKHW8aFgfVWG77">理想 <em class="gd" id="heroModel" data-page-node-id="lF3XBRX0Gyhjq2LXB76fTD" style="white-space: pre-wrap;">i6</em></h1>
+    <div class="h1sub" data-page-node-id="t6hLEPIUeq8EjJeqchBmfM">全车配置报价</div>
+    <div class="h1note" data-page-node-id="yHHZBnAP3hXylVxMQDnTs5"><b data-page-node-id="QI2RrwdLR1jZ9mqLRHOhoI">钢化膜</b> · <b data-page-node-id="JyKNP8sNo0aSkFrjIqYu6A">车衣</b> · <b data-page-node-id="f5ocpJZ56Bim9lzAFHLYSD">玻璃膜</b> · <b data-page-node-id="cgqYlS4bAYDmbSmyEiYssQ">配件</b> 分开报价 · 一张单子看明白</div>
+  </div>
+</header>
+
+<!-- ================= 主理人 ================= -->
+<section class="host" data-page-node-id="fwQ1TUqDTWO2nFQZ8awZJI">
+  <div class="grain" data-page-node-id="wX1muaPaBdLDHv0D4DgPch"></div>
+  <div class="host-photo" data-page-node-id="o8GiIRCdgLb841ZaLLzjfD"><img src="asset/boss.png" alt="郝金彪" data-page-node-id="0Ee75zXt7ikGQcwf77PpHF"></div>
+  <div class="host-txt" data-page-node-id="sgbNBarAXTMOdpVO9qnqTn">
+    <div class="host-kick" data-page-node-id="4dB46CZ5WdMsma20LjxUQr">OWNER · 主理人</div>
+    <div class="host-hello" data-page-node-id="nMS8jLBBGH3DZha9Zs8tQh">大家好</div>
+    <h2 data-page-node-id="Qzh4UE6PxpoYulyuOm95h3">我是<em data-page-node-id="XHDu8mal5pC9PVjkSviRO2">郝金彪</em></h2>
+    <p data-page-node-id="fnhiWs9wNFdnMiFUiV35ak">你们记得买配件多问问我奥，<br data-page-node-id="yL7LxygX6zk9CCC1IOA0hS">我又开了个汽车店，<br data-page-node-id="LX9AHntsEnU4Ib80qWHo0f">车衣啥玩意都能整，还能洗车。<br data-page-node-id="UCi0a4NmttTHSe5jaRSZra">我这药剂全用的卡赫的，嗷嗷好用。</p>
+    <div class="host-cta gd" data-page-node-id="b1AIoiJ5iMW4VayBLgGPPX">来就完事了</div>
+    <div class="host-sign" data-page-node-id="QYum01lBVxVINTGlinKECF">
+      <div class="host-name" data-page-node-id="6LOmqnNqC0kTOMDHNFTIKx">郝金彪</div>
+      <div class="seal" data-page-node-id="vBuW0gYsM5B3pjDpQHoWwm"><span data-page-node-id="8Q852J1dS2mm9OqCqooepD">郝</span><span data-page-node-id="0tNDaNhbVeFUsXF9FMWPmj">金</span><span data-page-node-id="I0HsEyrqCUtXpLM3DwAXeV">彪</span><span data-page-node-id="eRH1QUjbllSw6ZEqMQW4EZ">哥</span></div>
+    </div>
+    <div class="host-store" data-page-node-id="XIGg3ye2mE27pBjwb7INpZ">郝金彪哥汽车用品经营部</div>
+    <div class="host-badge" data-page-node-id="IVqqvjE0PVbvDBmm3wX4ll">圣佳授权店 · 车衣 · 窗膜 · 洗车</div>
+  </div>
+</section>
+
+<!-- ================= 价格带 ================= -->
+<div class="pricebar" data-page-node-id="AAkn77XTkizv9GEEgiKMgP">
+  <div class="pb" data-page-node-id="2raInTYXBhuaXU5zVcX7bG">
+    <div class="pb-lab" data-page-node-id="cVsKwgHEXy9OVdJBUMCyCC">触屏钢化膜</div>
+    <div class="pb-price" data-page-node-id="UYGqWP9amG4ruMRXPAIjQY"><i data-page-node-id="fKEHGT6lfEGGSdQGNTDR2A">¥</i>599<span data-page-node-id="BAW4vBfqrauyBmJgRcCh85">起</span></div>
+    <div class="pb-note" data-page-node-id="dMlhzbYMKUvueHBVPWPp27">两件套 599 · 三件套 699</div>
+  </div>
+  <div class="pb-div" data-page-node-id="Snz3ECr6mU5lvuJuGffrBH"></div>
+  <div class="pb" data-page-node-id="qoueHeQ1xxHCEaQyiDXpRb">
+    <div class="pb-lab" data-page-node-id="lbmPK7L0Uzxp4xKCRX31Qi">隐形车衣</div>
+    <div class="pb-price" data-page-node-id="2scduF71jD5AsuLdpUrK5z"><i data-page-node-id="VrzKhUKaEtUGsiueqkHiea">¥</i>5,980<span data-page-node-id="Xl9lX6WJSvcLUQ96Hx5jrt">起</span></div>
+    <div class="pb-note" data-page-node-id="e7M7lTO8BBhAJPeGgWeoKC">全车漆面 · 十一款可选</div>
+  </div>
+  <div class="pb-div" data-page-node-id="M0TXewyvsbucjBHA03eGok"></div>
+  <div class="pb" data-page-node-id="lyJGFdrYqzyFNv1ybOzwKE">
+    <div class="pb-lab" data-page-node-id="587194bwQ40XWo55Hvltmz">玻璃膜</div>
+    <div class="pb-price" data-page-node-id="6NeNjejco2fFRvLdvQ3jtG"><i data-page-node-id="umJ68cWIUqJpaRiLXIS5pv">¥</i>1,880<span data-page-node-id="mNFDKfzafrF9oV52dJEDHF">起</span></div>
+    <div class="pb-note" data-page-node-id="tdxgqhohrxi6OhzBu6hZxN">前挡 + 侧挡 全车 · 四档可选</div>
+  </div>
+</div>
+
+<!-- ================= 01 屏幕保护 ================= -->
+<section class="sec" data-page-node-id="bizpgXdADRjrKChpDUJRv4">
+  <div class="sec-head" data-page-node-id="VsD8kSYl1T4lgo1teKjdEe">
+    <div class="no" data-page-node-id="c5Lm7IvfmQee0srsRwHk4b">01</div>
+    <h2 data-page-node-id="teRyH8iSMBD2tLApy32BOZ">屏幕保护</h2>
+    <div class="en" data-page-node-id="KcWSgoZzO5IVS47KIPZBnI">SCREEN</div>
+    <div class="hint" data-page-node-id="OBVvPGmU0Agg7jT3ONkeJt">触屏钢化膜 · 两件套 599 / 三件套 699</div>
   </div>
 
-  <div class="wrap">
-  <main class="main">
-
-  <!-- 01 屏幕保护 -->
-  <section class="sec">
-    <div class="shead">
-      <div class="sno">01</div>
-      <h2>屏幕保护</h2>
-      <div class="en">Screen</div>
-    </div>
-    <div class="opt-grid" id="secScreen"></div>
-  </section>
-
-  <!-- 02 隐形车衣 -->
-  <section class="sec">
-    <div class="shead">
-      <div class="sno">02</div>
-      <h2>隐形车衣</h2>
-      <div class="en">PPF</div>
-      <div class="opt">可不选</div>
-    </div>
-    <div id="secCoat"></div>
-  </section>
-
-  <!-- 03 玻璃膜 -->
-  <section class="sec">
-    <div class="shead">
-      <div class="sno">03</div>
-      <h2>玻璃膜</h2>
-      <div class="en">Window Film</div>
-      <div class="opt">可不选</div>
-    </div>
-    <div id="secFilm"></div>
-  </section>
-
-  <!-- 04 车内配件 -->
-  <section class="sec">
-    <div class="shead">
-      <div class="sno">04</div>
-      <h2>车内配件</h2>
-      <div class="en">Accessories</div>
-    </div>
-    <div id="secAccBig"></div>
-    <div class="mgrid" id="secAccSmall"></div>
-  </section>
-
-  <div class="folio">
-    <a href="poster.html">查看完整长图版 →</a>
-    <p>郝金彪哥汽车用品经营部 · SolarGard 圣佳授权店<br>车衣 · 窗膜 · 改色 · 洗车　到店免费实测</p>
-  </div>
-
-  </main>
-
-  <aside class="side">
-    <div class="side-card">
-      <div class="side-hd">
-        <b>报价单</b>
-        <span id="sideCnt">未选项目</span>
-      </div>
-      <div class="side-bd" id="sideBody"></div>
-      <div class="side-ft">
-        <div class="side-total">
-          <span class="k">合计</span>
-          <span class="v"><i>¥</i><span id="sideVal">0</span></span>
+  <div class="screen-card" data-page-node-id="DRzOiEWy0Dr4IFjRE767hu">
+    <div class="screen-head" data-page-node-id="MQhUbLDs9TSBvdpVyaKZGj">
+      <div class="sc-l" data-page-node-id="ahNBFAuBPAIntmHHcfKKiw">
+        <div class="addon-k" data-page-node-id="fhIJMorbFYYIhPEGtIFl56">CASE WORLD · 理想全系</div>
+        <div class="sc-title" data-page-node-id="ID8ULzHrOwwnNpUIp88dJg">原车触屏钢化膜</div>
+        <div class="sc-sub" data-page-node-id="UsHTWkXABEgH9nwHw5gWnz">ARAG 钢化膜 · 无尘仓一体贴膜器，一盖一拉就贴好<br data-page-node-id="RdBO4UbHCAZVdExV6SNiU6">按要贴的屏数选两件套还是三件套</div>
+        <div class="sc-list" data-page-node-id="V9gXwJtlyURNfbpNoFivt2">
+          <div data-page-node-id="ZMMWr9WSPzlpknMt7tm6lB"><b data-page-node-id="gLxotJ4RMBo6AluhYkytG1">中控大屏</b><i data-page-node-id="GOWC19qlsRmiWDUeeP6EjK">无尘仓钢化膜 · 磨砂面防眩光</i></div>
+          <div data-page-node-id="wQbIkdTPMj6zM7jijjNQPj"><b data-page-node-id="enh9v6XE4d4XtnfwmzOwlp">后排电视屏</b><i data-page-node-id="10p0sS2Nmp3VDqRhOyjkij">钢化膜 · 原屏画质高透</i></div>
+          <div data-page-node-id="iT1SFY5NsjygazRXEfVM6U"><b data-page-node-id="qeBy2kbzcxww5sHQlCeXYM">冰箱控制屏</b><i data-page-node-id="YIG6Gk0kVrIuXizE7GsQyP">钢化膜 · 高清面高透爽滑</i></div>
         </div>
-        <button class="side-copy" id="sideCopy">复制报价单</button>
-        <div class="side-qr">
-          <img src="asset/qr.png" alt="微信二维码">
-          <div class="t">
-            <b>加微信 · 直接问价</b>
-            <span>把单子发我，按你的车核一遍<br>到店免费实测，不合适不要钱</span>
+      </div>
+      <div class="sc-price" id="secScreen" data-page-node-id="hpIEgzUPWR2FbT5MbEJ1ce">
+    <button class="sc-tier" data-screen="s2">
+      <div class="t-top">
+        <span class="t-lab">两件套</span>
+        <span class="t-set">中控 + 冰箱</span>
+        
+      </div>
+      <div class="t-num"><i>¥</i>599</div>
+      <div class="t-ck">✓</div>
+    </button>
+    <button class="sc-tier sc-tier--hl" data-screen="s3">
+      <div class="t-top">
+        <span class="t-lab">三件套</span>
+        <span class="t-set">中控 + 电视 + 冰箱</span>
+        <span class="t-reco">全都有</span>
+      </div>
+      <div class="t-num"><i>¥</i>699</div>
+      <div class="t-ck">✓</div>
+    </button></div>
+    </div>
+
+    <div class="sc-grid" data-page-node-id="kTiAWgIuA9zn2KU5a0MKal">
+      <div class="sc-item" data-page-node-id="EPC40PMe4fcpVcP1Qb1iF1">
+        <div class="sc-pic" data-page-node-id="CXInNRhSmCO3IL94K1AGEs"><img src="asset/screen/mid.png" alt="中控大屏无尘仓钢化膜" data-page-node-id="XFAH1dmlIMJaRGtLaDbuBJ"></div>
+        <div class="sc-cap" data-page-node-id="vGCI8Jgsvezvhp9jRyaa2D"><b data-page-node-id="7vanMU29BT8I98ethebGG2">中控大屏</b><span data-page-node-id="mxlwmuzjOJXUW7UGC3lOom">无尘仓 · 磨砂防眩光</span></div>
+      </div>
+      <div class="sc-item" data-page-node-id="n3XJzJM8zrGCBsGzJzwGz3">
+        <div class="sc-pic" data-page-node-id="3jvYPMxmlxlAvBJupLYqiC"><img src="asset/acc/ar_tv.jpg" alt="后排电视屏钢化膜" data-page-node-id="dDRHb8TslK3c1BauLKXqOz"></div>
+        <div class="sc-cap" data-page-node-id="HdPCKugzX8uBXKoKGU7V0X"><b data-page-node-id="brJpdfysDxHM5gJr3Z6AtZ">后排电视屏</b><span data-page-node-id="BdShy2PcdwP2wtnJKYDcG0">钢化膜 · 原屏画质</span></div>
+      </div>
+      <div class="sc-item" data-page-node-id="XfPiinyxa8K6kTxp575LrF">
+        <div class="sc-pic" data-page-node-id="KpnFwVuQjp91P6Eyq8NnkR"><img src="asset/screen/fridge.png" alt="冰箱屏幕钢化膜" data-page-node-id="N8djIkvQ7GBlbR54kwVd2c"></div>
+        <div class="sc-cap" data-page-node-id="OFqetc2w0KLlnA0nYcgk0h"><b data-page-node-id="WA543cDPkVkBd6RNpr9SSr">冰箱控制屏</b><span data-page-node-id="Fx9JZ6fN7uv4e9FCZaVG4X">钢化膜 · 高透爽滑</span></div>
+      </div>
+    </div>
+
+    <div class="sc-foot" data-page-node-id="ATguWXQxNaHPGS6JLyCLHP">
+      <b data-page-node-id="Lj1XvkjdM1ZogaRz7l2Pcx">一体式贴膜器 <em data-page-node-id="tymFX8DpG9A85ObtPWUaHE">一盖一拉</em></b>
+      <span data-page-node-id="Ma5zEHZiIDxOdcAZgoYZQG">防爆不碎边 · 防刮耐磨</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 隐形车衣 ================= -->
+<section class="sec" data-page-node-id="Q5YFx6UA9ZGCpaIyWCxw4S">
+  <div class="sec-head" data-page-node-id="Vgnbo3jmE62pGCIk64aSnS">
+    <div class="no" data-page-node-id="9qgzM9UhSB3mOdVUN5UIQD">02</div>
+    <h2 data-page-node-id="HmzAGGrcwCTJuAhpCCAMvC">隐形车衣</h2>
+    <div class="en" data-page-node-id="fhqeenk0bHociZZsT0I43G">PAINT PROTECTION FILM</div>
+    <div class="hint" data-page-node-id="qmEQvDnqDyASzqEQVOAMv3">全车漆面 · 整车贴装价</div>
+  </div>
+  <div class="grid4" id="secCoat" data-page-node-id="A35HuMJcjMqX1FiLAQRSlS">
+    <div class="pcol">
+      <div class="pcolhead">
+        <span class="ptag">入门</span>
+        <span class="pfrom"><s>¥</s>5,980 起</span>
+      </div>
+      
+        <button class="prow" data-coat="c1">
+          <span class="pname">圣耀A8 PLUS</span>
+          <span class="pspec">7.5mil · 质保 5 年</span>
+          <span class="pprice"><i>¥</i>5,980</span>
+        </button>
+        <button class="prow" data-coat="c2">
+          <span class="pname">圣耀A9</span>
+          <span class="pspec">7.5mil · 质保 6 年</span>
+          <span class="pprice"><i>¥</i>6,980</span>
+        </button>
+        <button class="prow" data-coat="c3">
+          <span class="pname">ERA-纪元</span>
+          <span class="pspec">8mil · 质保 7 年</span>
+          <span class="pprice"><i>¥</i>7,980</span>
+        </button>
+    </div>
+    <div class="pcol">
+      <div class="pcolhead">
+        <span class="ptag">主力</span>
+        <span class="pfrom"><s>¥</s>9,800 起</span>
+      </div>
+      
+        <button class="prow" data-coat="c4">
+          <span class="pname">ERA-纪元哑光膜</span>
+          <span class="pspec">7.5mil · 质保 6 年</span>
+          <span class="pprice"><i>¥</i>9,800</span>
+        </button>
+        <button class="prow" data-coat="c5">
+          <span class="pname">Dragon-守护者</span>
+          <span class="pspec">8mil · 质保 8 年</span>
+          <span class="pprice"><i>¥</i>9,800</span>
+        </button>
+        <button class="prow" data-coat="c6">
+          <span class="pname">Dragon-守护者 MAX</span>
+          <span class="pspec">8.5mil · 质保 9 年</span>
+          <span class="pprice"><i>¥</i>10,800</span>
+        </button>
+    </div>
+    <div class="pcol">
+      <div class="pcolhead">
+        <span class="ptag">高阶</span>
+        <span class="pfrom"><s>¥</s>15,800 起</span>
+      </div>
+      
+        <button class="prow" data-coat="c7">
+          <span class="pname">*Louvois-卢福瓦</span>
+          <span class="pspec">7.5mil · 质保 9 年</span>
+          <span class="pprice"><i>¥</i>15,800</span>
+        </button>
+        <button class="prow" data-coat="c8">
+          <span class="pname">Mat-哑光膜</span>
+          <span class="pspec">8mil · 质保 12 年</span>
+          <span class="pprice"><i>¥</i>19,800</span>
+        </button>
+        <button class="prow" data-coat="c9">
+          <span class="pname">*Napoleon-拿破仑</span>
+          <span class="pspec">8mil · 质保 10 年</span>
+          <span class="pprice"><i>¥</i>21,800</span>
+        </button>
+    </div>
+    <div class="pcol">
+      <div class="pcolhead">
+        <span class="ptag">旗舰</span>
+        <span class="pfrom"><s>¥</s>26,800 起</span>
+      </div>
+      
+        <button class="prow" data-coat="c10">
+          <span class="pname">louisXIV-路易十四</span>
+          <span class="pspec">8mil · 质保 15 年</span>
+          <span class="pprice"><i>¥</i>26,800</span>
+        </button>
+        <button class="prow" data-coat="c11">
+          <span class="pname">Aplool-阿波罗</span>
+          <span class="pspec">8mil · 质保 15 年</span>
+          <span class="pprice"><i>¥</i>45,500</span>
+        </button>
+    </div></div>
+</section>
+
+<!-- ================= 03 玻璃膜 ================= -->
+<section class="sec" data-page-node-id="paJDKQI0lRneIvNfzpMTVc">
+  <div class="sec-head" data-page-node-id="V2T7G1t5KMQIoXgw0twZA7">
+    <div class="no" data-page-node-id="F9vPg5i2Z4sxsGqpPOKW0s">03</div>
+    <h2 data-page-node-id="wgbaSH5V5UoeuuF0sY38By">玻璃膜</h2>
+    <div class="en" data-page-node-id="mmQ4UAAwyAadX8bQiZEiki">WINDOW FILM</div>
+    <div class="hint" data-page-node-id="s91lYebneAD8jreGqg181q">前挡 + 侧挡 全车套餐 · 四档任选</div>
+  </div>
+  <div class="film-grid" id="secFilm" data-page-node-id="Np2WbJ1mAg7nR1uR5oSWyr">
+    <div class="card">
+      
+      <div class="ctagline"></div>
+      <div class="cname">LEADER</div>
+      <div class="cstars">★★★★★</div>
+      <div class="cprice"><i>¥</i>5,280<small>起</small></div>
+      <div class="cdesc">超强隔热产品-汽车窗膜中的巅峰之作，多层磁控溅射13层稀有贵金属。</div>
+      <div class="cline"></div>
+      
+        <button class="crow" data-film="f1">
+          <span>A</span>
+          <b>LR73 3.5mil + HP30/15</b>
+          <em>5,980</em>
+        </button>
+        <button class="crow" data-film="f2">
+          <span>B</span>
+          <b>LR73 3.5mil + PRO35/20</b>
+          <em>5,580</em>
+        </button>
+        <button class="crow" data-film="f3">
+          <span>C</span>
+          <b>LR73 3.5mil + GK35/20</b>
+          <em>5,280</em>
+        </button>
+    </div>
+    <div class="card hl">
+      <div class="ctag">最多人选</div>
+      <div class="ctagline"></div>
+      <div class="cname">HONOUR</div>
+      <div class="cstars">★★★★☆</div>
+      <div class="cprice"><i>¥</i>3,080<small>起</small></div>
+      <div class="cdesc">新一代纳米陶瓷磁控溅射膜，新能源首选不阻隔信号。</div>
+      <div class="cline"></div>
+      
+        <button class="crow" data-film="f4">
+          <span>A</span>
+          <b>HP80 2mil + HP30/15</b>
+          <em>3,580</em>
+        </button>
+        <button class="crow" data-film="f5">
+          <span>B</span>
+          <b>HP80 2mil + PRO35/20</b>
+          <em>3,280</em>
+        </button>
+        <button class="crow" data-film="f6">
+          <span>C</span>
+          <b>HP80 2mil + GK35/20</b>
+          <em>3,080</em>
+        </button>
+    </div>
+    <div class="card">
+      
+      <div class="ctagline"></div>
+      <div class="cname">PRO</div>
+      <div class="cstars">★★★★☆</div>
+      <div class="cprice"><i>¥</i>2,280<small>起</small></div>
+      <div class="cdesc">5G系列高精密涂布工艺，超隔热陶瓷微粒，不阻隔信号。</div>
+      <div class="cline"></div>
+      
+        <button class="crow" data-film="f7">
+          <span>A</span>
+          <b>PRO70 2mil + PRO35/20</b>
+          <em>2,480</em>
+        </button>
+        <button class="crow" data-film="f8">
+          <span>B</span>
+          <b>PRO70 2mil + GK35/20</b>
+          <em>2,280</em>
+        </button>
+    </div>
+    <div class="card">
+      
+      <div class="ctagline"></div>
+      <div class="cname">GK</div>
+      <div class="cstars">★★★☆☆</div>
+      <div class="cprice"><i>¥</i>1,880<small>起</small></div>
+      <div class="cdesc">5G纳米磁控溅射技术 性价比之王。</div>
+      <div class="cline"></div>
+      
+        <button class="crow" data-film="f9">
+          <span>A</span>
+          <b>GK70 1.5mil + GK35/20</b>
+          <em>1,880</em>
+        </button>
+    </div></div>
+</section>
+
+<!-- ================= 04 车内配件 ================= -->
+<section class="sec" data-page-node-id="lqed1vQAHHuCEPbQ7OTr9F">
+  <div class="sec-head" data-page-node-id="pUnyI6jrDdjPioYR8k6zV0">
+    <div class="no" data-page-node-id="gAf3Hp0cfpLjLfLnGfizbs">04</div>
+    <h2 data-page-node-id="HVfbhX4AFiWWWwYozSLrKm">车内配件</h2>
+    <div class="en" data-page-node-id="5rUnbN8FdFCOsIuuByDKMe">ACCESSORIES</div>
+    <div class="hint" data-page-node-id="P6uTuv0t6krbs5aBgQsaHf">整车配件 · 单项可加装</div>
+  </div>
+
+  <div id="secAccFoot" data-page-node-id="yhzWAM1xALLBDJzP39MO5F">
+    <div class="addon-card" data-acc="a1">
+      <div class="addon-ck">✓</div>
+      <div class="addon-top">
+        <div class="addon-pic"><img src="asset/acc/set.jpg" alt="TPE 脚垫整套"></div>
+        <div class="addon-body">
+          <div class="addon-k">GOODYEAR · 固特异</div>
+          <div class="addon-name">TPE 脚垫整套</div>
+          <div class="addon-spec">高边 TPE 脚垫 · 后备箱垫 · 前仓垫 · 后排座椅靠背垫<br>配星空丝绒毯面 · 卡扣固定不打滑</div>
+          <div class="addon-tags"><span>TPE 脚垫 / 尾箱垫 质保 6 年</span></div>
+          <div class="addon-note">6 年内正常使用磨破断裂达 20%，直接换新一次</div>
+          <div class="addon-buy">
+            <div class="addon-price"><i>¥</i>1,610<span>整套</span></div>
+            <div class="addon-mats">基础防护 12 件套<br><b>三款毯面 可选一款</b></div>
           </div>
         </div>
       </div>
-    </div>
-  </aside>
+      <div class="gift-bar">
+        <div class="gift-tag">赠</div>
+        <div class="gift-txt"><b>买 TPE 脚垫 · 即送全车硅胶套装</b><span>无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐</span></div>
+        <div class="gift-set">i6 送 21 件</div>
+      </div>
+    </div></div>
 
+  <div class="sub-block" data-page-node-id="x3qXwuBDri8AOAbpFPGaGL">
+    <div class="sub-head" data-page-node-id="nlHYye8xkjxBdE20nUC1C5">
+      <b data-page-node-id="IsHjA1DtQ6YFtXdxQxsVPA">实车铺装</b>
+      <span data-page-node-id="DYy9Td4SUFGKnHmnbbmVHp">高边全包围 · 卡扣固定，不打滑不卷边</span>
+    </div>
+    <div class="fit-row" data-page-node-id="pkcj5TyCq6jlWriEkY90D1">
+      <div class="fit-item" data-page-node-id="T2JXVkOCQadaSI81Y6PTbC"><div class="pframe" data-page-node-id="oRFpXBl0WiTROfRwZTzCqL"><img src="asset/acc/car1.jpg" alt="实车铺装 星空丝绒毯" data-page-node-id="1oDM1DzERrWBLsnNjrkDTj"></div></div>
+      <div class="fit-item" data-page-node-id="TLaI2E5AKXY6GNDcyeLLhw"><div class="pframe" data-page-node-id="3YCldmIDXDcvlvKOgPEnDp"><img src="asset/acc/car2.jpg" alt="实车铺装 菱格毯 橙棕" data-page-node-id="ANOCjhmKJmAYUpzWK5iHHT"></div></div>
+      <div class="fit-item" data-page-node-id="HlOFj4gIAvCmHPRTHqUo3N"><div class="pframe" data-page-node-id="N3cOETGUGNFjsfiYLUCCIx"><img src="asset/acc/car3.jpg" alt="实车铺装 菱格毯 灰黑" data-page-node-id="LokDLprQJ6uPItZqNxhhdx"></div></div>
+      <div class="fit-item" data-page-node-id="WyqGDwkHtTFfmTqW088ulC"><div class="pframe" data-page-node-id="nV3YuYkJXxKQf27SzQAHiX"><img src="asset/acc/car4.jpg" alt="实车铺装 编织毯面" data-page-node-id="fjGLPe2aJSCMhUz5YBW4XY"></div></div>
+    </div>
+  </div>
+
+  <div class="sub-block" data-page-node-id="vvY5GilbAfVxoHakepI8Nc">
+    <div class="sub-head" data-page-node-id="DnAwomMJXOBEiuPo48CIdG">
+      <b data-page-node-id="2a0FSHRHUH5ZuzHqecW5HF">购脚垫即赠</b>
+      <span class="cnt" data-page-node-id="eolJEQnd2gTTVGMsyOnO77">全车硅胶 21 件</span>
+      <span data-page-node-id="E9QFboMB3tAcjuYiVX1Odk">无线充垫 / 水杯架 / 储物盒 / 车门按键 / 门碗贴 / OBD 盖</span>
+    </div>
+    <div class="sub-note" data-page-node-id="6s3qARBdqLS3HEiCFGW6FY">26 款 i6 送 <b data-page-node-id="92cRHiGQo669rXscwWPdHf">21 件套</b>；i8 送 22 件、L9 送 24 件，L6 / L8 / i9 各 21 件，按对应车型配齐，三色可选</div>
+    <div class="trio" data-page-node-id="szMl1poKQUXiIoHtjNPDSZ">
+      <div class="trio-item" data-page-node-id="GCOHlc7TeJHHdWyBkyBkGZ">
+        <div class="pframe" data-page-node-id="uvybFgu6WG5kTyPpiNmuOg"><img src="asset/acc/sil_white.jpg" alt="硅胶防护 原车白" data-page-node-id="WNzZrxnKI231D5aiH1Imgu"></div>
+        <div class="pcap" data-page-node-id="7wLhcyrq3Gz8jQ0PmEivpc">原车白</div>
+      </div>
+      <div class="trio-item" data-page-node-id="4y9W8EHVkuynaHXGvHb2VW">
+        <div class="pframe" data-page-node-id="QEdCBuBHNN6xlKNaxszfFt"><img src="asset/acc/sil_brown.jpg" alt="硅胶防护 棕色" data-page-node-id="Y7uMmjxjFKrbLQZhFDHPFW"></div>
+        <div class="pcap" data-page-node-id="tx0ZaSry9ExqykhTN7xzWn">棕色</div>
+      </div>
+      <div class="trio-item" data-page-node-id="1nupz5gXcldy9Q4WtiwW8R">
+        <div class="pframe" data-page-node-id="HfBvtklqQxuIZSwedY8TjR"><img src="asset/acc/sil_orange.jpg" alt="硅胶防护 橙黄" data-page-node-id="hLfACZDEvK0UlMZ2ax3Ws8"></div>
+        <div class="pcap" data-page-node-id="8hdIbQ9JblKL2BHCOwKCsf">橙黄</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="secAccSeat" data-page-node-id="L8vf9ej3a5yXwCf9GePZxb">
+    <div class="seat-card" data-acc="a2">
+      <div class="addon-ck">✓</div>
+      <div class="seat-body">
+        <div class="sub-head" style="padding-bottom:10px">
+          <b>座椅垫</b>
+          <span class="cnt">七件套</span>
+          <span>GOODYEAR · 固特异 L6 Ultra 系列</span>
+          <i class="sub-price">¥996.2<em>前排 + 后排全包围</em></i>
+        </div>
+        <div class="mat-kit"><img src="asset/acc/mat_kit.jpg" alt="座椅垫 七件套"></div>
+        <div class="trio">
+          <div class="trio-item">
+            <div class="pframe"><img src="asset/acc/cus_white.jpg" alt="座椅垫 七件套 原车白"></div>
+            <div class="pcap">原车白</div>
+          </div><div class="trio-item">
+            <div class="pframe"><img src="asset/acc/cus_orange.jpg" alt="座椅垫 七件套 橙黄"></div>
+            <div class="pcap">橙黄</div>
+          </div><div class="trio-item">
+            <div class="pframe"><img src="asset/acc/cus_brown.jpg" alt="座椅垫 七件套 棕色"></div>
+            <div class="pcap">棕色</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+
+  <div class="acc-strip" data-page-node-id="53QnBso4gDXjfjqCt9ONUn">
+    <div class="sub-head" data-page-node-id="O7BgMQIyQOCW2iABaEHuDl">
+      <b data-page-node-id="k8exbfz7Yl0pkHFW91Cf9T">其余配件</b>
+      <span data-page-node-id="G6EQZDuw07dbpknJjjjSCE">单品报价 · 可单独加装</span>
+    </div>
+    <div class="acc-grid" id="secAccSmall" data-page-node-id="VIoCQgn3I4jrtyh87fMMxb">
+    <button class="acc-item" data-acc="a3">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic acc-pic--dual"><img src="asset/acc/sill1.jpg" alt="门槛条 10 件套"><img src="asset/acc/sill2.jpg" alt="门槛条 10 件套"></div>
+      <div class="acc-n"><b>门槛条 10 件套</b><span>RosyClouds · 不锈钢</span><i>¥468</i></div>
+    </button>
+    <button class="acc-item" data-acc="a4">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic"><img src="asset/acc/mesh.jpg" alt="满天星防虫网"></div>
+      <div class="acc-n"><b>满天星防虫网</b><span>卡扣版 · 亮黑</span><i>¥178</i></div>
+    </button>
+    <button class="acc-item" data-acc="a5">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic"><img src="asset/acc/wheel.jpg" alt="2 代全包方向盘把套"></div>
+      <div class="acc-n"><b>2 代全包方向盘把套</b><span>RosyClouds · 全包手缝</span><i>¥128</i></div>
+    </button>
+    <button class="acc-item" data-acc="a6">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic"><img src="asset/acc/hud.jpg" alt="HUD 保护罩"></div>
+      <div class="acc-n"><b>HUD 保护罩</b><span>曲面贴合 · 原车弧面</span><i>¥115</i></div>
+    </button>
+    <button class="acc-item" data-acc="a7">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic acc-pic--dual"><img src="asset/acc/kick1.jpg" alt="冰箱防踢板"><img src="asset/acc/kick2.jpg" alt="冰箱防踢板"></div>
+      <div class="acc-n"><b>冰箱防踢板</b><span>卡扣版 · 白 / 橙 / 黑 三色</span><i>¥98</i></div>
+    </button>
+    <button class="acc-item" data-acc="a8">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic"><img src="asset/acc/armrest.jpg" alt="扶手箱保护盖"></div>
+      <div class="acc-n"><b>扶手箱保护盖</b><span>RosyClouds · 加厚纳帕皮</span><i>¥88</i></div>
+    </button>
+    <button class="acc-item" data-acc="a9">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic"><img src="asset/acc/vent.jpg" alt="座椅下出风口罩"></div>
+      <div class="acc-n"><b>座椅下出风口罩</b><span>三件套 · 黑钛色</span><i>¥83</i></div>
+    </button><div class="acc-item acc-item--more">
+        <b class="am-t">更多配件</b>
+        <i class="am-d"></i>
+        <span class="am-l">脚垫 / 坐垫 / 门槛条<br>把套 / 防虫网 等</span>
+        <em class="am-go">到店详询<b>→</b></em>
+      </div></div>
+  </div>
+</section>
+
+<!-- ================= 页脚 ================= -->
+<div class="foot" data-page-node-id="PiaEHFBzgDr8S9XjM0XUIM">
+  <div class="frow" data-page-node-id="CjZ5258d0IYQgascQIVsj0">
+    <div class="fit" data-page-node-id="iZCbCyj2n1Ase9NlQkXtxY">
+      <div class="k" data-page-node-id="oFWsAMVZVtoZSMuwDzrhYu">WARRANTY</div>
+      <div class="v" data-page-node-id="Eejvte7ELS91BtoiaR7mYT">质保 5 – 15 年</div>
+      <div class="s" data-page-node-id="rU8Wa6jEVDnpMO1Kgh1EwK">按系列不同，见上方车衣列表</div>
+    </div>
+    <div class="fit" data-page-node-id="xXs8wvcrmwRJ8ZCnCACyYF">
+      <div class="k" data-page-node-id="JZ9inTfhgeYN72lBKE0ZVb">COVERAGE</div>
+      <div class="v" data-page-node-id="hs2qowBAT2IFyjY45lN9ou">开裂 · 龟裂 · 鼓泡</div>
+      <div class="s" data-page-node-id="3iKN37CzL2ZpHEUmuOOD0C">雨斑、涂层脱落，非人为质量缺陷</div>
+    </div>
+    <div class="fit" data-page-node-id="VoeNLSvSOdqY8CrK5t1Ibv">
+      <div class="k" data-page-node-id="ZuItytU6R9nJDSSjWDcrut">NOTE</div>
+      <div class="v" data-page-node-id="oQXiJDEWz48XieQJ1ZUOLC">特殊车型 +15%</div>
+      <div class="s" data-page-node-id="2a4e1hSjMj9mQe2UUd3fbx">以上均为普通车型价格，超大车型尺寸价另计</div>
+    </div>
+  </div>
+
+  <div class="fbot" data-page-node-id="xXkXWQfZmiBuARB0x99UBF">
+    <div class="lf" data-page-node-id="NO3diXzHItBnkgErZMrvd6">
+      <h3 data-page-node-id="wbSJuY906KsjVEEZCtrGpl">郝金彪哥汽车用品经营部</h3>
+      <p data-page-node-id="6L58E4TexGMnk9IO7G1zpB">SolarGard 圣佳 · 法国圣戈班全球化品牌<br data-page-node-id="WWJFdrJnsOb6ozHQuUYKrb">进口窗膜 · 漆面保护膜 · IWFA 国际窗膜协会<br data-page-node-id="HLRz8ddOde5lHh02qvtdBx">未来之星 预见新光 —— 圣佳</p>
+    </div>
+    <div class="qrbox" data-page-node-id="qOomHmJwdDmrRTbAn7h687">
+      <div class="qrtip" data-page-node-id="sGEgvSNgiFcWAOoc5eyfci">
+        <b data-page-node-id="KRDuw9DA4Q53uOxHRDFSEV">加微信 · 直接问价</b>
+        <em data-page-node-id="pLWLgkAFTrZnjiGDuFqymA">发车型即报价<br data-page-node-id="BAwowko1dtcEKJHBZTuiyQ">到店免费实测</em>
+      </div>
+      <div class="frame" data-page-node-id="bX8yoSid1Fhi7daB2TUHqa"><img src="asset/qr.png" alt="郝金彪微信二维码" data-page-node-id="4Hi6GEQu6PdXiuLF2mP2kt"></div>
+    </div>
   </div>
 </div>
 
-<!-- 底部栏 -->
-<div class="bar">
-  <div class="sum">
-    <div class="k">合计</div>
-    <div class="v"><i>¥</i><span id="sumVal">0</span><span class="n" id="sumCnt">未选项目</span></div>
+<div class="disc" data-page-node-id="rzT7I7g2TyaEjRRxk9GgFQ">
+  * 以上价格均为普通车型零售价，特殊车型尺寸价格加 15%；窗膜套餐价为前挡 + 侧挡组合价，漆面膜价格为整车贴装价；配件价格为单品价，不含施工，最终以门店报价为准。
+  <br data-page-node-id="ul1tZQ3qmX9hPtiHZrN7aR"><a href="poster.html" data-page-node-id="660g19kkgUhTWBppHHrBKU">查看完整长图版 →</a>
+</div>
+
+</div>
+
+<!-- 手机底部结算栏 -->
+<div class="bar" data-page-node-id="xq0dSNHZSCUPymselEGs2z">
+  <div class="sum" data-page-node-id="vvjsmoZGrviVGP1enk7T9a">
+    <div class="k" data-page-node-id="4ZvInFDgEmkYrvk6SHYBqX">合计</div>
+    <div class="v" data-page-node-id="HWIFsU9NZrB9jrVHz20W9V"><i data-page-node-id="4iuK7zu50syXgXNK9blj2J">¥</i><span id="sumVal" data-page-node-id="N8ZLYlGZYuQ4kBkTwVwemM">0</span><span class="n" id="sumCnt" data-page-node-id="IK0IeD9AkWgQFE3Tr9BS7a">未选项目</span></div>
   </div>
-  <button class="go off" id="btnSheet">出报价单</button>
+  <button class="go off" id="btnSheet" data-page-node-id="k2DQXWeDYAkzodyJNnYDgf">出报价单</button>
+</div>
+
+<!-- 桌面右下浮动 -->
+<div class="dock" data-page-node-id="fMgzJB3E2TuCpb90AvZaUY">
+  <div data-page-node-id="DcCX18SzGfvD2RUM3pbXrw">
+    <div class="dk" data-page-node-id="xF4nRvgUzajw1RWjwo0tOu">已选合计</div>
+    <div class="dv" data-page-node-id="ApjyGMGQQTkLeSPbrBzOZ8"><i data-page-node-id="Sx15hnIgvgafCF4uU0DTB2">¥</i><span id="dockVal" data-page-node-id="GvLG1q0WMGdHoUZmXFjXO4">0</span></div>
+  </div>
+  <div class="dc" id="dockCnt" data-page-node-id="Ry1s1MTqM9OXZnr7FAj8LC">未选项目</div>
+  <button class="db off" id="dockBtn" data-page-node-id="mLika5NMRYDr1J3RVvbp8H">出报价单</button>
 </div>
 
 <!-- 弹层 -->
-<div class="mask" id="mask"></div>
-<div class="sheet" id="sheet">
-  <div class="sheet-hd">
-    <h3>报价单</h3>
-    <button class="x" id="btnClose">×</button>
+<div class="mask" id="mask" data-page-node-id="jJwok0v8lMLkPJxPZtj44n"></div>
+<div class="sheet" id="sheet" data-page-node-id="LsA9fKsmea0zazAUj9dLyv">
+  <div class="sheet-hd" data-page-node-id="1WiF4ehpmP1MOeAzDnmccM">
+    <h3 data-page-node-id="uuUcYvcJyWYIDTyIAzGGSc">报价单</h3>
+    <button class="x" id="btnClose" data-page-node-id="TepZ6BrODKTA2vNMD8ou4l">×</button>
   </div>
-  <div class="sheet-bd" id="sheetBody"></div>
+  <div class="sheet-bd" id="sheetBody" data-page-node-id="rwKv9O3hXB672FuyA4Bugt">
+      <div class="qcar">车型：<b>理想 i6 · 26 款</b></div>
+      <div class="qempty">还没勾选项目<br>返回页面选择你需要的内容</div></div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" data-page-node-id="DeLwLydiLhHoCNjR898Erl"></div>
 
 <script>
 /* =========================================================
-   数据层：加新车型只要往 MODELS 里补一条 + 补对应价格即可
+   数据层：加新车型 = MODELS 补一条 + 补对应价目
    ========================================================= */
 const MODELS = [
   { id:'i6', name:'理想 i6', short:'i6', sub:'26 款', ready:true },
@@ -651,30 +1610,26 @@ const MODELS = [
   { id:'i9', name:'理想 i9', short:'i9', sub:'', ready:false }
 ];
 
-/* 屏幕保护 */
 const SCREEN = [
-  { id:'s2', name:'两件套', desc:'中控屏 + 冰箱屏', price:599,
-    img:'asset/screen/fridge.png' },
-  { id:'s3', name:'三件套', desc:'中控 + 电视 + 冰箱', price:699, hot:'全都有',
-    img:'asset/screen/mid.png' }
+  { id:'s2', name:'两件套', set:'中控 + 冰箱', price:599 },
+  { id:'s3', name:'三件套', set:'中控 + 电视 + 冰箱', price:699, reco:'全都有', hl:true }
 ];
 
-/* 隐形车衣 */
 const COAT = [
   { grp:'入门', from:5980, items:[
-    { id:'c1', name:'圣耀 A8 PLUS', spec:'7.5mil · 质保 5 年', price:5980 },
-    { id:'c2', name:'圣耀 A9',      spec:'7.5mil · 质保 6 年', price:6980 },
+    { id:'c1', name:'圣耀A8 PLUS', spec:'7.5mil · 质保 5 年', price:5980 },
+    { id:'c2', name:'圣耀A9',      spec:'7.5mil · 质保 6 年', price:6980 },
     { id:'c3', name:'ERA-纪元',     spec:'8mil · 质保 7 年',  price:7980 }
   ]},
   { grp:'主力', from:9800, items:[
-    { id:'c4', name:'ERA-纪元哑光膜',      spec:'7.5mil · 质保 6 年', price:9800 },
-    { id:'c5', name:'Dragon-守护者',       spec:'8mil · 质保 8 年',  price:9800 },
-    { id:'c6', name:'Dragon-守护者 MAX',   spec:'8.5mil · 质保 9 年', price:10800 }
+    { id:'c4', name:'ERA-纪元哑光膜',    spec:'7.5mil · 质保 6 年', price:9800 },
+    { id:'c5', name:'Dragon-守护者',     spec:'8mil · 质保 8 年',  price:9800 },
+    { id:'c6', name:'Dragon-守护者 MAX', spec:'8.5mil · 质保 9 年', price:10800 }
   ]},
   { grp:'高阶', from:15800, items:[
-    { id:'c7', name:'Louvois-卢福瓦',  spec:'7.5mil · 质保 9 年',  price:15800 },
-    { id:'c8', name:'Mat-哑光膜',      spec:'8mil · 质保 12 年',   price:19800 },
-    { id:'c9', name:'Napoleon-拿破仑', spec:'8mil · 质保 10 年',   price:21800 }
+    { id:'c7', name:'*Louvois-卢福瓦',  spec:'7.5mil · 质保 9 年',  price:15800 },
+    { id:'c8', name:'Mat-哑光膜',       spec:'8mil · 质保 12 年',   price:19800 },
+    { id:'c9', name:'*Napoleon-拿破仑', spec:'8mil · 质保 10 年',   price:21800 }
   ]},
   { grp:'旗舰', from:26800, items:[
     { id:'c10', name:'louisXIV-路易十四', spec:'8mil · 质保 15 年', price:26800 },
@@ -682,49 +1637,60 @@ const COAT = [
   ]}
 ];
 
-/* 玻璃膜 */
 const FILM = [
   { name:'LEADER', stars:5, from:5280,
-    desc:'多层磁控溅射 13 层稀有贵金属，隔热巅峰之作', tiers:[
+    desc:'超强隔热产品-汽车窗膜中的巅峰之作，多层磁控溅射13层稀有贵金属。', tiers:[
       { id:'f1', code:'A', spec:'LR73 3.5mil + HP30/15',   price:5980 },
       { id:'f2', code:'B', spec:'LR73 3.5mil + PRO35/20',  price:5580 },
       { id:'f3', code:'C', spec:'LR73 3.5mil + GK35/20',   price:5280 }
     ]},
-  { name:'HONOUR', stars:4, from:3080, hot:'最多人选',
-    desc:'纳米陶瓷磁控溅射，新能源首选不阻隔信号', tiers:[
+  { name:'HONOUR', stars:4, from:3080, hot:'最多人选', hl:true,
+    desc:'新一代纳米陶瓷磁控溅射膜，新能源首选不阻隔信号。', tiers:[
       { id:'f4', code:'A', spec:'HP80 2mil + HP30/15',     price:3580 },
       { id:'f5', code:'B', spec:'HP80 2mil + PRO35/20',    price:3280 },
       { id:'f6', code:'C', spec:'HP80 2mil + GK35/20',     price:3080 }
     ]},
   { name:'PRO', stars:4, from:2280,
-    desc:'5G 系列高精密涂布，超隔热陶瓷微粒', tiers:[
+    desc:'5G系列高精密涂布工艺，超隔热陶瓷微粒，不阻隔信号。', tiers:[
       { id:'f7', code:'A', spec:'PRO70 2mil + PRO35/20',   price:2480 },
       { id:'f8', code:'B', spec:'PRO70 2mil + GK35/20',    price:2280 }
     ]},
   { name:'GK', stars:3, from:1880,
-    desc:'5G 纳米磁控溅射技术，性价比之王', tiers:[
+    desc:'5G纳米磁控溅射技术 性价比之王。', tiers:[
       { id:'f9', code:'A', spec:'GK70 1.5mil + GK35/20',   price:1880 }
     ]}
 ];
 
-/* 配件 */
 const ACC_BIG = [
-  { id:'a1', name:'TPE 脚垫整套', price:1610,
-    spec:'基础防护 12 件套 · 高边 TPE + 尾箱垫 + 前仓垫 + 后排靠背垫 · 三款毯面任选',
-    img:'asset/acc/set.jpg', em:'整套',
-    gift:'买脚垫即送全车硅胶套装', giftTag:'i6 送 21 件' },
-  { id:'a2', name:'座椅垫 七件套', price:996.2,
-    spec:'固特异 · 前排 + 后排全包围 · 原车白 / 橙黄 / 棕色三色可选',
-    img:'asset/acc/mat_kit.jpg' }
+  { id:'a1', slot:'foot', brand:'GOODYEAR · 固特异', name:'TPE 脚垫整套', price:1610, em:'整套',
+    spec:'高边 TPE 脚垫 · 后备箱垫 · 前仓垫 · 后排座椅靠背垫<br>配星空丝绒毯面 · 卡扣固定不打滑',
+    tags:['TPE 脚垫 / 尾箱垫 质保 6 年'],
+    note:'6 年内正常使用磨破断裂达 20%，直接换新一次',
+    mats:'基础防护 12 件套<br><b>三款毯面 可选一款</b>',
+    img:'asset/acc/set.jpg',
+    gift:'买 TPE 脚垫 · 即送全车硅胶套装',
+    giftNote:'无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐',
+    giftTag:'i6 送 21 件' },
+  { id:'a2', slot:'seat', brand:'GOODYEAR · 固特异 L6 Ultra 系列', name:'座椅垫 七件套', price:996.2, em:'前排 + 后排全包围',
+    spec:'前排 + 后排全包围 · 头枕 / 腰靠 / 坐垫一体<br>原车白 / 橙黄 / 棕色 三色可选',
+    img:'asset/acc/mat_kit.jpg',
+    colors:[
+      { img:'asset/acc/cus_white.jpg',  n:'原车白' },
+      { img:'asset/acc/cus_orange.jpg', n:'橙黄' },
+      { img:'asset/acc/cus_brown.jpg',  n:'棕色' }
+    ] }
 ];
+
 const ACC_SMALL = [
-  { id:'a3', name:'门槛条 10 件套', spec:'不锈钢 · 防踢防踩', price:468, img:'asset/acc/sill1.jpg' },
-  { id:'a4', name:'满天星防虫网',   spec:'卡扣版 · 亮黑',     price:178, img:'asset/acc/mesh.jpg' },
-  { id:'a5', name:'2 代方向盘把套', spec:'全包手缝',          price:128, img:'asset/acc/wheel.jpg' },
-  { id:'a6', name:'HUD 保护罩',     spec:'曲面贴合',          price:115, img:'asset/acc/hud.jpg' },
-  { id:'a7', name:'冰箱防踢板',     spec:'卡扣版 · 三色',     price:98,  img:'asset/acc/kick1.jpg' },
-  { id:'a8', name:'扶手箱保护盖',   spec:'加厚纳帕皮',        price:88,  img:'asset/acc/armrest.jpg' },
-  { id:'a9', name:'座椅下出风口罩', spec:'三件套 · 黑钛色',   price:83,  img:'asset/acc/vent.jpg' }
+  { id:'a3', name:'门槛条 10 件套', spec:'RosyClouds · 不锈钢', price:468,
+    imgs:['asset/acc/sill1.jpg','asset/acc/sill2.jpg'], dual:true },
+  { id:'a4', name:'满天星防虫网',   spec:'卡扣版 · 亮黑', price:178, imgs:['asset/acc/mesh.jpg'] },
+  { id:'a5', name:'2 代全包方向盘把套', spec:'RosyClouds · 全包手缝', price:128, imgs:['asset/acc/wheel.jpg'] },
+  { id:'a6', name:'HUD 保护罩',     spec:'曲面贴合 · 原车弧面', price:115, imgs:['asset/acc/hud.jpg'] },
+  { id:'a7', name:'冰箱防踢板',     spec:'卡扣版 · 白 / 橙 / 黑 三色', price:98,
+    imgs:['asset/acc/kick1.jpg','asset/acc/kick2.jpg'], dual:true },
+  { id:'a8', name:'扶手箱保护盖',   spec:'RosyClouds · 加厚纳帕皮', price:88, imgs:['asset/acc/armrest.jpg'] },
+  { id:'a9', name:'座椅下出风口罩', spec:'三件套 · 黑钛色', price:83, imgs:['asset/acc/vent.jpg'] }
 ];
 
 /* ========================= 状态 ========================= */
@@ -741,94 +1707,127 @@ const money = n => {
 const fmt = n => '¥' + money(n);
 
 /* ========================= 渲染 ========================= */
-function renderModels(){
-  $('#mchips').innerHTML = MODELS.map(m =>
-    `<button class="mchip${m.id===state.model?' on':''}${m.ready?'':' soon'}" data-m="${m.id}">
-      ${m.name}${m.sub ? ' ' + m.sub : ''}
-    </button>`).join('');
-  const cur = MODELS.find(m => m.id === state.model);
-  $('#heroModel').textContent = cur.ready ? cur.short : '全系';
-}
-
 function renderScreen(){
   $('#secScreen').innerHTML = SCREEN.map(o => `
-    <button class="opt${state.screen===o.id?' on':''}" data-screen="${o.id}">
-      <div class="opt-pic"><img src="${o.img}" alt="${o.name}"></div>
-      ${o.hot ? `<div class="hot">${o.hot}</div>` : ''}
-      <div class="nm">${o.name}</div>
-      <div class="ds">${o.desc}</div>
-      <div class="pr"><i>¥</i>${money(o.price)}</div>
-      <div class="tick">✓</div>
+    <button class="sc-tier${o.hl?' sc-tier--hl':''}${state.screen===o.id?' on':''}" data-screen="${o.id}">
+      <div class="t-top">
+        <span class="t-lab">${o.name}</span>
+        <span class="t-set">${o.set}</span>
+        ${o.reco?`<span class="t-reco">${o.reco}</span>`:''}
+      </div>
+      <div class="t-num"><i>¥</i>${money(o.price)}</div>
+      <div class="t-ck">✓</div>
     </button>`).join('');
 }
 
 function renderCoat(){
   $('#secCoat').innerHTML = COAT.map(g => `
-    <div class="grp">
-      <div class="grp-hd">
-        <b>${g.grp}</b>
-        <span class="from"><i>¥</i>${money(g.from)} 起</span>
+    <div class="pcol">
+      <div class="pcolhead">
+        <span class="ptag">${g.grp}</span>
+        <span class="pfrom"><s>¥</s>${money(g.from)} 起</span>
       </div>
       ${g.items.map(it => `
-        <button class="row${state.coat===it.id?' on':''}" data-coat="${it.id}">
-          <span class="rc">${state.coat===it.id?'✓':''}</span>
-          <span class="rn">${it.name}<small>${it.spec}</small></span>
-          <span class="rp">${money(it.price)}</span>
+        <button class="prow${state.coat===it.id?' on':''}" data-coat="${it.id}">
+          <span class="pname">${it.name}</span>
+          <span class="pspec">${it.spec}</span>
+          <span class="pprice"><i>¥</i>${money(it.price)}</span>
         </button>`).join('')}
     </div>`).join('');
 }
 
 function renderFilm(){
   $('#secFilm').innerHTML = FILM.map(se => `
-    <div class="grp">
-      <div class="grp-hd">
-        <b>${se.name}</b>
-        <span class="stars">${'★'.repeat(se.stars)}${'☆'.repeat(5-se.stars)}</span>
-        ${se.hot ? `<span class="from" style="margin-left:auto;color:#B98E3E">${se.hot}</span>` : ''}
-        ${se.hot ? '' : `<span class="from"><i>¥</i>${money(se.from)} 起</span>`}
-      </div>
+    <div class="card${se.hl?' hl':''}">
+      ${se.hot?`<div class="ctag">${se.hot}</div>`:''}
+      <div class="ctagline"></div>
+      <div class="cname">${se.name}</div>
+      <div class="cstars">${'★'.repeat(se.stars)}${'☆'.repeat(5-se.stars)}</div>
+      <div class="cprice"><i>¥</i>${money(se.from)}<small>起</small></div>
+      <div class="cdesc">${se.desc}</div>
+      <div class="cline"></div>
       ${se.tiers.map(t => `
-        <button class="row${state.film===t.id?' on':''}" data-film="${t.id}">
-          <span class="rc">${t.code}</span>
-          <span class="rn">${se.name} · ${t.code} 档<small>${t.spec}</small></span>
-          <span class="rp">${money(t.price)}</span>
+        <button class="crow${state.film===t.id?' on':''}" data-film="${t.id}">
+          <span>${t.code}</span>
+          <b>${t.spec}</b>
+          <em>${money(t.price)}</em>
         </button>`).join('')}
     </div>`).join('');
 }
 
-function renderAcc(){
-  $('#secAccBig').innerHTML = ACC_BIG.map(a => `
-    <div class="acard${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
-      <div class="arow">
-        <div class="apic"><img src="${a.img}" alt="${a.name}"></div>
-        <div class="abody">
-          <div class="an">${a.name}</div>
-          <div class="as">${a.spec}</div>
-          <div class="ap"><i>¥</i>${money(a.price)}${a.em?`<em>${a.em}</em>`:''}</div>
+function bigCard(a){
+  if (a.slot === 'foot'){
+    return `
+    <div class="addon-card${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
+      <div class="addon-ck">✓</div>
+      <div class="addon-top">
+        <div class="addon-pic"><img src="${a.img}" alt="${a.name}"></div>
+        <div class="addon-body">
+          <div class="addon-k">${a.brand}</div>
+          <div class="addon-name">${a.name}</div>
+          <div class="addon-spec">${a.spec}</div>
+          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}</div>`:''}
+          ${a.note?`<div class="addon-note">${a.note}</div>`:''}
+          <div class="addon-buy">
+            <div class="addon-price"><i>¥</i>${money(a.price)}<span>${a.em}</span></div>
+            <div class="addon-mats">${a.mats}</div>
+          </div>
         </div>
       </div>
-      ${a.gift ? `<div class="gift"><b>赠</b><span>${a.gift}</span><em>${a.giftTag}</em></div>` : ''}
-      <div class="atick">✓</div>
-    </div>`).join('');
+      <div class="gift-bar">
+        <div class="gift-tag">赠</div>
+        <div class="gift-txt"><b>${a.gift}</b><span>${a.giftNote}</span></div>
+        <div class="gift-set">${a.giftTag}</div>
+      </div>
+    </div>`;
+  }
+  return `
+    <div class="seat-card${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
+      <div class="addon-ck">✓</div>
+      <div class="seat-body">
+        <div class="sub-head" style="padding-bottom:10px">
+          <b>座椅垫</b>
+          <span class="cnt">七件套</span>
+          <span>${a.brand}</span>
+          <i class="sub-price">¥996.2<em>${a.em}</em></i>
+        </div>
+        <div class="mat-kit"><img src="${a.img}" alt="${a.name}"></div>
+        <div class="trio">
+          ${a.colors.map(c=>`<div class="trio-item">
+            <div class="pframe"><img src="${c.img}" alt="${a.name} ${c.n}"></div>
+            <div class="pcap">${c.n}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderAcc(){
+  $('#secAccFoot').innerHTML = ACC_BIG.filter(a => a.slot === 'foot').map(bigCard).join('');
+  $('#secAccSeat').innerHTML = ACC_BIG.filter(a => a.slot === 'seat').map(bigCard).join('');
 
   $('#secAccSmall').innerHTML = ACC_SMALL.map(a => `
-    <div class="mcard${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
-      <div class="atick">✓</div>
-      <div class="mp"><img src="${a.img}" alt="${a.name}"></div>
-      <div class="mn">${a.name}</div>
-      <div class="ms">${a.spec}</div>
-      <div class="mb"><i>¥</i>${money(a.price)}</div>
-    </div>`).join('');
+    <button class="acc-item${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
+      <span class="acc-ck">✓</span>
+      <div class="acc-pic${a.dual?' acc-pic--dual':''}">${a.imgs.map(s=>`<img src="${s}" alt="${a.name}">`).join('')}</div>
+      <div class="acc-n"><b>${a.name}</b><span>${a.spec}</span><i>¥${money(a.price)}</i></div>
+    </button>`).join('')
+    + `<div class="acc-item acc-item--more">
+        <b class="am-t">更多配件</b>
+        <i class="am-d"></i>
+        <span class="am-l">脚垫 / 坐垫 / 门槛条<br>把套 / 防虫网 等</span>
+        <em class="am-go">到店详询<b>&#8594;</b></em>
+      </div>`;
 }
 
 /* ========================= 结算 ========================= */
 function picked(){
   const out = [];
   const s = SCREEN.find(x => x.id === state.screen);
-  if (s) out.push({ k:'屏幕保护', v:`${s.name} · ${s.desc}`, p:s.price });
+  if (s) out.push({ k:'屏幕保护', v:`${s.name} · ${s.set}`, p:s.price });
 
   COAT.forEach(g => g.items.forEach(it => {
-    if (it.id === state.coat) out.push({ k:'隐形车衣', v:`${it.name}`, sub:it.spec, p:it.price });
+    if (it.id === state.coat) out.push({ k:'隐形车衣', v:it.name, sub:it.spec, p:it.price });
   }));
 
   FILM.forEach(se => se.tiers.forEach(t => {
@@ -836,7 +1835,8 @@ function picked(){
   }));
 
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
-    if (state.acc.has(a.id)) out.push({ k:'配件', v:a.name, sub:a.spec, p:a.price, gift:a.gift });
+    if (state.acc.has(a.id))
+      out.push({ k:'配件', v:a.name, sub:(a.spec||'').replace(/<br>/g,' '), p:a.price, gift:!!a.gift });
   });
   return out;
 }
@@ -844,30 +1844,15 @@ function picked(){
 function refresh(){
   const list = picked();
   const total = list.reduce((s, x) => s + x.p, 0);
-  $('#sumVal').textContent = money(total);
-  $('#sumCnt').textContent = list.length ? `已选 ${list.length} 项` : '未选项目';
-  $('#btnSheet').classList.toggle('off', list.length === 0);
-  renderSheet(list, total);
-  renderSide(list, total);
-}
+  const txt = list.length ? `已选 ${list.length} 项` : '未选项目';
 
-/* 桌面端右侧报价单 */
-function renderSide(list, total){
-  const body = $('#sideBody');
-  if (!body) return;
-  if (!list.length){
-    body.innerHTML = '<div class="side-empty">左侧勾选需要的项目<br>这里会实时生成报价单</div>';
-  } else {
-    body.innerHTML = list.map(x => `
-      <div class="sline">
-        <span class="sk">${x.k}</span>
-        <span class="sv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
-          ${x.gift?`<small style="color:#B98E3E">含赠品 · 全车硅胶套装</small>`:''}</span>
-        <span class="sp">${money(x.p)}</span>
-      </div>`).join('');
-  }
-  $('#sideVal').textContent = money(total);
-  $('#sideCnt').textContent = list.length ? `共 ${list.length} 项` : '未选项目';
+  $('#sumVal').textContent = money(total);
+  $('#sumCnt').textContent = txt;
+  $('#dockVal').textContent = money(total);
+  $('#dockCnt').textContent = txt;
+  $('#btnSheet').classList.toggle('off', list.length === 0);
+  $('#dockBtn').classList.toggle('off', list.length === 0);
+  renderSheet(list, total);
 }
 
 function renderSheet(list, total){
@@ -882,7 +1867,7 @@ function renderSheet(list, total){
     <div class="qline">
       <span class="qk">${x.k}</span>
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
-        ${x.gift?`<small style="color:#B98E3E">含赠品：全车硅胶套装</small>`:''}</span>
+        ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶套装</small>`:''}</span>
       <span class="qp">${money(x.p)}</span>
     </div>`).join('');
 
@@ -918,7 +1903,7 @@ function copyQuote(list, total, m){
   ];
   list.forEach(x => {
     lines.push(`${x.k}　${x.v}　${fmt(x.p)}`);
-    if (x.gift) lines.push(`　　赠 全车硅胶套装（21 件）`);
+    if (x.gift) lines.push('　　赠 全车硅胶套装（21 件）');
   });
   lines.push('————————————');
   lines.push(`合计　${fmt(total)}`);
@@ -951,22 +1936,11 @@ function toast(msg){
   toastTimer = setTimeout(() => t.classList.remove('on'), 1900);
 }
 
-/* ========================= 弹层 ========================= */
 function openSheet(){ $('#mask').classList.add('on'); $('#sheet').classList.add('on'); }
 function closeSheet(){ $('#mask').classList.remove('on'); $('#sheet').classList.remove('on'); }
 
 /* ========================= 事件 ========================= */
 document.addEventListener('click', e => {
-  const mc = e.target.closest('[data-m]');
-  if (mc){
-    const m = MODELS.find(x => x.id === mc.dataset.m);
-    if (!m.ready){ toast(`${m.name} 的报价正在整理，先看 i6 这版`); return; }
-    state.model = m.id;
-    renderModels();
-    refresh();
-    return;
-  }
-
   const sc = e.target.closest('[data-screen]');
   if (sc){
     const id = sc.dataset.screen;
@@ -1000,23 +1974,20 @@ $('#btnSheet').onclick = () => {
   if (!picked().length){ toast('先勾选你需要的内容'); return; }
   openSheet();
 };
+$('#dockBtn').onclick = () => {
+  if (!picked().length){ toast('先勾选你需要的内容'); return; }
+  openSheet();
+};
 $('#btnClose').onclick = closeSheet;
 $('#mask').onclick = closeSheet;
 
-$('#sideCopy').onclick = () => {
-  const list = picked();
-  if (!list.length){ toast('先在左侧勾选需要的项目'); return; }
-  const total = list.reduce((s, x) => s + x.p, 0);
-  copyQuote(list, total, MODELS.find(m => m.id === state.model));
-};
-
 /* ========================= 启动 ========================= */
-renderModels();
 renderScreen();
 renderCoat();
 renderFilm();
 renderAcc();
 refresh();
 </script>
-</body>
-</html>
+
+
+</body></html>
