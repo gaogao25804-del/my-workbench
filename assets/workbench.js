@@ -552,36 +552,55 @@ function renderTasksPage() {
   const pageList = list.slice(startIdx, startIdx + PAGE_SIZE.task);
 
   const catKeys = Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; });
-  const catMax = catKeys.length ? cats[catKeys[0]] : 1;
+  const catRows = catKeys.map(function (k) {
+    const arr = info.tasks.filter(function (t) { return t.category === k; });
+    const done = arr.filter(function (t) { return t.status === 'completed'; }).length;
+    return { key: k, total: arr.length, done: done, pct: arr.length ? Math.round(done / arr.length * 100) : 0 };
+  });
+  const donePct = info.total ? Math.round(info.completed / info.total * 100) : 0;
 
   const taskHtml = '<div class="card poster-card">' +
     '<div class="pz-head">' +
-      '<div class="pz-kicker">Task Center · ' + esc((info.latest || '2026').slice(0, 4)) + '</div>' +
-      '<div class="pz-title">任务中心</div>' +
-      (info.earliest ? '<div class="pz-sub">' + esc(info.earliest) + ' — ' + esc(info.latest) + '，按分类与月份归集的工作记录</div>' : '') +
-      '<div class="pz-stats">' +
-        '<div class="pz-stat"><b>' + info.total + '</b><span>Total · 全部</span></div>' +
-        '<div class="pz-stat"><b>' + info.completed + '</b><span>Done · 已完成</span></div>' +
-        '<div class="pz-stat"><b>' + info.pending + '</b><span>Pending · 待办</span></div>' +
+      '<div class="tc-head-row">' +
+        '<div class="tc-head-copy">' +
+          '<div class="pz-kicker">Task Center · ' + esc((info.latest || '2026').slice(0, 4)) + '</div>' +
+          '<div class="pz-title">任务中心</div>' +
+          (info.earliest ? '<div class="pz-sub">' + esc(info.earliest) + ' — ' + esc(info.latest) + '，按分类与月份归集的工作记录</div>' : '') +
+        '</div>' +
+        '<div class="tc-stats">' +
+          '<div class="tc-stat"><b>' + info.total + '</b><span>全部任务</span></div>' +
+          '<div class="tc-stat"><b>' + info.completed + '</b><span>已完成</span></div>' +
+          '<div class="tc-stat"><b>' + info.pending + '</b><span>待办</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="tc-overall">' +
+        '<div class="tc-overall-top">' +
+          '<span class="tc-overall-label">整体完成进度</span>' +
+          '<span class="tc-state' + (donePct >= 100 ? ' done' : ' run') + '">' + (donePct >= 100 ? '全部完成' : '进行中') + '</span>' +
+          '<em class="tc-pct">' + donePct + '%</em>' +
+        '</div>' +
+        '<div class="tc-bar-big"><b>' + info.completed + '</b><span>/ ' + info.total + ' 已完成</span></div>' +
+        '<div class="tc-progress lg"><i style="width:' + donePct + '%"></i></div>' +
       '</div>' +
     '</div>' +
-    '<div class="pz-body">' +
-      '<div class="pz-left">' +
-        catCloud(cats, catKeys, catMax, st.cal.taskCat, info.total) +
-        '<div class="pz-sec"><i></i>按月分布</div>' +
-        '<div class="pz-bars">' + monthBars(info.tasks) + '</div>' +
-      '</div>' +
-      '<div class="pz-side">' +
-        '<div class="pz-sec"><i></i>按分类 · 点击筛选</div>' +
-        '<div class="pz-legend">' + catKeys.map(function (k) {
-          return '<button class="pz-leg' + (st.cal.taskCat === k ? ' on' : '') + '" data-task-cat="' + esc(k) + '">' +
-            '<span class="pz-dot"></span>' +
-            '<span class="pz-name">' + esc(k) + '</span>' +
-            '<span class="pz-bar"><i style="width:' + Math.round(cats[k] / catMax * 100) + '%"></i></span>' +
-            '<span class="pz-num">' + cats[k] + '</span>' +
-            '</button>';
-        }).join('') + '</div>' +
-      '</div>' +
+    '<div class="tc-sec"><i></i>分类进度 · 点击筛选</div>' +
+    '<div class="tc-cats">' +
+      '<button class="tc-cat tc-cat-all' + (st.cal.taskCat === 'all' ? ' on' : '') + '" data-task-cat="all">' +
+        '<div class="tc-cat-top"><span class="tc-dot"></span><span class="tc-cat-name">全部分类</span></div>' +
+        '<div class="tc-cat-num"><b>' + info.completed + '</b><span>/ ' + info.total + '</span><em>' + donePct + '%</em></div>' +
+        '<div class="tc-progress"><i style="width:' + donePct + '%"></i></div>' +
+      '</button>' +
+      catRows.map(function (c) {
+        return '<button class="tc-cat t' + catTone(c.key) + (st.cal.taskCat === c.key ? ' on' : '') + '" data-task-cat="' + esc(c.key) + '">' +
+          '<div class="tc-cat-top">' +
+            '<span class="tc-dot"></span>' +
+            '<span class="tc-cat-name">' + esc(c.key) + '</span>' +
+            '<span class="tc-state' + (c.pct >= 100 ? ' done' : ' run') + '">' + (c.pct >= 100 ? '已完成' : '进行中') + '</span>' +
+          '</div>' +
+          '<div class="tc-cat-num"><b>' + c.done + '</b><span>/ ' + c.total + '</span><em>' + c.pct + '%</em></div>' +
+          '<div class="tc-progress"><i style="width:' + c.pct + '%"></i></div>' +
+        '</button>';
+      }).join('') +
     '</div>' +
     '<div class="pz-foot">' +
       '<div class="task-tabs">' +
@@ -592,7 +611,7 @@ function renderTasksPage() {
       '</div>' +
       '<div class="pz-note">' + (st.cal.taskCat === 'all' ? '全部分类' : esc(st.cal.taskCat)) + ' · 共 ' + list.length + ' 条</div>' +
     '</div>' +
-    (pageList.length ? '<div class="task-list">' + pageList.map(function (t) { return taskRow(t); }).join('') + '</div>'
+    (pageList.length ? '<div class="tc-grid">' + pageList.map(function (t) { return taskCard(t); }).join('') + '</div>'
       : stateHtml('empty', '没有符合条件的任务', '换个筛选条件试试')) +
     pagerHtml('task', st.cal.page, PAGE_SIZE.task, list.length) +
     '</div>';
@@ -602,69 +621,19 @@ function renderTasksPage() {
     taskHtml;
 }
 
-function taskRow(t) {
+function taskCard(t) {
   const done = t.status === 'completed';
   const when = done ? fmtDateTime(t.completed_at) : fmtDateTime(t.due);
-  return '<div class="task-row' + (done ? ' done' : '') + '">' +
-    '<div class="task-check' + (done ? ' done' : '') + '">' + (done ? ic('check', 'ico-12') : '') + '</div>' +
-    '<div class="task-text">' + esc(t.summary || '—') + '</div>' +
-    (t.category ? '<span class="task-tag">' + esc(t.category) + '</span>' : '') +
-    (when ? '<div class="task-date">' + esc(when) + '</div>' : '') +
-    '</div>';
-}
-
-/* 分类星图：按数量大小排成内外两圈气泡，点击即筛选 */
-function catCloud(cats, keys, max, active, total) {
-  const n = keys.length;
-  if (!n) return '';
-  const n1 = Math.floor(n / 2);
-  const n0 = n - n1;
-  let i0 = 0, i1 = 0;
-
-  const bubbles = keys.map(function (k, i) {
-    const outer = i % 2 === 1;
-    const count = outer ? n1 : n0;
-    const idx = outer ? i1++ : i0++;
-    const ring = outer ? 46 : 32;
-    const ang = (-90 + 360 * idx / Math.max(1, count)) * Math.PI / 180;
-    const cx = 50 + Math.cos(ang) * ring;
-    const cy = 50 + Math.sin(ang) * ring;
-    const size = Math.round(14 + Math.sqrt(cats[k] / max) * 44);
-
-    return '<button class="pz-bub' + (active === k ? ' on' : '') + '"' +
-      ' style="left:' + cx.toFixed(2) + '%;top:' + cy.toFixed(2) + '%;--bs:' + size + 'px"' +
-      ' data-task-cat="' + esc(k) + '" title="' + esc(k + ' · ' + cats[k] + ' 条') + '">' +
-      (size >= 26 ? '<b>' + cats[k] + '</b>' : '') + (size >= 44 ? '<i>' + esc(k) + '</i>' : '') +
-      '</button>';
-  }).join('');
-
-  return '<div class="pz-radial">' +
-    '<span class="pz-ring r1"></span><span class="pz-ring r2"></span>' +
-    '<button class="pz-center' + (active === 'all' ? ' on' : '') + '" data-task-cat="all" title="全部任务 ' + total + ' 条">' +
-      '<b>' + total + '</b><i>ALL</i></button>' +
-    bubbles +
-    '</div>';
-}
-
-/* 按月柱状：细柱 + 顶部数值，对应海报底部的细长条形图 */
-function monthBars(tasks) {
-  const map = {};
-  tasks.forEach(function (t) {
-    const m = String(t.completed_at || t.due || '').slice(0, 7);
-    if (m) map[m] = (map[m] || 0) + 1;
-  });
-  const months = Object.keys(map).sort();
-  if (!months.length) return '';
-  const max = Math.max.apply(null, months.map(function (m) { return map[m]; }));
-
-  return months.map(function (m) {
-    const mon = Number(m.slice(5, 7));
-    return '<div class="pz-col">' +
-      '<span class="pz-col-n">' + map[m] + '</span>' +
-      '<div class="pz-col-track"><span class="pz-col-bar" style="height:' + Math.max(2, Math.round(map[m] / max * 100)) + '%"></span></div>' +
-      '<span class="pz-col-l">' + mon + '月</span>' +
-      '</div>';
-  }).join('');
+  const cat = t.category || '未分类';
+  return '<article class="tc-card t' + catTone(cat) + (done ? ' done' : '') + '">' +
+    '<div class="tc-card-top">' +
+      '<span class="tc-pill">' + esc(cat) + '</span>' +
+      '<span class="tc-state' + (done ? ' done' : ' run') + '">' + (done ? '已完成' : '待办') + '</span>' +
+    '</div>' +
+    '<div class="tc-card-title">' + esc(t.summary || '—') + '</div>' +
+    '<div class="tc-card-foot"><span class="tc-date">' + esc(when || '—') + '</span></div>' +
+    '<div class="tc-progress' + (done ? ' done' : '') + '"><i style="width:' + (done ? 100 : 0) + '%"></i></div>' +
+    '</article>';
 }
 
 function dayAgendaRow(x) {
