@@ -82,7 +82,7 @@ a{ color:inherit; text-decoration:none; }
 
 /* ---------- Hero ---------- */
 .hero{ position:relative; background:#fff; padding-top:var(--nav); }
-.hero-top{ padding:88px 0 56px; }
+.hero-top{ padding:64px 0 40px; }
 .hero h1{
   font-size:clamp(40px,5vw,62px); font-weight:600; letter-spacing:.03em;
   line-height:1.14; margin-top:18px; color:var(--ink);
@@ -99,10 +99,10 @@ a{ color:inherit; text-decoration:none; }
 .hero-act{ display:flex; gap:12px; margin-top:34px; flex-wrap:wrap; }
 .hero-img{ overflow:hidden; background:#fff; line-height:0; }
 .hero-img img{
-  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
-  mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+  width:100%; height:auto; display:block;
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 7%, #000 95%, transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 7%, #000 95%, transparent 100%);
 }
-.hero-img img{ width:100%; height:auto; }
 .eyebrow{
   font-family:var(--fn); font-size:10.5px; letter-spacing:.26em;
   color:var(--gold); text-transform:uppercase;
@@ -115,8 +115,8 @@ a{ color:inherit; text-decoration:none; }
 .host-pic{ background:transparent; }
 .host-pic img{
   width:100%; height:auto; display:block;
-  -webkit-mask-image:linear-gradient(to bottom, #000 80%, transparent 99%);
-  mask-image:linear-gradient(to bottom, #000 80%, transparent 99%);
+  -webkit-mask-image:radial-gradient(ellipse 82% 92% at 50% 42%, #000 60%, rgba(0,0,0,.6) 80%, transparent 100%);
+  mask-image:radial-gradient(ellipse 82% 92% at 50% 42%, #000 60%, rgba(0,0,0,.6) 80%, transparent 100%);
 }
 .host-txt h2{
   font-size:clamp(30px,3.2vw,42px); font-weight:600; letter-spacing:.01em;
@@ -195,8 +195,8 @@ a{ color:inherit; text-decoration:none; }
 
 .three{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
 .three figure{ margin:0; }
-.three .ph{ background:#fff; aspect-ratio:4/3; overflow:hidden; border:1px solid var(--line); }
-.three img{ width:100%; height:100%; object-fit:cover; }
+.three .ph{ background:#fff; aspect-ratio:2/1; overflow:hidden; border:1px solid var(--line); }
+.three img{ width:100%; height:100%; object-fit:cover; object-position:center 45%; }
 .three figcaption{ padding-top:16px; border-top:1px solid var(--line); margin-top:16px; }
 .three figcaption b{ display:block; font-size:14px; font-weight:600; }
 .three figcaption span{ display:block; font-size:11.5px; color:var(--sub); margin-top:6px; }
@@ -354,6 +354,7 @@ a{ color:inherit; text-decoration:none; }
 .mat-kit{ margin-top:26px; background:#F7F7F7; overflow:hidden; border:1px solid var(--line); }
 .sec--gray .mat-kit{ background:#fff; }
 .mat-kit img{ display:block; width:auto; max-width:100%; max-height:560px; margin:0 auto; padding:22px; box-sizing:border-box; }
+.mat-parts{ font-size:11.5px; line-height:1.9; color:var(--sub); margin-top:12px; text-align:center; letter-spacing:.02em; }
 
 /* 其余配件网格 */
 .acc-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:26px; }
@@ -547,14 +548,14 @@ a{ color:inherit; text-decoration:none; }
   .h1-en{ font-size:10px; letter-spacing:.34em; margin-top:14px; }
   .hero-p{ font-size:12.5px; margin-top:16px; line-height:1.95; }
   .hero-act{ margin-top:24px; gap:10px; }
-  .hero-img{ height:270px; }
-  .hero-img img{ height:100%; object-fit:cover; object-position:center 62%; }
+  .hero-img{ aspect-ratio:16/9; }
+  .hero-img img{ width:100%; height:100%; object-fit:cover; object-position:74% 54%; }
   .pill{ height:36px; padding:0 18px; font-size:12.5px; }
 
   .host{ padding:56px 0 48px; }
   .host-wrap{ grid-template-columns:1fr; gap:0; }
-  .host-pic{ order:1; background:var(--panel); }
-  .host-pic img{ max-height:380px; margin:0 auto; }
+  .host-pic{ order:1; background:transparent; }
+  .host-pic img{ max-height:380px; width:auto; max-width:100%; margin:0 auto; }
   .host-txt{ order:2; padding-top:32px; }
   .host-txt h2{ font-size:29px; }
   .host-txt p{ font-size:13px; margin-top:16px; }
@@ -663,29 +664,44 @@ a{ color:inherit; text-decoration:none; }
   .toast{ bottom:96px; }
 }
 
-/* ---------- 硅胶套装：图 + 色卡 ---------- */
-.giftkit{
-  display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
-  gap:38px; align-items:center; margin-top:26px;
+/* ---------- 硅胶套装：10 宫格 + 色卡 ---------- */
+.giftkit{ margin-top:26px; }
+.gk-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:20px; flex-wrap:wrap; padding-bottom:14px; border-bottom:1px solid var(--line);
 }
-.gk-pic{ border:1px solid var(--line); background:#FAF9F7; padding:18px; }
-.gk-pic img{ display:block; width:auto; max-width:100%; max-height:390px; margin:0 auto; mix-blend-mode:multiply; filter:brightness(1.07) contrast(0.95); }
 .gk-l{
   font-family:var(--fn); font-size:10px; letter-spacing:.24em; color:var(--sub2);
 }
-.gk-swatches{ display:flex; gap:22px; margin-top:16px; flex-wrap:wrap; }
+.gk-swatches{ display:flex; gap:22px; flex-wrap:wrap; }
 .sw{ display:flex; align-items:center; gap:9px; font-size:13px; color:var(--ink); }
 .sw i{
-  width:22px; height:22px; border-radius:50%; display:block;
+  width:20px; height:20px; border-radius:50%; display:block;
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
 }
+.sil-grid{
+  display:grid; grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:1px; background:var(--line);
+  border:1px solid var(--line); border-top:0;
+}
+.sil-item{ background:#fff; padding:22px 14px 18px; text-align:center; }
+.sil-item img{ display:block; width:100%; height:auto; mix-blend-mode:multiply; }
+.sil-item b{ display:block; font-size:13px; font-weight:600; color:var(--ink); margin-top:10px; }
+.sil-item span{ display:block; font-size:11.5px; color:var(--sub2); margin-top:4px; letter-spacing:.04em; }
 .gk-note{
-  font-size:12.5px; line-height:1.95; color:var(--sub); margin-top:20px;
+  font-size:12.5px; line-height:1.95; color:var(--sub); margin-top:18px;
+}
+@media (max-width:1079px){
+  .sil-item{ padding:16px 8px 14px; }
+  .sil-item b{ font-size:12px; }
 }
 @media (max-width:759px){
-  .giftkit{ grid-template-columns:1fr; gap:16px; margin-top:18px; }
-  .gk-pic{ padding:10px; }
-  .gk-swatches{ gap:16px; margin-top:12px; }
+  .gk-head{ flex-direction:column; align-items:flex-start; gap:12px; }
+  .gk-swatches{ gap:16px; }
+  .sil-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sil-item{ padding:16px 8px 14px; }
+  .sil-item b{ font-size:12px; margin-top:8px; }
+  .sil-item span{ font-size:11px; }
   .gk-note{ margin-top:14px; font-size:12px; }
 }
 </style>
@@ -778,7 +794,7 @@ a{ color:inherit; text-decoration:none; }
     <div class="tiers" id="secScreen"></div>
     <div class="three">
       <figure>
-        <div class="ph"><img src="asset/screen/mid.png" alt="中控大屏无尘仓钢化膜"></div>
+        <div class="ph"><img src="asset/screen/mid.jpg" alt="中控大屏无尘仓钢化膜"></div>
         <figcaption><b>中控大屏</b><span>无尘仓 · 磨砂防眩光</span></figcaption>
       </figure>
       <figure>
@@ -786,7 +802,7 @@ a{ color:inherit; text-decoration:none; }
         <figcaption><b>后排电视屏</b><span>钢化膜 · 原屏画质</span></figcaption>
       </figure>
       <figure>
-        <div class="ph"><img src="asset/screen/fridge.png" alt="冰箱屏幕钢化膜"></div>
+        <div class="ph"><img src="asset/screen/fridge.jpg" alt="冰箱屏幕钢化膜"></div>
         <figcaption><b>冰箱控制屏</b><span>钢化膜 · 高透爽滑</span></figcaption>
       </figure>
     </div>
@@ -852,16 +868,27 @@ a{ color:inherit; text-decoration:none; }
       </div>
       <p class="sub-note">26 款 i6 送 <b>21 件套</b>；i8 送 22 件、L9 送 24 件，L6 / L8 / i9 各 21 件，按对应车型配齐，三色可选。</p>
       <div class="giftkit">
-        <div class="gk-pic"><img src="asset/acc/sil_white_final.jpg" alt="全车硅胶套装 21 件"></div>
-        <div class="gk-side">
-          <div class="gk-l">COLOR · 三色可选</div>
+        <div class="gk-head">
+          <div class="gk-l">GIFT · 21 件 / 随脚垫整车配送</div>
           <div class="gk-swatches">
             <span class="sw"><i style="background:#E6E2DA"></i>原车白</span>
             <span class="sw"><i style="background:#987D70"></i>棕色</span>
             <span class="sw"><i style="background:#D2823C"></i>橙黄</span>
           </div>
-          <p class="gk-note">按车型配齐：中控无线充垫、前排水杯架、扶手箱储物盒、冰箱储物盒、车门按键膜、门碗贴、OBD 保护盖等，随脚垫一并装车。</p>
         </div>
+        <div class="sil-grid">
+          <div class="sil-item"><img src="asset/acc/sil/s01.jpg" alt="硅胶无线充垫"><b>无线充垫</b><span>× 1</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s02.jpg" alt="硅胶前排水杯套"><b>前排水杯套</b><span>× 1</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s03.jpg" alt="硅胶扶手箱储物盒"><b>扶手箱储物盒</b><span>全包连体 · × 1</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s04.jpg" alt="硅胶后排水杯套"><b>后排水杯套</b><span>× 1</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s05.jpg" alt="硅胶中控下储物盒"><b>中控下储物盒</b><span>× 2</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s06.jpg" alt="硅胶冰箱储物盒"><b>冰箱储物盒</b><span>× 2</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s07.jpg" alt="车门按键防护垫"><b>车门按键防护垫</b><span>× 4</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s08.jpg" alt="车门内门碗贴"><b>车门内门碗贴</b><span>× 4</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s09.jpg" alt="车门下硅胶盒"><b>车门下硅胶盒</b><span>× 4</span></div>
+          <div class="sil-item"><img src="asset/acc/sil/s10.jpg" alt="OBD 保护盖"><b>OBD 保护盖</b><span>× 1</span></div>
+        </div>
+        <p class="gk-note">上图为 i6 车型 21 件套实拍，按车型配齐后随脚垫一并装车；其他车型件数与组合以实车为准。</p>
       </div>
     </div>
 
@@ -1032,6 +1059,7 @@ const ACC_BIG = [
   { id:'a2', slot:'seat', brand:'GOODYEAR · 固特异 L6 Ultra 系列', name:'座椅垫 七件套', price:996.2, em:'前排 + 后排全包围',
     spec:'前排 + 后排全包围 · 头枕 / 腰靠 / 坐垫一体<br>原车白 / 橙黄 / 棕色 三色可选',
     img:'asset/acc/mat_kit_c2.jpg',
+    partsNote:'主副驾驶靠背垫 ×2 · 二排靠背垫 ×2 · 主副驾驶座垫 ×2 · 二排座垫 ×1',
     colors:[
       { img:'asset/acc/cus_white.jpg',  n:'原车白' },
       { img:'asset/acc/cus_orange.jpg', n:'橙黄' },
@@ -1150,6 +1178,7 @@ function bigCard(a){
           <i class="sub-price">¥996.2<em>${a.em}</em></i>
         </div>
         <div class="mat-kit"><img src="${a.img}" alt="${a.name}"></div>
+        ${a.partsNote ? `<p class="mat-parts">${a.partsNote}</p>` : ''}
         <div class="trio">
           ${a.colors.map(c=>`<div class="trio-item">
             <div class="pframe"><img src="${c.img}" alt="${a.name} ${c.n}"></div>
