@@ -69,6 +69,17 @@ a{ color:inherit; text-decoration:none; }
 .pill.outline{ border-color:rgba(0,0,0,.22); color:var(--ink); }
 .pill.outline:hover{ border-color:var(--ink); }
 
+
+/* 白底产品图融入容器底色（multiply 让白色变透明） */
+.trio .pframe img,
+.addon-pic img,
+.mat-kit img,
+.acc-pic img{ mix-blend-mode:multiply; }
+.trio .pframe,
+.addon-pic,
+.mat-kit,
+.acc-pic{ background:#FAF9F7; }
+
 /* ---------- Hero ---------- */
 .hero{ position:relative; background:#fff; padding-top:var(--nav); }
 .hero-top{ padding:88px 0 56px; }
@@ -86,7 +97,11 @@ a{ color:inherit; text-decoration:none; }
   margin-top:24px; max-width:540px;
 }
 .hero-act{ display:flex; gap:12px; margin-top:34px; flex-wrap:wrap; }
-.hero-img{ overflow:hidden; background:#F1F0ED; line-height:0; }
+.hero-img{ overflow:hidden; background:#fff; line-height:0; }
+.hero-img img{
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
 .hero-img img{ width:100%; height:auto; }
 .eyebrow{
   font-family:var(--fn); font-size:10.5px; letter-spacing:.26em;
@@ -97,8 +112,12 @@ a{ color:inherit; text-decoration:none; }
 /* ---------- 主理人 ---------- */
 .host{ padding:110px 0 100px; }
 .host-wrap{ display:grid; grid-template-columns:0.86fr 1fr; gap:72px; align-items:center; }
-.host-pic{ background:var(--panel); }
-.host-pic img{ width:100%; height:auto; object-fit:contain; object-position:bottom; }
+.host-pic{ background:transparent; }
+.host-pic img{
+  width:100%; height:auto; display:block;
+  -webkit-mask-image:linear-gradient(to bottom, #000 80%, transparent 99%);
+  mask-image:linear-gradient(to bottom, #000 80%, transparent 99%);
+}
 .host-txt h2{
   font-size:clamp(30px,3.2vw,42px); font-weight:600; letter-spacing:.01em;
   line-height:1.35; margin:16px 0 0;
@@ -332,9 +351,9 @@ a{ color:inherit; text-decoration:none; }
   display:flex; align-items:baseline; gap:8px; white-space:nowrap;
 }
 .sub-price em{ font-style:normal; font-family:var(--ff); font-size:11px; color:var(--sub); font-weight:400; }
-.mat-kit{ margin-top:26px; background:#fff; overflow:hidden; border:1px solid var(--line); }
+.mat-kit{ margin-top:26px; background:#F7F7F7; overflow:hidden; border:1px solid var(--line); }
 .sec--gray .mat-kit{ background:#fff; }
-.mat-kit img{ width:100%; height:auto; }
+.mat-kit img{ display:block; width:auto; max-width:100%; max-height:560px; margin:0 auto; padding:22px; box-sizing:border-box; }
 
 /* 其余配件网格 */
 .acc-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:26px; }
@@ -643,6 +662,32 @@ a{ color:inherit; text-decoration:none; }
   .qtotal .tv{ font-size:27px; }
   .toast{ bottom:96px; }
 }
+
+/* ---------- 硅胶套装：图 + 色卡 ---------- */
+.giftkit{
+  display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:38px; align-items:center; margin-top:26px;
+}
+.gk-pic{ border:1px solid var(--line); background:#FAF9F7; padding:18px; }
+.gk-pic img{ display:block; width:auto; max-width:100%; max-height:390px; margin:0 auto; mix-blend-mode:multiply; filter:brightness(1.07) contrast(0.95); }
+.gk-l{
+  font-family:var(--fn); font-size:10px; letter-spacing:.24em; color:var(--sub2);
+}
+.gk-swatches{ display:flex; gap:22px; margin-top:16px; flex-wrap:wrap; }
+.sw{ display:flex; align-items:center; gap:9px; font-size:13px; color:var(--ink); }
+.sw i{
+  width:22px; height:22px; border-radius:50%; display:block;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+}
+.gk-note{
+  font-size:12.5px; line-height:1.95; color:var(--sub); margin-top:20px;
+}
+@media (max-width:759px){
+  .giftkit{ grid-template-columns:1fr; gap:16px; margin-top:18px; }
+  .gk-pic{ padding:10px; }
+  .gk-swatches{ gap:16px; margin-top:12px; }
+  .gk-note{ margin-top:14px; font-size:12px; }
+}
 </style>
 </head>
 <body>
@@ -680,7 +725,7 @@ a{ color:inherit; text-decoration:none; }
       </div>
     </div>
   </div>
-  <div class="hero-img"><img src="asset/car_i6.png" alt="理想 i6"></div>
+  <div class="hero-img"><img src="asset/car_hero.jpg" alt="理想 i6"></div>
 </header>
 
 <!-- ========== 主理人 ========== -->
@@ -806,10 +851,17 @@ a{ color:inherit; text-decoration:none; }
         <span>无线充垫 / 水杯架 / 储物盒 / 车门按键 / 门碗贴 / OBD 盖</span>
       </div>
       <p class="sub-note">26 款 i6 送 <b>21 件套</b>；i8 送 22 件、L9 送 24 件，L6 / L8 / i9 各 21 件，按对应车型配齐，三色可选。</p>
-      <div class="trio">
-        <div class="trio-item"><div class="pframe"><img src="asset/acc/sil_white.jpg" alt="硅胶防护 原车白"></div><div class="pcap">原车白</div></div>
-        <div class="trio-item"><div class="pframe"><img src="asset/acc/sil_brown.jpg" alt="硅胶防护 棕色"></div><div class="pcap">棕色</div></div>
-        <div class="trio-item"><div class="pframe"><img src="asset/acc/sil_orange.jpg" alt="硅胶防护 橙黄"></div><div class="pcap">橙黄</div></div>
+      <div class="giftkit">
+        <div class="gk-pic"><img src="asset/acc/sil_white_final.jpg" alt="全车硅胶套装 21 件"></div>
+        <div class="gk-side">
+          <div class="gk-l">COLOR · 三色可选</div>
+          <div class="gk-swatches">
+            <span class="sw"><i style="background:#E6E2DA"></i>原车白</span>
+            <span class="sw"><i style="background:#987D70"></i>棕色</span>
+            <span class="sw"><i style="background:#D2823C"></i>橙黄</span>
+          </div>
+          <p class="gk-note">按车型配齐：中控无线充垫、前排水杯架、扶手箱储物盒、冰箱储物盒、车门按键膜、门碗贴、OBD 保护盖等，随脚垫一并装车。</p>
+        </div>
       </div>
     </div>
 
@@ -979,7 +1031,7 @@ const ACC_BIG = [
     giftTag:'i6 送 21 件' },
   { id:'a2', slot:'seat', brand:'GOODYEAR · 固特异 L6 Ultra 系列', name:'座椅垫 七件套', price:996.2, em:'前排 + 后排全包围',
     spec:'前排 + 后排全包围 · 头枕 / 腰靠 / 坐垫一体<br>原车白 / 橙黄 / 棕色 三色可选',
-    img:'asset/acc/mat_kit.jpg',
+    img:'asset/acc/mat_kit_c2.jpg',
     colors:[
       { img:'asset/acc/cus_white.jpg',  n:'原车白' },
       { img:'asset/acc/cus_orange.jpg', n:'橙黄' },
