@@ -236,53 +236,65 @@ function renderHome() {
   ];
 
   const quick = [
-    { go: 'tasks', icon: 'calendar', title: '任务与日历', desc: '月历视图 · 按日期查看任务' },
-    { go: 'library', icon: 'book', title: '图书馆', desc: '搜索书名 · 阅读书摘与思考' },
-    { go: 'wenan', icon: 'file', title: '文案库', desc: '脚本在线阅读 · 复制与下载' }
+    { go: 'tasks', icon: 'calendar', no: '01', cls: 'c1', title: '任务与日历', desc: '月历视图 · 按日期查看任务' },
+    { go: 'library', icon: 'book', no: '02', cls: 'c2', title: '图书馆', desc: '搜索书名 · 阅读书摘与思考' },
+    { go: 'wenan', icon: 'file', no: '03', cls: 'c3', title: '文案库', desc: '脚本在线阅读 · 复制与下载' }
   ];
 
+  const marq = 'TASKS ✦ LIBRARY ✦ SCRIPTS ✦ FEISHU ✦ AI ✦ EDIT ✦ DATA ✦ ';
+
   return '' +
-    '<section class="home-hero">' +
-      '<div class="hero-copy">' +
-        '<div class="hero-head">' +
-          '<div class="hero-kicker"><span class="px-dot"></span>DIGITAL WORKBENCH · EST 2026</div>' +
-          '<div class="hero-badge">' +
-            '<svg viewBox="0 0 16 16"><g fill="#8ba0d8"><rect x="1" y="9" width="3" height="3"/><rect x="4" y="6" width="3" height="6"/><rect x="8" y="3" width="3" height="9"/></g><rect x="12" y="7" width="2" height="5" fill="#c9d4ee"/><rect x="1" y="12" width="13" height="1.5" fill="#3d4d85"/></svg>' +
-            '<span>EST. 2026<br>LOCAL FIRST</span>' +
-          '</div>' +
+    '<section class="fx-hero">' +
+      '<div class="fx-hero-grid"></div>' +
+      '<div class="fx-hero-glow"></div>' +
+      '<div class="fx-hero-ring r1"></div>' +
+      '<div class="fx-hero-ring r2"></div>' +
+      '<div class="fx-hero-ghost">WORKBENCH</div>' +
+      '<div class="fx-marquee m1"><div class="fx-track">' + marq + marq + '</div></div>' +
+      '<div class="fx-marquee m2"><div class="fx-track rev">' + marq + marq + '</div></div>' +
+      '<div class="fx-hero-inner">' +
+        '<div class="fx-kicker"><i></i> DIGITAL WORKBENCH <em>EST · 2026</em><span>LOCAL FIRST</span></div>' +
+        '<div class="fx-art"><img src="assets/img/px-octo.png" alt="" loading="lazy"></div>' +
+        '<h1 class="fx-title">个人<span>工作台</span></h1>' +
+        '<div class="fx-en">PERSONAL · WORKBENCH</div>' +
+        '<p class="fx-note">任务、藏书与文案，收在一张安静的桌面上。</p>' +
+        '<div class="fx-actions">' +
+          '<button class="fx-btn primary" data-go="tasks">进入任务 <span>→</span></button>' +
+          '<button class="fx-btn" data-go="library">浏览藏书</button>' +
         '</div>' +
-        '<div class="hero-title">你好，这里是<br>个人工作台<span class="px-mark">' +
-          '<svg viewBox="0 0 16 16"><g fill="#9fb0dd"><rect x="6" y="0" width="4" height="3"/><rect x="6" y="13" width="4" height="3"/><rect x="0" y="6" width="3" height="4"/><rect x="13" y="6" width="3" height="4"/><rect x="2" y="2" width="3" height="3"/><rect x="11" y="2" width="3" height="3"/><rect x="2" y="11" width="3" height="3"/><rect x="11" y="11" width="3" height="3"/></g><rect x="6" y="6" width="4" height="4" fill="#3d4d85"/></svg>' +
-        '</span></div>' +
-        '<div class="hero-rule"></div>' +
-        '<div class="hero-note">任务、藏书与文案，收在一张安静的桌面上。</div>' +
-        '<div class="hero-actions">' +
-          '<button class="btn hero-btn primary" data-go="tasks"><span>查看任务</span></button>' +
-          '<button class="btn hero-btn" data-go="library"><span>浏览藏书</span><i>✦</i></button>' +
+        '<div class="fx-hero-stats">' +
+          statItems.map(function (s) {
+            return '<div class="fx-stat"><b>' + esc(String(s.value)) + '</b><span>' + esc(s.label) + '</span></div>';
+          }).join('') +
         '</div>' +
       '</div>' +
-      '<div class="hero-art"><img src="assets/img/px-flower.png" alt="" loading="lazy"></div>' +
     '</section>' +
-    '<div class="ornament"><span>Made with care</span><i>✿</i><span>Pixel by pixel</span><i>✿</i><span>Built to last</span></div>' +
-    '<div class="stat-grid">' +
-      statItems.map(function (s) {
-        return '<div class="stat"><div class="stat-label">' + esc(s.label) + '</div>' +
-          '<div class="stat-value">' + esc(String(s.value)) + '</div>' +
-          '<div class="stat-hint">' + esc(s.hint) + '</div></div>';
-      }).join('') +
+    '<div class="fx-section-head">' +
+      '<div><div class="fx-eyebrow">EXPLORE · 3 SPACES</div>' +
+      '<div class="fx-sec-title">工作区入口 <em>— explore</em></div></div>' +
+      '<span class="fx-view">SCROLL ↓</span>' +
     '</div>' +
-    '<div class="quick-grid" style="margin-top:18px;">' +
+    '<div class="fx-cards">' +
       quick.map(function (q) {
-        return '<div class="quick-card" data-go="' + q.go + '">' +
-          '<div class="quick-ico">' + ic(q.icon) + '</div>' +
-          '<div><div class="qc-title">' + esc(q.title) + '</div>' +
-          '<div class="qc-desc">' + esc(q.desc) + '</div></div></div>';
+        return '<div class="fx-card ' + q.cls + '" data-go="' + q.go + '">' +
+          '<div class="fx-card-art">' +
+            '<div class="fx-card-ico">' + ic(q.icon) + '</div>' +
+            '<span class="fx-card-no">' + q.no + '</span>' +
+            '<i class="fx-card-spark"></i>' +
+          '</div>' +
+          '<div class="fx-card-foot">' +
+            '<div class="fx-card-txt"><b>' + esc(q.title) + '</b><span>' + esc(q.desc) + '</span></div>' +
+            '<span class="fx-card-go">↗</span>' +
+          '</div>' +
+        '</div>';
       }).join('') +
     '</div>' +
-    '<div class="card">' +
-      '<div class="card-head"><div class="card-title">最近完成的任务</div>' +
-        '<div class="card-head-actions"><button class="btn btn-sm btn-ghost" data-go="tasks">查看全部</button></div>' +
-      '</div>' +
+    '<div class="fx-section-head">' +
+      '<div><div class="fx-eyebrow">RECENT · ' + (ready ? recent.length : '·') + '</div>' +
+      '<div class="fx-sec-title">最近完成 <em>— timeline</em></div></div>' +
+      '<button class="fx-view link" data-go="tasks">全部任务 →</button>' +
+    '</div>' +
+    '<div class="card fx-recent">' +
       (st.load.feishu === 'loading' ? stateHtml('loading', '正在读取任务数据')
         : st.load.feishu === 'error' ? stateHtml('error', '飞书数据加载失败', st.err.feishu, '重试', 'data-action="retry-feishu"')
         : recent.length
@@ -790,19 +802,19 @@ function wenanBook(d) {
 
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 const SECTIONS = [
-  { key: 'tasks', no: '01', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看', art: 'assets/img/px-octo.png' },
-  { key: 'library', no: '02', title: '图书馆', desc: '藏书、书摘与思考', art: 'assets/img/px-icons.png' },
+  { key: 'tasks', no: '01', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
+  { key: 'library', no: '02', title: '图书馆', desc: '藏书、书摘与思考' },
   { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' }
 ];
 
 function secHead(s) {
   return '<div class="sec-head">' +
     '<div class="sec-head-copy">' +
-      '<div class="sec-kicker">' + s.no + ' · SECTION</div>' +
+      '<div class="sec-kicker"><b>' + s.no + '</b> · SECTION</div>' +
       '<div class="sec-h-title">' + esc(s.title) + '</div>' +
       '<div class="sec-desc">' + esc(s.desc) + '</div>' +
     '</div>' +
-    (s.art ? '<div class="sec-art' + (s.key === 'library' ? ' framed' : '') + '"><img src="' + s.art + '" alt="" loading="lazy"></div>' : '') +
+    '<div class="sec-no" aria-hidden="true">' + s.no + '</div>' +
   '</div>';
 }
 
