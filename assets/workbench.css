@@ -3578,6 +3578,13 @@ body{
   overflow:hidden;
   transition:border-color .16s, box-shadow .16s;
 }
+/* 有图时换成浅色棋盘格：透明区域和深色描边都看得清，接近 AI 像素画的展示底 */
+.px-stage.has-img{
+  background-color:#e9e6e0;
+  background-image:
+    linear-gradient(45deg, rgba(0,0,0,.075) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.075) 75%),
+    linear-gradient(45deg, rgba(0,0,0,.075) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.075) 75%);
+}
 .px-stage.drag{
   border-color:rgba(255,106,47,.6);
   box-shadow:0 0 0 1px rgba(255,106,47,.24), inset 0 0 46px rgba(255,106,47,.18);
@@ -3587,7 +3594,7 @@ body{
 .px-board canvas{
   display:block; max-width:100%; max-height:56vh;
   image-rendering:pixelated;
-  filter:drop-shadow(0 20px 42px rgba(0,0,0,.6));
+  filter:drop-shadow(0 16px 30px rgba(0,0,0,.22));
 }
 .px-stage:not(.has-img) .px-board{ display:none; }
 
@@ -3646,10 +3653,15 @@ body{
 /* 参数面板 */
 .px-panel{
   position:sticky; top:76px;
+  max-height:calc(100vh - 96px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
   padding:16px;
   border:1px solid var(--line); border-radius:20px;
   background:linear-gradient(165deg, rgba(255,255,255,.055), rgba(255,255,255,.012));
 }
+.px-panel::-webkit-scrollbar{ width:6px; }
+.px-panel::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.16); border:0; border-radius:99px; }
 .px-panel-head{
   display:flex; align-items:center; justify-content:space-between;
   padding-bottom:12px; margin-bottom:2px;
@@ -3662,7 +3674,27 @@ body{
 }
 
 .px-ctrl{ padding:13px 0 11px; border-bottom:1px solid rgba(255,255,255,.06); }
+.px-ctrl-first{ padding-top:12px; }
 .px-ctrl:last-of-type{ border-bottom:0; }
+
+.px-presets{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin-top:10px; }
+.px-preset{
+  height:30px; padding:0 4px;
+  border-radius:9px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--ink-2); font-size:11px; white-space:nowrap;
+  cursor:pointer;
+  transition:background .14s, color .14s, border-color .14s;
+}
+.px-preset:hover{ background:rgba(255,255,255,.09); color:var(--ink); }
+.px-preset.on{
+  background:rgba(255,106,47,.16);
+  border-color:rgba(255,106,47,.55);
+  color:var(--accent-deep); font-weight:600;
+  box-shadow:inset 0 0 0 1px rgba(255,106,47,.2);
+}
+
 .px-ctrl-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .px-ctrl-top label{ font-size:12px; color:var(--ink-2); }
 .px-ctrl-top b{
@@ -3697,6 +3729,7 @@ body{
 }
 
 .px-seg{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; margin-top:10px; }
+.px-seg-3{ grid-template-columns:repeat(3,minmax(0,1fr)); }
 .px-seg button{
   height:30px; border-radius:9px;
   background:rgba(255,255,255,.045);
