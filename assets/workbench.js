@@ -64,7 +64,7 @@ const st = {
   wenan: { q: '', cat: 'all', page: 1 },
   pixel: {
     src: '', name: '', img: null, out: null,
-    size: 64, levels: 6, tol: 26, knock: true, scale: 8,
+    size: 160, colors: 28, punch: 42, dither: 'none', outline: true, tol: 30, knock: true, scale: 4, preset: '',
     pw: 0, ph: 0, outW: 0, outH: 0, sigSrc: '', sigCfg: ''
   }
 };
@@ -779,7 +779,20 @@ function wenanBook(d) {
 }
 
 /* ---------------- 像素工坊（图片 → 像素风 · 透明背景导出） ---------------- */
-const PX_DEFAULT = { size: 64, levels: 6, tol: 26, knock: true, scale: 8 };
+const PX_DEFAULT = { size: 160, colors: 28, punch: 42, dither: 'none', outline: true, tol: 30, knock: true, scale: 4, preset: '' };
+
+/* 预设：一键接近「AI 像素画」的观感 */
+const PX_PRESETS = [
+  { key: 'sprite', name: '像素角色', size: 144, colors: 22, punch: 56, dither: 'order', outline: true, knock: true, scale: 6 },
+  { key: 'scene', name: '像素场景', size: 200, colors: 34, punch: 38, dither: 'none', outline: true, knock: false, scale: 4 },
+  { key: 'retro', name: '复古 8 位', size: 72, colors: 10, punch: 26, dither: 'order', outline: true, knock: true, scale: 8 }
+];
+
+const PX_DITHER = {
+  none: '无',
+  order: '有序',
+  fs: '扩散'
+};
 
 function pxGlyph() {
   return '<svg viewBox="0 0 16 16" aria-hidden="true">' +
@@ -801,6 +814,12 @@ function pxCtrl(key, label, val, min, max, step, unit, hint) {
 function renderPixelPage() {
   const p = st.pixel;
   const spec = p.outW ? (p.pw + ' × ' + p.ph + ' → ' + p.outW + ' × ' + p.outH + ' px') : '等待图片';
+  const presetBtns = PX_PRESETS.map(function (k) {
+    return '<button class="px-preset' + (p.preset === k.key ? ' on' : '') + '" data-pxpreset="' + k.key + '">' + k.name + '</button>';
+  }).join('');
+  const ditherBtns = Object.keys(PX_DITHER).map(function (k) {
+    return '<button class="' + (p.dither === k ? 'on' : '') + '" data-pxdither="' + k + '">' + PX_DITHER[k] + '</button>';
+  }).join('');
 
   return '<div class="px-wrap">' +
     '<div class="px-main">' +
@@ -829,14 +848,24 @@ function renderPixelPage() {
       '<input type="file" id="pxFile" accept="image/*" hidden>' +
       '<div class="px-stats">' +
         '<div class="px-stat"><i>输出规格</i><b data-px-spec>' + esc(spec) + '</b></div>' +
-        '<div class="px-stat"><i>导出格式</i><b>PNG · 透明通道</b></div>' +
+        '<div class="px-stat"><i>调色板</i><b data-px-palette>' + (p.palette ? p.palette.length : p.colors) + ' 色 · ' + PX_DITHER[p.dither] + '抖动</b></div>' +
         '<div class="px-stat"><i>自动去背</i><b data-px-knocklabel>' + (p.knock ? '已开启' : '已关闭') + '</b></div>' +
       '</div>' +
     '</div>' +
     '<aside class="px-panel">' +
       '<div class="px-panel-head"><b>像素参数</b><span>LIVE</span></div>' +
-      pxCtrl('size', '像素密度', p.size, 16, 160, 8, 'px', '数值越小，方块越大，像素味越重') +
-      pxCtrl('levels', '色阶', p.levels, 2, 12, 1, '级', '每通道阶数，越低越像复古游戏') +
+      '<div class="px-ctrl px-ctrl-first">' +
+        '<div class="px-ctrl-top"><label>一键预设</label></div>' +
+        '<div class="px-presets">' + presetBtns + '</div>' +
+      '</div>' +
+      pxCtrl('size', '像素密度', p.size, 24, 320, 8, 'px', '越高细节越多；160 上下最接近 AI 像素画') +
+      pxCtrl('colors', '色数', p.colors, 4, 64, 2, '色', '调色板颜色数量，越少越复古') +
+      '<div class="px-ctrl">' +
+        '<div class="px-ctrl-top"><label>抖动</label><b data-px-val="dither">' + PX_DITHER[p.dither] + '</b></div>' +
+        '<div class="px-seg px-seg-3">' + ditherBtns + '</div>' +
+        '<div class="px-ctrl-hint">默认「无」最像手绘像素画；渐变多的画面可选「扩散」</div>' +
+      '</div>' +
+      pxCtrl('punch', '鲜艳度', p.punch, 0, 100, 1, '%', '提升对比与饱和，像素画更精神') +
       pxCtrl('tol', '去背容差', p.tol, 0, 100, 1, '%', '四边背景色相近多少就判为透明') +
       '<div class="px-ctrl">' +
         '<div class="px-ctrl-top"><label>导出倍数</label><b data-px-val="scale">' + p.scale + '×</b></div>' +
@@ -850,6 +879,12 @@ function renderPixelPage() {
           '<button class="px-switch' + (p.knock ? ' on' : '') + '" data-pxknock role="switch" aria-checked="' + (p.knock ? 'true' : 'false') + '"><i></i></button>' +
         '</div>' +
         '<div class="px-ctrl-hint">从画面四边泛洪抠图，主体内部的同色区域会保留</div>' +
+      '</div>' +
+      '<div class="px-ctrl">' +
+        '<div class="px-ctrl-top"><label>黑色描边</label>' +
+          '<button class="px-switch' + (p.outline ? ' on' : '') + '" data-pxoutline role="switch" aria-checked="' + (p.outline ? 'true' : 'false') + '"><i></i></button>' +
+        '</div>' +
+        '<div class="px-ctrl-hint">在剪影外围描 1 像素深色边，更接近游戏精灵</div>' +
       '</div>' +
       '<div class="px-actions">' +
         '<button class="px-cta" data-px-down' + (p.out ? '' : ' disabled') + '>下载透明 PNG <span>↓</span></button>' +
@@ -935,16 +970,264 @@ function pxKnock(src, w, h, tol) {
   return out;
 }
 
-/* 降采样到像素网格：块内按 alpha 加权取均值 → 色阶量化 → 整数倍放大 */
+/* 对比 + 饱和提升 + 亮度 S 曲线，让像素画的块面更有体积感 */
+function pxPunch(r, g, b, amt) {
+  if (amt <= 0) return [r, g, b];
+  const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+  const sat = 1 + 0.62 * amt;
+  const con = 1 + 0.50 * amt;
+  let nr = (lum + (r - lum) * sat - 128) * con + 128;
+  let ng = (lum + (g - lum) * sat - 128) * con + 128;
+  let nb = (lum + (b - lum) * sat - 128) * con + 128;
+  /* smoothstep 提亮亮部、压暗暗部，暗部更沉，块面更清楚 */
+  const t = (0.299 * nr + 0.587 * ng + 0.114 * nb) / 255;
+  const s = t * t * (3 - 2 * t) * 255;
+  const d = (s - t * 255) * 0.34 * amt;
+  return [nr + d, ng + d, nb + d];
+}
+
+/* 补洞：被主体包围的针孔填回邻近色，剪影不再漏底 */
+function pxFillHoles(alive, flat, pw, ph) {
+  const next = new Uint8Array(alive);
+  for (let y = 0; y < ph; y++) {
+    for (let x = 0; x < pw; x++) {
+      const idx = y * pw + x;
+      if (alive[idx]) continue;
+      let cnt = 0, sr = 0, sg = 0, sb = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (!dx && !dy) continue;
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= pw || ny >= ph) continue;
+          const ni = ny * pw + nx;
+          if (!alive[ni]) continue;
+          const no = ni * 4;
+          sr += flat[no]; sg += flat[no + 1]; sb += flat[no + 2]; cnt++;
+        }
+      }
+      if (cnt >= 6) {
+        const o = idx * 4;
+        flat[o] = sr / cnt; flat[o + 1] = sg / cnt; flat[o + 2] = sb / cnt; flat[o + 3] = 255;
+        next[idx] = 1;
+      }
+    }
+  }
+  alive.set(next);
+}
+
+/* 去孤立噪点：四周几乎没有同伴的零散像素剪掉，边缘更干净 */
+function pxDespeckle(alive, cov, pw, ph) {
+  const kill = [];
+  for (let y = 0; y < ph; y++) {
+    for (let x = 0; x < pw; x++) {
+      const idx = y * pw + x;
+      if (!alive[idx]) continue;
+      let cnt = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (!dx && !dy) continue;
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= pw || ny >= ph) continue;
+          if (alive[ny * pw + nx]) cnt++;
+        }
+      }
+      if (cnt === 0 || (cnt === 1 && cov[idx] < 180)) kill.push(idx);
+    }
+  }
+  for (let i = 0; i < kill.length; i++) alive[kill[i]] = 0;
+}
+
+/* 去碎片：按连通块面积剪掉细小残渣（背景纹理、墨点），剪影只留主体 */
+function pxDropIslands(alive, pw, ph) {
+  const seen = new Uint8Array(pw * ph);
+  const comp = new Int32Array(pw * ph);
+  const stack = new Int32Array(pw * ph);
+  const total = pw * ph;
+  const parts = [];
+  for (let i = 0; i < total; i++) {
+    if (!alive[i] || seen[i]) continue;
+    let sp = 0, cnt = 0;
+    stack[sp++] = i;
+    seen[i] = 1;
+    while (sp) {
+      const k = stack[--sp];
+      comp[k] = parts.length;
+      cnt++;
+      const x = k % pw, y = (k / pw) | 0;
+      if (x > 0 && alive[k - 1] && !seen[k - 1]) { seen[k - 1] = 1; stack[sp++] = k - 1; }
+      if (x + 1 < pw && alive[k + 1] && !seen[k + 1]) { seen[k + 1] = 1; stack[sp++] = k + 1; }
+      if (y > 0 && alive[k - pw] && !seen[k - pw]) { seen[k - pw] = 1; stack[sp++] = k - pw; }
+      if (y + 1 < ph && alive[k + pw] && !seen[k + pw]) { seen[k + pw] = 1; stack[sp++] = k + pw; }
+    }
+    parts.push(cnt);
+  }
+  if (parts.length <= 1) return;
+  let big = 0;
+  for (let i = 1; i < parts.length; i++) if (parts[i] > parts[big]) big = i;
+  /* 面积门槛：主体的 0.4%，至少 8 像素 */
+  const minArea = Math.max(8, Math.round(parts[big] * 0.004));
+  const drop = new Uint8Array(parts.length);
+  for (let i = 0; i < parts.length; i++) {
+    if (i !== big && parts[i] < minArea) drop[i] = 1;
+  }
+  for (let i = 0; i < total; i++) {
+    if (alive[i] && drop[comp[i]]) alive[i] = 0;
+  }
+}
+
+/* 边缘保持平滑：只在颜色相近的邻居间取均值，抹掉零散色斑但保住硬边 */
+function pxSmooth(src, alive, pw, ph, thr) {
+  const out = new Uint8Array(src.length);
+  out.set(src);
+  const t2 = thr * thr;
+  for (let y = 0; y < ph; y++) {
+    for (let x = 0; x < pw; x++) {
+      const idx = y * pw + x;
+      if (!alive[idx]) continue;
+      const o = idx * 4;
+      const r0 = src[o], g0 = src[o + 1], b0 = src[o + 2];
+      let sr = 0, sg = 0, sb = 0, n = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= pw || ny >= ph) continue;
+          const ni = ny * pw + nx;
+          if (!alive[ni]) continue;
+          const no = ni * 4;
+          const dr = src[no] - r0, dg = src[no + 1] - g0, db = src[no + 2] - b0;
+          if (dr * dr + dg * dg + db * db > t2) continue;
+          sr += src[no]; sg += src[no + 1]; sb += src[no + 2]; n++;
+        }
+      }
+      if (n > 1) {
+        out[o] = sr / n; out[o + 1] = sg / n; out[o + 2] = sb / n;
+      }
+    }
+  }
+  return out;
+}
+
+/* 中位切分：从 5bit 用色直方图里提取 N 色调色板（更接近手工像素画的配色） */
+function pxPalette(rgb, maxColors) {
+  const n = rgb.length / 3;
+  if (!n) return [[255, 255, 255]];
+
+  const hist = new Map();
+  for (let i = 0; i < n; i++) {
+    const r = rgb[i * 3], g = rgb[i * 3 + 1], b = rgb[i * 3 + 2];
+    const key = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+    let h = hist.get(key);
+    if (!h) { h = { r: 0, g: 0, b: 0, n: 0 }; hist.set(key, h); }
+    h.r += r; h.g += g; h.b += b; h.n++;
+  }
+
+  function makeBox(cols) {
+    let sr = 0, sg = 0, sb = 0, count = 0;
+    let rmin = 255, rmax = 0, gmin = 255, gmax = 0, bmin = 255, bmax = 0;
+    for (let i = 0; i < cols.length; i++) {
+      const c = cols[i];
+      const r = c.r / c.n, g = c.g / c.n, b = c.b / c.n;
+      sr += c.r; sg += c.g; sb += c.b; count += c.n;
+      if (r < rmin) rmin = r; if (r > rmax) rmax = r;
+      if (g < gmin) gmin = g; if (g > gmax) gmax = g;
+      if (b < bmin) bmin = b; if (b > bmax) bmax = b;
+    }
+    const ranges = [rmax - rmin, gmax - gmin, bmax - bmin];
+    let axis = 0;
+    if (ranges[1] > ranges[axis]) axis = 1;
+    if (ranges[2] > ranges[axis]) axis = 2;
+    return {
+      cols: cols, count: count, axis: axis, range: ranges[axis],
+      r: sr / count, g: sg / count, b: sb / count
+    };
+  }
+
+  let boxes = [makeBox(Array.from(hist.values()))];
+  const limit = Math.max(2, Math.min(64, maxColors));
+
+  while (boxes.length < limit) {
+    let bi = -1, best = -1;
+    for (let i = 0; i < boxes.length; i++) {
+      const bx = boxes[i];
+      if (bx.cols.length < 2) continue;
+      const score = bx.range * Math.sqrt(bx.count);
+      if (score > best) { best = score; bi = i; }
+    }
+    if (bi < 0) break;
+
+    const bx = boxes[bi];
+    const ch = bx.axis === 0 ? 'r' : bx.axis === 1 ? 'g' : 'b';
+    bx.cols.sort(function (a, b) {
+      return (a[ch] / a.n) - (b[ch] / b.n);
+    });
+    let acc = 0, cut = 1;
+    const half = bx.count / 2;
+    for (let i = 0; i < bx.cols.length - 1; i++) {
+      acc += bx.cols[i].n;
+      if (acc >= half) { cut = i + 1; break; }
+    }
+    if (cut >= bx.cols.length) cut = bx.cols.length - 1;
+    boxes.splice(bi, 1, makeBox(bx.cols.slice(0, cut)), makeBox(bx.cols.slice(cut)));
+  }
+
+  let pal = boxes.map(function (bx) {
+    return [Math.round(bx.r), Math.round(bx.g), Math.round(bx.b)];
+  });
+
+  /* k-means 精修：把每个色向它所辖像素的真实均值收敛，配色更贴近画面 */
+  const step = Math.max(1, Math.floor(n / 24000));
+  const kr = new Float64Array(pal.length), kg = new Float64Array(pal.length),
+    kb = new Float64Array(pal.length), kc = new Int32Array(pal.length);
+  for (let it = 0; it < 3; it++) {
+    kr.fill(0); kg.fill(0); kb.fill(0); kc.fill(0);
+    for (let i = 0; i < n; i += step) {
+      const r = rgb[i * 3], g = rgb[i * 3 + 1], b = rgb[i * 3 + 2];
+      const ci = pxNearest(pal, r, g, b);
+      kr[ci] += r; kg[ci] += g; kb[ci] += b; kc[ci]++;
+    }
+    for (let j = 0; j < pal.length; j++) {
+      if (!kc[j]) continue;
+      pal[j] = [Math.round(kr[j] / kc[j]), Math.round(kg[j] / kc[j]), Math.round(kb[j] / kc[j])];
+    }
+  }
+
+  /* 去重：精修后可能有两色并到一处 */
+  const uniq = [];
+  for (let i = 0; i < pal.length; i++) {
+    let dup = false;
+    for (let j = 0; j < uniq.length; j++) {
+      const dr = pal[i][0] - uniq[j][0], dg = pal[i][1] - uniq[j][1], db = pal[i][2] - uniq[j][2];
+      if (dr * dr + dg * dg + db * db < 25) { dup = true; break; }
+    }
+    if (!dup) uniq.push(pal[i]);
+  }
+  return uniq.length ? uniq : pal;
+}
+
+const PX_BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
+function pxNearest(pal, r, g, b) {
+  let best = 0, bestD = Infinity;
+  for (let i = 0; i < pal.length; i++) {
+    const c = pal[i];
+    const dr = r - c[0], dg = g - c[1], db = b - c[2];
+    const d = dr * dr * 2 + dg * dg * 3 + db * db;
+    if (d < bestD) { bestD = d; best = i; }
+  }
+  return best;
+}
+
+/* 去背后的高质量像素化：浏览器平滑降采样 → 调色板量化 → 抖动 → 描边 → 整数倍放大 */
 function pxRender() {
   const p = st.pixel;
   const img = p.img;
   if (!img || !img.naturalWidth) return;
 
   const iw = img.naturalWidth, ih = img.naturalHeight;
-  const pw = Math.max(8, Math.min(200, Math.round(p.size)));
+  const pw = Math.max(24, Math.min(320, Math.round(p.size)));
   const ph = Math.max(1, Math.round(pw * ih / iw));
 
+  // 1. 工作图：限制采样成本，并在较大分辨率上做去背
   const MAXW = 1280;
   const k = Math.min(1, MAXW / Math.max(iw, ih));
   const ww = Math.max(1, Math.round(iw * k));
@@ -955,43 +1238,149 @@ function pxRender() {
   const wctx = wc.getContext('2d', { willReadFrequently: true });
   wctx.clearRect(0, 0, ww, wh);
   wctx.drawImage(img, 0, 0, ww, wh);
-  let data = wctx.getImageData(0, 0, ww, wh).data;
-  if (p.knock) data = pxKnock(data, ww, wh, p.tol);
+
+  if (p.knock) {
+    const data = pxKnock(wctx.getImageData(0, 0, ww, wh).data, ww, wh, p.tol);
+    wctx.putImageData(new ImageData(data, ww, wh), 0, 0);
+  }
+
+  // 2. 网格化：平滑降采样，保留更多细节
+  const grid = document.createElement('canvas');
+  grid.width = pw; grid.height = ph;
+  const gctx = grid.getContext('2d', { willReadFrequently: true });
+  gctx.imageSmoothingEnabled = true;
+  gctx.imageSmoothingQuality = 'high';
+  gctx.clearRect(0, 0, pw, ph);
+  gctx.drawImage(wc, 0, 0, pw, ph);
+  const gd = gctx.getImageData(0, 0, pw, ph).data;
+
+  // 3. 硬边剪影：按覆盖率二值化 → 补洞 → 去噪 → 边缘保持平滑 → 鲜艳度
+  const alive = new Uint8Array(pw * ph);
+  const flat = new Uint8Array(pw * ph * 4);
+  const cov = new Uint8Array(pw * ph);
+  const punchAmt = Math.max(0, Math.min(1, p.punch / 100));
+
+  for (let i = 0, o = 0; i < gd.length; i += 4, o += 4) {
+    cov[o >> 2] = gd[i + 3];
+    if (gd[i + 3] < 110) continue;
+    alive[o >> 2] = 1;
+    const c = pxPunch(gd[i], gd[i + 1], gd[i + 2], punchAmt);
+    flat[o] = c[0] < 0 ? 0 : c[0] > 255 ? 255 : c[0];
+    flat[o + 1] = c[1] < 0 ? 0 : c[1] > 255 ? 255 : c[1];
+    flat[o + 2] = c[2] < 0 ? 0 : c[2] > 255 ? 255 : c[2];
+    flat[o + 3] = 255;
+  }
+
+  pxFillHoles(alive, flat, pw, ph);
+  pxDespeckle(alive, cov, pw, ph);
+  if (p.knock) pxDropIslands(alive, pw, ph);
+  /* 两遍平滑：相近色块并成整块，画面更「平涂」，接近手绘像素画 */
+  flat.set(pxSmooth(pxSmooth(flat, alive, pw, ph, 26), alive, pw, ph, 26));
+
+  const rgbSamples = [];
+  for (let idx = 0; idx < pw * ph; idx++) {
+    if (!alive[idx]) continue;
+    const o = idx * 4;
+    rgbSamples.push(flat[o], flat[o + 1], flat[o + 2]);
+  }
+
+  // 4. 调色板 + 抖动量化
+  const pal = pxPalette(rgbSamples, p.colors);
+
+  let stepAvg = 40;
+  if (pal.length > 1) {
+    let sum = 0, cnt = 0;
+    for (let i = 0; i < pal.length && cnt < 24; i++) {
+      let m = Infinity;
+      for (let j = 0; j < pal.length; j++) {
+        if (i === j) continue;
+        const dr = pal[i][0] - pal[j][0], dg = pal[i][1] - pal[j][1], db = pal[i][2] - pal[j][2];
+        const d = dr * dr + dg * dg + db * db;
+        if (d < m) m = d;
+      }
+      sum += Math.sqrt(m); cnt++;
+    }
+    stepAvg = Math.max(6, sum / Math.max(1, cnt));
+  }
 
   const out = new Uint8ClampedArray(pw * ph * 4);
-  const stepX = ww / pw, stepY = wh / ph;
-  const lv = Math.max(2, Math.round(p.levels));
-  const step = 255 / (lv - 1);
-  const qz = function (v) { return Math.round(Math.round(v / step) * step); };
 
-  for (let oy = 0; oy < ph; oy++) {
-    const y0 = Math.floor(oy * stepY);
-    const y1 = Math.max(y0 + 1, Math.floor((oy + 1) * stepY));
-    for (let ox = 0; ox < pw; ox++) {
-      const x0 = Math.floor(ox * stepX);
-      const x1 = Math.max(x0 + 1, Math.floor((ox + 1) * stepX));
-      let sr = 0, sg = 0, sb = 0, sw = 0, total = 0, solid = 0;
-      for (let y = y0; y < y1; y++) {
-        for (let x = x0; x < x1; x++) {
-          const i = (y * ww + x) * 4;
-          const a = data[i + 3];
-          total++;
-          if (a > 0) {
-            sr += data[i] * a; sg += data[i + 1] * a; sb += data[i + 2] * a;
-            sw += a; solid++;
-          }
+  if (p.dither === 'fs') {
+    /* 误差只做六成强度并限幅：既能接住渐变色阶，又不会把平色区打成雪花 */
+    const STR = 0.6, CAP = 34;
+    const errR = new Float32Array(pw * ph + pw + 2);
+    const errG = new Float32Array(pw * ph + pw + 2);
+    const errB = new Float32Array(pw * ph + pw + 2);
+    for (let y = 0; y < ph; y++) {
+      for (let x = 0; x < pw; x++) {
+        const idx = y * pw + x;
+        const o = idx * 4;
+        if (!alive[idx]) continue;
+        const er = errR[idx] > CAP ? CAP : errR[idx] < -CAP ? -CAP : errR[idx];
+        const eg = errG[idx] > CAP ? CAP : errG[idx] < -CAP ? -CAP : errG[idx];
+        const eb = errB[idx] > CAP ? CAP : errB[idx] < -CAP ? -CAP : errB[idx];
+        const r = flat[o] + er;
+        const g = flat[o + 1] + eg;
+        const b = flat[o + 2] + eb;
+        const ci = pxNearest(pal, r, g, b);
+        const pc = pal[ci];
+        out[o] = pc[0]; out[o + 1] = pc[1]; out[o + 2] = pc[2]; out[o + 3] = 255;
+        const dr = (r - pc[0]) * STR, dg = (g - pc[1]) * STR, db = (b - pc[2]) * STR;
+        const i1 = idx + 1, i2 = idx + pw - 1, i3 = idx + pw, i4 = idx + pw + 1;
+        errR[i1] += dr * 7 / 16; errG[i1] += dg * 7 / 16; errB[i1] += db * 7 / 16;
+        if (x > 0) {
+          errR[i2] += dr * 3 / 16; errG[i2] += dg * 3 / 16; errB[i2] += db * 3 / 16;
         }
+        errR[i3] += dr * 5 / 16; errG[i3] += dg * 5 / 16; errB[i3] += db * 5 / 16;
+        errR[i4] += dr * 1 / 16; errG[i4] += dg * 1 / 16; errB[i4] += db * 1 / 16;
       }
-      const o = (oy * pw + ox) * 4;
-      const cov = total ? solid / total : 0;
-      if (cov < 0.5 || !sw) { out[o] = 0; out[o + 1] = 0; out[o + 2] = 0; out[o + 3] = 0; continue; }
-      out[o] = qz(sr / sw);
-      out[o + 1] = qz(sg / sw);
-      out[o + 2] = qz(sb / sw);
-      out[o + 3] = 255;
+    }
+  } else {
+    const useOrder = p.dither === 'order';
+    const amp = stepAvg * 0.5;
+    for (let y = 0; y < ph; y++) {
+      for (let x = 0; x < pw; x++) {
+        const idx = y * pw + x;
+        if (!alive[idx]) continue;
+        const o = idx * 4;
+        const off = useOrder ? (PX_BAYER[(y & 3) * 4 + (x & 3)] / 16 - 0.47) * amp : 0;
+        const ci = pxNearest(pal, flat[o] + off, flat[o + 1] + off, flat[o + 2] + off);
+        const pc = pal[ci];
+        out[o] = pc[0]; out[o + 1] = pc[1]; out[o + 2] = pc[2]; out[o + 3] = 255;
+      }
     }
   }
 
+  // 5. 描边：剪影外圈补 1 像素深色边
+  if (p.outline) {
+    const edge = new Uint8Array(pw * ph);
+    let any = false;
+    for (let y = 0; y < ph; y++) {
+      for (let x = 0; x < pw; x++) {
+        const idx = y * pw + x;
+        if (!alive[idx]) continue;
+        if ((x > 0 && !alive[idx - 1]) || (x + 1 < pw && !alive[idx + 1]) ||
+            (y > 0 && !alive[idx - pw]) || (y + 1 < ph && !alive[idx + pw])) {
+          edge[idx] = 1; any = true;
+        }
+      }
+    }
+    if (any) {
+      for (let y = 0; y < ph; y++) {
+        for (let x = 0; x < pw; x++) {
+          const idx = y * pw + x;
+          if (alive[idx]) continue;
+          if ((x > 0 && edge[idx - 1]) || (x + 1 < pw && edge[idx + 1]) ||
+              (y > 0 && edge[idx - pw]) || (y + 1 < ph && edge[idx + pw])) {
+            const o = idx * 4;
+            out[o] = 16; out[o + 1] = 14; out[o + 2] = 20; out[o + 3] = 255;
+          }
+        }
+      }
+    }
+  }
+
+  // 6. 整数倍放大（最近邻，边缘不糊）
   const small = document.createElement('canvas');
   small.width = pw; small.height = ph;
   small.getContext('2d').putImageData(new ImageData(out, pw, ph), 0, 0);
@@ -1004,6 +1393,7 @@ function pxRender() {
   bctx.drawImage(small, 0, 0, big.width, big.height);
 
   p.out = big;
+  p.palette = pal;
   p.pw = pw; p.ph = ph;
   p.outW = big.width; p.outH = big.height;
 }
@@ -1024,7 +1414,7 @@ function pxApply() {
 function pxRefresh() {
   const p = st.pixel;
   if (!p.img) return;
-  const cfg = [p.size, p.levels, p.tol, p.knock ? 1 : 0, p.scale].join('|');
+  const cfg = [p.size, p.colors, p.punch, p.dither, p.outline ? 1 : 0, p.tol, p.knock ? 1 : 0, p.scale].join('|');
   if (!p.out || p.sigSrc !== p.src || p.sigCfg !== cfg) {
     pxRender();
     p.sigSrc = p.src;
@@ -1035,6 +1425,8 @@ function pxRefresh() {
   const spec = p.outW ? (p.pw + ' × ' + p.ph + ' → ' + p.outW + ' × ' + p.outH + ' px') : '等待图片';
   const specEl = document.querySelector('[data-px-spec]');
   if (specEl) specEl.textContent = spec;
+  const palEl = document.querySelector('[data-px-palette]');
+  if (palEl) palEl.textContent = (p.palette ? p.palette.length : p.colors) + ' 色 · ' + PX_DITHER[p.dither] + '抖动';
   document.querySelectorAll('[data-px-down]').forEach(function (b) { b.disabled = !p.out; });
 }
 
@@ -1078,7 +1470,7 @@ function mountPixel() {
 
   const demo = document.querySelector('[data-px-demo]');
   if (demo) demo.addEventListener('click', function () {
-    pxLoadUrl('assets/img/px-octo.png', '示例 · 像素章鱼');
+    pxLoadUrl('assets/img/px-flower.png', '示例 · 花朵照片');
   });
 
   document.querySelectorAll('[data-px-down]').forEach(function (btn) {
@@ -1120,6 +1512,39 @@ function mountPixel() {
     const label = document.querySelector('[data-px-knocklabel]');
     if (label) label.textContent = st.pixel.knock ? '已开启' : '已关闭';
     pxQueue();
+  });
+
+  document.querySelectorAll('[data-pxdither]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      st.pixel.dither = btn.dataset.pxdither;
+      st.pixel.preset = '';
+      document.querySelectorAll('[data-pxdither]').forEach(function (b) { b.classList.toggle('on', b === btn); });
+      document.querySelectorAll('[data-pxpreset]').forEach(function (b) { b.classList.remove('on'); });
+      const label = document.querySelector('[data-px-val="dither"]');
+      if (label) label.textContent = PX_DITHER[st.pixel.dither];
+      pxQueue();
+    });
+  });
+
+  const ol = document.querySelector('[data-pxoutline]');
+  if (ol) ol.addEventListener('click', function () {
+    st.pixel.outline = !st.pixel.outline;
+    ol.classList.toggle('on', st.pixel.outline);
+    ol.setAttribute('aria-checked', st.pixel.outline ? 'true' : 'false');
+    pxQueue();
+  });
+
+  document.querySelectorAll('[data-pxpreset]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const preset = PX_PRESETS.filter(function (k) { return k.key === btn.dataset.pxpreset; })[0];
+      if (!preset) return;
+      const keep = { src: st.pixel.src, name: st.pixel.name, img: st.pixel.img };
+      st.pixel = Object.assign({}, PX_DEFAULT, preset, keep, {
+        out: null, pw: 0, ph: 0, outW: 0, outH: 0, sigSrc: '', sigCfg: ''
+      });
+      renderView(true);
+      toast('已套用「' + preset.name + '」', 'ok');
+    });
   });
 
   const reset = document.querySelector('[data-px-reset]');
