@@ -50,7 +50,7 @@ const PAGES = {
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' }
 };
 
-const PAGE_SIZE = { lib: 12, wenan: 10, task: 20 };
+const PAGE_SIZE = { wenan: 10, task: 20 };
 
 /* ---------------- 全局状态 ---------------- */
 const st = {
@@ -810,6 +810,24 @@ function dayAgendaRow(x) {
 }
 
 /* ---------------- 图书馆 ---------------- */
+const LIB_PER = 6;
+
+/* 一张大封面卡：真实封面 + 书名 + 作者 */
+function libCover(b) {
+  const id = b.id || b.title;
+  const title = b.title || '未命名';
+  const author = b.author || '未知作者';
+  const hasCover = b.cover && b.hasCover !== false;
+  const face = hasCover
+    ? '<img src="' + esc(b.cover) + '" alt="' + esc(title) + '" loading="lazy">'
+    : '<span class="lib-cover-fallback"><b>' + esc(title) + '</b><i>' + esc(author) + '</i></span>';
+  return '<button class="lib-cover" data-book="' + esc(id) + '" aria-label="' + esc(title) + '">' +
+    '<span class="lib-cover-img">' + face + '</span>' +
+    '<span class="lib-cover-title">' + esc(title) + '</span>' +
+    '<span class="lib-cover-author">' + esc(author) + '</span>' +
+    '</button>';
+}
+
 function renderLibraryPage() {
   if (st.load.library === 'loading') return stateHtml('loading', '正在读取图书数据');
   if (st.load.library === 'error') return stateHtml('error', '图书数据加载失败', st.err.library, '重试', 'data-action="retry-library"');
@@ -822,34 +840,60 @@ function renderLibraryPage() {
     return ((b.title || '') + ' ' + (b.author || '') + ' ' + (b.outline || '') + ' ' + (b.think || '')).toLowerCase().indexOf(q) >= 0;
   });
 
-  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE.lib));
-  if (st.lib.page > totalPages) st.lib.page = 1;
-  const pageList = list.slice((st.lib.page - 1) * PAGE_SIZE.lib, st.lib.page * PAGE_SIZE.lib);
-
-  const toolbar = '<div class="toolbar">' +
-    '<div class="search-wrap"><span class="search-ico">' + ic('search') + '</span>' +
-    '<input class="input" id="libSearch" type="search" placeholder="搜索书名 / 作者 / 书摘 / 思考" value="' + esc(st.lib.q) + '"></div>' +
-    '<span class="toolbar-note">共 ' + books.length + ' 本 · 当前 ' + list.length + ' 本</span>' +
+  /* 顶部：搜索 + 藏书总量（沿用参考图的窄搜索条） */
+  const lastDate = books.reduce(function (m, b) { return b.date && b.date > m ? b.date : m; }, '');
+  const top = '<div class="lib-top">' +
+    '<label class="lib-search"><span class="lib-search-ico">' + ic('search') + '</span>' +
+      '<input id="libSearch" type="search" placeholder="搜索书名 / 作者 / 书摘" value="' + esc(st.lib.q) + '"></label>' +
+    '<div class="lib-meta"><b>' + books.length + '</b> 本藏书' + (lastDate ? ' · 最近 ' + esc(lastDate) : '') + '</div>' +
     '</div>';
 
-  const grid = pageList.length
-    ? shelfRows(pageList)
-    : stateHtml('empty', '没有找到匹配的图书', '换个关键词试试', '清空搜索', 'data-action="clear-lib"');
-
-  return toolbar + '<div class="card shelf-card">' + grid + pagerHtml('lib', st.lib.page, PAGE_SIZE.lib, list.length) + '</div>';
-}
-
-function shelfRows(list) {
-  const per = window.innerWidth <= 600 ? 3 : window.innerWidth <= 1200 ? 4 : 6;
-  let out = '<div class="shelf-wrap">';
-  for (let i = 0; i < list.length; i += per) {
-    out += '<div class="shelf">' +
-      '<div class="shelf-books">' + list.slice(i, i + per).map(bookSpine).join('') + '</div>' +
-      '<div class="shelf-plank"></div>' +
-      '</div>';
+  if (!list.length) {
+    return '<div class="lib-room">' + top + '<div class="lib-empty">' +
+      stateHtml('empty', '没有找到匹配的图书', '换个关键词试试', '清空搜索', 'data-action="clear-lib"') +
+      '</div></div>';
   }
-  return out + '</div>';
+
+  const totalPages = Math.max(1, Math.ceil(list.length / LIB_PER));
+  if (st.lib.page > totalPages) st.lib.page = 1;
+  const pageList = list.slice((st.lib.page - 1) * LIB_PER, st.lib.page * LIB_PER);
+
+  /* 右侧书摘：焦点书随 ‹ › 轮换 */
+  const focusIdx = ((st.lib.focus || 0) % list.length + list.length) % list.length;
+  const fb = list[focusIdx];
+
+  const hero = '<div class="lib-hero">' +
+      '<h2 class="lib-head">把这本书读下去。</h2>' +
+      '<p class="lib-desc">封面、书摘、读书时写下的那点想法，<br>全在这一页里，翻一翻就能接着读。</p>' +
+      '<button class="lib-cta" data-action="lib-random">随机抽一本 <i>↗</i></button>' +
+    '</div>';
+
+  const focusPanel = '<aside class="lib-focus">' +
+      '<div class="lib-focus-head">' +
+        '<span class="lib-ava">' + esc(String(fb.author || '书').slice(0, 1)) + '</span>' +
+        '<span class="lib-focus-id"><b>' + esc(fb.author || '未知作者') + '</b><i>' + esc(fb.title || '未命名') + '</i></span>' +
+        '<span class="lib-focus-nav">' +
+          '<button data-lib-focus="-1" aria-label="上一条书摘">‹</button>' +
+          '<button data-lib-focus="1" aria-label="下一条书摘">›</button>' +
+        '</span>' +
+      '</div>' +
+      '<blockquote class="lib-quote">' + esc(fb.think || fb.outline || '这本书还没有写下书摘。') + '</blockquote>' +
+    '</aside>';
+
+  const rail = '<div class="lib-rail">' + pageList.map(libCover).join('') + '</div>';
+
+  const foot = '<div class="lib-foot">' +
+      '<span class="lib-tip">点一张封面 · 看这本书的书摘与思考</span>' +
+      '<span class="lib-pager">' +
+        '<button class="lib-arrow" data-page-scope="lib" data-page="' + (st.lib.page - 1) + '"' + (st.lib.page <= 1 ? ' disabled' : '') + ' aria-label="上一页">‹</button>' +
+        '<span class="lib-count"><b>' + pad2(st.lib.page) + '</b> / ' + pad2(totalPages) + '</span>' +
+        '<button class="lib-arrow" data-page-scope="lib" data-page="' + (st.lib.page + 1) + '"' + (st.lib.page >= totalPages ? ' disabled' : '') + ' aria-label="下一页">›</button>' +
+      '</span>' +
+    '</div>';
+
+  return '<div class="lib-room">' + top + '<div class="lib-main">' + hero + focusPanel + '</div>' + rail + foot + '</div>';
 }
+
 
 /* 每本书按标题做确定性扰动：宽度/高度/倾角略有差别，像真实书架 */
 function bookVar(title) {
@@ -857,21 +901,6 @@ function bookVar(title) {
   const s = String(title || '');
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973;
   return h % 4;
-}
-
-function bookSpine(b) {
-  const id = b.id || b.title;
-  const title = b.title || '未命名';
-  const author = b.author || '未知作者';
-  const hasCover = b.cover && b.hasCover !== false;
-  const face = hasCover
-    ? '<img src="' + esc(b.cover) + '" alt="' + esc(title) + '" loading="lazy">'
-    : '<div class="spine-fallback"><span>' + esc(title) + '</span><i>' + esc(author) + '</i></div>';
-
-  return '<div class="book-shelf-item kv' + bookVar(title) + '" data-book="' + esc(id) + '" tabindex="0" role="button" aria-label="' + esc(title) + '">' +
-    '<div class="book-face">' + face + '</div>' +
-    '<div class="book-tip"><strong>' + esc(title) + '</strong><span>' + esc(author) + (b.date ? ' · ' + esc(b.date) : '') + '</span></div>' +
-    '</div>';
 }
 
 /* ---------------- 文案库 ---------------- */
@@ -1778,6 +1807,9 @@ function renderView(keepScroll) {
 
   // 懒加载：图书馆数据按需请求
   if (st.load.library === 'idle') loadLibrary();
+
+  // 重排后按真实滚动位置校正侧栏高亮
+  syncActiveSection();
 }
 
 function updateChrome() {
@@ -2157,7 +2189,7 @@ function onViewClick(e) {
   const t = e.target;
 
   // 分页
-  const pg = t.closest('.pager-btn');
+  const pg = t.closest('.pager-btn, .lib-arrow');
   if (pg && !pg.disabled) {
     const scope = pg.dataset.pageScope;
     const page = Number(pg.dataset.page);
@@ -2217,11 +2249,16 @@ function onViewClick(e) {
     if (a === 'retry-feishu') { loadFeishu(true); return; }
     if (a === 'retry-library') { st.load.library = 'idle'; loadLibrary(); return; }
     if (a === 'clear-lib') { st.lib.q = ''; st.lib.page = 1; renderView(true); return; }
+    if (a === 'lib-random') { st.lib.focus = Math.floor(Math.random() * 997); renderView(true); return; }
     if (a === 'clear-wenan') { st.wenan.q = ''; st.wenan.cat = 'all'; st.wenan.page = 1; renderView(true); return; }
   }
 
+  // 书摘轮换
+  const lf = t.closest('[data-lib-focus]');
+  if (lf) { st.lib.focus = (st.lib.focus || 0) + Number(lf.dataset.libFocus); renderView(true); return; }
+
   // 详情入口
-  const bk = t.closest('.book-shelf-item');
+  const bk = t.closest('.lib-cover');
   if (bk) { openBook(bk.dataset.book, bk); return; }
   const wd = t.closest('[data-wenan]');
   if (wd) { openWenan(Number(wd.dataset.wenan), wd); return; }
