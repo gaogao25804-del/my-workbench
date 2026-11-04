@@ -1123,6 +1123,68 @@ a{ color:inherit; text-decoration:none; }
   .foldbar{ margin:20px 0 0; }
   .foldup{ height:44px; padding:0 18px; font-size:12px; }
 }
+
+/* ============ 车型切换条 ============ */
+.modelbar{
+  position:sticky; top:var(--nav); z-index:70;
+  margin-top:var(--nav);
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px) saturate(1.4);
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-bottom:1px solid var(--line);
+}
+.hero{ padding-top:0; }
+.mb-in{ display:flex; align-items:center; gap:28px; height:76px; }
+.mb-l{ flex:none; display:flex; flex-direction:column; gap:4px; }
+.mb-k{ font-size:9.5px; letter-spacing:.18em; color:var(--sub2); }
+.mb-n{ font-size:15px; font-weight:600; letter-spacing:.02em; white-space:nowrap; }
+.mb-n em{ font-style:normal; color:var(--gold); }
+.mb-list{
+  display:flex; gap:8px; flex:1; min-width:0;
+  overflow-x:auto; padding:5px 0;
+  scrollbar-width:none; -ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;
+  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 26px),transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 26px),transparent 100%);
+}
+.mb-list::-webkit-scrollbar{ display:none; }
+.mchip{
+  position:relative; flex:none; text-align:left; cursor:pointer;
+  padding:9px 16px 8px; border-radius:999px;
+  border:1px solid var(--line); background:#fff; color:var(--ink);
+  transition:background .2s, border-color .2s, color .2s, transform .16s, box-shadow .2s;
+}
+.mchip b{ display:block; font-family:var(--fn); font-size:13.5px; font-weight:600; letter-spacing:.02em; }
+.mchip span{ display:block; font-size:9.5px; color:var(--sub); margin-top:2px; letter-spacing:.02em; white-space:nowrap; }
+.mchip.on{ background:var(--ink); border-color:var(--ink); box-shadow:0 8px 20px -12px rgba(0,0,0,.65); }
+.mchip.on b{ color:#fff; }
+.mchip.on span{ color:rgba(255,255,255,.58); }
+.mchip.on::after{
+  content:""; position:absolute; right:8px; top:8px;
+  width:5px; height:5px; border-radius:50%; background:var(--gold);
+}
+@media (hover:hover){
+  .mchip:not(.on):hover{ border-color:var(--ink); transform:translateY(-1px); box-shadow:0 8px 18px -14px rgba(0,0,0,.5); }
+}
+
+/* 全系同价角标 */
+.sec-h .same{
+  margin-left:auto; flex:none; align-self:center;
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:10.5px; letter-spacing:.1em; color:#7A6A43;
+  background:rgba(185,154,91,.11); border:1px solid rgba(185,154,91,.32);
+  padding:5px 11px; border-radius:999px;
+}
+.sec-h .same::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--gold); }
+
+@media (max-width:759px){
+  .mb-in{ height:auto; padding-top:9px; padding-bottom:10px; gap:0; }
+  .mb-l{ display:none; }
+  .mchip{ padding:7px 13px 6px; }
+  .mchip b{ font-size:12.5px; }
+  .mchip span{ font-size:9px; }
+  .sec-h .same{ font-size:9.5px; padding:4px 9px; letter-spacing:.06em; }
+}
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
@@ -1131,7 +1193,7 @@ a{ color:inherit; text-decoration:none; }
 <nav class="nav on" id="nav" data-page-node-id="GGAp5lNC1qHbFd7GE3vzDI">
   <div class="nav-in" data-page-node-id="bvmMsApPuG3vsk6S29s3rF">
     <div class="nav-l" data-page-node-id="KNRgAlnaqvbCD1SpKYPdmP">
-      <span class="nav-model" data-page-node-id="4IDWLljmqy9vRXcS1ZHVHZ">2026 款 理想 i6</span>
+      <span class="nav-model" id="navModel" data-page-node-id="4IDWLljmqy9vRXcS1ZHVHZ">2026 款 理想 i6</span>
       <i data-page-node-id="cG0UFTJZa6vpz3OCRGCOg0"></i>
       <span class="nav-sub" data-page-node-id="igHQLUmsQbaLS9Tzp2iafT">全车配置报价</span>
     </div>
@@ -1146,12 +1208,23 @@ a{ color:inherit; text-decoration:none; }
   </div>
 </nav>
 
+<!-- ========== 车型切换 ========== -->
+<div class="modelbar" id="modelBar">
+  <div class="wrap mb-in">
+    <div class="mb-l">
+      <span class="mb-k">SELECT MODEL · 选车型</span>
+      <span class="mb-n" id="mbNow">理想 i6 <em>· 纯电 SUV · 5 座</em></span>
+    </div>
+    <div class="mb-list" id="mbList"></div>
+  </div>
+</div>
+
 <!-- ========== HERO ========== -->
 <header class="hero" data-page-node-id="1L02QMtj7sA5f0ZCADLpE1">
   <div class="hero-top" data-page-node-id="86ChjNCcGgAV7EeAvgYGwA">
     <div class="wrap" data-page-node-id="kxtqeXlDbQE3TwNMKsDca8">
       <div class="eyebrow" data-page-node-id="68VBW6wpERdONGrpZc00XF">Saint-Gobain · SolarGard 授权店</div>
-      <h1 data-page-node-id="q5TF20wGDXMHe5vuRV37F1">理想 <em data-page-node-id="3XE6K8ChEZdacqIxi3IMAz">i6</em></h1>
+      <h1 data-page-node-id="q5TF20wGDXMHe5vuRV37F1">理想 <em id="heroModel" data-page-node-id="3XE6K8ChEZdacqIxi3IMAz">i6</em></h1>
       <div class="h1-en" data-page-node-id="GIs9HAD3FR6torN25kYJuU">全 车 配 置 报 价</div>
       <p class="hero-p" data-page-node-id="fMux2ODxNWiBxXC9aMDIhD">钢化膜 · 隐形车衣 · 玻璃膜 · 车内配件，分开报价，一张单子看明白。</p>
       <p class="hero-hint" data-page-node-id="aBcqr5TKJcCE13V43Qt7Mk">点击下方带圆圈标记的卡片进行勾选，右下角实时生成报价单</p>
@@ -1161,7 +1234,7 @@ a{ color:inherit; text-decoration:none; }
       </div>
     </div>
   </div>
-  <div class="hero-img" data-page-node-id="0DM6MKWo0P0EP1G5TNSji5"><img src="asset/car_hero.jpg" alt="理想 i6" data-page-node-id="ZzXxJBxm2qTCJehtgwSAOW"></div>
+  <div class="hero-img" data-page-node-id="0DM6MKWo0P0EP1G5TNSji5"><img src="asset/car_hero.jpg" alt="理想 i6" id="heroImg" data-page-node-id="ZzXxJBxm2qTCJehtgwSAOW"></div>
 </header>
 
 <!-- ========== 主理人 ========== -->
@@ -1186,17 +1259,17 @@ a{ color:inherit; text-decoration:none; }
   <div class="wrap bar3-in" data-page-node-id="hrque2yfz3UqZHwpqZzCJD">
     <div class="b3" data-page-node-id="AcMkNS6XNyHeolz9iImvjB">
       <span class="eb" data-page-node-id="cW7pgZ2sH2gpmGBOL8jWSI">触屏钢化膜</span>
-      <b data-page-node-id="4Gx6wYRYmRqDAyJReIHJMd"><i data-page-node-id="r3EgvfRMvPwlMydrWGzt33">¥</i>599<u data-page-node-id="QYmipIuT7xJDtPjLCxlFoB">起</u></b>
-      <em data-page-node-id="bjkreNEVw2bQfy5utlfmHF">两件套 599 · 三件套 699</em>
+      <b data-page-node-id="4Gx6wYRYmRqDAyJReIHJMd"><i data-page-node-id="r3EgvfRMvPwlMydrWGzt33">¥</i><span id="b3Screen">599</span><u data-page-node-id="QYmipIuT7xJDtPjLCxlFoB">起</u></b>
+      <em id="b3ScreenSub" data-page-node-id="bjkreNEVw2bQfy5utlfmHF">两件套 599 · 三件套 699</em>
     </div>
     <div class="b3" data-page-node-id="eIE0jny26A4oqbHGiV54ax">
       <span class="eb" data-page-node-id="W1JaJqLOHhW4AmgVAuiiIM">隐形车衣</span>
       <b data-page-node-id="ImaN0By0HOwegcIsQJjk9B"><i data-page-node-id="XpmBVT3ZHtqAgo4kZU5eEB">¥</i>5,980<u data-page-node-id="38VLa6uZoYov1kMU74WSCL">起</u></b>
-      <em data-page-node-id="1mnQLV4wj2LGR6BHqf5hE4">全车漆面 · 十一款可选</em>
+      <em data-page-node-id="1mnQLV4wj2LGR6BHqf5hE4">全车漆面 · 全系同价 · 11 款</em>
     </div>
     <div class="b3" data-page-node-id="3oH15HhtOXBw8SBGrkSUsJ">
       <span class="eb" data-page-node-id="BdDXOgmb30eV8Ac39B5f2p">玻璃膜</span>
-      <b data-page-node-id="SJ8XY8WOkHWX9T3E9ltmKc"><i data-page-node-id="jrAEVQzHZrqsFMphlvFUgn">¥</i>1,880<u data-page-node-id="KhOf1GA5E1e3WyIRklGeWo">起</u></b>
+      <b data-page-node-id="SJ8XY8WOkHWX9T3E9ltmKc"><i data-page-node-id="jrAEVQzHZrqsFMphlvFUgn">¥</i><span id="b3Film">1,880</span><u data-page-node-id="KhOf1GA5E1e3WyIRklGeWo">起</u></b>
       <em data-page-node-id="1HKGqQkpiCak5IAFtgBD95">前挡 + 侧挡 全车 · 四档可选</em>
     </div>
   </div>
@@ -1252,8 +1325,9 @@ a{ color:inherit; text-decoration:none; }
       <span class="no" data-page-node-id="HaoMsAYkToRKNjLBbzpKSM">02</span>
       <h2 data-page-node-id="W2QoHKzQZWiqa2WlbK7Xyx">隐形车衣</h2>
       <span class="en" data-page-node-id="BWQL1SoLMWqveb8mbIG6tO">Paint Protection Film</span>
+      <span class="same">全系同价 · 不分车型</span>
     </div>
-    <p class="sec-p" data-page-node-id="X5hidVUFMubZFzwIXXfn80">全车漆面 · 整车贴装价。按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。<br data-page-node-id="KwAU9cNvL4e3m37y7YYBuF">默认只显示起步款，更高价位可展开对比。</p>
+    <p class="sec-p" data-page-node-id="X5hidVUFMubZFzwIXXfn80">全车漆面 · 整车贴装价。<b data-page-node-id="KhtrBWzVqNaLqRvAgvEJeS">理想全系一个价</b>，不分 L6 / L9 / MEGA，也不按车型加价。按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。<br data-page-node-id="KwAU9cNvL4e3m37y7YYBuF">默认只显示起步款，更高价位可展开对比。</p>
     <div class="coat4 fold" id="secCoat" data-page-node-id="5GKMmuUjQJotaKOewVb5hF">
     <div class="pcol">
       <div class="pcolhead">
@@ -1348,7 +1422,7 @@ a{ color:inherit; text-decoration:none; }
           <b>买 TPE 脚垫 · 即送全车硅胶套装</b>
           <div class="gift-chips"><span>无线充垫</span><span>水杯架</span><span>中控储物盒</span><span>车门按键膜</span><span>门碗贴</span><span>OBD 保护盖</span></div>
         </div>
-        <div class="gift-set"><b>21</b><i>件</i><small>i6 整车配齐</small></div>
+        <div class="gift-set"><b>21</b><i>件</i><small>整车配齐</small></div>
       </div>
     </div></div>
 
@@ -1371,7 +1445,7 @@ a{ color:inherit; text-decoration:none; }
         <span class="cnt" data-page-node-id="e1BAUzjOvSaqih3qJ7Am9n">全车硅胶 21 件</span>
         <span data-page-node-id="ATdYjboFdPIuxTio1a4ymM">无线充垫 / 水杯架 / 储物盒 / 车门按键 / 门碗贴 / OBD 盖</span>
       </div>
-      <p class="sub-note" data-page-node-id="0EaFwDIqxgOHtAaEJ9geMQ">26 款 i6 送 <b data-page-node-id="Us0VKoB9SeID5MowaPjz0k">21 件套</b>；i8 送 22 件、L9 送 24 件，L6 / L8 / i9 各 21 件，按对应车型配齐，三色可选。</p>
+      <p class="sub-note" id="giftNote" data-page-node-id="0EaFwDIqxgOHtAaEJ9geMQ">26 款 i6 送 <b data-page-node-id="Us0VKoB9SeID5MowaPjz0k">21 件套</b>；i8 送 22 件、L9 / MEGA 送 24 件，L6 / L7 / L8 各 21 件，按对应车型配齐，三色可选。</p>
       <div class="giftkit" data-page-node-id="e2hUPhyLRFMizsu88zXB2N">
         <div class="gk-head" data-page-node-id="BTHbYZpeOWhLP4ski1f5lh">
           <div class="gk-l" data-page-node-id="scecE2q4cCPJgMJfwqD4k9">GIFT · 21 件 / 随脚垫整车配送</div>
@@ -1511,8 +1585,8 @@ a{ color:inherit; text-decoration:none; }
       </div>
       <div class="fit" data-page-node-id="5cXQyi6ViSqfHM46DTl64z">
         <div class="k" data-page-node-id="8yxvAdVNwpnqRrBjA5jxEk">Note</div>
-        <div class="v" data-page-node-id="ynP6EFOnmZuczLyQAjoyRl">特殊车型 +15%</div>
-        <div class="s" data-page-node-id="w3f35sHyRqsZ8NuGII3TYQ">以上均为普通车型价格，超大车型尺寸价另计</div>
+        <div class="v" data-page-node-id="ynP6EFOnmZuczLyQAjoyRl">车衣全系同价</div>
+        <div class="s" data-page-node-id="w3f35sHyRqsZ8NuGII3TYQ">L6 到 MEGA 一个价；窗膜与配件已按车型尺寸自动核算</div>
       </div>
     </div>
 
@@ -1533,7 +1607,7 @@ a{ color:inherit; text-decoration:none; }
     </div>
 
     <div class="disc" data-page-node-id="Zkkr86yRRQ8YllCvU6xjIq">
-      * 以上价格均为普通车型零售价，特殊车型尺寸价格加 15%；窗膜套餐价为前挡 + 侧挡组合价，漆面膜价格为整车贴装价；配件价格为单品价，不含施工，最终以门店报价为准。
+      * 车衣为理想全系统一价，不按车型加价；窗膜、钢化膜、配件已按所选车型尺寸自动核算（L8 / L9 / i8 / MEGA 等大尺寸车型基准 +15%）。窗膜套餐价为前挡 + 侧挡组合价，漆面膜价格为整车贴装价；配件价格为单品价，不含施工，最终以门店报价为准。
       <br data-page-node-id="h00mnRompu0Teeq3S4DZ1Q"><a href="poster.html" data-page-node-id="albAJA5oGUThBnagLN5OkU">查看完整长图版 →</a>
     </div>
   </div>
@@ -1577,14 +1651,19 @@ a{ color:inherit; text-decoration:none; }
 /* =========================================================
    数据层：加新车型 = MODELS 补一条 + 补对应价目
    ========================================================= */
+/* 理想全系。cls：std = 标准尺寸（基准价）/ big = 大尺寸（窗膜、钢化膜、配件 ×1.15）
+   车衣不吃系数，全系同价，见 pxC() */
 const MODELS = [
-  { id:'i6', name:'理想 i6', short:'i6', sub:'26 款', ready:true },
-  { id:'i8', name:'理想 i8', short:'i8', sub:'', ready:false },
-  { id:'l9', name:'理想 L9', short:'L9', sub:'', ready:false },
-  { id:'l8', name:'理想 L8', short:'L8', sub:'', ready:false },
-  { id:'l6', name:'理想 L6', short:'L6', sub:'', ready:false },
-  { id:'i9', name:'理想 i9', short:'i9', sub:'', ready:false }
+  { id:'i6',   name:'理想 i6',   sub:'26 款', cls:'std', body:'纯电 SUV · 5 座', giftCount:21, ready:true },
+  { id:'l6',   name:'理想 L6',   sub:'',      cls:'std', body:'增程 SUV · 5 座', giftCount:21 },
+  { id:'l7',   name:'理想 L7',   sub:'',      cls:'std', body:'增程 SUV · 5 座', giftCount:21 },
+  { id:'l8',   name:'理想 L8',   sub:'',      cls:'big', body:'增程 SUV · 6 座', giftCount:21 },
+  { id:'l9',   name:'理想 L9',   sub:'',      cls:'big', body:'增程 SUV · 6 座', giftCount:24 },
+  { id:'i8',   name:'理想 i8',   sub:'',      cls:'big', body:'纯电 SUV · 6 座', giftCount:22 },
+  { id:'mega', name:'理想 MEGA', sub:'',      cls:'big', body:'纯电 MPV · 7 座', giftCount:24 }
 ];
+/* 大车系数：窗膜 / 钢化膜 / 配件。跟页面上原有的「特殊车型 +15%」口径一致 */
+const PRICE_K = { std:1, big:1.15 };
 
 const SCREEN = [
   { id:'s2', name:'两件套', set:'中控 + 冰箱', price:599 },
@@ -1683,9 +1762,26 @@ const COAT_ALL  = COAT.flatMap(g => g.items);
 const BASE_COAT = COAT[0].items[0];
 const COAT_REST = COAT_ALL.filter(i => i.id !== BASE_COAT.id).sort((a,b) => a.price - b.price);
 
-const filmFrom = se => Math.min(...se.tiers.map(t => t.price));
-const FILM_BASE = FILM.reduce((a,b) => filmFrom(b) < filmFrom(a) ? b : a);
-const FILM_REST = FILM.filter(se => se !== FILM_BASE).sort((a,b) => filmFrom(a) - filmFrom(b));
+/* ===== 车型价格系数 ===== */
+const curModel = () => MODELS.find(m => m.id === state.model) || MODELS[0];
+const curK = () => PRICE_K[curModel().cls] || 1;
+/* 窗膜 / 钢化膜 / 配件：大车 ×1.15 后取整到 10，标准车原价不动 */
+const px = n => curK() === 1 ? n : Math.round(n * curK() / 10) * 10;
+/* 车衣：全系同价，永远不吃系数 */
+const pxC = n => n;
+
+/* 玻璃膜「起价」得跟着车型走，所以由函数算，不用常量 */
+const filmFrom = se => px(Math.min(...se.tiers.map(t => t.price)));
+const FILM_BASE = FILM.reduce((a,b) => {
+  const fa = Math.min(...a.tiers.map(t => t.price));
+  const fb = Math.min(...b.tiers.map(t => t.price));
+  return fb < fa ? b : a;
+});
+const FILM_REST = FILM.filter(se => se !== FILM_BASE).sort((a,b) => {
+  const fa = Math.min(...a.tiers.map(t => t.price));
+  const fb = Math.min(...b.tiers.map(t => t.price));
+  return fa - fb;
+});
 
 const $ = s => document.querySelector(s);
 const money = n => {
@@ -1706,7 +1802,7 @@ function renderScreen(){
         <span class="t-set">${o.set}</span>
         ${o.reco?`<span class="t-reco">${o.reco}</span>`:''}
       </div>
-      <div class="t-num"><i>¥</i>${money(o.price)}</div>
+      <div class="t-num"><i>¥</i>${money(px(o.price))}</div>
     </button>`).join('');
 }
 
@@ -1775,14 +1871,14 @@ function renderFilm(){
       <div class="ctagline"></div>
       <div class="cname">${se.name}</div>
       <div class="cstars">${'★'.repeat(se.stars)}${'☆'.repeat(5-se.stars)}</div>
-      <div class="cprice"><i>¥</i>${money(se.from)}<small>起</small></div>
+      <div class="cprice"><i>¥</i>${money(filmFrom(se))}<small>起</small></div>
       <div class="cdesc">${se.desc}</div>
       <div class="cline"></div>
       ${se.tiers.map(t => `
         <button class="crow pick pick--row${state.film===t.id?' on':''}" data-film="${t.id}">
           <span>${t.code}</span>
           <b>${t.spec}</b>
-          <em>${money(t.price)}</em>
+          <em>${money(px(t.price))}</em>
           <i class="ck"></i>
         </button>`).join('')}
     </div>`}).join('') + (open ? '' : foldBoxFilm());
@@ -1811,7 +1907,7 @@ function renderFilmBar(){
     <span class="pb-l">已选</span>
     <b class="pb-name">${pack.name} · ${hit.code} 档</b>
     <span class="pb-spec">${hit.spec}</span>
-    <span class="pb-price">¥${money(hit.price)}</span>
+    <span class="pb-price">¥${money(px(hit.price))}</span>
     <button class="pb-x" data-clear="film">取消选择</button>`;
 }
 
@@ -1825,10 +1921,10 @@ function bigCard(a){
           <div class="addon-k">${a.brand}</div>
           <div class="addon-name">${a.name}</div>
           <div class="addon-spec">${a.spec}</div>
-          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶 ${a.giftCount} 件</span>`:''}</div>`:''}
+          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶 ${curModel().giftCount} 件</span>`:''}</div>`:''}
           ${a.note?`<div class="addon-note">${a.note}</div>`:''}
           <div class="addon-buy">
-            <div class="addon-price"><i>¥</i>${money(a.price)}<span>${a.em}</span></div>
+            <div class="addon-price"><i>¥</i>${money(px(a.price))}<span>${a.em}</span></div>
             <div class="addon-mats">${a.mats}</div>
           </div>
         </div>
@@ -1841,7 +1937,7 @@ function bigCard(a){
             ? `<div class="gift-chips">${a.giftItems.map(t => `<span>${t}</span>`).join('')}</div>`
             : `<span>${a.giftNote || ''}</span>`}
         </div>
-        <div class="gift-set"><b>${a.giftCount || ''}</b><i>件</i><small>${a.giftTag || ''}</small></div>
+        <div class="gift-set"><b>${curModel().giftCount}</b><i>件</i><small>${curModel().name.replace('理想 ','')} 整车配齐</small></div>
       </div>
     </div>`;
   }
@@ -1907,7 +2003,7 @@ function renderAcc(){
   $('#secAccSmall').innerHTML = ACC_SMALL.map(a => `
     <button class="acc-item pick pick--sm${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
       <div class="acc-pic${a.dual?' acc-pic--dual':''}">${a.imgs.map(s=>`<img src="${s}" alt="${a.name}">`).join('')}</div>
-      <div class="acc-n"><b>${a.name}</b><span>${a.spec}</span><i>¥${money(a.price)}</i></div>
+      <div class="acc-n"><b>${a.name}</b><span>${a.spec}</span><i>¥${money(px(a.price))}</i></div>
     </button>`).join('')
     + `<div class="acc-item acc-item--more">
         <b class="am-t">更多配件</b>
@@ -1921,19 +2017,20 @@ function renderAcc(){
 function picked(){
   const out = [];
   const s = SCREEN.find(x => x.id === state.screen);
-  if (s) out.push({ k:'屏幕保护', v:`${s.name} · ${s.set}`, p:s.price });
+  if (s) out.push({ k:'屏幕保护', v:`${s.name} · ${s.set}`, p:px(s.price) });
 
+  /* 车衣全系同价，不走尺寸系数 */
   COAT.forEach(g => g.items.forEach(it => {
-    if (it.id === state.coat) out.push({ k:'隐形车衣', v:it.name, sub:it.spec, p:it.price });
+    if (it.id === state.coat) out.push({ k:'隐形车衣', v:it.name, sub:it.spec, p:pxC(it.price), same:true });
   }));
 
   FILM.forEach(se => se.tiers.forEach(t => {
-    if (t.id === state.film) out.push({ k:'玻璃膜', v:`${se.name} · ${t.code} 档`, sub:t.spec, p:t.price });
+    if (t.id === state.film) out.push({ k:'玻璃膜', v:`${se.name} · ${t.code} 档`, sub:t.spec, p:px(t.price) });
   }));
 
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
     if (state.acc.has(a.id))
-      out.push({ k:'配件', v:a.name, sub:(a.spec||'').replace(/<br>/g,' '), p:a.price, gift:!!a.gift });
+      out.push({ k:'配件', v:a.name, sub:(a.spec||'').replace(/<br>/g,' '), p:px(a.price), gift:!!a.gift });
   });
   return out;
 }
@@ -2075,7 +2172,7 @@ function renderSheet(list, total){
       <span class="tk">合计</span>
       <span class="tv"><i>¥</i>${money(total)}</span>
     </div>
-    <div class="qnote">以上为普通车型零售价，特殊车型尺寸加 15%；窗膜为前挡 + 侧挡组合价，漆面膜为整车贴装价，配件不含施工。最终以门店报价为准。</div>
+    <div class="qnote">以上价格已按 ${m.name} 尺寸核算，车衣为全系统一价；窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。</div>
     <div class="qact">
       <button class="qbtn" id="btnCopy">复制发给老板 →</button>
       <button class="qbtn ghost" id="btnClose2">继续挑选</button>
@@ -2207,7 +2304,7 @@ document.addEventListener('click', e => {
     renderScreen(); refresh();
     if (!was){
       const it = SCREEN.find(x => x.id === id);
-      if (it){ flyToBag(r); toast(`已加入 · ${it.name}（${it.set}）· ¥${money(it.price)}`, 'ok'); }
+      if (it){ flyToBag(r); toast(`已加入 · ${it.name}（${it.set}）· ¥${money(px(it.price))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
     return;
   }
@@ -2246,7 +2343,7 @@ document.addEventListener('click', e => {
     renderFilm(); refresh();
     if (!was){
       const hit = findFilm(id);
-      if (hit){ flyToBag(r); toast(`已加入 · ${hit.se.name} · ${hit.t.code} 档 · ¥${money(hit.t.price)}`, 'ok'); }
+      if (hit){ flyToBag(r); toast(`已加入 · ${hit.se.name} · ${hit.t.code} 档 · ¥${money(px(hit.t.price))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
     return;
   }
@@ -2271,7 +2368,7 @@ document.addEventListener('click', e => {
     renderAcc(); refresh();
     if (!was){
       const it = findAcc(id);
-      if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(it.price)}`, 'ok'); }
+      if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(px(it.price))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
     return;
   }
@@ -2284,7 +2381,62 @@ $('#cbGo').onclick = () => {
 $('#btnClose').onclick = closeSheet;
 $('#mask').onclick = closeSheet;
 
+/* ========================= 车型切换 ========================= */
+function renderModelBar(){
+  const list = $('#mbList');
+  if (list){
+    list.innerHTML = MODELS.map(m => `
+      <button class="mchip${state.model === m.id ? ' on' : ''}" type="button" data-m="${m.id}">
+        <b>${m.name.replace('理想 ', '')}</b><span>${m.body}</span>
+      </button>`).join('');
+    const on = list.querySelector('.mchip.on');
+    if (on && on.scrollIntoView) on.scrollIntoView({ block:'nearest', inline:'center' });
+  }
+  syncModelText();
+}
+
+/* 车型变了，页面上所有写死 i6 的地方都得跟着变 */
+function syncModelText(){
+  const m = curModel(), short = m.name.replace('理想 ', '');
+
+  const nm = $('#navModel');
+  if (nm) nm.textContent = m.sub ? `${m.sub} ${m.name}` : m.name;
+  const hm = $('#heroModel');
+  if (hm) hm.textContent = short;
+  const now = $('#mbNow');
+  if (now) now.innerHTML = `${m.name} <em>· ${m.body}</em>`;
+  const hi = $('#heroImg');
+  if (hi) hi.alt = m.name;
+
+  const b1 = $('#b3Screen');
+  if (b1) b1.textContent = money(px(SCREEN[0].price));
+  const b1s = $('#b3ScreenSub');
+  if (b1s) b1s.textContent = `两件套 ${money(px(SCREEN[0].price))} · 三件套 ${money(px(SCREEN[1].price))}`;
+  const b2 = $('#b3Film');
+  if (b2) b2.textContent = money(filmFrom(FILM_BASE));
+
+  const gn = $('#giftNote');
+  if (gn) gn.innerHTML = `${m.sub ? m.sub + ' ' : ''}${short} 送 <b>${m.giftCount} 件套</b>；按对应车型配齐，三色可选。`;
+
+  document.title = `${m.name} · 全车配置报价 | 圣佳 SolarGard 授权店`;
+}
+
+function setModel(id){
+  if (!MODELS.some(m => m.id === id) || state.model === id) return;
+  state.model = id;
+  renderModelBar();
+  renderScreen(); renderFilm(); renderAcc();
+  refresh();
+  toast(`已切换到 ${curModel().name} · 价格按车型重算`, 'ok');
+}
+
+document.addEventListener('click', e => {
+  const mc = e.target.closest('[data-m]');
+  if (mc) setModel(mc.dataset.m);
+});
+
 /* ========================= 启动 ========================= */
+renderModelBar();
 renderScreen();
 renderCoat();
 renderFilm();
