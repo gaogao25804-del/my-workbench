@@ -1189,11 +1189,11 @@ body.has-models .hero{ padding-top:0; }
   .sec-h .same{ font-size:9.5px; padding:4px 9px; letter-spacing:.06em; }
 }
 
-/* ================= 开场：极简黑场 ================= */
+/* ================= 开场：极简白场 ================= */
 .intro{
   position:fixed; inset:0; z-index:300;
   display:flex; align-items:center; justify-content:center;
-  background:#07080A; overflow:hidden;
+  background:#F7F5F0; overflow:hidden;
   font-family:var(--ff);
   opacity:1; visibility:visible;
   transition:opacity .8s ease, visibility .8s;
@@ -1201,26 +1201,26 @@ body.has-models .hero{ padding-top:0; }
 .intro.out{ opacity:0; visibility:hidden; pointer-events:none; }
 body.intro-lock{ overflow:hidden; }
 
-/* 背景：压到几乎全黑，只留一点车影和暖光，不能抢字 */
+/* 背景：不用车图。白场上放模糊车影会把中间糊成一团脏灰绿，宁可留白 */
 .intro-bg{
-  position:absolute; inset:-14%;
-  background:url(asset/car_hero.jpg) center 52%/cover no-repeat;
-  filter:blur(92px) brightness(.16) saturate(.5);
-  transform:scale(1.18);
+  position:absolute; inset:0;
+  background:
+    radial-gradient(58% 44% at 50% 30%, rgba(216,196,158,.2), rgba(247,245,240,0) 72%),
+    radial-gradient(80% 54% at 50% 104%, rgba(196,178,146,.16), rgba(247,245,240,0) 70%);
 }
 .intro::after{
   content:""; position:absolute; inset:0; pointer-events:none;
-  background:
-    radial-gradient(52% 40% at 50% 46%, rgba(201,169,109,.09) 0%, rgba(0,0,0,0) 72%),
-    radial-gradient(126% 92% at 50% 44%, rgba(0,0,0,0) 26%, rgba(0,0,0,.6) 68%, rgba(4,5,6,.98) 100%);
+  /* 极细纸纹，白场不至于像纯色块 */
+  background-image:repeating-linear-gradient(96deg,
+    rgba(20,22,26,.014) 0 1px, rgba(0,0,0,0) 1px 5px);
 }
 /* 地平线灯带：一条极淡的金线，撑住画面下半部 */
 .intro-line{
   position:absolute; left:50%; bottom:0;
   width:min(880px,88vw); height:1px; transform:translateX(-50%);
   background:linear-gradient(90deg,
-    rgba(185,154,91,0) 0%, rgba(216,184,122,.14) 30%,
-    rgba(232,206,155,.3) 50%, rgba(216,184,122,.14) 70%, rgba(185,154,91,0) 100%);
+    rgba(185,154,91,0) 0%, rgba(185,154,91,.22) 30%,
+    rgba(176,144,84,.44) 50%, rgba(185,154,91,.22) 70%, rgba(185,154,91,0) 100%);
   opacity:0; transition:opacity 1.6s ease .6s;
 }
 .intro.ready .intro-line{ opacity:1; }
@@ -1228,7 +1228,7 @@ body.intro-lock{ overflow:hidden; }
 .intro-in{
   position:relative; z-index:2; width:100%; height:100%;
   padding:0 6vw;
-  color:#fff;
+  color:#14161A;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   text-align:center;
 }
@@ -1245,11 +1245,11 @@ body.intro-lock{ overflow:hidden; }
   font-family:var(--fn); font-weight:500;
   font-size:clamp(11px,1.02vw,13px);
   letter-spacing:.64em; padding-left:.64em;
-  color:rgba(226,201,151,.92);
+  color:#AE8C4F;
 }
 .intro-mark-sub{
   font-size:11px; letter-spacing:.34em; padding-left:.34em;
-  color:rgba(255,255,255,.4); font-weight:300;
+  color:rgba(20,22,26,.5); font-weight:300;
 }
 
 /* ---------- 中部文字 ---------- */
@@ -1262,7 +1262,7 @@ body.intro-lock{ overflow:hidden; }
   margin:0;
   font-size:clamp(12px,1.12vw,15px); font-weight:300;
   letter-spacing:.44em; padding-left:.44em;
-  color:rgba(255,255,255,.5);
+  color:rgba(20,22,26,.5);
   opacity:0; transform:translateY(10px);
   transition:opacity 1s ease .32s, transform 1.1s cubic-bezier(.22,.9,.22,1) .32s;
 }
@@ -1270,10 +1270,10 @@ body.intro-lock{ overflow:hidden; }
 
 .intro-l3{
   margin:clamp(22px,3.8vh,38px) 0 0;
-  font-size:clamp(30px,7.1vw,100px);
-  line-height:1.26; font-weight:300;
-  letter-spacing:.19em; padding-left:.19em;
-  color:#F5F1E8; white-space:nowrap;
+  font-size:clamp(29px,6.5vw,92px);
+  line-height:1.28; font-weight:400;
+  letter-spacing:.2em; padding-left:.2em;
+  color:#0E1014; white-space:nowrap;
   -webkit-font-smoothing:antialiased;
 }
 /* 逐字裁剪升起：外层裁切、内层上移，比特效字干净 */
@@ -1288,8 +1288,8 @@ body.intro-lock{ overflow:hidden; }
 
 .intro-rule{
   width:0; height:1px; margin:clamp(26px,4.2vh,46px) auto 0;
-  background:linear-gradient(90deg,transparent,rgba(226,196,140,.95),transparent);
-  box-shadow:0 0 10px rgba(216,184,122,.4);
+  background:linear-gradient(90deg,transparent,rgba(158,126,68,.95),transparent);
+  box-shadow:0 1px 0 rgba(247,245,240,.9);
   opacity:0;
   transition:width 1.3s cubic-bezier(.22,.9,.22,1) .92s, opacity .9s ease .92s;
 }
@@ -1299,7 +1299,7 @@ body.intro-lock{ overflow:hidden; }
   margin:clamp(18px,2.6vh,26px) 0 0;
   font-size:clamp(10.5px,.94vw,12px); font-weight:300;
   letter-spacing:.34em; padding-left:.34em;
-  color:rgba(255,255,255,.32);
+  color:rgba(20,22,26,.46);
   opacity:0; transform:translateY(8px);
   transition:opacity .9s ease 1.16s, transform 1s cubic-bezier(.22,.9,.22,1) 1.16s;
 }
@@ -1310,8 +1310,8 @@ body.intro-lock{ overflow:hidden; }
   margin-top:clamp(52px,8.6vh,96px);
   display:flex; flex-direction:column; align-items:center; gap:13px;
   padding:0;
-  color:rgba(255,255,255,.5);
-  font-family:var(--ff); font-size:10.5px; font-weight:300;
+  color:rgba(20,22,26,.62);
+  font-family:var(--ff); font-size:11px; font-weight:400;
   letter-spacing:.42em; padding-left:.42em;
   opacity:0; transform:translateY(12px);
   transition:opacity 1s ease 1.5s, transform 1.1s cubic-bezier(.22,.9,.22,1) 1.5s, color .4s;
@@ -1319,25 +1319,25 @@ body.intro-lock{ overflow:hidden; }
 .intro.ready .intro-enter{ opacity:1; transform:none; }
 .ie-ring{
   width:52px; height:52px; border-radius:50%;
-  border:1px solid rgba(255,255,255,.16);
+  border:1px solid rgba(20,22,26,.26);
   display:grid; place-items:center;
   transition:border-color .45s, background .45s, transform .55s cubic-bezier(.22,.9,.22,1);
   animation:ieFloat 3.4s ease-in-out 2.6s infinite;
 }
 .ie-ring svg{
   width:16px; height:16px; fill:none;
-  stroke:rgba(255,255,255,.5); stroke-width:1.1;
+  stroke:rgba(20,22,26,.62); stroke-width:1.2;
   stroke-linecap:round; stroke-linejoin:round;
   transition:stroke .45s;
 }
-.intro-enter:hover{ color:#F2E2BC; }
+.intro-enter:hover{ color:#8A6B33; }
 .intro-enter:hover .ie-ring{
-  border-color:rgba(216,184,122,.72);
-  background:rgba(216,184,122,.07);
+  border-color:rgba(174,140,79,.78);
+  background:rgba(185,154,91,.09);
   animation-play-state:paused;
   transform:translateY(4px);
 }
-.intro-enter:hover .ie-ring svg{ stroke:#E4CD97; }
+.intro-enter:hover .ie-ring svg{ stroke:#8A6B33; }
 @keyframes ieFloat{
   0%,100%{ transform:translateY(0); }
   50%{ transform:translateY(5px); }
@@ -1359,16 +1359,15 @@ body.intro-lock{ overflow:hidden; }
   .intro-line{ transition:none; opacity:1; }
   .intro-top, .intro-l1, .intro-foot, .intro-enter{ transition:none !important; opacity:1 !important; transform:none !important; }
   .intro-enter span{ animation:none; }
-  .intro-bg{ filter:blur(40px) brightness(.16) saturate(.5); }
 }
 
 /* =========================================================
-   车型选择：一扇手风琴画廊（关掉的是封套，打开的是车）
+   车型选择：一排封套 + 一张转着的黑胶
    ========================================================= */
 .picker{
   position:fixed; inset:0; z-index:260;
   display:none; flex-direction:column;
-  background:#08090A; overflow:hidden;
+  background:#0A0B0C; overflow:hidden;
   font-family:var(--ff); color:#fff;
   opacity:1; visibility:visible;
   transition:opacity .6s ease, visibility .6s;
@@ -1377,180 +1376,209 @@ body.intro-lock{ overflow:hidden; }
 .picker.out{ opacity:0; visibility:hidden; pointer-events:none; }
 
 .pk-bg{
-  position:absolute; inset:-12%;
-  background:url(asset/car_hero.jpg) center 46%/cover no-repeat;
-  filter:blur(80px) brightness(.2) saturate(.55);
-  transform:scale(1.16);
+  position:absolute; inset:0;
+  background:
+    radial-gradient(66% 48% at 50% 30%, rgba(197,167,110,.13), rgba(0,0,0,0) 72%),
+    radial-gradient(84% 62% at 50% 112%, rgba(126,100,58,.12), rgba(0,0,0,0) 70%),
+    linear-gradient(180deg,#0D0E10 0%,#08090B 58%,#060708 100%);
 }
 .pk-veil{
   position:absolute; inset:0; pointer-events:none;
-  background:
-    radial-gradient(80% 52% at 50% 52%, rgba(185,154,91,.1) 0%, rgba(0,0,0,0) 66%),
-    radial-gradient(124% 96% at 50% 34%, rgba(0,0,0,0) 0%, rgba(0,0,0,.46) 58%, rgba(6,7,9,.94) 100%);
+  background:radial-gradient(118% 88% at 50% 46%, rgba(0,0,0,0) 38%, rgba(0,0,0,.62) 100%);
 }
 
 /* ---------- 抬头 ---------- */
 .pk-head{
-  position:relative; z-index:6; flex:0 0 auto;
-  padding:clamp(24px,4.6vh,52px) 6vw 0; text-align:center;
-  opacity:0; transform:translateY(14px);
-  transition:opacity .72s ease .06s, transform .86s cubic-bezier(.22,.9,.22,1) .06s;
+  position:relative; z-index:3; flex:0 0 auto;
+  padding:clamp(24px,4.4vh,50px) 6vw 0; text-align:center;
+  opacity:0; transform:translateY(-10px);
+  transition:opacity .9s ease .08s, transform 1s cubic-bezier(.22,.9,.22,1) .08s;
 }
 .picker.in .pk-head{ opacity:1; transform:none; }
-.pk-tag{ font-size:10px; letter-spacing:.40em; padding-left:.40em; color:rgba(216,188,132,.72); }
+.pk-tag{
+  font-family:var(--fn); font-size:10.5px; font-weight:500;
+  letter-spacing:.42em; padding-left:.42em;
+  color:rgba(206,177,120,.78);
+}
 .pk-h2{
-  margin-top:clamp(9px,1.5vh,16px);
-  font-size:clamp(21px,2.8vw,36px); font-weight:400;
-  letter-spacing:.12em; padding-left:.12em; color:#F5F1E8;
+  margin:13px 0 0;
+  font-size:clamp(25px,3.4vw,42px); font-weight:300;
+  letter-spacing:.14em; padding-left:.14em;
+  color:#F4F0E8;
 }
-.pk-h2 em{ font-style:normal; color:#E0C68F; }
+.pk-h2 em{ font-style:normal; color:#D8BC88; }
 .pk-sub{
-  margin-top:clamp(8px,1.2vh,13px);
-  font-size:clamp(11px,.95vw,12.5px); letter-spacing:.12em;
-  color:rgba(255,255,255,.36); font-weight:300;
+  margin:11px 0 0;
+  font-size:12px; font-weight:300; letter-spacing:.2em; padding-left:.2em;
+  color:rgba(255,255,255,.34);
 }
 
-/* ---------- 画廊 ---------- */
+/* ---------- 中段：卡片行 + 黑胶 ---------- */
 .pk-stage{
-  position:relative; z-index:3; flex:1 1 auto; min-height:0;
-  display:flex; padding:clamp(18px,3.4vh,34px) clamp(14px,4vw,54px) 0;
+  position:relative; z-index:2; flex:1 1 auto; min-height:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:0 5vw;
+  opacity:0; transform:translateY(18px);
+  transition:opacity .8s ease .16s, transform .92s cubic-bezier(.22,.9,.22,1) .16s;
 }
-.ag{
-  position:relative; width:100%; max-width:1420px;
-  flex:1 1 auto; align-self:stretch; min-height:0;
-  margin:0 auto;
-  display:flex; gap:8px;
-  perspective:1700px; perspective-origin:50% 50%;
+.picker.in .pk-stage{ opacity:1; transform:none; }
+
+.pk-row{
+  position:relative;
+  display:flex; align-items:flex-end; justify-content:center;
+  gap:clamp(7px,1vw,13px);
+  width:100%; max-width:1380px;
+  scrollbar-width:none;
 }
-.ag-p{
-  position:relative; flex:1 1 0; min-width:0; min-height:0;
-  overflow:hidden; border-radius:12px;
-  background:#0E1012; cursor:pointer; padding:0; text-align:left;
-  transform-style:preserve-3d; transform-origin:center center;
-  box-shadow:0 18px 40px -24px rgba(0,0,0,.9);
-  transition:flex-grow .76s cubic-bezier(.215,.61,.355,1),
-             transform .76s cubic-bezier(.215,.61,.355,1),
-             box-shadow .6s ease, opacity .5s ease;
-  opacity:0;
+.pk-row::-webkit-scrollbar{ display:none; }
+
+/* 一张封套 */
+.pk-c{
+  position:relative; flex:1 1 0; min-width:0; max-width:164px;
+  aspect-ratio:2 / 3;
+  padding:0; border:0; border-radius:5px;
+  overflow:hidden; cursor:pointer;
+  background:#15171B;
+  color:#fff; font-family:var(--ff); text-align:left;
+  box-shadow:0 12px 28px rgba(0,0,0,.55);
+  transform:translateY(0);
+  transition:transform .38s cubic-bezier(.22,.9,.22,1), box-shadow .38s;
+  transition-delay:calc(var(--i,0) * 46ms);
   -webkit-tap-highlight-color:transparent;
-}
-.picker.in .ag-p{ opacity:1; }
-.picker.in .ag-p{ transition-delay:calc(var(--i,0) * 46ms), calc(var(--i,0) * 46ms), 0ms, calc(var(--i,0) * 46ms); }
-.picker.done .ag-p{ transition-delay:0ms, 0ms, 0ms, 0ms; }
-
-.ag-p:focus-visible{ outline:1px solid rgba(216,184,122,.8); outline-offset:-1px; }
-
-/* 图：比面板大一圈，才能在里面轻微漂移而不露边 */
-.ag-media{
-  /* 比面板大一圈留作视差余量；横向别给太多，否则竖图会被裁掉两侧 */
-  position:absolute; inset:-4% -5%;
-  transition:transform .95s cubic-bezier(.215,.61,.355,1);
   will-change:transform;
 }
-.ag-media img{
-  width:100%; height:100%; object-fit:cover; object-position:72% 60%;
-  display:block; user-select:none; -webkit-user-drag:none;
-  filter:grayscale(1) brightness(.58) contrast(1.06);
-  transition:filter .72s ease;
-}
-.ag-p.on .ag-media img{ filter:grayscale(0) brightness(1) contrast(1); }
+.picker.done .pk-c{ transition-delay:0ms; }
 
-/* 没图的车：石墨渐变 + 极细织纹，绝不拿别的车的图冒充 */
-.ag-media.empty{
+/* 封套里的车 */
+.pk-c-img{ position:absolute; inset:0; display:block; }
+.pk-c-img img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  filter:brightness(.74) saturate(.62);
+  transition:filter .45s ease;
+}
+.pk-c.on .pk-c-img img{ filter:brightness(.95) saturate(1); }
+/* 没图的车：石墨渐变 + 代号水印，绝不拿别的车冒充 */
+.pk-c-img.empty{
   background:
-    radial-gradient(120% 78% at 74% 6%, rgba(203,173,114,.17), rgba(0,0,0,0) 64%),
-    repeating-linear-gradient(114deg, rgba(255,255,255,.016) 0 1px, rgba(255,255,255,0) 1px 6px),
+    radial-gradient(120% 76% at 74% 8%, rgba(203,173,114,.16), rgba(0,0,0,0) 64%),
+    repeating-linear-gradient(114deg, rgba(255,255,255,.018) 0 1px, rgba(255,255,255,0) 1px 6px),
     linear-gradient(158deg,#2B3037 0%,#1C2026 46%,#101317 100%);
 }
-
-.ag-dim{
-  position:absolute; inset:0; background:#07080A; opacity:.28;
-  transition:opacity .7s ease; pointer-events:none;
+.pk-c.on .pk-c-img.empty{
+  background:
+    radial-gradient(120% 76% at 74% 8%, rgba(216,184,122,.24), rgba(0,0,0,0) 64%),
+    repeating-linear-gradient(114deg, rgba(255,255,255,.022) 0 1px, rgba(255,255,255,0) 1px 6px),
+    linear-gradient(158deg,#33383F 0%,#22272E 46%,#141920 100%);
 }
-.ag-p.on .ag-dim{ opacity:.04; }
 
-.ag-veil{
-  position:absolute; inset:0; pointer-events:none;
+/* 上下压暗，让字压得住 */
+.pk-c::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(180deg,
-    rgba(6,8,10,.5) 0%, rgba(6,8,10,0) 26%,
-    rgba(6,8,10,.06) 52%, rgba(6,8,10,.9) 100%);
+    rgba(8,9,11,.5) 0%, rgba(8,9,11,.04) 32%,
+    rgba(8,9,11,.1) 50%, rgba(8,9,11,.9) 100%);
 }
 
-/* 收起态：书脊正中竖着写代号 */
-.ag-rail{
-  position:absolute; inset:0; z-index:2;
-  display:flex; align-items:center; justify-content:center;
-  padding:0 0 8px; pointer-events:none;
-  opacity:1; transition:opacity .38s ease;
+.pk-c-tag{
+  position:absolute; left:10px; right:10px; top:9px; z-index:2;
+  font-size:9px; letter-spacing:.1em; text-align:right;
+  color:rgba(255,255,255,.42);
+  transition:color .3s;
 }
-.ag-rail b{
-  writing-mode:vertical-rl; text-orientation:mixed;
-  font-family:var(--fn); font-size:16px; font-weight:600;
-  letter-spacing:.28em; line-height:1;
-  color:rgba(255,255,255,.86); text-shadow:0 2px 16px rgba(0,0,0,.95);
-}
-.ag-rail i{ display:none; }
-.ag-p.on .ag-rail{ opacity:0; }
+.pk-c.on .pk-c-tag{ color:rgba(228,205,151,.98); }
 
-/* 展开态：左上角状态标 */
-.ag-tag{
-  position:absolute; z-index:3; right:15px; top:15px;
-  padding:4px 9px; border-radius:999px;
-  font-size:9px; letter-spacing:.1em; white-space:nowrap;
-  border:1px solid rgba(255,255,255,.16); color:rgba(255,255,255,.5);
-  opacity:0; transform:translateY(-6px);
-  transition:opacity .4s ease, transform .5s cubic-bezier(.22,.9,.22,1);
-  pointer-events:none;
+.pk-c-code{
+  position:absolute; left:10px; bottom:26px; z-index:2;
+  font-family:var(--fn); font-size:clamp(21px,2.2vw,33px); font-weight:700;
+  line-height:1; letter-spacing:.01em;
+  color:rgba(255,255,255,.96);
+  text-shadow:0 2px 16px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.6);
+  transition:color .3s;
 }
-.ag-p.on .ag-tag{ opacity:1; transform:none; transition-delay:.18s; }
-.ag-p.ready .ag-tag{
-  color:#EBD6A8; border-color:rgba(216,184,122,.42); background:rgba(185,154,91,.14);
-}
+.pk-c-code.long{ font-size:clamp(15px,1.5vw,22px); }
+.pk-c.on .pk-c-code{ color:#F3DFB2; }
 
-/* 展开态：底部说明 */
-.ag-cap{
-  position:absolute; z-index:3; left:0; right:0; bottom:0;
-  padding:20px 24px 22px;
-  display:flex; align-items:center; gap:13px;
-  opacity:0; transform:translateX(-16px);
-  transition:opacity .42s ease, transform .58s cubic-bezier(.215,.61,.355,1);
-  pointer-events:none;
-}
-.ag-p.on .ag-cap{ opacity:1; transform:none; transition-delay:.2s; }
-.ag-bar{
-  flex:0 0 auto; width:2px; height:28px; border-radius:2px;
-  background:linear-gradient(180deg,#F0DDB0,#B99A5B);
-  box-shadow:0 0 12px rgba(216,184,122,.55);
-}
-.ag-txt{ display:flex; flex-direction:column; gap:5px; min-width:0; }
-.ag-txt b{
-  font-size:18px; font-weight:600; letter-spacing:.06em; color:#fff;
+.pk-c-name{
+  position:absolute; left:10px; bottom:10px; z-index:2;
+  font-size:clamp(8.5px,.82vw,10.5px); letter-spacing:.05em;
+  color:rgba(255,255,255,.52);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  max-width:calc(100% - 20px);
 }
-.ag-txt i{
-  font-style:normal; font-size:10.5px; letter-spacing:.08em;
-  color:rgba(255,255,255,.58); white-space:nowrap;
-  overflow:hidden; text-overflow:ellipsis;
+.pk-c.on .pk-c-name{ color:rgba(255,255,255,.82); }
+
+/* 选中：抬起 + 金边 */
+.pk-c.on{
+  transform:translateY(-9px);
+  box-shadow:
+    0 22px 44px rgba(0,0,0,.68),
+    0 0 0 1.5px rgba(222,192,132,.92),
+    0 0 26px rgba(185,154,91,.2);
 }
 
-/* 有价目的那一台：金边常驻，一眼能认出来 */
-.ag-p.ready{ box-shadow:0 18px 40px -24px rgba(0,0,0,.9), inset 0 0 0 1px rgba(185,154,91,.32); }
-.ag-p.on{ box-shadow:0 30px 66px -28px rgba(0,0,0,.95), inset 0 0 0 1px rgba(216,184,122,.52); }
-.ag-p.ready.on{ box-shadow:0 30px 66px -28px rgba(0,0,0,.95), inset 0 0 0 1px rgba(216,184,122,.8); }
+/* i6 用的是竖版海报，车只占画面中间一条，卡片里放大一点更认得出来 */
+.pk-c[data-pk="i6"] .pk-c-img img{ transform:scale(1.18); }
 
 @media (hover:hover) and (pointer:fine){
-  .ag-p:not(.on):hover{
-    box-shadow:0 24px 52px -26px rgba(0,0,0,.95), inset 0 0 0 1px rgba(255,255,255,.26);
+  .pk-c:not(.on):hover{
+    transform:translateY(-5px);
+    box-shadow:0 18px 36px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.28);
   }
-  .ag-p.ready:not(.on):hover{
-    box-shadow:0 24px 52px -26px rgba(0,0,0,.95), inset 0 0 0 1px rgba(216,184,122,.6);
-  }
+  .pk-c:not(.on):hover .pk-c-img img{ filter:brightness(.82) saturate(.85); }
+}
+
+/* ---------- 黑胶 ---------- */
+.pk-discwrap{
+  --disc:clamp(156px,16vw,208px);
+  position:relative; flex:0 0 auto;
+  width:var(--disc); height:var(--disc);
+  margin-top:clamp(4px,1vh,12px);
+  border-radius:50%;
+  box-shadow:0 34px 66px rgba(0,0,0,.72), 0 0 0 1px rgba(255,255,255,.045);
+}
+/* 盘体：纹理随旋转一起转，看起来才像在放 */
+.pk-disc{
+  position:absolute; inset:0; border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at 50% 50%,
+      rgba(255,255,255,.055) 0 1px, rgba(0,0,0,0) 1px 3.5px),
+    radial-gradient(circle at 42% 34%, #2C2F33 0%, #1A1C1F 42%, #0C0D0F 100%);
+  animation:pkSpin 9s linear infinite;
+}
+@keyframes pkSpin{ to{ transform:rotate(360deg); } }
+/* 一点高光，别让盘子死板 */
+.pk-discwrap::after{
+  content:""; position:absolute; inset:0; border-radius:50%; pointer-events:none;
+  background:radial-gradient(38% 26% at 34% 22%, rgba(255,255,255,.12), rgba(255,255,255,0) 70%);
+}
+.pk-disc-label{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:37%; height:37%; border-radius:50%; z-index:2;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px;
+  background:radial-gradient(circle at 38% 30%, #F0DAA9 0%, #D3B276 44%, #A98A50 100%);
+  box-shadow:0 8px 20px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.42);
+}
+.pk-disc-label b{
+  font-family:var(--ff); font-size:calc(var(--disc) * .098); font-weight:700;
+  letter-spacing:.04em; color:#2A2114; line-height:1;
+}
+.pk-disc-label i{
+  font-family:var(--fn); font-style:normal;
+  font-size:calc(var(--disc) * .036); letter-spacing:.14em; padding-left:.14em;
+  color:rgba(42,33,20,.62);
+}
+/* 盘心小孔 */
+.pk-disc-label::after{
+  content:""; position:absolute; left:50%; top:50%;
+  width:5px; height:5px; margin:-2.5px 0 0 -2.5px;
+  border-radius:50%; background:rgba(42,33,20,.34);
 }
 
 /* ---------- 底部 ---------- */
 .pk-foot{
   position:relative; z-index:6; flex:0 0 auto;
-  padding:clamp(18px,3vh,30px) 6vw calc(22px + env(safe-area-inset-bottom));
+  padding:clamp(16px,2.6vh,28px) 6vw calc(20px + env(safe-area-inset-bottom));
   text-align:center;
   opacity:0; transform:translateY(16px);
   transition:opacity .72s ease .22s, transform .86s cubic-bezier(.22,.9,.22,1) .22s;
@@ -1588,57 +1616,68 @@ body.intro-lock{ overflow:hidden; }
 }
 .pk-skip:hover{ color:rgba(255,255,255,.72); border-color:rgba(255,255,255,.4); }
 
-/* ---------- 窄屏：竖着叠，收起是一行薄片 ---------- */
+/* ---------- 窄屏：一排八张摊不开，改成可横滑 ---------- */
 @media (max-width:899px){
-  .ag{ flex-direction:column; gap:8px; perspective:none; }
-  .ag-p{ border-radius:11px; transform:none !important; flex-basis:0; }
-  .ag-rail{
-    align-items:center; justify-content:space-between;
-    padding:0 16px;
+  .pk-row{
+    justify-content:flex-start;
+    gap:10px;
+    padding:6px calc(50vw - 48px) 10px;
+    overflow-x:auto; overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
   }
-  .ag-rail b{ writing-mode:horizontal-tb; font-size:12px; letter-spacing:.18em; }
-  .ag-rail i{
-    display:block; font-style:normal; font-size:10.5px;
-    letter-spacing:.08em; color:rgba(255,255,255,.4);
+  .pk-c{
+    flex:0 0 clamp(112px,17vw,150px); max-width:none;
+    padding:0;
+    scroll-snap-align:center;
+    transition-delay:calc(var(--i,0) * 52ms);
   }
-  .ag-media{ inset:-8% -10%; }
-  .ag-media.empty::after{ font-size:56px; }
-  .ag-cap{ padding:14px 16px 16px; gap:10px; }
-  .ag-txt b{ font-size:15px; }
-  .ag-txt i{ font-size:9.5px; }
-  .ag-bar{ height:22px; }
-  .ag-tag{ right:12px; top:11px; font-size:8.5px; padding:3px 7px; }
-  .pk-stage{ padding:clamp(14px,2.6vh,24px) 5vw 0; }
-  .pk-go{ height:48px; padding:0 28px; font-size:13px; }
-  .pk-h2{ letter-spacing:.06em; padding-left:.06em; font-size:clamp(23px,5.4vw,30px); }
+  .pk-c-code{ font-size:22px; left:9px; bottom:24px; }
+  .pk-c-code.long{ font-size:15px; }
+  .pk-c-name{ font-size:9px; left:9px; bottom:10px; max-width:calc(100% - 18px); }
+  .pk-c-tag{ font-size:8px; left:9px; right:9px; top:8px; }
+  .pk-row{ padding:6px 22px 10px; }
 }
-/* 笔记本矮屏：收紧抬头和页脚，别把画廊挤没 */
-@media (min-width:900px) and (max-height:780px){
-  .pk-head{ padding-top:20px; }
-  .pk-h2{ margin-top:6px; font-size:clamp(18px,2.2vw,27px); }
+
+/* 手机这么窄，首张必须居中，否则一进来只看到半张卡 */
+@media (max-width:559px){
+  .pk-row{ padding:6px calc(50vw - 56px) 10px; }
+  .pk-discwrap{ --disc:clamp(142px,37vw,178px); margin-top:12px; }
+  .pk-tag{ font-size:8.5px; letter-spacing:.22em; padding-left:.22em; }
+  .pk-h2{ letter-spacing:.06em; padding-left:.06em; font-size:clamp(23px,5.4vw,30px); }
+  .pk-sub{ font-size:11px; letter-spacing:.1em; }
+  .pk-go{ height:48px; padding:0 28px; font-size:13px; }
+}
+
+/* ---------- 矮屏：收紧抬头和页脚，把高度让给唱片 ---------- */
+@media (max-height:780px){
+  .pk-c{ aspect-ratio:3 / 4; }
+  .pk-head{ padding-top:18px; }
+  .pk-h2{ margin-top:8px; font-size:clamp(19px,2.2vw,27px); }
   .pk-sub{ display:none; }
-  .pk-stage{ padding-top:22px; }
-  .pk-foot{ padding-top:14px; }
+  .pk-foot{ padding-top:12px; }
   .pk-now b{ font-size:15px; }
   .pk-go{ height:44px; margin-top:10px; padding:0 28px; }
   .pk-note{ margin-top:8px; font-size:10px; }
   .pk-skip{ margin-top:6px; }
+  .pk-discwrap{ --disc:clamp(132px,14vw,182px); margin-top:10px; }
 }
-/* 再矮一档：页脚只留车型名和按钮，把高度全让给画廊 */
-@media (min-width:900px) and (max-height:620px){
-  .pk-head{ padding-top:14px; }
+@media (max-height:620px){
+  .pk-head{ padding-top:12px; }
   .pk-tag{ font-size:9px; }
-  .pk-h2{ font-size:20px; margin-top:5px; }
-  .pk-stage{ padding-top:14px; }
-  .pk-foot{ padding-top:10px; padding-bottom:14px; }
+  .pk-h2{ font-size:19px; margin-top:5px; }
+  .pk-foot{ padding-top:8px; padding-bottom:12px; }
   .pk-now span{ display:none; }
   .pk-note, .pk-skip{ display:none; }
   .pk-go{ margin-top:8px; height:40px; font-size:12.5px; padding:0 26px; }
+  .pk-discwrap{ --disc:120px; }
 }
 @media (prefers-reduced-motion: reduce){
-  .ag-p, .ag-media, .ag-rail, .ag-cap, .ag-tag{ transition:none !important; }
-  .pk-head, .pk-foot{ transition:none !important; opacity:1 !important; transform:none !important; }
+  .pk-c, .pk-c-img img{ transition:none !important; }
+  .pk-disc{ animation:none; }
+  .pk-head, .pk-stage, .pk-foot{ transition:none !important; opacity:1 !important; transform:none !important; }
 }
+
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
@@ -1678,11 +1717,18 @@ body.intro-lock{ overflow:hidden; }
   <div class="pk-head">
     <div class="pk-tag">SOLARGARD 圣佳 · SELECT YOUR MODEL</div>
     <h2 class="pk-h2">您的理想，是<em>哪一台</em></h2>
-    <p class="pk-sub">移过即展开 · 为您生成对应的配置报价单</p>
+    <p class="pk-sub">从唱片架里抽出您那台 · 对应配置报价单</p>
   </div>
 
   <div class="pk-stage">
-    <div class="ag" id="pkGal" role="list" aria-label="理想车型相册"></div>
+    <div class="pk-row" id="pkRow" role="list" aria-label="理想车型"></div>
+    <div class="pk-discwrap" aria-hidden="true">
+      <div class="pk-disc"></div>
+      <div class="pk-disc-label">
+        <b>圣佳</b>
+        <i>SOLARGARD</i>
+      </div>
+    </div>
   </div>
 
   <div class="pk-foot">
@@ -3052,13 +3098,13 @@ document.getElementById('navAsk').onclick = () => {
 })();
 </script>
 
-<!-- ========== 车型选择层：手风琴画廊 ========== -->
+<!-- ========== 车型选择层：方块封套 + 黑胶 ========== -->
 <script>
 (function () {
   var picker = document.getElementById('picker');
   if (!picker) return;
 
-  var gal     = document.getElementById('pkGal');
+  var row     = document.getElementById('pkRow');
   var nowName = document.getElementById('pkNowName');
   var nowMeta = document.getElementById('pkNowMeta');
   var note    = document.getElementById('pkNote');
@@ -3066,9 +3112,8 @@ document.getElementById('navAsk').onclick = () => {
   var skipBtn = document.getElementById('pkSkip');
 
   /* 只有 i6 的价是核对过的。其余车型只给"可选 + 待上线"，一个数字都不许出现。
-     img：把实拍图放进 asset/ 再把文件名填进来即可（建议 4:5 竖图，1200×1500）。
-     留空就走石墨渐变占位，绝不拿别的车的图冒充。 */
-  /* pos = object-position，按每张图里车身的位置对好，换图时一起调 */
+     img 留空就走石墨占位，绝不拿别的车的图冒充。
+     pos = object-position，按每张图里车身位置对好；换图时一起调。 */
   var LIST = [
     { id:'i6',   code:'i6',   name:'理想 i6',    ready:true, img:'asset/car_i6_panel.jpg', pos:'50% 50%' },
     { id:'i8',   code:'i8',   name:'理想 i8',    img:'asset/car_i8.jpg',  pos:'52% 58%' },
@@ -3081,45 +3126,36 @@ document.getElementById('navAsk').onclick = () => {
   ];
 
   var cur = 'i6';
-  var RATIO_H = 0.46;   /* 展开那格占多少（横向） */
-  var RATIO_V = 0.44;   /* 竖向时展开那行占多少 */
-  var panels = [];
+  var cards = [];
 
-  /* ---------- 建面板 ---------- */
-  gal.innerHTML = LIST.map(function (m, i) {
+  /* ---------- 建卡片 ---------- */
+  row.innerHTML = LIST.map(function (m, i) {
     var media = m.img
-      ? '<span class="ag-media"><img src="' + m.img + '" alt="' + m.name + '" loading="lazy"' +
+      ? '<span class="pk-c-img"><img src="' + m.img + '" alt="' + m.name + '" loading="lazy"' +
         (m.pos ? ' style="object-position:' + m.pos + '"' : '') + '></span>'
-      : '<span class="ag-media empty"></span>';
-    return '<button class="ag-p' + (m.ready ? ' ready' : '') + '" type="button" ' +
+      : '<span class="pk-c-img empty"></span>';
+    return '<button class="pk-c' + (m.ready ? ' ready' : '') + '" type="button" ' +
         'data-pk="' + m.id + '" role="listitem" aria-pressed="false" style="--i:' + i + '">' +
         media +
-        '<span class="ag-dim"></span>' +
-        '<span class="ag-veil"></span>' +
-        '<span class="ag-rail"><b>' + m.code + '</b><i>' + m.name + '</i></span>' +
-        '<span class="ag-tag">' + (m.ready ? '价目已开' : '价目整理中') + '</span>' +
-        '<span class="ag-cap">' +
-          '<span class="ag-bar"></span>' +
-          '<span class="ag-txt"><b>' + m.name + '</b><i data-meta></i></span>' +
-        '</span>' +
+        '<span class="pk-c-tag">' + (m.ready ? '价目已开' : '价目整理中') + '</span>' +
+        '<span class="pk-c-code' + (m.code.length > 2 ? ' long' : '') + '">' + m.code + '</span>' +
+        '<span class="pk-c-name">' + m.name + '</span>' +
       '</button>';
   }).join('');
 
-  panels = Array.prototype.slice.call(gal.querySelectorAll('.ag-p'));
+  cards = Array.prototype.slice.call(row.querySelectorAll('.pk-c'));
 
   /* 图挂了就走占位，不留破图 */
-  panels.forEach(function (p) {
-    var img = p.querySelector('.ag-media img');
+  cards.forEach(function (p) {
+    var img = p.querySelector('.pk-c-img img');
     if (!img) return;
     img.addEventListener('error', function () {
       var wrap = img.parentNode;
       wrap.classList.add('empty');
-      wrap.setAttribute('data-code', p.getAttribute('data-pk').toUpperCase());
       img.remove();
     });
   });
 
-  function vertical() { return window.innerWidth < 900; }
   function idxOf(id) {
     for (var i = 0; i < LIST.length; i += 1) if (LIST[i].id === id) return i;
     return 0;
@@ -3129,45 +3165,30 @@ document.getElementById('navAsk').onclick = () => {
     for (var i = 0; i < MODELS.length; i += 1) if (MODELS[i].id === id) return MODELS[i];
     return null;
   }
+  function narrow() { return window.innerWidth < 900; }
 
-  /* ---------- 布局：flex-grow 决定谁被展开 ---------- */
-  function apply() {
-    var n = LIST.length;
-    var v = vertical();
-    var r = v ? RATIO_V : RATIO_H;
-    var grow = n > 1 ? (r * (n - 1)) / (1 - r) : 1;
-    var curIdx = idxOf(cur);
-    var tilt = v ? 0 : (window.innerHeight < 700 ? 5 : 7);
-
-    panels.forEach(function (p, i) {
-      var on = i === curIdx;
-      p.classList.toggle('on', on);
-      p.setAttribute('aria-pressed', on ? 'true' : 'false');
-      p.style.flexGrow = on ? grow.toFixed(3) : '1';
-      /* 关着的卡片绕 Y 轴向内转一点，像一叠立着的封套；打开那张转平 */
-      var deg = on || !tilt ? 0 : (i < curIdx ? tilt : -tilt);
-      p.style.transform = deg ? 'rotateY(' + deg + 'deg)' : 'rotateY(0deg)';
-      /* 图跟着位置漂一点，产生视差 */
-      var media = p.querySelector('.ag-media');
-      if (media) {
-        var drift = Math.max(-1.5, Math.min(1.5, curIdx - i));
-        media.style.transform = v ? 'translateY(0px)' : 'translateX(' + (on ? 0 : drift * 14).toFixed(1) + 'px)';
-      }
-    });
-  }
-
-  /* ---------- 文案与按钮 ---------- */
+  /* ---------- 选中态 ---------- */
   function paint() {
     var i = idxOf(cur);
     var m = LIST[i];
-    apply();
+
+    cards.forEach(function (c, k) {
+      var on = k === i;
+      c.classList.toggle('on', on);
+      c.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    /* 窄屏横滑：把选中的拖到正中 */
+    if (narrow()) {
+      var c = cards[i];
+      var target = c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2;
+      row.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+    }
 
     nowName.textContent = m.name;
 
     var mm = modelOf(m.id);
     var meta = mm ? [mm.sub, mm.body].filter(Boolean).join(' · ') : '';
-    var capMeta = panels[i].querySelector('[data-meta]');
-    if (capMeta) capMeta.textContent = meta || (m.ready ? '全车配置报价' : '实拍图整理中');
 
     if (m.ready) {
       nowMeta.textContent = meta || '全车配置报价';
@@ -3189,25 +3210,26 @@ document.getElementById('navAsk').onclick = () => {
   }
 
   /* ---------- 进场 ---------- */
+  var hoverReady = 0;
   function open() {
     if (picker.classList.contains('show')) return;
     picker.classList.add('show');
     picker.setAttribute('aria-hidden', 'false');
     document.body.classList.add('intro-lock');
     window.scrollTo(0, 0);
+    cur = 'i6';
     paint();
-    /* 刚打开时鼠标可能正好压在某个面板上，先锁 800ms，别让默认选中被顶掉 */
-    hoverReady = Date.now() + 800;
+    hoverReady = Date.now() + 700;
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         picker.classList.add('in');
-        /* 错峰展开走完就把延迟清掉，之后 hover 才跟手 */
-        setTimeout(function () { picker.classList.add('done'); }, 1400);
+        setTimeout(function () { picker.classList.add('done'); }, 1200);
       });
     });
     setTimeout(function () {
-      try { panels[idxOf(cur)].focus({ preventScroll: true }); } catch (e) { panels[idxOf(cur)].focus(); }
-    }, 520);
+      var c = cards[idxOf(cur)];
+      try { c.focus({ preventScroll: true }); } catch (e) { c.focus(); }
+    }, 480);
   }
   window.__openPicker = open;
 
@@ -3222,32 +3244,47 @@ document.getElementById('navAsk').onclick = () => {
     setTimeout(function () { if (picker.parentNode) picker.parentNode.removeChild(picker); }, 680);
   }
 
-  /* ---------- 交互：悬停即展开，点也展开 ---------- */
+  /* ---------- 交互 ---------- */
   var fine = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
   var hoverTimer = 0;
-  var hoverReady = 0;
 
-  gal.addEventListener('mouseover', function (e) {
+  row.addEventListener('mouseover', function (e) {
     if (!fine || Date.now() < hoverReady) return;
-    var p = e.target.closest ? e.target.closest('.ag-p') : null;
-    if (!p) return;
-    var id = p.getAttribute('data-pk');
+    var c = e.target.closest ? e.target.closest('.pk-c') : null;
+    if (!c) return;
+    var id = c.getAttribute('data-pk');
     if (id === cur) return;
     clearTimeout(hoverTimer);
-    hoverTimer = setTimeout(function () { set(id); }, 42);
+    hoverTimer = setTimeout(function () { set(id); }, 40);
+  });
+  row.addEventListener('mouseleave', function () { clearTimeout(hoverTimer); });
+
+  row.addEventListener('click', function (e) {
+    var c = e.target.closest ? e.target.closest('.pk-c') : null;
+    if (!c) return;
+    set(c.getAttribute('data-pk'));
   });
 
-  gal.addEventListener('mouseleave', function () { clearTimeout(hoverTimer); });
-
-  gal.addEventListener('click', function (e) {
-    var p = e.target.closest ? e.target.closest('.ag-p') : null;
-    if (!p) return;
-    set(p.getAttribute('data-pk'));
-  });
+  /* 窄屏横滑停下后，自动选中间那张 */
+  var scrollTimer = 0;
+  row.addEventListener('scroll', function () {
+    if (!narrow()) return;
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function () {
+      var mid = row.scrollLeft + row.clientWidth / 2;
+      var best = 0, bestD = 1e9;
+      cards.forEach(function (c, i) {
+        var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      var id = LIST[best].id;
+      if (id !== cur) { cur = id; paint(); }
+    }, 170);
+  }, { passive: true });
 
   goBtn.addEventListener('click', function () {
     var m = LIST[idxOf(cur)];
-    /* 只有真有价目的车型才切；没价目的保持 i6，绝不切到空价目 */
+    /* 只有真有价目的车型才切，绝不切到空价目 */
     if (m && m.ready && typeof setModel === 'function') setModel(m.id);
     close();
   });
@@ -3264,8 +3301,6 @@ document.getElementById('navAsk').onclick = () => {
       set(LIST[i].id);
     }
   });
-
-  window.addEventListener('resize', apply);
 })();
 </script>
 
