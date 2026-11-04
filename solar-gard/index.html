@@ -1125,6 +1125,9 @@ a{ color:inherit; text-decoration:none; }
 }
 
 /* ============ 车型切换条 ============ */
+/* 只有一款车型有真实价目时不显示（当前仅 i6），补第二款价目后自动出现，body 加 .has-models */
+.modelbar{ display:none; }
+body.has-models .modelbar{ display:block; }
 .modelbar{
   position:sticky; top:var(--nav); z-index:70;
   margin-top:var(--nav);
@@ -1133,7 +1136,7 @@ a{ color:inherit; text-decoration:none; }
   -webkit-backdrop-filter:blur(18px) saturate(1.4);
   border-bottom:1px solid var(--line);
 }
-.hero{ padding-top:0; }
+body.has-models .hero{ padding-top:0; }
 .mb-in{ display:flex; align-items:center; gap:28px; height:76px; }
 .mb-l{ flex:none; display:flex; flex-direction:column; gap:4px; }
 .mb-k{ font-size:9.5px; letter-spacing:.18em; color:var(--sub2); }
@@ -1327,7 +1330,7 @@ a{ color:inherit; text-decoration:none; }
       <span class="en" data-page-node-id="BWQL1SoLMWqveb8mbIG6tO">Paint Protection Film</span>
       <span class="same">全系同价 · 不分车型</span>
     </div>
-    <p class="sec-p" data-page-node-id="X5hidVUFMubZFzwIXXfn80">全车漆面 · 整车贴装价。<b data-page-node-id="KhtrBWzVqNaLqRvAgvEJeS">理想全系一个价</b>，不分 L6 / L9 / MEGA，也不按车型加价。按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。<br data-page-node-id="KwAU9cNvL4e3m37y7YYBuF">默认只显示起步款，更高价位可展开对比。</p>
+    <p class="sec-p" data-page-node-id="X5hidVUFMubZFzwIXXfn80">全车漆面 · 整车贴装价。<b data-page-node-id="KhtrBWzVqNaLqRvAgvEJeS">不分车型、不按车身尺寸加价</b>，按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。<br data-page-node-id="KwAU9cNvL4e3m37y7YYBuF">默认只显示起步款，更高价位可展开对比。</p>
     <div class="coat4 fold" id="secCoat" data-page-node-id="5GKMmuUjQJotaKOewVb5hF">
     <div class="pcol">
       <div class="pcolhead">
@@ -1445,7 +1448,7 @@ a{ color:inherit; text-decoration:none; }
         <span class="cnt" data-page-node-id="e1BAUzjOvSaqih3qJ7Am9n">全车硅胶 21 件</span>
         <span data-page-node-id="ATdYjboFdPIuxTio1a4ymM">无线充垫 / 水杯架 / 储物盒 / 车门按键 / 门碗贴 / OBD 盖</span>
       </div>
-      <p class="sub-note" id="giftNote" data-page-node-id="0EaFwDIqxgOHtAaEJ9geMQ">26 款 i6 送 <b data-page-node-id="Us0VKoB9SeID5MowaPjz0k">21 件套</b>；i8 送 22 件、L9 / MEGA 送 24 件，L6 / L7 / L8 各 21 件，按对应车型配齐，三色可选。</p>
+      <p class="sub-note" id="giftNote" data-page-node-id="0EaFwDIqxgOHtAaEJ9geMQ">26 款 i6 送 <b data-page-node-id="Us0VKoB9SeID5MowaPjz0k">21 件套</b>；其他车型件数以实车为准，按对应车型配齐，三色可选。</p>
       <div class="giftkit" data-page-node-id="e2hUPhyLRFMizsu88zXB2N">
         <div class="gk-head" data-page-node-id="BTHbYZpeOWhLP4ski1f5lh">
           <div class="gk-l" data-page-node-id="scecE2q4cCPJgMJfwqD4k9">GIFT · 21 件 / 随脚垫整车配送</div>
@@ -1586,7 +1589,7 @@ a{ color:inherit; text-decoration:none; }
       <div class="fit" data-page-node-id="5cXQyi6ViSqfHM46DTl64z">
         <div class="k" data-page-node-id="8yxvAdVNwpnqRrBjA5jxEk">Note</div>
         <div class="v" data-page-node-id="ynP6EFOnmZuczLyQAjoyRl">车衣全系同价</div>
-        <div class="s" data-page-node-id="w3f35sHyRqsZ8NuGII3TYQ">L6 到 MEGA 一个价；窗膜与配件已按车型尺寸自动核算</div>
+        <div class="s" data-page-node-id="w3f35sHyRqsZ8NuGII3TYQ">其他车型尺寸差异较大，价格以门店实测为准</div>
       </div>
     </div>
 
@@ -1607,7 +1610,7 @@ a{ color:inherit; text-decoration:none; }
     </div>
 
     <div class="disc" data-page-node-id="Zkkr86yRRQ8YllCvU6xjIq">
-      * 车衣为理想全系统一价，不按车型加价；窗膜、钢化膜、配件已按所选车型尺寸自动核算（L8 / L9 / i8 / MEGA 等大尺寸车型基准 +15%）。窗膜套餐价为前挡 + 侧挡组合价，漆面膜价格为整车贴装价；配件价格为单品价，不含施工，最终以门店报价为准。
+      * 本页价目为理想 i6 车型零售价，车衣为理想全系统一价、不按车型加价；窗膜套餐价为前挡 + 侧挡组合价，漆面膜价格为整车贴装价；配件价格为单品价，不含施工。其他车型尺寸不同，价格以门店实测报价为准。
       <br data-page-node-id="h00mnRompu0Teeq3S4DZ1Q"><a href="poster.html" data-page-node-id="albAJA5oGUThBnagLN5OkU">查看完整长图版 →</a>
     </div>
   </div>
@@ -1651,19 +1654,14 @@ a{ color:inherit; text-decoration:none; }
 /* =========================================================
    数据层：加新车型 = MODELS 补一条 + 补对应价目
    ========================================================= */
-/* 理想全系。cls：std = 标准尺寸（基准价）/ big = 大尺寸（窗膜、钢化膜、配件 ×1.15）
-   车衣不吃系数，全系同价，见 pxC() */
+/* 理想全系。目前只有 i6 有真实价目，其余车型一律不进列表——没核对过的价格不上页面。
+   以后补某一款：① 把它挪进下面的数组并标 ready:true
+                ② 若该款窗膜/膜价与 i6 不同，单独建一份价目表，别用系数硬算
+   示例（等你给准数再放开）：
+   { id:'l9', name:'理想 L9', sub:'', body:'增程 SUV · 6 座', giftCount:24, ready:true } */
 const MODELS = [
-  { id:'i6',   name:'理想 i6',   sub:'26 款', cls:'std', body:'纯电 SUV · 5 座', giftCount:21, ready:true },
-  { id:'l6',   name:'理想 L6',   sub:'',      cls:'std', body:'增程 SUV · 5 座', giftCount:21 },
-  { id:'l7',   name:'理想 L7',   sub:'',      cls:'std', body:'增程 SUV · 5 座', giftCount:21 },
-  { id:'l8',   name:'理想 L8',   sub:'',      cls:'big', body:'增程 SUV · 6 座', giftCount:21 },
-  { id:'l9',   name:'理想 L9',   sub:'',      cls:'big', body:'增程 SUV · 6 座', giftCount:24 },
-  { id:'i8',   name:'理想 i8',   sub:'',      cls:'big', body:'纯电 SUV · 6 座', giftCount:22 },
-  { id:'mega', name:'理想 MEGA', sub:'',      cls:'big', body:'纯电 MPV · 7 座', giftCount:24 }
+  { id:'i6', name:'理想 i6', sub:'26 款', body:'纯电 SUV · 5 座', giftCount:21, ready:true }
 ];
-/* 大车系数：窗膜 / 钢化膜 / 配件。跟页面上原有的「特殊车型 +15%」口径一致 */
-const PRICE_K = { std:1, big:1.15 };
 
 const SCREEN = [
   { id:'s2', name:'两件套', set:'中控 + 冰箱', price:599 },
@@ -1762,12 +1760,11 @@ const COAT_ALL  = COAT.flatMap(g => g.items);
 const BASE_COAT = COAT[0].items[0];
 const COAT_REST = COAT_ALL.filter(i => i.id !== BASE_COAT.id).sort((a,b) => a.price - b.price);
 
-/* ===== 车型价格系数 ===== */
+/* ===== 车型 ===== */
 const curModel = () => MODELS.find(m => m.id === state.model) || MODELS[0];
-const curK = () => PRICE_K[curModel().cls] || 1;
-/* 窗膜 / 钢化膜 / 配件：大车 ×1.15 后取整到 10，标准车原价不动 */
-const px = n => curK() === 1 ? n : Math.round(n * curK() / 10) * 10;
-/* 车衣：全系同价，永远不吃系数 */
+/* 价目原样输出。只有 i6 一款在售，不做任何车型系数推算——没核过的价不上页面 */
+const px  = n => n;
+/* 车衣：全系同价 */
 const pxC = n => n;
 
 /* 玻璃膜「起价」得跟着车型走，所以由函数算，不用常量 */
@@ -2172,7 +2169,7 @@ function renderSheet(list, total){
       <span class="tk">合计</span>
       <span class="tv"><i>¥</i>${money(total)}</span>
     </div>
-    <div class="qnote">以上价格已按 ${m.name} 尺寸核算，车衣为全系统一价；窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。</div>
+    <div class="qnote">以上为理想 i6 零售价；车衣为全系同价，其他车型尺寸价另计；窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。</div>
     <div class="qact">
       <button class="qbtn" id="btnCopy">复制发给老板 →</button>
       <button class="qbtn ghost" id="btnClose2">继续挑选</button>
@@ -2383,9 +2380,12 @@ $('#mask').onclick = closeSheet;
 
 /* ========================= 车型切换 ========================= */
 function renderModelBar(){
+  const ready = MODELS.filter(m => m.ready !== false);
+  /* 只有一款有价目 → 整条隐藏，页面就是个干净的 i6 单车型报价 */
+  document.body.classList.toggle('has-models', ready.length > 1);
   const list = $('#mbList');
   if (list){
-    list.innerHTML = MODELS.map(m => `
+    list.innerHTML = ready.map(m => `
       <button class="mchip${state.model === m.id ? ' on' : ''}" type="button" data-m="${m.id}">
         <b>${m.name.replace('理想 ', '')}</b><span>${m.body}</span>
       </button>`).join('');
@@ -2422,7 +2422,9 @@ function syncModelText(){
 }
 
 function setModel(id){
-  if (!MODELS.some(m => m.id === id) || state.model === id) return;
+  const m = MODELS.find(x => x.id === id);
+  /* 没价目的车型不给切，避免出现推算出来的假价格 */
+  if (!m || m.ready === false || state.model === id) return;
   state.model = id;
   renderModelBar();
   renderScreen(); renderFilm(); renderAcc();
