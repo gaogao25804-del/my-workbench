@@ -1188,9 +1188,134 @@ body.has-models .hero{ padding-top:0; }
   .mchip span{ font-size:9px; }
   .sec-h .same{ font-size:9.5px; padding:4px 9px; letter-spacing:.06em; }
 }
+
+/* ================= 开场：文字里透出画面 ================= */
+.intro{
+  position:fixed; inset:0; z-index:300;
+  display:flex; align-items:center; justify-content:center;
+  background:#0B0C0D; overflow:hidden;
+  font-family:var(--ff);
+  opacity:1; visibility:visible;
+  transition:opacity .52s ease, visibility .52s;
+}
+.intro.out{ opacity:0; visibility:hidden; pointer-events:none; }
+body.intro-lock{ overflow:hidden; }
+
+/* 背景：同一张车图重度虚化压暗，给大字当"取景框" */
+.intro-bg{
+  position:absolute; inset:-10%;
+  background:url(asset/car_hero.jpg) center 48%/cover no-repeat;
+  filter:blur(52px) brightness(.38) saturate(.8);
+  transform:scale(1.12);
+}
+.intro::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(118% 88% at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.42) 58%, rgba(0,0,0,.9) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(0,0,0,.08) 42%, rgba(0,0,0,.72) 100%);
+}
+
+.intro-in{
+  position:relative; z-index:2; width:100%;
+  padding:0 6vw; text-align:center; color:#fff;
+}
+.intro-tag{
+  font-size:11px; letter-spacing:.40em; padding-left:.40em;
+  color:rgba(216,188,132,.82);
+}
+.intro-l1{
+  margin:clamp(20px,3.4vh,40px) 0 0;
+  font-size:clamp(13px,1.42vw,19px);
+  letter-spacing:.30em; padding-left:.30em;
+  color:rgba(255,255,255,.70); font-weight:400;
+}
+.intro-l2{
+  margin:clamp(14px,2.4vh,30px) 0 0;
+  font-size:clamp(19px,2.7vw,38px);
+  letter-spacing:.14em; padding-left:.14em;
+  color:rgba(255,255,255,.92); font-weight:300;
+}
+.intro-l3{
+  position:relative;
+  margin:clamp(6px,1.4vh,16px) 0 0;
+  font-size:clamp(28px,9.2vw,140px);
+  line-height:1.16; font-weight:700; letter-spacing:.04em;
+}
+
+/* 每个字单独一条，才能各自升起、各自定位底图 */
+.i-ch{
+  display:inline-block; will-change:transform, opacity, background-position;
+  opacity:0; transform:translateY(.62em);
+  transition:opacity .58s ease, transform .82s cubic-bezier(.22,.9,.22,1);
+  transition-delay:var(--d,0ms);
+}
+.intro.ready .i-ch{ opacity:1; transform:none; }
+
+/* 主标题：字里面透出车图 + 金色描边 */
+.intro-l3 .i-ch{
+  background-image:url(asset/intro_fill.jpg);
+  background-repeat:no-repeat;
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+  -webkit-text-fill-color:transparent;
+  -webkit-text-stroke:1.4px rgba(216,184,122,.72);
+  transition:opacity .6s ease, transform .84s cubic-bezier(.22,.9,.22,1);
+}
+
+.intro-rule{
+  width:46px; height:1px; margin:clamp(24px,4vh,52px) auto 0;
+  background:linear-gradient(90deg,transparent,rgba(185,154,91,.85),transparent);
+  opacity:0; transition:opacity .7s ease .5s;
+}
+.intro.ready .intro-rule{ opacity:1; }
+
+.intro-foot{
+  margin-top:clamp(14px,2.2vh,24px);
+  font-size:clamp(11px,1.1vw,13px); letter-spacing:.22em; padding-left:.22em;
+  color:rgba(255,255,255,.40);
+}
+
+.intro-skip{
+  position:absolute; z-index:3;
+  right:max(16px,3vw); bottom:max(16px,3vw);
+  padding:8px 16px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.045);
+  color:rgba(255,255,255,.48);
+  font-family:var(--ff); font-size:11px; letter-spacing:.12em;
+  cursor:pointer; transition:.25s;
+}
+.intro-skip:hover{ color:#fff; border-color:rgba(255,255,255,.42); background:rgba(255,255,255,.1); }
+
+@media (max-width:759px){
+  .intro-l3{ font-size:clamp(26px,9.6vw,62px); line-height:1.26; letter-spacing:.02em; }
+  .intro-l1{ letter-spacing:.22em; padding-left:.22em; }
+  .intro-tag{ letter-spacing:.24em; padding-left:.24em; font-size:10px; }
+  .intro-skip{ right:14px; bottom:calc(14px + env(safe-area-inset-bottom)); font-size:10.5px; padding:7px 13px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .i-ch{ transition:none !important; opacity:1 !important; transform:none !important; }
+  .intro-rule{ transition:none; opacity:1; }
+  .intro-bg{ filter:blur(40px) brightness(.34) saturate(.7); }
+}
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
+
+<!-- ========== 开场（5 秒后自动进入，点击可跳过） ========== -->
+<div class="intro" id="intro" role="presentation">
+  <div class="intro-bg"></div>
+  <div class="intro-in">
+    <div class="intro-tag">SOLARGARD 圣佳 · 理想全车贴膜</div>
+    <p class="intro-l1" id="introL1">尊贵的理想车主</p>
+    <p class="intro-l2" id="introL2">欢迎您来到</p>
+    <p class="intro-l3" id="introL3">郝金彪的理想车库</p>
+    <div class="intro-rule"></div>
+    <div class="intro-foot">车衣 · 玻璃膜 · 钢化膜 · 车内配件</div>
+  </div>
+  <button class="intro-skip" id="introSkip" type="button">点击任意处进入 →</button>
+</div>
+<noscript><style>.intro{ display:none !important; }</style></noscript>
 
 <!-- ========== 顶部导航 ========== -->
 <nav class="nav on" id="nav" data-page-node-id="GGAp5lNC1qHbFd7GE3vzDI">
@@ -2467,6 +2592,134 @@ document.getElementById('navAsk').onclick = () => {
 
 </script>
 
+<!-- ========== 开场动画：文字里透出画面，5 秒后进入报价页 ========== -->
+<script>
+(function () {
+  var intro = document.getElementById('intro');
+  if (!intro) return;
+
+  /* 兜底：不管下面发生什么，8 秒后一定放行，绝不能让客人卡在开场页 */
+  var WATCHDOG = setTimeout(function () {
+    intro.classList.add('out');
+    document.body.classList.remove('intro-lock');
+    setTimeout(function () { intro.remove(); }, 600);
+  }, 8000);
+
+  var l1 = document.getElementById('introL1');
+  var l2 = document.getElementById('introL2');
+  var l3 = document.getElementById('introL3');
+  var skipBtn = document.getElementById('introSkip');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var HOLD = 4500;      /* 停留多久开始淡出 */
+  var FADE = 520;       /* 淡出时长 */
+  var AR = 1600 / 662;  /* 填充图原始比例，保证字里的画面不变形 */
+  var CROP = { x: 0.02, y: 0.34, w: 0.92 };  /* 取图的哪一块铺进大字：横向起点 / 纵向起点 / 横向占比 */
+
+  /* 拆字：每个字一个 span，才能各自升起、各自对位底图 */
+  function split(el, base, step) {
+    if (!el) return [];
+    var text = (el.textContent || '').trim();
+    el.textContent = '';
+    var frag = document.createDocumentFragment();
+    var chars = Array.from(text);
+    chars.forEach(function (ch, i) {
+      var s = document.createElement('span');
+      s.className = 'i-ch';
+      s.textContent = ch;
+      s.style.setProperty('--d', (base + i * step) + 'ms');
+      frag.appendChild(s);
+    });
+    el.appendChild(frag);
+    return Array.prototype.slice.call(el.children);
+  }
+
+  var c3 = reduce ? [] : split(l3, 800, 62);
+  if (!reduce) { split(l1, 240, 44); split(l2, 560, 52); }
+
+  /* 大字里的图：每字各持一份连续底图，靠 background-position 拼接 */
+  var dx = 0, dy = 0, tx = 0, ty = 0, clock = 0, last = 0, raf = 0, alive = true;
+
+  function place() {
+    if (!c3.length) return;
+    var w = l3.clientWidth, h = l3.clientHeight;
+    if (!w || !h) return;
+    var margin = 46;                       /* 位移余量，防止字边缘露出空白 */
+    var bw = (w + margin * 2) / CROP.w;    /* 图比字大一圈，留出视差空间 */
+    var bh = bw / AR;
+    var ox = CROP.x * bw + margin;         /* 图窗在文字坐标系里的左上角 */
+    var oy = CROP.y * bh + margin;
+    var size = bw.toFixed(1) + 'px ' + bh.toFixed(1) + 'px';
+    for (var i = 0; i < c3.length; i += 1) {
+      var ch = c3[i];
+      ch.style.backgroundSize = size;
+      ch.style.backgroundPosition =
+        (-(ch.offsetLeft + ox - dx)).toFixed(1) + 'px ' +
+        (-(ch.offsetTop + oy - dy)).toFixed(1) + 'px';
+    }
+  }
+
+  function frame(now) {
+    raf = 0;
+    if (!alive) return;
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+    last = now;
+    clock += dt;
+    var ease = 1 - Math.exp(-dt / 0.28);
+    dx += (tx + Math.sin(clock * 0.34) * 9 - dx) * ease;
+    dy += (ty + Math.cos(clock * 0.27) * 6 - dy) * ease;
+    place();
+    raf = requestAnimationFrame(frame);
+  }
+
+  function wake() { if (alive && !raf) { last = 0; raf = requestAnimationFrame(frame); } }
+
+  document.body.classList.add('intro-lock');
+
+  /* 先量一遍几何，再触发入场，避免字先出现再跳位 */
+  requestAnimationFrame(function () {
+    place();
+    requestAnimationFrame(function () {
+      intro.classList.add('ready');
+      if (!reduce) wake();
+    });
+  });
+
+  window.addEventListener('resize', place);
+
+  if (!reduce) {
+    intro.addEventListener('pointermove', function (e) {
+      var r = intro.getBoundingClientRect();
+      var nx = ((e.clientX - r.left) / (r.width || 1)) * 2 - 1;
+      var ny = ((e.clientY - r.top) / (r.height || 1)) * 2 - 1;
+      tx = Math.max(-1, Math.min(1, nx)) * -20;
+      ty = Math.max(-1, Math.min(1, ny)) * -9;
+      wake();
+    });
+  }
+
+  var done = false;
+  function dismiss() {
+    if (done) return;
+    done = true;
+    alive = false;
+    clearTimeout(WATCHDOG);
+    clearTimeout(timer);
+    if (raf) cancelAnimationFrame(raf);
+    intro.classList.add('out');
+    document.body.classList.remove('intro-lock');
+    setTimeout(function () { if (intro.parentNode) intro.remove(); }, FADE + 60);
+  }
+
+  var timer = setTimeout(dismiss, reduce ? 3000 : HOLD);
+
+  intro.addEventListener('click', dismiss);
+  if (skipBtn) skipBtn.addEventListener('click', function (e) { e.stopPropagation(); dismiss(); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') dismiss();
+  });
+})();
+</script>
 
 
 </body></html>
