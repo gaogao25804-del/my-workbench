@@ -227,21 +227,12 @@ function stateHtml(type, title, desc, actionLabel, actionAttr) {
 /* ---------------- 主页 ---------------- */
 function renderHome() {
   const info = feishuInfo();
-  const books = (st.library && st.library.books) || [];
   const ready = st.load.feishu === 'ready';
 
   const recent = info.tasks.slice()
     .filter(function (t) { return t.completed_at; })
     .sort(function (a, b) { return String(b.completed_at).localeCompare(String(a.completed_at)); })
     .slice(0, 6);
-
-  const statItems = [
-    { label: '任务总数', value: ready ? info.total : '—', hint: ready ? (info.earliest + ' ~ ' + info.latest) : '飞书任务清单' },
-    { label: '已完成', value: ready ? info.completed : '—', hint: '全部完成' },
-    { label: '待办', value: ready ? info.pending : '—', hint: '当前无逾期' },
-    { label: '藏书', value: st.library ? books.length : '—', hint: '含书摘与思考' },
-    { label: '文案', value: WENAN.length, hint: '口播 / 提示词' }
-  ];
 
   const quick = [
     { go: 'tasks', icon: 'calendar', no: '01', cls: 'c1', title: '任务与日历', desc: '月历视图 · 按日期查看任务' },
@@ -250,31 +241,30 @@ function renderHome() {
     { go: 'pixel', icon: 'pixel', no: '04', cls: 'c4', title: '像素工坊', desc: '图片转像素 · 去背导出透明 PNG' }
   ];
 
-  const marq = 'TASKS ✦ LIBRARY ✦ SCRIPTS ✦ PIXEL ✦ FEISHU ✦ AI ✦ EDIT ✦ DATA ✦ ';
-
   return '' +
-    '<section class="fx-hero">' +
-      '<div class="fx-hero-grid"></div>' +
-      '<div class="fx-hero-glow"></div>' +
-      '<div class="fx-hero-ring r1"></div>' +
-      '<div class="fx-hero-ring r2"></div>' +
-      '<div class="fx-hero-ghost">WORKBENCH</div>' +
-      '<div class="fx-marquee m1"><div class="fx-track">' + marq + marq + '</div></div>' +
-      '<div class="fx-marquee m2"><div class="fx-track rev">' + marq + marq + '</div></div>' +
-      '<div class="fx-hero-inner">' +
-        '<div class="fx-kicker"><i></i> DIGITAL WORKBENCH <em>EST · 2026</em><span>LOCAL FIRST</span></div>' +
-        '<div class="fx-art"><img src="assets/img/px-octo.png" alt="" loading="lazy"></div>' +
-        '<h1 class="fx-title">个人<span>工作台</span></h1>' +
-        '<div class="fx-en">PERSONAL · WORKBENCH</div>' +
-        '<p class="fx-note">任务、藏书与文案，收在一张安静的桌面上。</p>' +
-        '<div class="fx-actions">' +
-          '<button class="fx-btn primary" data-go="tasks">进入任务 <span>→</span></button>' +
-          '<button class="fx-btn" data-go="library">浏览藏书</button>' +
+    '<section class="rw-hero" id="rwHero">' +
+      '<canvas class="rw-canvas" id="rwCanvas" aria-hidden="true"></canvas>' +
+      '<div class="rw-vignette"></div>' +
+      '<div class="rw-inner">' +
+        '<div class="rw-kicker"><i></i>RUNWAY · CASH MODEL<em>EST 2026</em><span>LOCAL FIRST</span></div>' +
+        '<h1 class="rw-title">精确知道这笔钱<br><span>还能烧多久。</span></h1>' +
+        '<p class="rw-sub">把人力、收入与花销摊进同一张表，<br>拖动下面的月度烧钱，跑道会立刻变长或变短。</p>' +
+        '<div class="rw-actions">' +
+          '<button class="rw-btn primary" data-go="tasks">开始测算 <span>→</span></button>' +
+          '<button class="rw-btn" data-go="library">浏览藏书</button>' +
         '</div>' +
-        '<div class="fx-hero-stats">' +
-          statItems.map(function (s) {
-            return '<div class="fx-stat"><b>' + esc(String(s.value)) + '</b><span>' + esc(s.label) + '</span></div>';
-          }).join('') +
+        '<div class="rw-panel">' +
+          '<div class="rw-panel-main">' +
+            '<div class="rw-label">剩余跑道</div>' +
+            '<div class="rw-big"><b id="rwMonths">14.3</b><i>个月</i></div>' +
+            '<div class="rw-end">现金将在 <b id="rwEnd">2028 年 1 月</b> 见底</div>' +
+          '</div>' +
+          '<div class="rw-panel-side">' +
+            '<div class="rw-kv"><span>可用现金</span><b>¥1,200,000</b></div>' +
+            '<div class="rw-kv"><span>月度烧钱</span><b id="rwBurn">¥84,000</b></div>' +
+            '<input class="rw-range" id="rwBurnRange" type="range" min="40000" max="160000" step="1000" value="84000" aria-label="月度烧钱">' +
+            '<div class="rw-hint">拖动滑杆 · 数字火苗随之长高</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</section>' +
@@ -316,6 +306,153 @@ function renderHome() {
             }).join('') + '</div>'
           : stateHtml('empty', '暂无已完成任务')) +
     '</div>';
+}
+
+/* ---------------- 首页 Runway Hero（Hero 30 风格复刻） ----------------
+   透视跑道 + 数字火苗：烧钱越多，数字柱越高、跑道跑得越快。 */
+const RW = { cash: 1200000, burn: 84000, min: 40000, max: 160000, raf: 0, ro: null };
+
+function rwMoney(n) {
+  return '¥' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function rwEndLabel(months) {
+  const now = new Date();
+  const idx = now.getMonth() + Math.round(months);
+  const d = new Date(now.getFullYear(), idx, 1);
+  return d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月';
+}
+
+function rwSync() {
+  const months = RW.cash / RW.burn;
+  const mEl = document.getElementById('rwMonths');
+  const eEl = document.getElementById('rwEnd');
+  const bEl = document.getElementById('rwBurn');
+  if (mEl) mEl.textContent = months.toFixed(1);
+  if (eEl) eEl.textContent = rwEndLabel(months);
+  if (bEl) bEl.textContent = rwMoney(RW.burn);
+}
+
+function rwStop() {
+  if (RW.raf) cancelAnimationFrame(RW.raf);
+  RW.raf = 0;
+  if (RW.ro) { RW.ro.disconnect(); RW.ro = null; }
+}
+
+function mountRunway() {
+  rwStop();
+  const cv = document.getElementById('rwCanvas');
+  const host = document.getElementById('rwHero');
+  if (!cv || !host || !cv.getContext) return;
+  const ctx = cv.getContext('2d');
+  let W = 1, H = 1;
+
+  function size() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.max(1, host.clientWidth);
+    H = Math.max(1, host.clientHeight);
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  size();
+
+  const range = document.getElementById('rwBurnRange');
+  if (range) {
+    range.value = String(RW.burn);
+    range.addEventListener('input', function () {
+      RW.burn = Number(range.value) || 84000;
+      rwSync();
+    });
+  }
+  rwSync();
+
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const COLS = 13, ROWS = 11;
+
+  function frame(ts) {
+    const t = (ts || 0) / 1000;
+    const burnN = Math.max(0, Math.min(1, (RW.burn - RW.min) / (RW.max - RW.min)));
+    const flow = reduce ? 0.45 : ((t * (0.12 + burnN * 0.85)) % 1);
+
+    const cx = W * 0.5;
+    const hy = H * 0.44;                // 地平线
+    const baseY = H * 1.02;             // 最近处落点
+
+    ctx.clearRect(0, 0, W, H);
+
+    /* 地平线光带 */
+    const lg = ctx.createLinearGradient(cx - W * 0.46, 0, cx + W * 0.46, 0);
+    lg.addColorStop(0, 'rgba(255,106,47,0)');
+    lg.addColorStop(0.5, 'rgba(255,158,104,.7)');
+    lg.addColorStop(1, 'rgba(255,106,47,0)');
+    ctx.fillStyle = lg;
+    ctx.fillRect(0, hy - 1, W, 2);
+
+    /* 跑道边线：从地平线向两侧张开 */
+    ctx.strokeStyle = 'rgba(255,106,47,.14)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - W * 0.06, hy);
+    ctx.lineTo(cx - W * 0.54, baseY);
+    ctx.moveTo(cx + W * 0.06, hy);
+    ctx.lineTo(cx + W * 0.54, baseY);
+    ctx.stroke();
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+
+    for (let r = 0; r < ROWS; r++) {
+      const zf = (r + flow) / ROWS;             // 0 远处 → 1 近处
+      const yy0 = hy + (baseY - hy) * Math.pow(zf, 2.2);
+      const sc = Math.pow(zf, 1.9);
+      if (Math.pow(zf, 1.9) < 0.02) continue;
+
+      /* 地面横线 */
+      ctx.fillStyle = 'rgba(255,106,47,' + (0.05 + 0.1 * sc).toFixed(3) + ')';
+      ctx.fillRect(0, Math.round(yy0), W, 1);
+
+      const fs = 5 + sc * H * 0.062;
+      ctx.font = '700 ' + fs.toFixed(1) + 'px ui-monospace, SFMono-Regular, Consolas, monospace';
+      const step = fs * 0.92;
+      const alpha = 0.1 + 0.9 * Math.pow(zf, 1.9);
+
+      for (let c = 0; c < COLS; c++) {
+        const u = (c / (COLS - 1)) * 2 - 1;
+        const x = cx + u * W * (0.07 + 0.47 * zf);
+        /* 中央通道留白：文案区正中的数字压暗，让火苗集中在两侧 */
+        const k = Math.abs(u) >= 0.85 ? 1 : 0.34 + 0.66 * (Math.abs(u) / 0.85);
+        const nail = (Math.sin(c * 3.1 + 1.2) + 1) / 2;
+        /* 火苗摆动：每列高度随时间轻微起伏，避免整排像静止的表格 */
+        const flick = reduce ? 1 : 0.86 + 0.14 * Math.sin(t * (1.4 + c * 0.33) + c * 2.2);
+        const stackN = Math.round((1.4 + burnN * 6.4) * (0.5 + nail * 1.0) * flick);
+        for (let j = 0; j < stackN; j++) {
+          const yy = yy0 - j * step;
+          if (yy < -fs * 1.4) break;
+          /* 火苗向上进入文案带时逐渐熄灭，越往下越亮 */
+          const vr = (yy - H * 0.54) / (H * 0.2);
+          const vf = vr <= 0 ? 0 : vr >= 1 ? 1 : vr * vr;
+          const a2 = alpha * (1 - (j / (stackN + 1.5)) * 0.55) * (k + (1 - k) * vf);
+          if (a2 <= 0.03) continue;
+          const dg = Math.floor(t * (2.5 + burnN * 7) + c * 37 + r * 11 + j * 5) % 10;
+          ctx.fillStyle = (j === 0 && zf > 0.45)
+            ? 'rgba(255,226,190,' + a2.toFixed(3) + ')'
+            : 'rgba(255,' + Math.round(126 + 46 * sc) + ',72,' + a2.toFixed(3) + ')';
+          ctx.fillText(String(dg), x, yy);
+        }
+      }
+    }
+
+    if (!reduce) RW.raf = requestAnimationFrame(frame);
+  }
+
+  if (reduce) frame(0);
+  else RW.raf = requestAnimationFrame(frame);
+
+  if (window.ResizeObserver) {
+    RW.ro = new ResizeObserver(function () { size(); });
+    RW.ro.observe(host);
+  }
 }
 
 function syncCard(info) {
@@ -1613,11 +1750,13 @@ function renderView(keepScroll) {
     else body = renderPixelPage();
     html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
   });
+  rwStop();
   view.innerHTML = html;
 
   if (keepScroll) window.scrollTo(0, y);
 
-  // 像素工坊：重绘画布并重新绑定控件
+  // 首页跑道动画 + 像素工坊画布，都在重建 DOM 后重新挂载
+  mountRunway();
   mountPixel();
 
   // 懒加载：图书馆数据按需请求
