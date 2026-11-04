@@ -1375,16 +1375,34 @@ body.intro-lock{ overflow:hidden; }
 .picker.show{ display:flex; }
 .picker.out{ opacity:0; visibility:hidden; pointer-events:none; }
 
+/* 地面车库实拍底图：暖橙反光 + 冷蓝门体，压暗后在中间透出 */
 .pk-bg{
   position:absolute; inset:0;
-  background:
-    radial-gradient(66% 48% at 50% 30%, rgba(197,167,110,.13), rgba(0,0,0,0) 72%),
-    radial-gradient(84% 62% at 50% 112%, rgba(126,100,58,.12), rgba(0,0,0,0) 70%),
-    linear-gradient(180deg,#0D0E10 0%,#08090B 58%,#060708 100%);
+  background-color:#0A0B0C;
+  background-image:url('asset/bg_garage.jpg');
+  background-size:cover;
+  background-position:50% 46%;
+  background-repeat:no-repeat;
+  transform:scale(1.06);
+  will-change:transform;
+  transition:transform 3.4s cubic-bezier(.2,.7,.2,1);
 }
+.picker.in .pk-bg{ transform:scale(1.005); }
+
+/* 上暗下黑，中间留一条让地面反光透出来；四角再压一圈，把视线收拢到中间 */
 .pk-veil{
   position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(118% 88% at 50% 46%, rgba(0,0,0,0) 38%, rgba(0,0,0,.62) 100%);
+  background:
+    radial-gradient(64% 84% at 50% 48%, rgba(0,0,0,0) 40%, rgba(0,0,0,.42) 74%, rgba(0,0,0,.74) 100%),
+    linear-gradient(180deg,
+      rgba(6,7,8,.94) 0%,
+      rgba(6,7,8,.74) 12%,
+      rgba(6,7,8,.40) 26%,
+      rgba(6,7,8,.13) 44%,
+      rgba(5,6,7,.22) 58%,
+      rgba(4,5,6,.62) 76%,
+      rgba(4,5,6,.90) 89%,
+      rgba(4,5,6,.98) 100%);
 }
 
 /* ---------- 抬头 ---------- */
@@ -1618,6 +1636,7 @@ body.intro-lock{ overflow:hidden; }
 
 /* ---------- 窄屏：一排八张摊不开，改成可横滑 ---------- */
 @media (max-width:899px){
+  .pk-bg{ background-position:50% 52%; }
   .pk-row{
     justify-content:flex-start;
     gap:10px;
