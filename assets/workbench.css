@@ -3987,5 +3987,6 @@ body{
   .rw-actions{ gap:10px; }
   .rw-btn{ height:42px; padding:0 18px; font-size:13px; }
   .rw-big b{ font-size:42px; }
+  .rw-end{ font-size:11.5px; line-height:1.6; }
 }
 

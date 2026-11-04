@@ -241,29 +241,32 @@ function renderHome() {
     { go: 'pixel', icon: 'pixel', no: '04', cls: 'c4', title: '像素工坊', desc: '图片转像素 · 去背导出透明 PNG' }
   ];
 
+  const rs = rwStats();
+  RW.stats = rs;
+
   return '' +
     '<section class="rw-hero" id="rwHero">' +
       '<canvas class="rw-canvas" id="rwCanvas" aria-hidden="true"></canvas>' +
       '<div class="rw-vignette"></div>' +
       '<div class="rw-inner">' +
-        '<div class="rw-kicker"><i></i>RUNWAY · CASH MODEL<em>EST 2026</em><span>LOCAL FIRST</span></div>' +
-        '<h1 class="rw-title">精确知道这笔钱<br><span>还能烧多久。</span></h1>' +
-        '<p class="rw-sub">把人力、收入与花销摊进同一张表，<br>拖动下面的月度烧钱，跑道会立刻变长或变短。</p>' +
+        '<div class="rw-kicker"><i></i>PERSONAL WORKBENCH<em>EST 2026</em><span>LOCAL FIRST</span></div>' +
+        '<h1 class="rw-title">把每天该做的事<br><span>排成一条跑道。</span></h1>' +
+        '<p class="rw-sub">任务是飞书同步来的，藏书和口播文案留在本机，<br>打开这一页，今天做什么、还剩什么，一眼看到底。</p>' +
         '<div class="rw-actions">' +
-          '<button class="rw-btn primary" data-go="tasks">开始测算 <span>→</span></button>' +
-          '<button class="rw-btn" data-go="library">浏览藏书</button>' +
+          '<button class="rw-btn primary" data-go="tasks">看看今天 <span>→</span></button>' +
+          '<button class="rw-btn" data-go="library">翻一翻藏书</button>' +
         '</div>' +
         '<div class="rw-panel">' +
           '<div class="rw-panel-main">' +
-            '<div class="rw-label">剩余跑道</div>' +
-            '<div class="rw-big"><b id="rwMonths">14.3</b><i>个月</i></div>' +
-            '<div class="rw-end">现金将在 <b id="rwEnd">2028 年 1 月</b> 见底</div>' +
+            '<div class="rw-label">累计完成</div>' +
+            '<div class="rw-big"><b id="rwTotal">' + (ready ? rs.total : '—') + '</b><i>项</i></div>' +
+            '<div class="rw-end"><b id="rwDays">' + (ready ? rs.days : '—') + '</b> 天有记录 · 最近一次 <b id="rwLast">' + (ready ? rwMonthDay(rs.last) : '—') + '</b></div>' +
           '</div>' +
           '<div class="rw-panel-side">' +
-            '<div class="rw-kv"><span>可用现金</span><b>¥1,200,000</b></div>' +
-            '<div class="rw-kv"><span>月度烧钱</span><b id="rwBurn">¥84,000</b></div>' +
-            '<input class="rw-range" id="rwBurnRange" type="range" min="40000" max="160000" step="1000" value="84000" aria-label="月度烧钱">' +
-            '<div class="rw-hint">拖动滑杆 · 数字火苗随之长高</div>' +
+            '<div class="rw-kv"><span>最近 7 天</span><b id="rwLast7">' + (ready ? rs.last7 + ' 项' : '—') + '</b></div>' +
+            '<div class="rw-kv"><span>今日目标</span><b id="rwGoal">10 项</b></div>' +
+            '<input class="rw-range" id="rwGoalRange" type="range" min="3" max="20" step="1" value="10" aria-label="今日目标">' +
+            '<div class="rw-hint">拖动滑杆 · 目标越高，数字火苗越旺</div>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -309,28 +312,42 @@ function renderHome() {
 }
 
 /* ---------------- 首页 Runway Hero（Hero 30 风格复刻） ----------------
-   透视跑道 + 数字火苗：烧钱越多，数字柱越高、跑道跑得越快。 */
-const RW = { cash: 1200000, burn: 84000, min: 40000, max: 160000, raf: 0, ro: null };
+   透视跑道 + 数字火苗：今日目标定得越高，火苗长得越高、跑道跑得越快。 */
+const RW = { goal: 10, min: 3, max: 20, raf: 0, ro: null, stats: null };
 
-function rwMoney(n) {
-  return '¥' + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+/* 从飞书快照里算出真实的工作台数字：累计完成、有记录的天数、最近 7 天 */
+function rwStats() {
+  const list = (st.feishu && st.feishu.tasks && st.feishu.tasks.all) || [];
+  const seen = {};
+  let total = 0, first = '', last = '';
+  list.forEach(function (t) {
+    if (!t.completed_at) return;
+    const d = String(t.completed_at).slice(0, 10);
+    total++;
+    seen[d] = 1;
+    if (!first || d < first) first = d;
+    if (d > last) last = d;
+  });
+  let last7 = 0;
+  if (last) {
+    const end = parseDate(last);
+    list.forEach(function (t) {
+      if (!t.completed_at) return;
+      const d = parseDate(String(t.completed_at).slice(0, 10));
+      if (d && (end - d) / 86400000 <= 6) last7++;
+    });
+  }
+  return { total: total, days: Object.keys(seen).length, last7: last7, first: first, last: last };
 }
 
-function rwEndLabel(months) {
-  const now = new Date();
-  const idx = now.getMonth() + Math.round(months);
-  const d = new Date(now.getFullYear(), idx, 1);
-  return d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月';
+function rwMonthDay(s) {
+  const d = parseDate(s);
+  return d ? (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日' : '—';
 }
 
 function rwSync() {
-  const months = RW.cash / RW.burn;
-  const mEl = document.getElementById('rwMonths');
-  const eEl = document.getElementById('rwEnd');
-  const bEl = document.getElementById('rwBurn');
-  if (mEl) mEl.textContent = months.toFixed(1);
-  if (eEl) eEl.textContent = rwEndLabel(months);
-  if (bEl) bEl.textContent = rwMoney(RW.burn);
+  const gEl = document.getElementById('rwGoal');
+  if (gEl) gEl.textContent = RW.goal + ' 项';
 }
 
 function rwStop() {
@@ -357,11 +374,11 @@ function mountRunway() {
   }
   size();
 
-  const range = document.getElementById('rwBurnRange');
+  const range = document.getElementById('rwGoalRange');
   if (range) {
-    range.value = String(RW.burn);
+    range.value = String(RW.goal);
     range.addEventListener('input', function () {
-      RW.burn = Number(range.value) || 84000;
+      RW.goal = Number(range.value) || 10;
       rwSync();
     });
   }
@@ -372,8 +389,8 @@ function mountRunway() {
 
   function frame(ts) {
     const t = (ts || 0) / 1000;
-    const burnN = Math.max(0, Math.min(1, (RW.burn - RW.min) / (RW.max - RW.min)));
-    const flow = reduce ? 0.45 : ((t * (0.12 + burnN * 0.85)) % 1);
+    const heatN = Math.max(0, Math.min(1, (RW.goal - RW.min) / (RW.max - RW.min)));
+    const flow = reduce ? 0.45 : ((t * (0.12 + heatN * 0.85)) % 1);
 
     const cx = W * 0.5;
     const hy = H * 0.44;                // 地平线
@@ -425,7 +442,7 @@ function mountRunway() {
         const nail = (Math.sin(c * 3.1 + 1.2) + 1) / 2;
         /* 火苗摆动：每列高度随时间轻微起伏，避免整排像静止的表格 */
         const flick = reduce ? 1 : 0.86 + 0.14 * Math.sin(t * (1.4 + c * 0.33) + c * 2.2);
-        const stackN = Math.round((1.4 + burnN * 6.4) * (0.5 + nail * 1.0) * flick);
+        const stackN = Math.round((1.4 + heatN * 6.4) * (0.5 + nail * 1.0) * flick);
         for (let j = 0; j < stackN; j++) {
           const yy = yy0 - j * step;
           if (yy < -fs * 1.4) break;
@@ -434,7 +451,7 @@ function mountRunway() {
           const vf = vr <= 0 ? 0 : vr >= 1 ? 1 : vr * vr;
           const a2 = alpha * (1 - (j / (stackN + 1.5)) * 0.55) * (k + (1 - k) * vf);
           if (a2 <= 0.03) continue;
-          const dg = Math.floor(t * (2.5 + burnN * 7) + c * 37 + r * 11 + j * 5) % 10;
+          const dg = Math.floor(t * (2.5 + heatN * 7) + c * 37 + r * 11 + j * 5) % 10;
           ctx.fillStyle = (j === 0 && zf > 0.45)
             ? 'rgba(255,226,190,' + a2.toFixed(3) + ')'
             : 'rgba(255,' + Math.round(126 + 46 * sc) + ',72,' + a2.toFixed(3) + ')';
