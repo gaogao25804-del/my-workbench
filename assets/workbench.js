@@ -20,7 +20,9 @@ const ICON_PATHS = {
   copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   download: '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4 19.5h16"/>',
   clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
-  inbox: '<path d="M3 12.5 5.5 5.5h13L21 12.5v6a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M3 12.5h5l1.5 2.5h5l1.5-2.5h5"/>'
+  inbox: '<path d="M3 12.5 5.5 5.5h13L21 12.5v6a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M3 12.5h5l1.5 2.5h5l1.5-2.5h5"/>',
+  pixel: '<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="3" y="15" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/>',
+  image: '<rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M3 16.5 8 12l4 3.5 3-2.5 6 5"/>'
 };
 
 function ic(name, cls) {
@@ -44,7 +46,8 @@ const PAGES = {
   home:    { title: '主页',       desc: '工作台概览 · 数据来自飞书本地快照' },
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 支持筛选与分页', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
-  wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' }
+  wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' },
+  pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' }
 };
 
 const PAGE_SIZE = { lib: 12, wenan: 10, task: 20 };
@@ -58,7 +61,12 @@ const st = {
   err: { feishu: '', library: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
-  wenan: { q: '', cat: 'all', page: 1 }
+  wenan: { q: '', cat: 'all', page: 1 },
+  pixel: {
+    src: '', name: '', img: null, out: null,
+    size: 64, levels: 6, tol: 26, knock: true, scale: 8,
+    pw: 0, ph: 0, outW: 0, outH: 0, sigSrc: '', sigCfg: ''
+  }
 };
 
 /* ---------------- 基础工具 ---------------- */
@@ -238,10 +246,11 @@ function renderHome() {
   const quick = [
     { go: 'tasks', icon: 'calendar', no: '01', cls: 'c1', title: '任务与日历', desc: '月历视图 · 按日期查看任务' },
     { go: 'library', icon: 'book', no: '02', cls: 'c2', title: '图书馆', desc: '搜索书名 · 阅读书摘与思考' },
-    { go: 'wenan', icon: 'file', no: '03', cls: 'c3', title: '文案库', desc: '脚本在线阅读 · 复制与下载' }
+    { go: 'wenan', icon: 'file', no: '03', cls: 'c3', title: '文案库', desc: '脚本在线阅读 · 复制与下载' },
+    { go: 'pixel', icon: 'pixel', no: '04', cls: 'c4', title: '像素工坊', desc: '图片转像素 · 去背导出透明 PNG' }
   ];
 
-  const marq = 'TASKS ✦ LIBRARY ✦ SCRIPTS ✦ FEISHU ✦ AI ✦ EDIT ✦ DATA ✦ ';
+  const marq = 'TASKS ✦ LIBRARY ✦ SCRIPTS ✦ PIXEL ✦ FEISHU ✦ AI ✦ EDIT ✦ DATA ✦ ';
 
   return '' +
     '<section class="fx-hero">' +
@@ -270,7 +279,7 @@ function renderHome() {
       '</div>' +
     '</section>' +
     '<div class="fx-section-head">' +
-      '<div><div class="fx-eyebrow">EXPLORE · 3 SPACES</div>' +
+      '<div><div class="fx-eyebrow">EXPLORE · 4 SPACES</div>' +
       '<div class="fx-sec-title">工作区入口 <em>— explore</em></div></div>' +
       '<span class="fx-view">SCROLL ↓</span>' +
     '</div>' +
@@ -769,11 +778,389 @@ function wenanBook(d) {
   '</div>';
 }
 
+/* ---------------- 像素工坊（图片 → 像素风 · 透明背景导出） ---------------- */
+const PX_DEFAULT = { size: 64, levels: 6, tol: 26, knock: true, scale: 8 };
+
+function pxGlyph() {
+  return '<svg viewBox="0 0 16 16" aria-hidden="true">' +
+    '<g fill="currentColor" opacity=".85">' +
+      '<rect x="0" y="0" width="4" height="4"/><rect x="6" y="0" width="4" height="4"/><rect x="12" y="0" width="4" height="4"/>' +
+      '<rect x="0" y="6" width="4" height="4"/><rect x="12" y="6" width="4" height="4"/>' +
+      '<rect x="0" y="12" width="4" height="4"/><rect x="6" y="12" width="4" height="4"/><rect x="12" y="12" width="4" height="4"/>' +
+    '</g><rect x="6" y="6" width="4" height="4" fill="#ff6a2f"/></svg>';
+}
+
+function pxCtrl(key, label, val, min, max, step, unit, hint) {
+  return '<div class="px-ctrl">' +
+    '<div class="px-ctrl-top"><label>' + label + '</label><b data-px-val="' + key + '">' + val + ' ' + unit + '</b></div>' +
+    '<input type="range" data-px="' + key + '" data-unit="' + unit + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '" aria-label="' + label + '">' +
+    '<div class="px-ctrl-hint">' + hint + '</div>' +
+  '</div>';
+}
+
+function renderPixelPage() {
+  const p = st.pixel;
+  const spec = p.outW ? (p.pw + ' × ' + p.ph + ' → ' + p.outW + ' × ' + p.outH + ' px') : '等待图片';
+
+  return '<div class="px-wrap">' +
+    '<div class="px-main">' +
+      '<div class="px-bar">' +
+        '<div class="px-file"><span class="px-file-tag">IMG</span>' +
+          (p.name ? '<b title="' + esc(p.name) + '">' + esc(p.name) + '</b>' : '<b class="muted">还没有图片</b>') +
+        '</div>' +
+        '<div class="px-file-actions">' +
+          '<button class="btn btn-sm" data-px-pick>' + ic('image', 'ico-14') + '<span>选择图片</span></button>' +
+          '<button class="btn btn-sm" data-px-down' + (p.out ? '' : ' disabled') + '>' + ic('download', 'ico-14') + '<span>下载 PNG</span></button>' +
+          '<button class="btn btn-sm btn-ghost" data-px-clear' + (p.src ? '' : ' disabled') + '>清空</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="px-stage' + (p.src ? ' has-img' : '') + '" id="pxDrop">' +
+        '<div class="px-board"><canvas id="pxCanvas" width="1" height="1"></canvas></div>' +
+        '<div class="px-blank">' +
+          '<div class="px-blank-ico">' + pxGlyph() + '</div>' +
+          '<strong>把图片拖到这里</strong>' +
+          '<span>PNG / JPG / WebP · 纯本地处理，不上传服务器</span>' +
+          '<div class="px-blank-actions">' +
+            '<button class="px-cta" data-px-pick>选择图片</button>' +
+            '<button class="btn btn-sm" data-px-demo>用示例图试试</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<input type="file" id="pxFile" accept="image/*" hidden>' +
+      '<div class="px-stats">' +
+        '<div class="px-stat"><i>输出规格</i><b data-px-spec>' + esc(spec) + '</b></div>' +
+        '<div class="px-stat"><i>导出格式</i><b>PNG · 透明通道</b></div>' +
+        '<div class="px-stat"><i>自动去背</i><b data-px-knocklabel>' + (p.knock ? '已开启' : '已关闭') + '</b></div>' +
+      '</div>' +
+    '</div>' +
+    '<aside class="px-panel">' +
+      '<div class="px-panel-head"><b>像素参数</b><span>LIVE</span></div>' +
+      pxCtrl('size', '像素密度', p.size, 16, 160, 8, 'px', '数值越小，方块越大，像素味越重') +
+      pxCtrl('levels', '色阶', p.levels, 2, 12, 1, '级', '每通道阶数，越低越像复古游戏') +
+      pxCtrl('tol', '去背容差', p.tol, 0, 100, 1, '%', '四边背景色相近多少就判为透明') +
+      '<div class="px-ctrl">' +
+        '<div class="px-ctrl-top"><label>导出倍数</label><b data-px-val="scale">' + p.scale + '×</b></div>' +
+        '<div class="px-seg">' + [1, 2, 4, 8].map(function (s) {
+          return '<button class="' + (p.scale === s ? 'on' : '') + '" data-pxscale="' + s + '">' + s + '×</button>';
+        }).join('') + '</div>' +
+        '<div class="px-ctrl-hint">整数倍放大，边缘不糊，拖进剪辑软件即可用</div>' +
+      '</div>' +
+      '<div class="px-ctrl">' +
+        '<div class="px-ctrl-top"><label>自动去背</label>' +
+          '<button class="px-switch' + (p.knock ? ' on' : '') + '" data-pxknock role="switch" aria-checked="' + (p.knock ? 'true' : 'false') + '"><i></i></button>' +
+        '</div>' +
+        '<div class="px-ctrl-hint">从画面四边泛洪抠图，主体内部的同色区域会保留</div>' +
+      '</div>' +
+      '<div class="px-actions">' +
+        '<button class="px-cta" data-px-down' + (p.out ? '' : ' disabled') + '>下载透明 PNG <span>↓</span></button>' +
+        '<button class="btn" data-px-reset>恢复默认参数</button>' +
+      '</div>' +
+      '<div class="px-tip">导出的 PNG 带 alpha 通道，放进 Premiere / 剪映 / AE 就是透明图层。</div>' +
+    '</aside>' +
+  '</div>';
+}
+
+function pxLoadUrl(url, name) {
+  const img = new Image();
+  img.onload = function () {
+    st.pixel.img = img;
+    st.pixel.src = url;
+    st.pixel.name = name || '图片';
+    st.pixel.out = null;
+    st.pixel.sigSrc = '';
+    renderView(true);
+  };
+  img.onerror = function () { toast('图片读取失败', 'err'); };
+  img.src = url;
+}
+
+function pxLoadFile(file) {
+  if (!file) return;
+  if (!/^image\//.test(file.type || '')) { toast('请选择图片文件', 'err'); return; }
+  const reader = new FileReader();
+  reader.onload = function () { pxLoadUrl(String(reader.result), file.name); };
+  reader.onerror = function () { toast('图片读取失败', 'err'); };
+  reader.readAsDataURL(file);
+}
+
+/* 边界泛洪去背：四边像素的中位色作为背景色，容差内连通的区域变透明 */
+function pxKnock(src, w, h, tol) {
+  const out = new Uint8ClampedArray(src);
+  const rs = [], gs = [], bs = [];
+  function pull(x, y) {
+    const i = (y * w + x) * 4;
+    if (src[i + 3] < 200) return;
+    rs.push(src[i]); gs.push(src[i + 1]); bs.push(src[i + 2]);
+  }
+  for (let x = 0; x < w; x++) { pull(x, 0); pull(x, h - 1); }
+  for (let y = 0; y < h; y++) { pull(0, y); pull(w - 1, y); }
+  if (!rs.length) return out;
+
+  const sortNum = function (a, b) { return a - b; };
+  rs.sort(sortNum); gs.sort(sortNum); bs.sort(sortNum);
+  const mid = rs.length >> 1;
+  const br = rs[mid], bg = gs[mid], bb = bs[mid];
+  const thr = Math.max(1, tol * 2.55);
+
+  const seen = new Uint8Array(w * h);
+  const queue = new Int32Array(w * h);
+  let qt = 0, qh = 0;
+
+  function matches(x, y) {
+    const i = (y * w + x) * 4;
+    if (src[i + 3] < 40) return true;
+    const dr = src[i] - br, dg = src[i + 1] - bg, db = src[i + 2] - bb;
+    return Math.sqrt(dr * dr + dg * dg + db * db) <= thr;
+  }
+  function visit(x, y) {
+    const k = y * w + x;
+    if (seen[k]) return;
+    seen[k] = 1;
+    if (!matches(x, y)) return;
+    out[k * 4 + 3] = 0;
+    queue[qt++] = k;
+  }
+
+  for (let x = 0; x < w; x++) { visit(x, 0); visit(x, h - 1); }
+  for (let y = 0; y < h; y++) { visit(0, y); visit(w - 1, y); }
+
+  while (qh < qt) {
+    const k = queue[qh++];
+    const cx = k % w, cy = (k / w) | 0;
+    if (cx > 0) visit(cx - 1, cy);
+    if (cx + 1 < w) visit(cx + 1, cy);
+    if (cy > 0) visit(cx, cy - 1);
+    if (cy + 1 < h) visit(cx, cy + 1);
+  }
+  return out;
+}
+
+/* 降采样到像素网格：块内按 alpha 加权取均值 → 色阶量化 → 整数倍放大 */
+function pxRender() {
+  const p = st.pixel;
+  const img = p.img;
+  if (!img || !img.naturalWidth) return;
+
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  const pw = Math.max(8, Math.min(200, Math.round(p.size)));
+  const ph = Math.max(1, Math.round(pw * ih / iw));
+
+  const MAXW = 1280;
+  const k = Math.min(1, MAXW / Math.max(iw, ih));
+  const ww = Math.max(1, Math.round(iw * k));
+  const wh = Math.max(1, Math.round(ih * k));
+
+  const wc = document.createElement('canvas');
+  wc.width = ww; wc.height = wh;
+  const wctx = wc.getContext('2d', { willReadFrequently: true });
+  wctx.clearRect(0, 0, ww, wh);
+  wctx.drawImage(img, 0, 0, ww, wh);
+  let data = wctx.getImageData(0, 0, ww, wh).data;
+  if (p.knock) data = pxKnock(data, ww, wh, p.tol);
+
+  const out = new Uint8ClampedArray(pw * ph * 4);
+  const stepX = ww / pw, stepY = wh / ph;
+  const lv = Math.max(2, Math.round(p.levels));
+  const step = 255 / (lv - 1);
+  const qz = function (v) { return Math.round(Math.round(v / step) * step); };
+
+  for (let oy = 0; oy < ph; oy++) {
+    const y0 = Math.floor(oy * stepY);
+    const y1 = Math.max(y0 + 1, Math.floor((oy + 1) * stepY));
+    for (let ox = 0; ox < pw; ox++) {
+      const x0 = Math.floor(ox * stepX);
+      const x1 = Math.max(x0 + 1, Math.floor((ox + 1) * stepX));
+      let sr = 0, sg = 0, sb = 0, sw = 0, total = 0, solid = 0;
+      for (let y = y0; y < y1; y++) {
+        for (let x = x0; x < x1; x++) {
+          const i = (y * ww + x) * 4;
+          const a = data[i + 3];
+          total++;
+          if (a > 0) {
+            sr += data[i] * a; sg += data[i + 1] * a; sb += data[i + 2] * a;
+            sw += a; solid++;
+          }
+        }
+      }
+      const o = (oy * pw + ox) * 4;
+      const cov = total ? solid / total : 0;
+      if (cov < 0.5 || !sw) { out[o] = 0; out[o + 1] = 0; out[o + 2] = 0; out[o + 3] = 0; continue; }
+      out[o] = qz(sr / sw);
+      out[o + 1] = qz(sg / sw);
+      out[o + 2] = qz(sb / sw);
+      out[o + 3] = 255;
+    }
+  }
+
+  const small = document.createElement('canvas');
+  small.width = pw; small.height = ph;
+  small.getContext('2d').putImageData(new ImageData(out, pw, ph), 0, 0);
+
+  const scale = Math.max(1, Math.round(p.scale));
+  const big = document.createElement('canvas');
+  big.width = pw * scale; big.height = ph * scale;
+  const bctx = big.getContext('2d');
+  bctx.imageSmoothingEnabled = false;
+  bctx.drawImage(small, 0, 0, big.width, big.height);
+
+  p.out = big;
+  p.pw = pw; p.ph = ph;
+  p.outW = big.width; p.outH = big.height;
+}
+
+function pxApply() {
+  const p = st.pixel;
+  const cv = document.getElementById('pxCanvas');
+  if (!cv) return;
+  if (!p.out) { cv.width = 1; cv.height = 1; return; }
+  cv.width = p.outW;
+  cv.height = p.outH;
+  const c = cv.getContext('2d');
+  c.clearRect(0, 0, cv.width, cv.height);
+  c.imageSmoothingEnabled = false;
+  c.drawImage(p.out, 0, 0);
+}
+
+function pxRefresh() {
+  const p = st.pixel;
+  if (!p.img) return;
+  const cfg = [p.size, p.levels, p.tol, p.knock ? 1 : 0, p.scale].join('|');
+  if (!p.out || p.sigSrc !== p.src || p.sigCfg !== cfg) {
+    pxRender();
+    p.sigSrc = p.src;
+    p.sigCfg = cfg;
+  }
+  pxApply();
+
+  const spec = p.outW ? (p.pw + ' × ' + p.ph + ' → ' + p.outW + ' × ' + p.outH + ' px') : '等待图片';
+  const specEl = document.querySelector('[data-px-spec]');
+  if (specEl) specEl.textContent = spec;
+  document.querySelectorAll('[data-px-down]').forEach(function (b) { b.disabled = !p.out; });
+}
+
+let pxTimer = null;
+function pxQueue() {
+  clearTimeout(pxTimer);
+  pxTimer = setTimeout(pxRefresh, 140);
+}
+
+function pxDownload() {
+  const p = st.pixel;
+  if (!p.out || !p.out.toDataURL) { toast('先选一张图片', 'err'); return; }
+  const base = String(p.name || 'pixel').replace(/\.[^.]+$/, '');
+  const a = document.createElement('a');
+  a.download = base + '-pixel-' + p.outW + 'x' + p.outH + '.png';
+  a.href = p.out.toDataURL('image/png');
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  toast('已导出 ' + p.outW + ' × ' + p.outH + ' 透明 PNG', 'ok');
+}
+
+function mountPixel() {
+  const drop = document.getElementById('pxDrop');
+  if (!drop) return;
+  const p = st.pixel;
+
+  document.querySelectorAll('[data-px-pick]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const f = document.getElementById('pxFile');
+      if (f) f.click();
+    });
+  });
+
+  const file = document.getElementById('pxFile');
+  if (file) {
+    file.addEventListener('change', function () {
+      if (file.files && file.files[0]) pxLoadFile(file.files[0]);
+    });
+  }
+
+  const demo = document.querySelector('[data-px-demo]');
+  if (demo) demo.addEventListener('click', function () {
+    pxLoadUrl('assets/img/px-octo.png', '示例 · 像素章鱼');
+  });
+
+  document.querySelectorAll('[data-px-down]').forEach(function (btn) {
+    btn.addEventListener('click', pxDownload);
+  });
+
+  const clear = document.querySelector('[data-px-clear]');
+  if (clear) clear.addEventListener('click', function () {
+    st.pixel = Object.assign({ src: '', name: '', img: null, out: null, pw: 0, ph: 0, outW: 0, outH: 0, sigSrc: '', sigCfg: '' }, PX_DEFAULT);
+    renderView(true);
+  });
+
+  document.querySelectorAll('[data-px]').forEach(function (el) {
+    el.addEventListener('input', function () {
+      st.pixel[el.dataset.px] = Number(el.value);
+      const label = document.querySelector('[data-px-val="' + el.dataset.px + '"]');
+      if (label) label.textContent = el.value + (el.dataset.unit ? ' ' + el.dataset.unit : '');
+      pxQueue();
+    });
+  });
+
+  document.querySelectorAll('[data-pxscale]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      st.pixel.scale = Number(btn.dataset.pxscale);
+      document.querySelectorAll('[data-pxscale]').forEach(function (b) {
+        b.classList.toggle('on', b === btn);
+      });
+      const label = document.querySelector('[data-px-val="scale"]');
+      if (label) label.textContent = st.pixel.scale + '×';
+      pxQueue();
+    });
+  });
+
+  const kn = document.querySelector('[data-pxknock]');
+  if (kn) kn.addEventListener('click', function () {
+    st.pixel.knock = !st.pixel.knock;
+    kn.classList.toggle('on', st.pixel.knock);
+    kn.setAttribute('aria-checked', st.pixel.knock ? 'true' : 'false');
+    const label = document.querySelector('[data-px-knocklabel]');
+    if (label) label.textContent = st.pixel.knock ? '已开启' : '已关闭';
+    pxQueue();
+  });
+
+  const reset = document.querySelector('[data-px-reset]');
+  if (reset) reset.addEventListener('click', function () {
+    const img = st.pixel.img, src = st.pixel.src, name = st.pixel.name;
+    st.pixel = Object.assign({ img: img, src: src, name: name, out: null, pw: 0, ph: 0, outW: 0, outH: 0, sigSrc: '', sigCfg: '' }, PX_DEFAULT);
+    renderView(true);
+    toast('参数已恢复默认', 'ok');
+  });
+
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      drop.classList.add('drag');
+    });
+  });
+  ['dragleave', 'dragend'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) {
+      e.preventDefault();
+      if (ev === 'dragleave' && drop.contains(e.relatedTarget)) return;
+      drop.classList.remove('drag');
+    });
+  });
+  drop.addEventListener('drop', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    drop.classList.remove('drag');
+    const dt = e.dataTransfer;
+    if (dt && dt.files && dt.files[0]) pxLoadFile(dt.files[0]);
+  });
+
+  if (p.src) pxRefresh();
+}
+
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 const SECTIONS = [
   { key: 'tasks', no: '01', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', no: '02', title: '图书馆', desc: '藏书、书摘与思考' },
-  { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' }
+  { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' },
+  { key: 'pixel', no: '04', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' }
 ];
 
 function secHead(s) {
@@ -797,12 +1184,16 @@ function renderView(keepScroll) {
     let body = '';
     if (s.key === 'tasks') body = renderTasksPage();
     else if (s.key === 'library') body = renderLibraryPage();
-    else body = renderWenanPage();
+    else if (s.key === 'wenan') body = renderWenanPage();
+    else body = renderPixelPage();
     html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
   });
   view.innerHTML = html;
 
   if (keepScroll) window.scrollTo(0, y);
+
+  // 像素工坊：重绘画布并重新绑定控件
+  mountPixel();
 
   // 懒加载：图书馆数据按需请求
   if (st.load.library === 'idle') loadLibrary();
@@ -810,7 +1201,7 @@ function renderView(keepScroll) {
 
 function updateChrome() {
   document.getElementById('pageTitle').textContent = '个人工作台';
-  document.getElementById('pageDesc').textContent = '任务 · 藏书 · 文案，一页看完';
+  document.getElementById('pageDesc').textContent = '任务 · 藏书 · 文案 · 像素，一页看完';
 
   const actions = document.getElementById('pageActions');
   actions.innerHTML = '<button class="btn btn-sm" data-action="refresh"' + (st.load.feishu === 'loading' ? ' disabled' : '') + '>' +
