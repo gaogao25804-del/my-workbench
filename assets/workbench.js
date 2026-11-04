@@ -1782,6 +1782,9 @@ function secHead(s) {
   '</div>';
 }
 
+// 最近一次导航目标：用于在随后的异步重渲染中保持滚动位置
+let navGuard = null;
+
 function renderView(keepScroll) {
   const view = document.getElementById('view');
   if (!view) return;
@@ -1799,7 +1802,22 @@ function renderView(keepScroll) {
   rwStop();
   view.innerHTML = html;
 
-  if (keepScroll) window.scrollTo(0, y);
+  if (keepScroll) {
+    // 导航后紧接着有一次异步重渲染（数据加载）：此时旧 y 是滚动途中的位置，
+    // 直接回滚会打断滚动动画，改为对准目标区块。
+    const g = navGuard;
+    if (g && Date.now() - g.at < 1500) {
+      navGuard = null;
+      if (g.key === 'home') {
+        window.scrollTo(0, 0);
+      } else {
+        const el = document.getElementById('sec-' + g.key);
+        window.scrollTo(0, el ? Math.max(0, el.getBoundingClientRect().top + window.scrollY - 76) : y);
+      }
+    } else {
+      window.scrollTo(0, y);
+    }
+  }
 
   // 首页跑道动画 + 像素工坊画布，都在重建 DOM 后重新挂载
   mountRunway();
@@ -2153,6 +2171,7 @@ function switchTab(key) {
   if (location.hash !== '#' + key) {
     try { history.replaceState(null, '', '#' + key); } catch (e) { location.hash = key; }
   }
+  navGuard = { key: key, at: Date.now() };
   updateChrome();
   scrollToSection(key);
   closeSidebar();
