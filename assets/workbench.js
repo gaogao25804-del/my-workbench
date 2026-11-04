@@ -837,7 +837,10 @@ function renderLibraryPage() {
   const q = st.lib.q.toLowerCase();
   const list = books.filter(function (b) {
     if (!q) return true;
-    return ((b.title || '') + ' ' + (b.author || '') + ' ' + (b.outline || '') + ' ' + (b.think || '')).toLowerCase().indexOf(q) >= 0;
+    const hay = (b.title || '') + ' ' + (b.author || '') + ' ' + (b.outline || '') + ' ' +
+      (b.think || '') + ' ' + (b.summary || '') + ' ' +
+      (b.chapters || []).map(function (c) { return c.k + ' ' + c.p; }).join(' ');
+    return hay.toLowerCase().indexOf(q) >= 0;
   });
 
   /* 顶部：搜索 + 藏书总量（沿用参考图的窄搜索条） */
@@ -1904,16 +1907,24 @@ function openBook(id, from) {
   const books = (st.library && st.library.books) || [];
   const b = books.filter(function (x) { return String(x.id || x.title) === String(id); })[0];
   if (!b) return;
+  const chapters = b.chapters || [];
   openModal({
     title: b.title || '未命名',
     meta: [b.author, b.date],
     from: from,
     body:
-      '<div class="doc-sec"><div class="doc-kicker">摘录 / Outline</div>' +
-        '<div style="white-space:pre-wrap;">' + esc(b.outline || '（暂无书摘）') + '</div></div>' +
+      (b.oneLine ? '<div class="book-one">' + esc(b.oneLine) + '</div>' : '') +
+      '<div class="doc-sec"><div class="doc-kicker">内容大纲 / Synopsis</div>' +
+        '<div style="white-space:pre-wrap;">' + esc(b.summary || b.outline || '（暂无大纲）') + '</div></div>' +
+      (chapters.length ? '<div class="doc-sec"><div class="doc-kicker">章节脉络 / Chapters</div>' +
+        '<ol class="bk-chapters">' + chapters.map(function (c, i) {
+          return '<li><span class="bk-no">' + pad2(i + 1) + '</span>' +
+            '<span class="bk-body"><span class="bk-k">' + esc(c.k) + '</span>' +
+            '<span class="bk-p">' + esc(c.p) + '</span></span></li>';
+        }).join('') + '</ol></div>' : '') +
       '<div class="doc-sec"><div class="doc-kicker">我的思考 / Notes</div>' +
         '<div style="white-space:pre-wrap;">' + esc(b.think || '（暂无个人思考）') + '</div></div>' +
-      (!b.outline && !b.think ? '<div class="modal-note">该图书条目仅包含基础信息，暂无书摘与思考内容。</div>' : '')
+      (!b.oneLine && !b.summary && !chapters.length && !b.think ? '<div class="modal-note">该图书条目仅包含基础信息，暂无大纲与思考内容。</div>' : '')
   });
 }
 
