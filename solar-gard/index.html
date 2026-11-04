@@ -1005,6 +1005,86 @@ a{ color:inherit; text-decoration:none; }
 @media (min-width:760px) and (max-width:1079px){
   .cb-in{ padding:11px 30px; max-width:var(--max); margin:0 auto; }
 }
+
+/* ============================================================
+   折叠：默认只露起步价（车衣 5,980 / 玻璃膜 1,880）
+   ============================================================ */
+.coat4.fold{ grid-template-columns:minmax(0,300px) minmax(0,1fr); }
+.film4.fold{ grid-template-columns:minmax(0,332px) minmax(0,1fr); }
+
+.foldbox{
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:32px 40px; gap:11px;
+  background:#FAF8F3;
+}
+.sec--gray .foldbox{ background:#fff; }
+.foldbox::after{
+  content:""; position:absolute; right:-70px; top:-80px; width:300px; height:300px;
+  background:radial-gradient(circle, rgba(185,154,91,.14), rgba(185,154,91,0) 68%);
+  pointer-events:none;
+}
+.fb-k{ font-size:9.5px; letter-spacing:.2em; color:var(--gold); position:relative; }
+.fb-t{
+  font-family:var(--fn); font-size:25px; font-weight:300; letter-spacing:-.01em;
+  line-height:1.3; position:relative;
+}
+.fb-t b{ font-weight:400; color:var(--gold); }
+.fb-s{
+  font-size:11.5px; line-height:1.95; color:var(--sub);
+  max-width:440px; position:relative;
+}
+.fb-s b{ color:var(--ink2); font-weight:600; }
+.fdi{ display:inline-block; white-space:nowrap; }
+.fb-sel{
+  display:inline-flex; align-items:center; gap:8px; align-self:flex-start;
+  margin-top:4px; padding:7px 13px 7px 9px; border-radius:999px;
+  background:rgba(185,154,91,.1); border:1px solid rgba(185,154,91,.34);
+  font-size:11.5px; color:var(--ink); position:relative;
+  font-family:inherit; cursor:pointer;
+  transition:background .2s, border-color .2s;
+}
+.fb-sel:hover{ background:rgba(185,154,91,.18); border-color:rgba(185,154,91,.6); }
+.fb-sel i{
+  font-style:normal; width:16px; height:16px; border-radius:50%; flex:none;
+  background:var(--gold); color:#fff; font-size:10px; line-height:16px; text-align:center;
+}
+.fb-sel b{ font-family:var(--fn); font-weight:600; }
+.fb-sel u{
+  text-decoration:none; color:var(--gold); margin-left:3px;
+  border-bottom:1px solid rgba(185,154,91,.45);
+}
+
+/* 展开 / 收起按钮 */
+.foldbar{ display:flex; justify-content:center; margin:26px 0 2px; }
+.foldup{
+  display:inline-flex; align-items:center; gap:9px;
+  height:46px; padding:0 25px; border-radius:999px;
+  border:1px solid #E3DDD0; background:#fff; color:var(--ink);
+  font-size:12.5px; letter-spacing:.04em; cursor:pointer;
+  transition:border-color .22s, box-shadow .22s, transform .15s, color .22s;
+}
+.foldup em{ font-style:normal; font-family:var(--fn); color:var(--gold); letter-spacing:0; }
+.foldup i{ font-style:normal; font-size:11px; color:var(--sub); transition:transform .24s; }
+.foldup:active{ transform:scale(.98); }
+
+@media (hover:hover){
+  .foldup:hover{
+    border-color:var(--ink); color:var(--ink);
+    box-shadow:0 12px 26px -18px rgba(0,0,0,.5);
+  }
+  .foldup:hover i{ transform:translateY(2px); }
+}
+
+@media (max-width:759px){
+  .coat4.fold, .film4.fold{ grid-template-columns:minmax(0,1fr); }
+  .film4.fold{ gap:0; background:transparent; border:0; }
+  .film4.fold .card{ border:1px solid var(--line); }
+  .foldbox{ padding:26px 22px; margin-top:12px; border:1px solid var(--line); border-radius:2px; }
+  .fb-t{ font-size:21px; }
+  .foldbar{ margin:20px 0 0; }
+  .foldup{ height:44px; padding:0 18px; font-size:12px; }
+}
 </style>
 </head>
 <body>
@@ -1119,8 +1199,9 @@ a{ color:inherit; text-decoration:none; }
       <h2>隐形车衣</h2>
       <span class="en">Paint Protection Film</span>
     </div>
-    <p class="sec-p">全车漆面 · 整车贴装价。按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。</p>
-    <div class="coat4" id="secCoat"></div>
+    <p class="sec-p">全车漆面 · 整车贴装价。按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。<br>默认只显示起步款，更高价位可展开对比。</p>
+    <div class="coat4 fold" id="secCoat"></div>
+    <div class="foldbar" id="coatFold"></div>
   </div>
 </section>
 
@@ -1132,9 +1213,10 @@ a{ color:inherit; text-decoration:none; }
       <h2>玻璃膜</h2>
       <span class="en">Window Film</span>
     </div>
-    <p class="sec-p">前挡 + 侧挡 全车套餐，四档任选。每档内按前挡与侧挡的组合再分 A / B / C，价格差在隔热与透光。</p>
+    <p class="sec-p">前挡 + 侧挡 全车套餐，四档任选。每档内按前挡与侧挡的组合再分 A / B / C，价格差在隔热与透光。<br>默认只显示性价比档，更高规格可展开对比。</p>
     <div class="pickbar" id="filmBar"></div>
-    <div class="film4" id="secFilm"></div>
+    <div class="film4 fold" id="secFilm"></div>
+    <div class="foldbar" id="filmFold"></div>
   </div>
 </section>
 
@@ -1374,7 +1456,19 @@ const ACC_SMALL = [
 ];
 
 /* ========================= 状态 ========================= */
-const state = { model:'i6', screen:null, coat:null, film:null, silColor:'w', acc:new Set() };
+const state = {
+  model:'i6', screen:null, coat:null, film:null, silColor:'w', acc:new Set(),
+  coatOpen:false, filmOpen:false           /* 折叠：默认只看起步价 */
+};
+
+/* 起步价基准：车衣取第一款，玻璃膜取最低的一档 */
+const COAT_ALL  = COAT.flatMap(g => g.items);
+const BASE_COAT = COAT[0].items[0];
+const COAT_REST = COAT_ALL.filter(i => i.id !== BASE_COAT.id).sort((a,b) => a.price - b.price);
+
+const filmFrom = se => Math.min(...se.tiers.map(t => t.price));
+const FILM_BASE = FILM.reduce((a,b) => filmFrom(b) < filmFrom(a) ? b : a);
+const FILM_REST = FILM.filter(se => se !== FILM_BASE).sort((a,b) => filmFrom(a) - filmFrom(b));
 
 const $ = s => document.querySelector(s);
 const money = n => {
@@ -1399,8 +1493,37 @@ function renderScreen(){
     </button>`).join('');
 }
 
+/* 折叠时右侧的说明块：告诉客人还有更贵的，但不主动摊开 */
+function foldBoxCoat(){
+  const hit = state.coat ? findCoat(state.coat) : null;
+  const sel = hit && hit.id !== BASE_COAT.id ? hit : null;
+  return `
+  <div class="foldbox">
+    <div class="fb-k">以上是起步款</div>
+    <div class="fb-t">另有 <b>${COAT_REST.length}</b> 款更高价位</div>
+    <div class="fb-s"><b>¥${money(COAT_REST[0].price)} – ¥${money(COAT_REST[COAT_REST.length - 1].price)}</b>，差在厚度、自修复、质保年限。<br>默认收起，需要对比时再展开。</div>
+    ${sel ? `<button class="fb-sel" data-fold="coat"><i>✓</i>当前已选 <b>${sel.name} ¥${money(sel.price)}</b><u>展开看</u></button>` : ''}
+  </div>`;
+}
+
+function foldBoxFilm(){
+  const hit = state.film ? findFilm(state.film) : null;
+  const sel = hit && !FILM_BASE.tiers.some(t => t.id === hit.t.id) ? hit : null;
+  return `
+  <div class="foldbox">
+    <div class="fb-k">以上是性价比档</div>
+    <div class="fb-t">另有 <b>${FILM_REST.length}</b> 档更高规格</div>
+    <div class="fb-s">${FILM_REST.map(se => `<span class="fdi"><b>${se.name}</b> ¥${money(filmFrom(se))} 起</span>`).join(' · ')}<br>隔热和透光再往上走，默认收起，需要对比时展开。</div>
+    ${sel ? `<button class="fb-sel" data-fold="film"><i>✓</i>当前已选 <b>${sel.se.name} · ${sel.t.code} 档 ¥${money(sel.t.price)}</b><u>展开看</u></button>` : ''}
+  </div>`;
+}
+
 function renderCoat(){
-  $('#secCoat').innerHTML = COAT.map(g => `
+  const open = state.coatOpen;
+  const box = $('#secCoat');
+  box.classList.toggle('fold', !open);
+  const groups = open ? COAT : [{ ...COAT[0], items: [COAT[0].items[0]] }];
+  box.innerHTML = groups.map(g => `
     <div class="pcol">
       <div class="pcolhead">
         <span class="ptag">${g.grp}</span>
@@ -1413,11 +1536,20 @@ function renderCoat(){
           <span class="pprice"><i>¥</i>${money(it.price)}</span>
           <i class="ck"></i>
         </button>`).join('')}
-    </div>`).join('');
+    </div>`).join('') + (open ? '' : foldBoxCoat());
+
+  const bar = $('#coatFold');
+  if (bar) bar.innerHTML = open
+    ? `<button class="foldup" data-fold="coat">收起，只看 ¥${money(BASE_COAT.price)} 起步款 <i>↑</i></button>`
+    : `<button class="foldup" data-fold="coat">查看全部 ${COAT_ALL.length} 款价位 <em>¥${money(COAT_REST[0].price)} 起</em> <i>↓</i></button>`;
 }
 
 function renderFilm(){
-  $('#secFilm').innerHTML = FILM.map(se => {
+  const open = state.filmOpen;
+  const box = $('#secFilm');
+  box.classList.toggle('fold', !open);
+  const list = open ? FILM : [FILM_BASE];
+  box.innerHTML = list.map(se => {
     const cur = se.tiers.find(t => t.id === state.film);
     return `
     <div class="card${se.hl?' hl':''}${cur?' picked':''}">
@@ -1436,8 +1568,13 @@ function renderFilm(){
           <em>${money(t.price)}</em>
           <i class="ck"></i>
         </button>`).join('')}
-    </div>`}).join('');
+    </div>`}).join('') + (open ? '' : foldBoxFilm());
   renderFilmBar();
+
+  const bar = $('#filmFold');
+  if (bar) bar.innerHTML = open
+    ? `<button class="foldup" data-fold="film">收起，只看 ¥${money(filmFrom(FILM_BASE))} 档 <i>↑</i></button>`
+    : `<button class="foldup" data-fold="film">查看全部 ${FILM.length} 档规格 <em>¥${money(filmFrom(FILM_REST[0]))} 起</em> <i>↓</i></button>`;
 }
 
 /* 玻璃膜「当前所选」提示条 */
@@ -1448,7 +1585,7 @@ function renderFilmBar(){
   FILM.forEach(se => se.tiers.forEach(t => { if (t.id === state.film){ hit = t; pack = se; } }));
   if (!hit){
     bar.className = 'pickbar';
-    bar.innerHTML = `<span class="pb-empty">尚未选择 · 上表中点选 A / B / C 任一档即可</span>`;
+    bar.innerHTML = `<span class="pb-empty">尚未选择 · 点下方卡片里的 A / B / C 档即可</span>`;
     return;
   }
   bar.className = 'pickbar on';
@@ -1823,6 +1960,21 @@ function findAcc(id){
 }
 
 document.addEventListener('click', e => {
+  /* 展开 / 收起更高价位 */
+  const fd = e.target.closest('[data-fold]');
+  if (fd){
+    const k = fd.dataset.fold;
+    if (k === 'coat') state.coatOpen = !state.coatOpen;
+    else state.filmOpen = !state.filmOpen;
+    const open = k === 'coat' ? state.coatOpen : state.filmOpen;
+    if (k === 'coat') renderCoat(); else renderFilm();
+    if (!open){
+      const s = document.getElementById(k === 'coat' ? 's-coat' : 's-film');
+      if (s) s.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+    return;
+  }
+
   /* 屏幕保护 */
   const sc = e.target.closest('[data-screen]');
   if (sc){
