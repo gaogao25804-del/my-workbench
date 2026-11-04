@@ -168,10 +168,11 @@ a{ color:inherit; text-decoration:none; }
 /* ---------- 01 屏幕保护 ---------- */
 .tiers{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:44px 0 56px; }
 .sc-tier{
-  position:relative; text-align:left; padding:38px 40px 34px;
-  background:var(--panel); transition:.3s; overflow:hidden;
+  position:relative; text-align:left; padding:38px 66px 34px 40px;
+  background:#fff; border:1px solid var(--line); border-radius:4px;
+  transition:background .2s, border-color .2s, box-shadow .2s, transform .2s;
 }
-.sc-tier--hl{ background:#EDEBE6; }
+.sc-tier--hl{ background:#FBFAF7; }
 .sc-tier .t-top{ display:flex; align-items:baseline; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
 .t-lab{ font-size:15px; font-weight:600; letter-spacing:.06em; }
 .t-set{ font-size:11.5px; color:var(--sub); }
@@ -181,21 +182,16 @@ a{ color:inherit; text-decoration:none; }
 }
 .t-num{
   font-family:var(--fn); font-size:46px; font-weight:300; letter-spacing:-.02em; line-height:1;
+  transition:color .2s;
 }
 .t-num i{ font-style:normal; font-size:20px; font-weight:400; margin-right:5px; vertical-align:8px; }
-.t-ck{
-  position:absolute; right:26px; bottom:24px; font-size:13px;
-  opacity:0; transform:translateY(4px); transition:.25s;
-}
-.sc-tier.on{ background:var(--ink); }
-.sc-tier.on .t-lab, .sc-tier.on .t-num{ color:#fff; }
-.sc-tier.on .t-set{ color:rgba(255,255,255,.55); }
-.sc-tier.on .t-reco{ background:#fff; color:var(--ink); }
-.sc-tier.on .t-ck{ opacity:1; transform:none; color:#fff; }
+.t-ck{ display:none; }
+.sc-tier.on .t-num{ color:var(--gold); }
+.sc-tier.on .t-lab{ color:var(--ink); }
 
 .three{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
 .three figure{ margin:0; }
-.three .ph{ background:#fff; aspect-ratio:2/1; overflow:hidden; border:1px solid var(--line); }
+.three .ph{ position:relative; background:#fff; aspect-ratio:2/1; overflow:hidden; }
 .three img{ width:100%; height:100%; object-fit:cover; object-position:center 45%; }
 .three figcaption{ padding-top:16px; border-top:1px solid var(--line); margin-top:16px; }
 .three figcaption b{ display:block; font-size:14px; font-weight:600; }
@@ -214,35 +210,42 @@ a{ color:inherit; text-decoration:none; }
 .pfrom{ font-family:var(--fn); font-size:10.5px; color:var(--sub); letter-spacing:.02em; }
 .pfrom s{ text-decoration:none; font-size:9px; }
 .prow{
-  display:block; width:100%; text-align:left; padding:18px 0 16px;
-  border-bottom:1px solid var(--line); position:relative; transition:.2s;
+  display:block; width:calc(100% + 24px); text-align:left;
+  padding:15px 40px 14px 12px; margin:0 -12px;
+  border:1px solid transparent; border-bottom-color:var(--line); border-radius:4px;
+  position:relative; cursor:pointer;
+  transition:background .2s, border-color .2s, box-shadow .2s, transform .2s;
 }
-.prow:hover{ background:rgba(0,0,0,.018); }
+.prow:hover{ background:#FAF9F7; border-color:#EAE6DC; }
 .pname{ display:block; font-size:14px; font-weight:500; letter-spacing:.01em; }
 .pspec{ display:block; font-size:11px; color:var(--sub); margin-top:6px; letter-spacing:.02em; }
 .pprice{ display:block; font-family:var(--fn); font-size:15px; font-weight:400; margin-top:12px; }
 .pprice i{ font-style:normal; font-size:10.5px; margin-right:2px; color:var(--sub); }
-.prow.on::before{ content:"✓"; position:absolute; left:-17px; top:19px; font-size:11px; color:var(--ink); }
 .prow.on .pname{ font-weight:700; }
-.prow.on .pprice{ font-weight:600; }
-.prow.on .pprice i{ color:var(--ink); }
+.prow.on .pprice{ font-weight:600; color:var(--gold); }
+.prow.on .pprice i{ color:var(--gold); }
 
 /* ---------- 03 玻璃膜 ---------- */
 .film4{
   display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
   background:var(--line); border:1px solid var(--line); margin-top:4px;
 }
-.card{ background:#fff; padding:34px 26px 26px; display:flex; flex-direction:column; position:relative; }
+.card{ background:#fff; padding:34px 26px 26px; display:flex; flex-direction:column; position:relative; transition:background .2s, box-shadow .2s; }
 .card.hl{ background:var(--ink); color:#fff; }
+/* 组内被选中时整卡描金边 */
+.card.picked{ background:rgba(185,154,91,.05); box-shadow:inset 0 0 0 1.5px var(--gold); }
+.card.hl.picked{ background:#1B1A17; }
 .ctag{
-  position:absolute; right:0; top:0; font-size:9.5px; letter-spacing:.14em;
-  background:var(--gold); color:#fff; padding:5px 11px;
+  position:absolute; left:26px; top:14px; right:auto; z-index:3;
+  font-size:9px; letter-spacing:.14em;
+  background:transparent; color:var(--gold);
+  border:1px solid rgba(185,154,91,.55); padding:2px 8px; border-radius:2px;
 }
-.ctagline{ height:2px; width:22px; background:var(--ink); margin-bottom:20px; }
+.card.hl .ctag{ color:var(--gold); border-color:rgba(185,154,91,.55); background:transparent; }
+.ctagline{ height:2px; width:22px; background:var(--ink); margin-bottom:20px; margin-top:22px; }
 .card.hl .ctagline{ background:#fff; }
 .cname{ font-family:var(--fn); font-size:19px; font-weight:600; letter-spacing:.1em; }
 .cstars{ font-size:10px; letter-spacing:.18em; color:var(--gold); margin-top:8px; }
-.card.hl .cstars{ color:var(--gold); }
 .cprice{
   font-family:var(--fn); font-size:30px; font-weight:300; letter-spacing:-.02em;
   margin-top:18px; line-height:1;
@@ -257,38 +260,33 @@ a{ color:inherit; text-decoration:none; }
 .crow{
   display:grid; grid-template-columns:24px minmax(0,1fr) auto; align-items:center;
   gap:12px; width:auto; text-align:left; cursor:pointer;
-  padding:12px; margin:3px -12px 0; border:1.5px solid transparent; border-radius:2px;
-  transition:background .2s, border-color .2s, color .2s, box-shadow .2s, transform .1s;
+  padding:12px 40px 12px 12px; margin:3px -12px 0;
+  border:1.5px solid transparent; border-radius:4px; position:relative;
+  transition:background .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s;
 }
-.crow:active{ transform:scale(.985); }
 .crow > span{
   font-family:var(--fn); font-size:10.5px; width:24px; height:24px; flex:none;
-  display:flex; align-items:center; justify-content:center; border-radius:50%;
-  border:1.5px solid #C6C0B2; background:#fff; color:#6E6960; transition:.2s;
+  display:flex; align-items:center; justify-content:center; border-radius:5px;
+  border:1px solid #E2DCCC; background:#F7F5F0; color:#6E6960;
+  transition:background .2s, border-color .2s, color .2s;
 }
 .crow b{ font-size:11.5px; font-weight:400; letter-spacing:.01em; line-height:1.55; }
 .crow em{ font-family:var(--fn); font-style:normal; font-size:13.5px; }
-.crow:hover{ background:#F5F3EF; border-color:#E4E0D7; }
-.crow:hover > span{ border-color:var(--ink); color:var(--ink); }
-/* 选中：整行反白 + 金色实心勾 */
-.crow.on{
-  background:var(--ink); border-color:var(--ink); color:#fff;
-  box-shadow:0 8px 20px -8px rgba(0,0,0,.55);
-}
-.crow.on > span{
-  background:var(--gold); border-color:var(--gold); color:var(--ink);
-  font-size:0; font-weight:700;
-}
-.crow.on > span::before{ content:"\2713"; font-size:13px; font-family:var(--ff); }
-.crow.on b{ color:#fff; font-weight:600; }
-.crow.on em{ color:#fff; font-weight:600; }
-/* 黑卡内反向：选中变白底 */
-.card.hl .crow > span{ border-color:rgba(255,255,255,.28); background:transparent; color:rgba(255,255,255,.72); }
-.card.hl .crow:hover{ background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.22); }
-.card.hl .crow:hover > span{ border-color:#fff; color:#fff; }
-.card.hl .crow.on{ background:#fff; border-color:#fff; box-shadow:0 10px 26px -10px rgba(0,0,0,.8); }
-.card.hl .crow.on > span{ background:var(--ink); border-color:var(--ink); color:#fff; }
-.card.hl .crow.on b, .card.hl .crow.on em{ color:var(--ink); font-weight:600; }
+.crow:hover{ background:#FAF9F7; border-color:#EAE6DC; }
+.crow:hover > span{ border-color:var(--gold); color:var(--gold); }
+/* 选中：金色描边 + 淡金底 + 实心金勾 */
+.crow.on{ background:rgba(185,154,91,.09); border-color:var(--gold); }
+.crow.on > span{ background:var(--gold); border-color:var(--gold); color:#fff; }
+.crow.on b{ color:var(--ink); font-weight:600; }
+.crow.on em{ color:var(--gold); font-weight:600; }
+/* 黑卡内反向 */
+.card.hl .crow > span{ border-color:rgba(255,255,255,.24); background:rgba(255,255,255,.07); color:rgba(255,255,255,.78); }
+.card.hl .crow:hover{ background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.2); }
+.card.hl .crow:hover > span{ border-color:var(--gold); color:var(--gold); }
+.card.hl .crow.on{ background:rgba(185,154,91,.2); border-color:var(--gold); }
+.card.hl .crow.on > span{ background:var(--gold); border-color:var(--gold); color:#fff; }
+.card.hl .crow.on b{ color:#fff; font-weight:600; }
+.card.hl .crow.on em{ color:var(--gold); font-weight:600; }
 
 /* 玻璃膜「当前所选」提示条 */
 .pickbar{
@@ -322,13 +320,12 @@ a{ color:inherit; text-decoration:none; }
 .pickbar .pb-x:hover{ color:#fff; border-color:#fff; }
 .pickbar{ margin-bottom:12px; }
 
-/* 卡片级：整卡被选中时描金边 + 右上角标 */
-.card.picked{ box-shadow:inset 0 0 0 2px var(--gold); }
+/* 卡片级：整卡被选中时描金边 + 左上角标（与「最多人选」同位置切换） */
 .card.picked .ctag{ display:none; }
 .cpicked{
-  position:absolute; right:0; top:0; z-index:2;
-  background:var(--gold); color:#fff; font-size:9.5px; letter-spacing:.14em;
-  padding:5px 11px;
+  position:absolute; left:26px; top:14px; z-index:3;
+  background:var(--gold); color:#fff; font-size:9px; letter-spacing:.14em;
+  padding:2px 8px; border-radius:2px;
 }
 
 /* ---------- 04 配件 ---------- */
@@ -347,15 +344,9 @@ a{ color:inherit; text-decoration:none; }
 .sub-note b{ color:var(--ink); }
 
 /* 脚垫大卡 */
-.addon-card{ position:relative; display:grid; grid-template-columns:1fr 1fr; background:var(--panel); }
+.addon-card{ position:relative; display:grid; grid-template-columns:1fr 1fr; background:var(--panel); cursor:pointer; }
 .sec--gray .addon-card{ background:#fff; }
 .addon-top{ display:contents; }
-.addon-ck{
-  position:absolute; right:0; top:0; z-index:3; width:30px; height:30px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:12px; background:var(--ink); color:#fff; opacity:0; transition:.25s;
-}
-.addon-card.on .addon-ck, .seat-card.on .addon-ck{ opacity:1; }
 .addon-pic{ overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center; padding:14px; }
 .addon-pic img{ width:100%; height:100%; object-fit:contain; }
 .addon-body{ padding:56px 60px; display:flex; flex-direction:column; justify-content:center; }
@@ -392,7 +383,7 @@ a{ color:inherit; text-decoration:none; }
 .fit-item .pframe{ aspect-ratio:1/1; overflow:hidden; background:#fff; }
 .fit-item img{ width:100%; height:100%; object-fit:cover; }
 .trio{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:26px; }
-.trio .pframe{ aspect-ratio:1/1; overflow:hidden; background:#fff; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; padding:10px; }
+.trio .pframe{ aspect-ratio:1/1; overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center; padding:10px; }
 .trio img{ width:100%; height:100%; object-fit:contain; }
 .pcap{ font-size:11.5px; color:var(--sub); margin-top:12px; letter-spacing:.06em; }
 
@@ -412,40 +403,25 @@ a{ color:inherit; text-decoration:none; }
 
 /* 其余配件网格 */
 .acc-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:26px; }
-.acc-item{ position:relative; background:#fff; text-align:left; padding:0; display:flex; flex-direction:column; transition:background .22s, box-shadow .22s, transform .18s; cursor:pointer; }
+.acc-item{ position:relative; background:#fff; text-align:left; padding:0; display:flex; flex-direction:column; cursor:pointer; transition:background .2s, box-shadow .2s, transform .2s; }
 .acc-item:hover{ background:#FAF9F7; }
-.acc-item:active{ transform:scale(.988); }
-.acc-pic{ aspect-ratio:1/1; overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center; padding:8px; transition:background .22s; }
+.acc-pic{ aspect-ratio:1/1; overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center; padding:8px; transition:background .2s; }
 .acc-pic img{ width:100%; height:100%; object-fit:contain; transition:transform .3s ease; }
 .acc-pic--dual{ gap:4px; }
 .acc-pic--dual img{ width:50%; object-fit:contain; }
-.acc-n{ padding:18px 18px 20px; display:flex; flex-direction:column; flex:1; transition:background .22s; }
-.acc-n b{ font-size:13px; font-weight:600; letter-spacing:.01em; transition:color .22s; }
-.acc-n span{ font-size:10.5px; color:var(--sub); margin-top:6px; transition:color .22s; }
-.acc-n i{ font-family:var(--fn); font-style:normal; font-size:14px; margin-top:12px; transition:color .22s; }
-.acc-ck{
-  position:absolute; right:10px; top:10px; z-index:2; width:26px; height:26px;
-  display:flex; align-items:center; justify-content:center; border-radius:50%;
-  font-size:12px; background:var(--ink); color:#fff;
-  opacity:0; transform:scale(.5); transition:opacity .2s, transform .25s cubic-bezier(.2,1.4,.5,1);
-}
-.acc-item:hover .acc-ck{ opacity:.22; transform:scale(.85); }
-/* 选中：黑框 + 下半黑底 + 勾放大变金 */
-.acc-item.on{ box-shadow:inset 0 0 0 2px var(--ink); background:#fff; }
-.acc-item.on .acc-pic{ background:#F1EFE9; }
-.acc-item.on .acc-pic img{ transform:scale(.94); }
-.acc-item.on .acc-ck{
-  opacity:1; transform:scale(1);
-  background:var(--gold); color:#fff; width:30px; height:30px; font-size:14px;
-  box-shadow:0 6px 16px -6px rgba(0,0,0,.5);
-}
-.acc-item.on .acc-n{ background:var(--ink); }
-.acc-item.on .acc-n b{ color:#fff; }
-.acc-item.on .acc-n span{ color:rgba(255,255,255,.55); }
-.acc-item.on .acc-n i{ color:#fff; }
+.acc-n{ padding:18px 18px 20px; display:flex; flex-direction:column; flex:1; transition:background .2s; }
+.acc-n b{ font-size:13px; font-weight:600; letter-spacing:.01em; transition:color .2s; }
+.acc-n span{ font-size:10.5px; color:var(--sub); margin-top:6px; transition:color .2s; }
+.acc-n i{ font-family:var(--fn); font-style:normal; font-size:14px; margin-top:12px; transition:color .2s; }
+/* 选中：金边 + 淡金底 + 价格转金 */
+.acc-item.on{ background:rgba(185,154,91,.07); box-shadow:inset 0 0 0 2px var(--gold); }
+.acc-item.on .acc-pic{ background:#fff; }
+.acc-item.on .acc-n{ background:transparent; }
+.acc-item.on .acc-n i{ color:var(--gold); font-weight:600; }
 .acc-item.on .acc-n i::after{
-  content:"✓ 已加入"; font-family:var(--ff); font-size:9.5px;
-  color:var(--gold); letter-spacing:.12em; margin-left:8px;
+  content:"已选"; font-family:var(--ff); font-size:9px; font-weight:400;
+  color:var(--gold); letter-spacing:.12em; margin-left:7px;
+  border:1px solid rgba(185,154,91,.5); padding:1px 5px; border-radius:2px;
 }
 .acc-item--more{
   background:var(--ink); color:#fff; padding:26px 22px; justify-content:center; align-items:flex-start;
@@ -483,23 +459,23 @@ a{ color:inherit; text-decoration:none; }
 }
 .disc a{ color:rgba(255,255,255,.6); border-bottom:1px solid rgba(255,255,255,.25); }
 
-/* ---------- 结算：购物袋式配置条 ---------- */
+/* ---------- 结算：右下角常驻报价单浮层 ---------- */
 .cartbar{
-  position:fixed; left:0; right:0; bottom:0; z-index:76;
-  padding-bottom:env(safe-area-inset-bottom);
-  background:rgba(255,255,255,.94);
-  backdrop-filter:blur(20px) saturate(1.5);
-  -webkit-backdrop-filter:blur(20px) saturate(1.5);
-  border-top:1px solid var(--line);
-  box-shadow:0 -12px 44px rgba(0,0,0,.07);
-  transform:translateY(112%);
-  transition:transform .44s cubic-bezier(.22,.85,.28,1);
+  position:fixed; z-index:76; right:22px; bottom:22px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(22px) saturate(1.6);
+  -webkit-backdrop-filter:blur(22px) saturate(1.6);
+  border:1px solid var(--line); border-radius:16px;
+  box-shadow:0 20px 48px -24px rgba(0,0,0,.34), 0 2px 10px rgba(0,0,0,.03);
+  transform:translateY(16px); opacity:0;
+  transition:transform .5s cubic-bezier(.22,.85,.28,1), opacity .4s ease, box-shadow .3s;
 }
-.cartbar.on{ transform:none; }
-.cb-in{
-  max-width:var(--max); margin:0 auto; padding:12px 40px;
-  display:flex; align-items:center; gap:18px;
+.cartbar.in{ transform:none; opacity:1; }
+.cartbar.pulse{ animation:cbPulse .56s cubic-bezier(.3,1.1,.5,1); }
+@keyframes cbPulse{
+  0%{ transform:scale(1); } 28%{ transform:scale(1.035); } 100%{ transform:scale(1); }
 }
+.cb-in{ display:flex; align-items:center; gap:14px; padding:11px 12px 11px 14px; }
 
 /* 购物袋 + 件数徽标 */
 .cb-bag{
@@ -518,14 +494,19 @@ a{ color:inherit; text-decoration:none; }
   transform:scale(0); transition:transform .34s cubic-bezier(.2,1.7,.4,1);
 }
 .cb-n.on{ transform:scale(1); }
+@keyframes numBump{
+  0%{ transform:scale(1); } 38%{ transform:scale(1.32); } 100%{ transform:scale(1); }
+}
+.cb-n.bump{ animation:numBump .42s cubic-bezier(.3,1.4,.5,1); }
 
 /* 金额 */
-.cb-sum{ display:flex; flex-direction:column; gap:2px; min-width:0; }
-.cb-k{ font-size:10.5px; color:var(--sub); letter-spacing:.12em; }
-.cb-k b{ color:var(--ink); font-weight:700; letter-spacing:0; font-size:12px; }
+.cb-sum{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.cb-k{ font-size:10.5px; color:var(--sub); letter-spacing:.12em; white-space:nowrap; }
+.cb-k b{ display:inline-block; color:var(--ink); font-weight:700; letter-spacing:0; font-size:12px; }
+.cb-k b.bump{ animation:numBump .42s cubic-bezier(.3,1.4,.5,1); }
 .cb-v{
   font-family:var(--fn); font-size:25px; line-height:1.1; letter-spacing:-.01em;
-  display:flex; align-items:baseline; gap:3px;
+  display:flex; align-items:baseline; gap:3px; white-space:nowrap;
 }
 .cb-v i{ font-style:normal; font-size:12px; color:var(--sub); margin-right:2px; margin-bottom:4px; }
 .cb-v em{ font-style:normal; }
@@ -534,28 +515,28 @@ a{ color:inherit; text-decoration:none; }
   0%{ color:var(--ink); } 24%{ color:var(--gold); } 100%{ color:var(--ink); }
 }
 
-/* 已选内容摘要（桌面） */
+/* 已选内容摘要 */
 .cb-list{
-  font-size:11.5px; color:var(--sub); letter-spacing:.02em;
-  max-width:430px; min-width:0; padding-left:18px; margin-left:4px;
-  border-left:1px solid var(--line);
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font-size:11px; color:var(--sub); letter-spacing:.02em;
+  padding:8px 14px 9px; border-top:1px solid var(--line);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .cb-list b{ color:var(--ink2); font-weight:500; }
+.cb-list:empty{ display:none; }
 
 /* 主按钮 */
 .cb-go{
-  margin-left:auto; height:50px; padding:0 30px; border-radius:999px;
+  margin-left:auto; height:50px; padding:0 26px; border-radius:999px;
   background:var(--ink); color:#fff; font-size:14px; letter-spacing:.04em;
-  display:flex; align-items:center; gap:9px;
+  display:flex; align-items:center; gap:9px; white-space:nowrap;
   box-shadow:0 12px 28px -14px rgba(0,0,0,.7);
-  transition:transform .22s, box-shadow .22s, opacity .22s;
+  transition:transform .22s, box-shadow .22s, opacity .22s, background .22s;
 }
 .cb-go i{ font-style:normal; transition:transform .24s; }
 .cb-go:hover{ transform:translateY(-1px); box-shadow:0 16px 34px -14px rgba(0,0,0,.75); }
 .cb-go:hover i{ transform:translateX(4px); }
 .cb-go:active{ transform:scale(.975); }
-.cb-go.off{ opacity:.55; }
+.cb-go.off{ opacity:.5; background:#2C2C2C; }
 
 /* 飞入购物袋的小点 */
 .fly{
@@ -580,8 +561,10 @@ a{ color:inherit; text-decoration:none; }
 }
 .cb-ring.on{ animation:ringOut .62s ease-out; }
 
-/* 有内容时给页脚留出空间 */
-body.has-cart{ padding-bottom:86px; }
+/* 右下角浮层：页脚留出避让空间（非手机端） */
+@media (min-width:760px){
+  .foot .disc{ padding-bottom:152px; }
+}
 
 /* ---------- 弹层 ---------- */
 .mask{
@@ -740,9 +723,8 @@ body.has-cart{ padding-bottom:86px; }
   .sec-p{ font-size:12.5px; margin-top:18px; line-height:2; }
 
   .tiers{ grid-template-columns:1fr; gap:10px; margin:26px 0 34px; }
-  .sc-tier{ padding:26px 24px 24px; }
+  .sc-tier{ padding:26px 58px 24px 24px; }
   .t-num{ font-size:38px; }
-  .t-ck{ right:20px; bottom:18px; }
   .three{ grid-template-columns:1fr; gap:22px; }
   .three .ph{ aspect-ratio:16/10; }
 
@@ -750,13 +732,14 @@ body.has-cart{ padding-bottom:86px; }
   .pcol{ border-left:0; padding:0; }
   .pcol + .pcol{ margin-top:34px; }
   .pcolhead{ padding:0 0 12px; }
-  .prow{ padding:16px 0 14px; }
-  .prow.on::before{ left:auto; right:0; top:auto; bottom:16px; }
+  .prow{ padding:14px 38px 13px 10px; margin:0 -10px; }
 
   .film4{ grid-template-columns:1fr; }
   .card{ padding:28px 22px 22px; }
   .cdesc{ min-height:0; }
-  .ctag{ right:22px; top:0; }
+  .ctag{ left:22px; top:10px; }
+  .cpicked{ left:22px; top:10px; }
+  .crow{ padding:13px 38px 13px 10px; margin:3px -10px 0; }
 
   .sub-block{ margin-top:48px; }
   .sub-head b{ font-size:15px; }
@@ -824,15 +807,24 @@ body.has-cart{ padding-bottom:86px; }
   .qv{ font-size:12.5px; }
   .qtotal .tv{ font-size:27px; }
   .toast{ bottom:84px; max-width:calc(100vw - 32px); font-size:12px; padding:10px 16px 10px 10px; }
+  /* 手机端：底部常驻整条，最小触控 44px */
+  .cartbar{
+    left:0; right:0; bottom:0; border:0; border-top:1px solid var(--line);
+    border-radius:0; padding-bottom:env(safe-area-inset-bottom);
+    box-shadow:0 -10px 32px -20px rgba(0,0,0,.34);
+    transform:translateY(112%);
+  }
+  .cartbar.in{ transform:none; }
   .cb-in{ padding:9px 16px; gap:11px; }
   .cb-bag{ width:44px; height:44px; }
   .cb-bag svg{ width:21px; height:21px; }
   .cb-n{ min-width:19px; height:19px; font-size:10px; padding:0 4px; right:-5px; top:-5px; }
   .cb-k{ font-size:9px; letter-spacing:.08em; }
   .cb-v{ font-size:22px; }
-  .cb-go{ height:45px; padding:0 18px; font-size:13px; gap:6px; }
+  .cb-go{ height:46px; padding:0 18px; font-size:13px; gap:6px; }
   .cb-list{ display:none; }
-  body.has-cart{ padding-bottom:76px; }
+  .sw{ min-height:44px; }
+  .disc{ padding-bottom:96px; }
 }
 
 /* ---------- 硅胶套装：10 宫格 + 色卡 ---------- */
@@ -885,7 +877,106 @@ body.has-cart{ padding-bottom:86px; }
   .sil-item{ padding:16px 8px 14px; }
   .sil-item b{ font-size:12px; }
 }
+/* ============================================================
+   可点选 vs 纯展示：统一「圆圈勾选」系统
+   可点 → 右上角空心圆 + hover 上浮 + 选中金边淡金底
+   纯图 → 无描边无 hover + 淡色「图集」角标
+   ============================================================ */
+.pick{ position:relative; cursor:pointer; -webkit-user-select:none; user-select:none; }
+.pick::after{
+  content:""; position:absolute; top:12px; right:12px;
+  width:20px; height:20px; border-radius:50%; box-sizing:border-box;
+  border:1.5px solid #BEB6A3; background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--ff); font-size:11px; font-weight:700; line-height:1; color:#fff;
+  box-shadow:0 1px 4px rgba(0,0,0,.14);
+  transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  z-index:5; pointer-events:none;
+}
+.pick--sm::after{ top:9px; right:9px; width:17px; height:17px; font-size:9.5px; border-width:1.2px; }
+.pick--lg::after{ top:16px; right:16px; width:24px; height:24px; font-size:13px; }
+.pick--row::after{ display:none; }
+
+.pick.on{ border-color:var(--gold); background:rgba(185,154,91,.07); }
+.pick.on::after{
+  content:"✓"; background:var(--gold); border-color:var(--gold); color:#fff;
+  box-shadow:0 5px 14px -5px rgba(185,154,91,.9);
+}
+
+/* 行内勾：车衣 / 玻璃膜档位，与卡片同款 */
+.ck{
+  position:absolute; right:12px; top:50%; margin-top:-9px;
+  width:18px; height:18px; border-radius:50%; box-sizing:border-box;
+  border:1.5px solid #BEB6A3; background:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--ff); font-size:10px; font-weight:700; color:#fff; font-style:normal;
+  box-shadow:0 1px 4px rgba(0,0,0,.12);
+  transition:background .2s, border-color .2s, box-shadow .2s;
+  pointer-events:none;
+}
+.pick.on .ck{ background:var(--gold); border-color:var(--gold); box-shadow:0 4px 12px -4px rgba(185,154,91,.85); }
+.pick.on .ck::before{ content:"✓"; }
+/* 黑卡（HONOUR）内：未选为透明白圈，选中才实心金 */
+.card.hl .ck{ background:transparent; border-color:rgba(255,255,255,.42); box-shadow:none; }
+.card.hl .pick.on .ck{ background:var(--gold); border-color:var(--gold); }
+
+/* 大卡（脚垫 / 座椅垫）本身没有 border，用覆盖层描金，避免被子元素白底挡住 */
+.addon-card.on::before, .seat-card.on::before{
+  content:""; position:absolute; inset:0; z-index:4;
+  border:2px solid var(--gold); pointer-events:none;
+}
+/* 选中后左右两半统一底色 */
+.addon-card.on .addon-pic{ background:transparent; }
+/* 座椅卡右上角是价格，给勾选框让位 */
+.seat-card .sub-head{ padding-right:30px; }
+@media (max-width:759px){ .seat-card .sub-head{ padding-right:26px; } }
+/* 大卡再加一个文字标记，远距离一眼看到 */
+.addon-card.on .addon-price::after, .seat-card.on .sub-price::after{
+  content:"已选"; margin-left:10px;
+  font-family:var(--ff); font-size:10px; font-weight:400; letter-spacing:.14em;
+  color:var(--gold); border:1px solid rgba(185,154,91,.55);
+  padding:1px 6px; border-radius:2px; vertical-align:6px;
+}
+
+@media (hover:hover){
+  .pick{ transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease; }
+  .pick:hover{ transform:translateY(-2px); box-shadow:0 16px 32px -22px rgba(0,0,0,.55); }
+  .pick:hover::after{ border-color:var(--gold); }
+  .pick:hover .ck{ border-color:var(--gold); }
+}
+.pick:active{ transform:translateY(-1px) scale(.994); }
+.pick:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+@media (prefers-reduced-motion: reduce){
+  .pick, .pick::after, .ck, .cartbar{ transition:none; }
+  .pick:hover{ transform:none; }
+  .cartbar.pulse{ animation:none; }
+}
+
+/* 纯展示图集：淡色角标 */
+.gal{ position:relative; }
+.gal::after{
+  content:"图集"; position:absolute; top:10px; right:10px; z-index:2;
+  font-size:9px; letter-spacing:.14em; line-height:1.5;
+  color:#A5A5A5; background:rgba(255,255,255,.9);
+  border:1px solid rgba(0,0,0,.06); border-radius:999px;
+  padding:2px 9px; pointer-events:none;
+}
+.sil-grid.gal::after{ top:8px; right:8px; }
+
+/* 页首引导 */
+.hero-hint{
+  display:flex; align-items:center; gap:10px;
+  margin-top:20px; font-size:12.5px; line-height:1.8; color:var(--ink2);
+  letter-spacing:.02em;
+}
+.hero-hint::before{
+  content:""; width:15px; height:15px; flex:none; border-radius:50%;
+  border:1.5px solid #C9C2B2; background:#fff;
+}
 @media (max-width:759px){
+  .hero-hint{ font-size:11.5px; margin-top:16px; gap:8px; }
+  .hero-hint::before{ width:14px; height:14px; }
   .gk-head{ flex-direction:column; align-items:flex-start; gap:12px; }
   .gk-swatches{ gap:16px; }
   .sil-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -898,6 +989,21 @@ body.has-cart{ padding-bottom:86px; }
   .pickbar .pb-spec{ display:none; }
   .pickbar .pb-price{ font-size:16px; }
   .pickbar .pb-x{ text-align:right; margin-top:0; }
+}
+
+/* 平板 / 手机：报价单改为底部常驻整条，不遮挡正文 */
+@media (max-width:1079px){
+  .cartbar{
+    left:0; right:0; bottom:0; border:0; border-top:1px solid var(--line);
+    border-radius:0; padding-bottom:env(safe-area-inset-bottom);
+    box-shadow:0 -10px 32px -20px rgba(0,0,0,.34);
+    transform:translateY(112%); opacity:1;
+  }
+  .cartbar.in{ transform:none; opacity:1; }
+  .foot .disc{ padding-bottom:118px; }
+}
+@media (min-width:760px) and (max-width:1079px){
+  .cb-in{ padding:11px 30px; max-width:var(--max); margin:0 auto; }
 }
 </style>
 </head>
@@ -929,7 +1035,8 @@ body.has-cart{ padding-bottom:86px; }
       <div class="eyebrow">Saint-Gobain · SolarGard 授权店</div>
       <h1>理想 <em>i6</em></h1>
       <div class="h1-en">全 车 配 置 报 价</div>
-      <p class="hero-p">钢化膜 · 隐形车衣 · 玻璃膜 · 车内配件，分开报价，一张单子看明白。勾选你要的项目，右下角直接出报价单。</p>
+      <p class="hero-p">钢化膜 · 隐形车衣 · 玻璃膜 · 车内配件，分开报价，一张单子看明白。</p>
+      <p class="hero-hint">点击下方带圆圈标记的卡片进行勾选，右下角实时生成报价单</p>
       <div class="hero-act">
         <a class="pill solid" href="#s-screen">查看报价</a>
         <a class="pill outline" href="#foot">加微信问价</a>
@@ -989,15 +1096,15 @@ body.has-cart{ padding-bottom:86px; }
     <div class="tiers" id="secScreen"></div>
     <div class="three">
       <figure>
-        <div class="ph"><img src="asset/screen/mid.jpg" alt="中控大屏无尘仓钢化膜"></div>
+        <div class="ph gal"><img src="asset/screen/mid.jpg" alt="中控大屏无尘仓钢化膜"></div>
         <figcaption><b>中控大屏</b><span>无尘仓 · 磨砂防眩光</span></figcaption>
       </figure>
       <figure>
-        <div class="ph"><img src="asset/acc/ar_tv.jpg" alt="后排电视屏钢化膜"></div>
+        <div class="ph gal"><img src="asset/acc/ar_tv.jpg" alt="后排电视屏钢化膜"></div>
         <figcaption><b>后排电视屏</b><span>钢化膜 · 原屏画质</span></figcaption>
       </figure>
       <figure>
-        <div class="ph"><img src="asset/screen/fridge.jpg" alt="冰箱屏幕钢化膜"></div>
+        <div class="ph gal"><img src="asset/screen/fridge.jpg" alt="冰箱屏幕钢化膜"></div>
         <figcaption><b>冰箱控制屏</b><span>钢化膜 · 高透爽滑</span></figcaption>
       </figure>
     </div>
@@ -1049,10 +1156,10 @@ body.has-cart{ padding-bottom:86px; }
         <span>高边全包围 · 卡扣固定，不打滑不卷边</span>
       </div>
       <div class="fit-row">
-        <div class="fit-item"><div class="pframe"><img src="asset/acc/car1.jpg" alt="实车铺装 星空丝绒毯"></div></div>
-        <div class="fit-item"><div class="pframe"><img src="asset/acc/car2.jpg" alt="实车铺装 菱格毯 橙棕"></div></div>
-        <div class="fit-item"><div class="pframe"><img src="asset/acc/car3.jpg" alt="实车铺装 菱格毯 灰黑"></div></div>
-        <div class="fit-item"><div class="pframe"><img src="asset/acc/car4.jpg" alt="实车铺装 编织毯面"></div></div>
+        <div class="fit-item"><div class="pframe gal"><img src="asset/acc/car1.jpg" alt="实车铺装 星空丝绒毯"></div></div>
+        <div class="fit-item"><div class="pframe gal"><img src="asset/acc/car2.jpg" alt="实车铺装 菱格毯 橙棕"></div></div>
+        <div class="fit-item"><div class="pframe gal"><img src="asset/acc/car3.jpg" alt="实车铺装 菱格毯 灰黑"></div></div>
+        <div class="fit-item"><div class="pframe gal"><img src="asset/acc/car4.jpg" alt="实车铺装 编织毯面"></div></div>
       </div>
     </div>
 
@@ -1072,7 +1179,7 @@ body.has-cart{ padding-bottom:86px; }
             <button class="sw" data-sil="o"><i style="background:#D9822B"></i>橙黄</button>
           </div>
         </div>
-        <div class="sil-grid" id="silGrid"></div>
+        <div class="sil-grid gal" id="silGrid"></div>
         <p class="gk-note">上图为 i6 车型 21 件套实拍，按车型配齐后随脚垫一并装车；其他车型件数与组合以实车为准。</p>
       </div>
     </div>
@@ -1149,9 +1256,9 @@ body.has-cart{ padding-bottom:86px; }
       <span class="cb-k">已选 <b id="cbCnt">0</b> 项 · 合计</span>
       <span class="cb-v"><i>¥</i><em id="cbVal" data-v="0">0</em></span>
     </div>
-    <div class="cb-list" id="cbList"></div>
     <button class="cb-go off" id="cbGo">查看配置单 <i>→</i></button>
   </div>
+  <div class="cb-list" id="cbList"></div>
 </div>
 
 <!-- ========== 弹层 ========== -->
@@ -1282,14 +1389,13 @@ const fmt = n => '¥' + money(n);
 /* ========================= 渲染 ========================= */
 function renderScreen(){
   $('#secScreen').innerHTML = SCREEN.map(o => `
-    <button class="sc-tier${o.hl?' sc-tier--hl':''}${state.screen===o.id?' on':''}" data-screen="${o.id}">
+    <button class="sc-tier pick pick--lg${o.hl?' sc-tier--hl':''}${state.screen===o.id?' on':''}" data-screen="${o.id}">
       <div class="t-top">
         <span class="t-lab">${o.name}</span>
         <span class="t-set">${o.set}</span>
         ${o.reco?`<span class="t-reco">${o.reco}</span>`:''}
       </div>
       <div class="t-num"><i>¥</i>${money(o.price)}</div>
-      <div class="t-ck">✓</div>
     </button>`).join('');
 }
 
@@ -1301,10 +1407,11 @@ function renderCoat(){
         <span class="pfrom"><s>¥</s>${money(g.from)} 起</span>
       </div>
       ${g.items.map(it => `
-        <button class="prow${state.coat===it.id?' on':''}" data-coat="${it.id}">
+        <button class="prow pick pick--row${state.coat===it.id?' on':''}" data-coat="${it.id}">
           <span class="pname">${it.name}</span>
           <span class="pspec">${it.spec}</span>
           <span class="pprice"><i>¥</i>${money(it.price)}</span>
+          <i class="ck"></i>
         </button>`).join('')}
     </div>`).join('');
 }
@@ -1323,10 +1430,11 @@ function renderFilm(){
       <div class="cdesc">${se.desc}</div>
       <div class="cline"></div>
       ${se.tiers.map(t => `
-        <button class="crow${state.film===t.id?' on':''}" data-film="${t.id}">
+        <button class="crow pick pick--row${state.film===t.id?' on':''}" data-film="${t.id}">
           <span>${t.code}</span>
           <b>${t.spec}</b>
           <em>${money(t.price)}</em>
+          <i class="ck"></i>
         </button>`).join('')}
     </div>`}).join('');
   renderFilmBar();
@@ -1356,8 +1464,7 @@ function renderFilmBar(){
 function bigCard(a){
   if (a.slot === 'foot'){
     return `
-    <div class="addon-card${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
-      <div class="addon-ck">✓</div>
+    <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
       <div class="addon-top">
         <div class="addon-pic"><img src="${a.img}" alt="${a.name}"></div>
         <div class="addon-body">
@@ -1380,8 +1487,7 @@ function bigCard(a){
     </div>`;
   }
   return `
-    <div class="seat-card${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
-      <div class="addon-ck">✓</div>
+    <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
       <div class="seat-body">
         <div class="sub-head" style="padding-bottom:10px">
           <b>座椅垫</b>
@@ -1440,8 +1546,7 @@ function renderAcc(){
   $('#secAccSeat').innerHTML = ACC_BIG.filter(a => a.slot === 'seat').map(bigCard).join('');
 
   $('#secAccSmall').innerHTML = ACC_SMALL.map(a => `
-    <button class="acc-item${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
-      <span class="acc-ck">✓</span>
+    <button class="acc-item pick pick--sm${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
       <div class="acc-pic${a.dual?' acc-pic--dual':''}">${a.imgs.map(s=>`<img src="${s}" alt="${a.name}">`).join('')}</div>
       <div class="acc-n"><b>${a.name}</b><span>${a.spec}</span><i>¥${money(a.price)}</i></div>
     </button>`).join('')
@@ -1535,18 +1640,41 @@ function flyToBag(el){
   }, 520);
 }
 
+/* 数字跳动：变化时才播，避免整页重绘都在闪 */
+function bump(el){
+  if (!el) return;
+  el.classList.remove('bump');
+  void el.offsetWidth;
+  el.classList.add('bump');
+  setTimeout(() => el.classList.remove('bump'), 460);
+}
+
+let lastN = 0, pulseTimer;
+function pulseCart(){
+  const bar = $('#cartBar');
+  if (!bar) return;
+  bar.classList.remove('pulse');
+  void bar.offsetWidth;
+  bar.classList.add('pulse');
+  clearTimeout(pulseTimer);
+  pulseTimer = setTimeout(() => bar.classList.remove('pulse'), 600);
+}
+
 function refresh(){
   const list = picked();
   const total = list.reduce((s, x) => s + x.p, 0);
   const n = list.length;
 
-  $('#cbCnt').textContent = n;
-  $('#cbNum').textContent = n;
+  const cnt = $('#cbCnt'), num = $('#cbNum');
+  if (cnt.textContent !== String(n)) bump(cnt);
+  if (cnt) cnt.textContent = n;
+  if (num) num.textContent = n;
   countTo($('#cbVal'), total);
   $('#cbNum').classList.toggle('on', n > 0);
-  $('#cartBar').classList.toggle('on', n > 0);
+  $('#cartBar').classList.toggle('empty', n === 0);
   $('#cbGo').classList.toggle('off', n === 0);
   document.body.classList.toggle('has-cart', n > 0);
+  if (n !== lastN){ lastN = n; pulseCart(); }
   const cl = $('#cbList');
   if (cl){
     const names = list.map(x => x.v.split(/[ ·（(]/)[0]);
@@ -1789,6 +1917,11 @@ renderFilm();
 renderSil();
 renderAcc();
 refresh();
+// 常驻浮层：加载完滑入一次
+requestAnimationFrame(() => {
+  const bar = $('#cartBar');
+  if (bar) bar.classList.add('in');
+});
 
 /* ========================= 导航与滚动 ========================= */
 const nav = document.getElementById('nav');
