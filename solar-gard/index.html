@@ -354,6 +354,15 @@ a{ color:inherit; text-decoration:none; }
 .addon-spec{ font-size:12.5px; line-height:2; color:var(--sub); margin-top:16px; }
 .addon-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
 .addon-tags span{ font-size:10.5px; padding:4px 10px; border:1px solid var(--line); color:var(--sub); }
+/* 赠品前置提示：不用滚到底也知道有东西送 */
+.addon-tags span.gtag{
+  color:#8A6C2F; border-color:rgba(185,154,91,.5); background:rgba(185,154,91,.09);
+  font-weight:600; letter-spacing:.02em;
+}
+.addon-tags span.gtag::before{
+  content:""; display:inline-block; width:5px; height:5px; border-radius:50%;
+  background:var(--gold); margin-right:6px; vertical-align:2px;
+}
 .addon-note{ font-size:11px; color:var(--sub2); margin-top:12px; }
 .addon-buy{
   display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
@@ -364,18 +373,40 @@ a{ color:inherit; text-decoration:none; }
 .addon-price span{ font-size:11px; color:var(--sub); margin-left:6px; letter-spacing:.04em; }
 .addon-mats{ font-size:11.5px; line-height:1.85; color:var(--sub); text-align:right; }
 .addon-mats b{ color:var(--ink); font-weight:600; }
+/* 赠品条：深色反差，把"白送的东西"做成整张卡最抢眼的一块 */
 .gift-bar{
-  grid-column:1/-1; display:flex; align-items:center; gap:18px;
-  padding:22px 34px; border-top:1px solid var(--line); background:#fff;
+  grid-column:1/-1; display:flex; align-items:center; gap:20px;
+  padding:20px 32px; background:var(--ink); color:#fff;
+  position:relative; overflow:hidden;
+}
+.gift-bar::after{
+  content:""; position:absolute; right:-50px; top:-100px; width:280px; height:280px;
+  background:radial-gradient(circle, rgba(185,154,91,.22), rgba(185,154,91,0) 68%);
+  pointer-events:none;
 }
 .gift-tag{
-  flex:none; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
-  font-size:11px; background:var(--gold); color:#fff; border-radius:2px;
+  position:relative; flex:none; width:48px; height:48px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; font-weight:600; letter-spacing:.04em;
+  background:linear-gradient(145deg,#E0C68F,#B99A5B); color:#221C12;
+  box-shadow:0 0 0 5px rgba(216,188,132,.14);
 }
-.gift-txt{ flex:1; }
-.gift-txt b{ display:block; font-size:13.5px; font-weight:600; letter-spacing:.02em; }
-.gift-txt span{ display:block; font-size:11.5px; color:var(--sub); margin-top:5px; line-height:1.8; }
-.gift-set{ font-family:var(--fn); font-size:12px; letter-spacing:.04em; color:var(--ink); white-space:nowrap; }
+.gift-txt{ flex:1; min-width:0; position:relative; }
+.gift-txt b{ display:block; font-size:15.5px; font-weight:600; letter-spacing:.02em; color:#fff; }
+.gift-txt > span{ display:block; font-size:11.5px; color:rgba(255,255,255,.6); margin-top:6px; line-height:1.8; }
+.gift-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.gift-chips span{
+  font-size:11px; letter-spacing:.02em; color:rgba(255,255,255,.88); white-space:nowrap;
+  padding:4px 10px; border-radius:999px;
+  background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.15);
+}
+.gift-set{
+  position:relative; flex:none; text-align:right; padding-left:22px;
+  border-left:1px solid rgba(255,255,255,.15);
+}
+.gift-set b{ font-family:var(--fn); font-size:40px; font-weight:400; color:#DCC28C; line-height:1; letter-spacing:-.02em; }
+.gift-set i{ font-style:normal; font-size:12.5px; color:#DCC28C; margin-left:3px; }
+.gift-set small{ display:block; font-size:10.5px; color:rgba(255,255,255,.5); margin-top:8px; letter-spacing:.06em; }
 
 /* 四图 / 三图 */
 .fit-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:26px; }
@@ -752,10 +783,18 @@ a{ color:inherit; text-decoration:none; }
   .addon-buy{ margin-top:20px; padding-top:18px; flex-wrap:wrap; gap:12px; }
   .addon-price{ font-size:28px; }
   .addon-mats{ text-align:left; font-size:11px; }
-  .gift-bar{ flex-wrap:wrap; padding:18px 22px; gap:12px; }
-  .gift-txt b{ font-size:12.5px; }
-  .gift-txt span{ font-size:11px; }
-  .gift-set{ font-size:11px; }
+  .gift-bar{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:9px 12px; padding:16px 18px; }
+  .gift-tag{ grid-column:1; grid-row:1; align-self:start; margin-top:1px; width:36px; height:36px; font-size:12px; box-shadow:0 0 0 3px rgba(216,188,132,.14); }
+  .gift-txt{ grid-column:2; grid-row:1; }
+  .gift-txt b{ font-size:13px; }
+  .gift-chips{ gap:5px; margin-top:7px; }
+  .gift-chips span{ font-size:10px; padding:2px 7px; }
+  .gift-set{
+    grid-column:1/-1; grid-row:2; display:flex; align-items:baseline; justify-content:flex-end; gap:7px;
+    margin:0; padding:9px 0 0; border-left:0; border-top:1px solid rgba(255,255,255,.12);
+  }
+  .gift-set b{ font-size:24px; }
+  .gift-set small{ margin:0; font-size:10px; }
 
   .fit-row{ grid-template-columns:repeat(2,1fr); gap:8px; margin-top:18px; }
   .trio{ gap:8px; margin-top:18px; }
@@ -1295,7 +1334,7 @@ a{ color:inherit; text-decoration:none; }
           <div class="addon-k">GOODYEAR · 固特异</div>
           <div class="addon-name">TPE 脚垫整套</div>
           <div class="addon-spec">高边 TPE 脚垫 · 后备箱垫 · 前仓垫 · 后排座椅靠背垫<br>配星空丝绒毯面 · 卡扣固定不打滑</div>
-          <div class="addon-tags"><span>TPE 脚垫 / 尾箱垫 质保 6 年</span></div>
+          <div class="addon-tags"><span>TPE 脚垫 / 尾箱垫 质保 6 年</span><span class="gtag">赠 全车硅胶 21 件</span></div>
           <div class="addon-note">6 年内正常使用磨破断裂达 20%，直接换新一次</div>
           <div class="addon-buy">
             <div class="addon-price"><i>¥</i>1,610<span>整套</span></div>
@@ -1305,8 +1344,11 @@ a{ color:inherit; text-decoration:none; }
       </div>
       <div class="gift-bar">
         <div class="gift-tag">赠</div>
-        <div class="gift-txt"><b>买 TPE 脚垫 · 即送全车硅胶套装</b><span>无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐</span></div>
-        <div class="gift-set">i6 送 21 件</div>
+        <div class="gift-txt">
+          <b>买 TPE 脚垫 · 即送全车硅胶套装</b>
+          <div class="gift-chips"><span>无线充垫</span><span>水杯架</span><span>中控储物盒</span><span>车门按键膜</span><span>门碗贴</span><span>OBD 保护盖</span></div>
+        </div>
+        <div class="gift-set"><b>21</b><i>件</i><small>i6 整车配齐</small></div>
       </div>
     </div></div>
 
@@ -1603,8 +1645,10 @@ const ACC_BIG = [
     mats:'基础防护 12 件套<br><b>三款毯面 可选一款</b>',
     img:'asset/acc/set.jpg',
     gift:'买 TPE 脚垫 · 即送全车硅胶套装',
+    giftItems:['无线充垫','水杯架','中控储物盒','车门按键膜','门碗贴','OBD 保护盖'],
     giftNote:'无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐',
-    giftTag:'i6 送 21 件' },
+    giftCount:'21',
+    giftTag:'i6 整车配齐' },
   { id:'a2', slot:'seat', brand:'GOODYEAR · 固特异 L6 Ultra 系列', name:'座椅垫 七件套', price:996.2, em:'前排 + 后排全包围',
     spec:'前排 + 后排全包围 · 头枕 / 腰靠 / 坐垫一体<br>原车白 / 橙黄 / 棕色 三色可选',
     img:'asset/acc/mat_kit_c2.jpg',
@@ -1781,7 +1825,7 @@ function bigCard(a){
           <div class="addon-k">${a.brand}</div>
           <div class="addon-name">${a.name}</div>
           <div class="addon-spec">${a.spec}</div>
-          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}</div>`:''}
+          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶 ${a.giftCount} 件</span>`:''}</div>`:''}
           ${a.note?`<div class="addon-note">${a.note}</div>`:''}
           <div class="addon-buy">
             <div class="addon-price"><i>¥</i>${money(a.price)}<span>${a.em}</span></div>
@@ -1791,8 +1835,13 @@ function bigCard(a){
       </div>
       <div class="gift-bar">
         <div class="gift-tag">赠</div>
-        <div class="gift-txt"><b>${a.gift}</b><span>${a.giftNote}</span></div>
-        <div class="gift-set">${a.giftTag}</div>
+        <div class="gift-txt">
+          <b>${a.gift}</b>
+          ${a.giftItems
+            ? `<div class="gift-chips">${a.giftItems.map(t => `<span>${t}</span>`).join('')}</div>`
+            : `<span>${a.giftNote || ''}</span>`}
+        </div>
+        <div class="gift-set"><b>${a.giftCount || ''}</b><i>件</i><small>${a.giftTag || ''}</small></div>
       </div>
     </div>`;
   }
