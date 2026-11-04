@@ -3990,3 +3990,157 @@ body{
   .rw-end{ font-size:11.5px; line-height:1.6; }
 }
 
+/* ============================================================
+   图书馆 · 阅读室（浅纸面 / 大封面横排 / 右侧书摘）
+   ============================================================ */
+.lib-room{
+  --room-bg:#f2ede4;
+  --room-ink:#1a1b1d;
+  --room-ink-2:#6e685c;
+  --room-line:#ded6c7;
+  --room-coral:#d9604f;
+  position:relative;
+  padding:20px 26px 12px;
+  border-radius:22px;
+  color:var(--room-ink);
+  background:
+    radial-gradient(72% 50% at 88% -8%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 62%),
+    linear-gradient(158deg,#f7f3eb 0%,#efe9df 52%,#e8e1d4 100%);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 42px 90px -54px rgba(0,0,0,.95), 0 1px 0 rgba(255,255,255,.7) inset;
+}
+
+/* 顶部：搜索 + 数量 */
+.lib-top{ display:flex; align-items:center; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--room-line); }
+.lib-search{ position:relative; display:block; flex:0 1 420px; }
+.lib-search-ico{ position:absolute; left:13px; top:12px; color:#9d9483; line-height:0; }
+.lib-search-ico svg{ width:15px; height:15px; }
+.lib-search input{
+  width:100%; height:40px; padding:0 14px 0 38px;
+  border-radius:999px; border:1px solid var(--room-line);
+  background:rgba(255,255,255,.72); color:var(--room-ink);
+  font-size:13px; font-family:inherit; outline:none;
+  transition:background .18s, border-color .18s, box-shadow .18s;
+}
+.lib-search input::placeholder{ color:#a89e8d; }
+.lib-search input:focus{ background:#fff; border-color:rgba(217,96,79,.45); box-shadow:0 0 0 3px rgba(217,96,79,.1); }
+.lib-meta{ margin-left:auto; font-size:12px; color:var(--room-ink-2); font-family:var(--mono); letter-spacing:.03em; }
+.lib-meta b{ color:var(--room-ink); font-size:13px; }
+
+/* 主区：左文案 + 右书摘 */
+.lib-main{ display:grid; grid-template-columns:minmax(0,1fr) minmax(250px,310px); gap:36px; align-items:start; padding:26px 0 14px; }
+.lib-head{ margin:0; font-size:clamp(30px,3.6vw,46px); line-height:1.16; font-weight:600; letter-spacing:-.022em; color:#141518; }
+.lib-desc{ margin:14px 0 0; font-size:13px; line-height:1.78; color:var(--room-ink-2); max-width:430px; }
+.lib-cta{
+  margin-top:22px; height:40px; padding:0 20px;
+  display:inline-flex; align-items:center; gap:8px;
+  border:0; border-radius:999px; cursor:pointer;
+  background:#232427; color:#f6f2ea;
+  font-size:13px; font-family:inherit; font-weight:500;
+  box-shadow:0 12px 24px -14px rgba(0,0,0,.75);
+  transition:transform .18s, background .18s;
+}
+.lib-cta i{ font-style:normal; color:#ffb59f; }
+.lib-cta:hover{ background:#0d0d0e; transform:translateY(-1px); }
+
+.lib-focus{
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.75);
+  border-radius:16px; padding:15px 17px 17px;
+  box-shadow:0 20px 40px -32px rgba(70,48,24,.6);
+}
+.lib-focus-head{ display:flex; align-items:center; gap:10px; }
+.lib-ava{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  display:grid; place-items:center;
+  font-size:14px; color:#fff;
+  background:linear-gradient(145deg,#e08d6c,#c4574a);
+  box-shadow:0 6px 14px -8px rgba(196,87,74,.8);
+}
+.lib-focus-id{ min-width:0; display:flex; flex-direction:column; gap:2px; }
+.lib-focus-id b{ font-size:13px; font-weight:600; color:#232427; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.lib-focus-id i{ font-style:normal; font-size:11px; color:var(--room-ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.lib-focus-nav{ margin-left:auto; display:flex; gap:6px; }
+.lib-focus-nav button{
+  width:26px; height:26px; border-radius:50%;
+  border:1px solid var(--room-line); background:#fff; color:#4a463f;
+  cursor:pointer; font-size:14px; line-height:1; display:grid; place-items:center;
+  transition:background .16s, border-color .16s;
+}
+.lib-focus-nav button:hover{ background:#fbf8f2; border-color:#c9bfae; }
+.lib-quote{
+  margin:14px 0 0; padding-left:13px;
+  border-left:2px solid var(--room-coral);
+  font-size:12.5px; line-height:1.82; color:#4d483f;
+  display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical; overflow:hidden;
+}
+
+/* 封面横排 */
+.lib-rail{
+  display:flex; gap:18px; padding:8px 2px 18px;
+  overflow-x:auto; scroll-snap-type:x proximity;
+  scrollbar-width:thin; scrollbar-color:rgba(120,104,80,.35) transparent;
+}
+.lib-rail::-webkit-scrollbar{ height:6px; }
+.lib-rail::-webkit-scrollbar-thumb{ background:rgba(120,104,80,.28); border-radius:99px; }
+.lib-cover{
+  flex:0 0 164px; scroll-snap-align:start;
+  display:block; padding:0; border:0; background:none;
+  text-align:left; color:inherit; font-family:inherit; cursor:pointer;
+}
+.lib-cover-img{
+  display:block; aspect-ratio:2/3; border-radius:6px; overflow:hidden;
+  background:#ded6c6;
+  box-shadow:0 22px 32px -18px rgba(58,40,20,.55), 0 2px 6px rgba(58,40,20,.14), 0 0 0 1px rgba(70,52,30,.1);
+  transition:transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s;
+}
+.lib-cover-img img{ display:block; width:100%; height:100%; object-fit:cover; }
+.lib-cover:hover .lib-cover-img{ transform:translateY(-8px) scale(1.015); box-shadow:0 30px 42px -20px rgba(58,40,20,.6); }
+.lib-cover-title{
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  margin-top:12px; font-size:12.5px; font-weight:600; line-height:1.42; color:#232427;
+}
+.lib-cover-author{ display:block; margin-top:4px; font-size:11px; color:var(--room-ink-2); }
+.lib-cover-fallback{
+  display:flex; flex-direction:column; justify-content:center; align-items:center; gap:8px;
+  height:100%; padding:14px; text-align:center;
+  background:linear-gradient(160deg,#3b3730,#211f1b); color:#f3ece0;
+  font-size:12px; line-height:1.45;
+}
+.lib-cover-fallback i{ font-style:normal; font-size:10px; opacity:.62; }
+
+/* 底部：提示 + 翻页 */
+.lib-foot{ display:flex; align-items:center; gap:14px; padding-top:12px; border-top:1px solid var(--room-line); }
+.lib-tip{ font-size:11.5px; color:var(--room-ink-2); }
+.lib-pager{ margin-left:auto; display:flex; align-items:center; gap:10px; }
+.lib-arrow{
+  width:30px; height:30px; border-radius:50%;
+  border:1px solid var(--room-line); background:#fff; color:#3a352d;
+  cursor:pointer; font-size:14px; line-height:1; display:grid; place-items:center;
+}
+.lib-arrow:disabled{ opacity:.32; cursor:not-allowed; }
+.lib-count{ font-family:var(--mono); font-size:11.5px; color:#8c8271; letter-spacing:.06em; }
+.lib-count b{ color:var(--room-coral); font-size:13px; }
+
+/* 浅色房间里的空态 */
+.lib-room .state{ color:var(--room-ink-2); padding:56px 0; }
+.lib-room .state strong{ color:#232427; }
+.lib-room .state .btn{ background:#232427; color:#f6f2ea; border:0; }
+.lib-empty{ padding:8px 0 20px; }
+
+@media (max-width:1100px){
+  .lib-main{ grid-template-columns:1fr; gap:22px; }
+  .lib-cover{ flex:0 0 150px; }
+}
+@media (max-width:640px){
+  .lib-room{ padding:16px 14px 10px; border-radius:16px; }
+  .lib-top{ flex-wrap:wrap; gap:10px; }
+  .lib-search{ flex:1 1 100%; }
+  .lib-meta{ margin-left:0; }
+  .lib-head{ font-size:clamp(26px,7.4vw,34px); }
+  .lib-desc br{ display:none; }
+  .lib-cover{ flex:0 0 126px; }
+  .lib-tip{ display:none; }
+  .lib-quote{ -webkit-line-clamp:5; }
+}
+
