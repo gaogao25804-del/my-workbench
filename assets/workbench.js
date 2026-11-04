@@ -1470,7 +1470,7 @@ function mountPixel() {
 
   const demo = document.querySelector('[data-px-demo]');
   if (demo) demo.addEventListener('click', function () {
-    pxLoadUrl('assets/img/px-flower.png', '示例 · 花朵照片');
+    pxLoadUrl('assets/avatar.jpg', '示例 · 人物插画');
   });
 
   document.querySelectorAll('[data-px-down]').forEach(function (btn) {
