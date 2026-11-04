@@ -483,37 +483,105 @@ a{ color:inherit; text-decoration:none; }
 }
 .disc a{ color:rgba(255,255,255,.6); border-bottom:1px solid rgba(255,255,255,.25); }
 
-/* ---------- 结算 ---------- */
-.bar{
-  position:fixed; left:0; right:0; bottom:0; z-index:70;
-  display:none; align-items:center; gap:16px; padding:12px 18px calc(12px + env(safe-area-inset-bottom));
-  background:rgba(255,255,255,.96); backdrop-filter:blur(16px); border-top:1px solid var(--line);
+/* ---------- 结算：购物袋式配置条 ---------- */
+.cartbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:76;
+  padding-bottom:env(safe-area-inset-bottom);
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(20px) saturate(1.5);
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);
+  border-top:1px solid var(--line);
+  box-shadow:0 -12px 44px rgba(0,0,0,.07);
+  transform:translateY(112%);
+  transition:transform .44s cubic-bezier(.22,.85,.28,1);
 }
-.bar .sum .k{ font-size:10px; color:var(--sub); letter-spacing:.1em; }
-.bar .sum .v{ font-family:var(--fn); font-size:23px; line-height:1.2; display:flex; align-items:baseline; gap:6px; }
-.bar .sum .v i{ font-style:normal; font-size:12px; }
-.bar .sum .v .n{ font-family:var(--ff); font-size:10px; color:var(--sub); font-weight:400; }
-.bar .go{
-  margin-left:auto; height:46px; padding:0 30px; border-radius:999px;
-  background:var(--ink); color:#fff; font-size:14px; letter-spacing:.05em; transition:.25s;
+.cartbar.on{ transform:none; }
+.cb-in{
+  max-width:var(--max); margin:0 auto; padding:12px 40px;
+  display:flex; align-items:center; gap:18px;
 }
-.bar .go.off{ background:#D8D6D1; color:#fff; }
 
-.dock{
-  position:fixed; right:32px; bottom:32px; z-index:70; display:none;
-  align-items:center; gap:20px; padding:12px 12px 12px 24px;
-  background:rgba(17,17,17,.95); color:#fff; border-radius:999px;
-  backdrop-filter:blur(14px); box-shadow:0 12px 40px rgba(0,0,0,.18);
+/* 购物袋 + 件数徽标 */
+.cb-bag{
+  position:relative; width:50px; height:50px; flex:none; border-radius:50%;
+  background:var(--ink); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 20px -8px rgba(0,0,0,.55);
 }
-.dock .dk{ font-size:9.5px; letter-spacing:.14em; color:rgba(255,255,255,.5); }
-.dock .dv{ font-family:var(--fn); font-size:21px; line-height:1.2; display:flex; align-items:baseline; gap:4px; }
-.dock .dv i{ font-style:normal; font-size:11px; color:rgba(255,255,255,.6); }
-.dock .dc{ font-size:10.5px; color:rgba(255,255,255,.5); }
-.dock .db{
-  height:42px; padding:0 24px; border-radius:999px; background:#fff; color:var(--ink);
-  font-size:13px; letter-spacing:.04em; transition:.25s;
+.cb-bag svg{ width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:1.6; }
+.cb-n{
+  position:absolute; right:-6px; top:-6px; min-width:21px; height:21px; padding:0 5px;
+  border-radius:999px; background:var(--gold); color:#fff;
+  font-family:var(--fn); font-size:11px; font-weight:600; letter-spacing:0;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid #fff; box-sizing:content-box;
+  transform:scale(0); transition:transform .34s cubic-bezier(.2,1.7,.4,1);
 }
-.dock .db.off{ background:rgba(255,255,255,.22); color:rgba(255,255,255,.6); }
+.cb-n.on{ transform:scale(1); }
+
+/* 金额 */
+.cb-sum{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.cb-k{ font-size:10.5px; color:var(--sub); letter-spacing:.12em; }
+.cb-k b{ color:var(--ink); font-weight:700; letter-spacing:0; font-size:12px; }
+.cb-v{
+  font-family:var(--fn); font-size:25px; line-height:1.1; letter-spacing:-.01em;
+  display:flex; align-items:baseline; gap:3px;
+}
+.cb-v i{ font-style:normal; font-size:12px; color:var(--sub); margin-right:2px; margin-bottom:4px; }
+.cb-v em{ font-style:normal; }
+.cb-v.pop em{ animation:pricePop .68s ease; }
+@keyframes pricePop{
+  0%{ color:var(--ink); } 24%{ color:var(--gold); } 100%{ color:var(--ink); }
+}
+
+/* 已选内容摘要（桌面） */
+.cb-list{
+  font-size:11.5px; color:var(--sub); letter-spacing:.02em;
+  max-width:430px; min-width:0; padding-left:18px; margin-left:4px;
+  border-left:1px solid var(--line);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.cb-list b{ color:var(--ink2); font-weight:500; }
+
+/* 主按钮 */
+.cb-go{
+  margin-left:auto; height:50px; padding:0 30px; border-radius:999px;
+  background:var(--ink); color:#fff; font-size:14px; letter-spacing:.04em;
+  display:flex; align-items:center; gap:9px;
+  box-shadow:0 12px 28px -14px rgba(0,0,0,.7);
+  transition:transform .22s, box-shadow .22s, opacity .22s;
+}
+.cb-go i{ font-style:normal; transition:transform .24s; }
+.cb-go:hover{ transform:translateY(-1px); box-shadow:0 16px 34px -14px rgba(0,0,0,.75); }
+.cb-go:hover i{ transform:translateX(4px); }
+.cb-go:active{ transform:scale(.975); }
+.cb-go.off{ opacity:.55; }
+
+/* 飞入购物袋的小点 */
+.fly{
+  position:fixed; z-index:98; width:30px; height:30px; margin:-15px 0 0 -15px;
+  border-radius:50%; background:var(--ink); color:var(--gold);
+  font-size:13px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 22px rgba(0,0,0,.34); pointer-events:none;
+  transition:transform .26s cubic-bezier(.42,0,.82,.58), opacity .26s linear;
+  will-change:transform;
+}
+@keyframes bagPop{
+  0%{ transform:scale(1); } 26%{ transform:scale(1.19); }
+  58%{ transform:scale(.93); } 100%{ transform:scale(1); }
+}
+.cb-bag.pop{ animation:bagPop .52s cubic-bezier(.3,1.1,.5,1); }
+@keyframes ringOut{
+  0%{ opacity:.55; transform:scale(.6); } 100%{ opacity:0; transform:scale(2.1); }
+}
+.cb-ring{
+  position:absolute; inset:-1px; border-radius:50%;
+  border:2px solid var(--gold); opacity:0; pointer-events:none;
+}
+.cb-ring.on{ animation:ringOut .62s ease-out; }
+
+/* 有内容时给页脚留出空间 */
+body.has-cart{ padding-bottom:86px; }
 
 /* ---------- 弹层 ---------- */
 .mask{
@@ -529,11 +597,26 @@ a{ color:inherit; text-decoration:none; }
   box-shadow:0 30px 80px rgba(0,0,0,.2);
 }
 .sheet.on{ opacity:1; pointer-events:auto; transform:translate(-50%,-50%); }
+@keyframes qIn{ from{ opacity:0; transform:translateY(9px); } to{ opacity:1; transform:none; } }
+.sheet.on .qline{ animation:qIn .36s cubic-bezier(.2,.7,.3,1) both; animation-delay:calc(var(--i,0) * 44ms); }
+.sheet.on .qtotal{ animation:qIn .4s cubic-bezier(.2,.7,.3,1) both; animation-delay:.22s; }
+.sheet.on .qnote, .sheet.on .qact, .sheet.on .qrwrap{ animation:qIn .42s ease both; animation-delay:.3s; }
+@media (prefers-reduced-motion: reduce){
+  .sheet.on .qline, .sheet.on .qtotal, .sheet.on .qnote,
+  .sheet.on .qact, .sheet.on .qrwrap, .sil-grid.swap .sil-item{ animation:none; }
+}
 .sheet-hd{
+  position:relative;
   display:flex; align-items:center; justify-content:space-between;
   padding:22px 26px; border-bottom:1px solid var(--line);
 }
-.sheet-hd h3{ font-size:16px; font-weight:600; letter-spacing:.06em; }
+.sheet-hd h3{ font-size:16px; font-weight:600; letter-spacing:.06em; display:flex; align-items:center; gap:10px; }
+.sh-tag{
+  font-family:var(--fn); font-size:10.5px; font-weight:500; letter-spacing:.06em;
+  color:#fff; background:var(--ink); padding:3px 9px; border-radius:999px;
+  opacity:0; transform:scale(.8); transition:opacity .3s, transform .34s cubic-bezier(.2,1.5,.4,1);
+}
+.sh-tag.on{ opacity:1; transform:scale(1); }
 .sheet-hd .x{ font-size:22px; color:var(--sub); line-height:1; }
 .sheet-bd{ padding:8px 26px 26px; overflow-y:auto; }
 .qcar{ font-size:11.5px; color:var(--sub); padding:16px 0; border-bottom:1px solid var(--line); letter-spacing:.04em; }
@@ -561,6 +644,7 @@ a{ color:inherit; text-decoration:none; }
   font-size:13.5px; letter-spacing:.05em; transition:.25s;
 }
 .qbtn.ghost{ background:#fff; color:var(--ink); border:1px solid var(--line); }
+.qbtn.done{ background:var(--gold); box-shadow:0 12px 28px -14px rgba(185,154,91,.9); }
 .qrwrap{
   display:flex; align-items:center; gap:18px; margin-top:26px;
   padding-top:24px; border-top:1px solid var(--line);
@@ -570,22 +654,28 @@ a{ color:inherit; text-decoration:none; }
 .qt span{ display:block; font-size:10.5px; line-height:1.9; color:var(--sub); margin-top:6px; }
 
 .toast{
-  position:fixed; left:50%; bottom:110px; transform:translate(-50%,10px); z-index:99;
-  background:rgba(17,17,17,.94); color:#fff; font-size:12.5px; padding:12px 22px;
-  border-radius:999px; opacity:0; pointer-events:none; transition:.3s;
+  position:fixed; left:50%; bottom:100px; transform:translate(-50%,14px) scale(.94); z-index:99;
+  background:rgba(17,17,17,.95); color:#fff; font-size:12.5px; letter-spacing:.02em;
+  padding:11px 20px 11px 12px; border-radius:999px;
+  display:flex; align-items:center; gap:10px;
+  box-shadow:0 16px 40px -14px rgba(0,0,0,.6);
+  opacity:0; pointer-events:none;
+  transition:opacity .26s, transform .34s cubic-bezier(.2,1.3,.4,1);
 }
-.toast.on{ opacity:1; transform:translate(-50%,0); }
+.toast.on{ opacity:1; transform:translate(-50%,0) scale(1); }
+.toast::before{
+  content:"✓"; width:20px; height:20px; flex:none; border-radius:50%;
+  background:var(--gold); color:#fff; font-size:11px; font-weight:600;
+  display:flex; align-items:center; justify-content:center;
+}
+.toast.warn::before{ content:"!"; background:#B4453A; }
 
 /* ============================================================
    响应式
    ============================================================ */
-@media (min-width:1080px){
-  .dock{ display:flex; }
-  .bar{ display:none; }
-}
-
 @media (max-width:1079px){
   .wrap{ padding:0 30px; }
+  .cb-in{ padding:12px 30px; }
   .nav-in{ padding:0 30px; }
   .nav-r a{ display:none; }
   .host-wrap{ grid-template-columns:0.8fr 1fr; gap:44px; }
@@ -600,8 +690,6 @@ a{ color:inherit; text-decoration:none; }
   .acc-grid{ grid-template-columns:repeat(3,1fr); }
   .addon-body{ padding:40px 36px; }
   .addon-name{ font-size:22px; }
-  .bar{ display:flex; }
-  .dock{ display:none; }
 }
 
 @media (max-width:759px){
@@ -718,10 +806,12 @@ a{ color:inherit; text-decoration:none; }
   .frame{ width:92px; height:92px; }
   .disc{ font-size:10px; padding:18px 0 90px; }
 
-  .bar .sum .v{ font-size:21px; }
-  .bar .go{ height:44px; padding:0 24px; font-size:13px; }
 
-  .sheet{ width:94vw; max-height:88vh; left:0; right:0; top:auto; bottom:0; transform:translateY(10px); border-radius:0; }
+  .sheet{
+    left:12px; right:12px; width:auto; max-width:none;
+    top:auto; bottom:0; max-height:88vh;
+    transform:translateY(16px); border-radius:0;
+  }
   .sheet.on{ transform:translateY(0); }
   .sheet-hd{ padding:18px 20px; }
   .sheet-bd{ padding:6px 20px 26px; }
@@ -733,7 +823,16 @@ a{ color:inherit; text-decoration:none; }
   .qk{ display:none; }
   .qv{ font-size:12.5px; }
   .qtotal .tv{ font-size:27px; }
-  .toast{ bottom:96px; }
+  .toast{ bottom:84px; max-width:calc(100vw - 32px); font-size:12px; padding:10px 16px 10px 10px; }
+  .cb-in{ padding:9px 16px; gap:11px; }
+  .cb-bag{ width:44px; height:44px; }
+  .cb-bag svg{ width:21px; height:21px; }
+  .cb-n{ min-width:19px; height:19px; font-size:10px; padding:0 4px; right:-5px; top:-5px; }
+  .cb-k{ font-size:9px; letter-spacing:.08em; }
+  .cb-v{ font-size:22px; }
+  .cb-go{ height:45px; padding:0 18px; font-size:13px; gap:6px; }
+  .cb-list{ display:none; }
+  body.has-cart{ padding-bottom:76px; }
 }
 
 /* ---------- 硅胶套装：10 宫格 + 色卡 ---------- */
@@ -818,7 +917,7 @@ a{ color:inherit; text-decoration:none; }
       <a href="#s-film">玻璃膜</a>
       <a href="#s-acc">配件</a>
       <button class="pill ghost" id="navAsk">到店实测</button>
-      <button class="pill light" id="navBtn">出报价单</button>
+      <button class="pill light" id="navBtn">我的配置单</button>
     </div>
   </div>
 </nav>
@@ -1034,30 +1133,32 @@ a{ color:inherit; text-decoration:none; }
   </div>
 </footer>
 
-<!-- ========== 手机底部结算 ========== -->
-<div class="bar">
-  <div class="sum">
-    <div class="k">合计</div>
-    <div class="v"><i>¥</i><span id="sumVal">0</span><span class="n" id="sumCnt">未选项目</span></div>
+<!-- ========== 底部配置条（购物袋） ========== -->
+<div class="cartbar" id="cartBar">
+  <div class="cb-in">
+    <div class="cb-bag" id="cbBag">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4.6 8.2h14.8l-1.25 11.1a2.1 2.1 0 0 1-2.09 1.9H7.94a2.1 2.1 0 0 1-2.09-1.9L4.6 8.2Z"
+              stroke-linejoin="round"/>
+        <path d="M8.9 8.2V6.5a3.1 3.1 0 0 1 6.2 0v1.7" stroke-linecap="round"/>
+      </svg>
+      <i class="cb-ring" id="cbRing"></i>
+      <b class="cb-n" id="cbNum">0</b>
+    </div>
+    <div class="cb-sum">
+      <span class="cb-k">已选 <b id="cbCnt">0</b> 项 · 合计</span>
+      <span class="cb-v"><i>¥</i><em id="cbVal" data-v="0">0</em></span>
+    </div>
+    <div class="cb-list" id="cbList"></div>
+    <button class="cb-go off" id="cbGo">查看配置单 <i>→</i></button>
   </div>
-  <button class="go off" id="btnSheet">出报价单</button>
-</div>
-
-<!-- ========== 桌面浮动结算 ========== -->
-<div class="dock">
-  <div>
-    <div class="dk">已选合计</div>
-    <div class="dv"><i>¥</i><span id="dockVal">0</span></div>
-  </div>
-  <div class="dc" id="dockCnt">未选项目</div>
-  <button class="db off" id="dockBtn">出报价单</button>
 </div>
 
 <!-- ========== 弹层 ========== -->
 <div class="mask" id="mask"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-hd">
-    <h3>报价单</h3>
+    <h3>你的配置单 <span class="sh-tag" id="shTag"></span></h3>
     <button class="x" id="btnClose">×</button>
   </div>
   <div class="sheet-bd" id="sheetBody">
@@ -1373,17 +1474,94 @@ function picked(){
   return out;
 }
 
+/* 价格滚动：从旧值滚到新值，并闪一下金色 */
+function countTo(el, to){
+  const from = Number(el.dataset.v || 0);
+  el.dataset.v = to;
+  if (from === to){ el.textContent = money(to); return; }
+  const box = el.closest('.cb-v');
+  if (box){
+    box.classList.remove('pop');
+    void box.offsetWidth;
+    box.classList.add('pop');
+  }
+  const t0 = performance.now(), dur = 460;
+  // 兜底：标签页切后台时 rAF 会暂停，定时器保证最终值一定落地
+  const guard = setTimeout(() => { el.textContent = money(to); }, dur + 160);
+  (function step(t){
+    // rAF 的时间戳可能早于 t0，必须夹到 [0,1]，否则会外推出负数价格
+    const k = Math.max(0, Math.min(1, (t - t0) / dur));
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = money(Math.round(from + (to - from) * e));
+    if (k < 1){ requestAnimationFrame(step); }
+    else { clearTimeout(guard); el.textContent = money(to); }
+  })(t0);
+}
+
+/* 从点击位置飞一颗小点进购物袋——「东西进去了」最直接的暗示 */
+function flyToBag(el){
+  const bag = $('#cbBag');
+  if (!bag || !el) return;
+  const a = el.getBoundingClientRect ? el.getBoundingClientRect() : el;
+  const b = bag.getBoundingClientRect();
+  const sx = a.left + a.width / 2;
+  const sy = a.top + Math.min(a.height * .42, 130);
+  const dx = (b.left + b.width / 2) - sx;
+  const dy = (b.top + b.height / 2) - sy;
+
+  const dot = document.createElement('div');
+  dot.className = 'fly';
+  dot.textContent = '✓';
+  dot.style.left = sx + 'px';
+  dot.style.top = sy + 'px';
+  document.body.appendChild(dot);
+
+  requestAnimationFrame(() => {
+    // 先升后落，两段拼出抛物线
+    dot.style.transform = `translate(${dx * .4}px, ${dy * .4 - 62}px) scale(.72)`;
+    setTimeout(() => {
+      dot.style.transform = `translate(${dx}px, ${dy}px) scale(.26)`;
+      dot.style.opacity = '0';
+    }, 225);
+  });
+
+  setTimeout(() => {
+    dot.remove();
+    bag.classList.remove('pop');
+    void bag.offsetWidth;
+    bag.classList.add('pop');
+    const ring = $('#cbRing');
+    if (ring){ ring.classList.remove('on'); void ring.offsetWidth; ring.classList.add('on'); }
+  }, 520);
+}
+
 function refresh(){
   const list = picked();
   const total = list.reduce((s, x) => s + x.p, 0);
-  const txt = list.length ? `已选 ${list.length} 项` : '未选项目';
+  const n = list.length;
 
-  $('#sumVal').textContent = money(total);
-  $('#sumCnt').textContent = txt;
-  $('#dockVal').textContent = money(total);
-  $('#dockCnt').textContent = txt;
-  $('#btnSheet').classList.toggle('off', list.length === 0);
-  $('#dockBtn').classList.toggle('off', list.length === 0);
+  $('#cbCnt').textContent = n;
+  $('#cbNum').textContent = n;
+  countTo($('#cbVal'), total);
+  $('#cbNum').classList.toggle('on', n > 0);
+  $('#cartBar').classList.toggle('on', n > 0);
+  $('#cbGo').classList.toggle('off', n === 0);
+  document.body.classList.toggle('has-cart', n > 0);
+  const cl = $('#cbList');
+  if (cl){
+    const names = list.map(x => x.v.split(/[ ·（(]/)[0]);
+    cl.innerHTML = names.length
+      ? names.slice(0, 3).map(v => `<b>${v}</b>`).join(' · ') +
+        (names.length > 3 ? ` 等 ${names.length} 项` : '')
+      : '';
+  }
+  const nb = $('#navBtn');
+  if (nb) nb.textContent = n ? `我的配置单 · ${n}` : '我的配置单';
+  const tag = $('#shTag');
+  if (tag){
+    tag.textContent = n ? `${n} 项` : '';
+    tag.classList.toggle('on', n > 0);
+  }
   renderSheet(list, total);
 }
 
@@ -1395,8 +1573,8 @@ function renderSheet(list, total){
       <div class="qempty">还没勾选项目<br>返回页面选择你需要的内容</div>`;
     return;
   }
-  const rows = list.map(x => `
-    <div class="qline">
+  const rows = list.map((x, i) => `
+    <div class="qline" style="--i:${i}">
       <span class="qk">${x.k}</span>
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
         ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶套装</small>`:''}</span>
@@ -1412,7 +1590,7 @@ function renderSheet(list, total){
     </div>
     <div class="qnote">以上为普通车型零售价，特殊车型尺寸加 15%；窗膜为前挡 + 侧挡组合价，漆面膜为整车贴装价，配件不含施工。最终以门店报价为准。</div>
     <div class="qact">
-      <button class="qbtn" id="btnCopy">复制报价单</button>
+      <button class="qbtn" id="btnCopy">复制发给老板 →</button>
       <button class="qbtn ghost" id="btnClose2">继续挑选</button>
     </div>
     <div class="qrwrap">
@@ -1442,9 +1620,30 @@ function copyQuote(list, total, m){
   lines.push('SolarGard 圣佳授权店 · 到店免费实测');
 
   const txt = lines.join('\n');
-  const done = () => toast('已复制，去微信粘贴发给老板');
+  const done = () => {
+    const btn = $('#btnCopy');
+    if (btn){
+      btn.classList.add('done');
+      btn.textContent = '✓ 已复制，去微信粘贴';
+      setTimeout(() => {
+        btn.classList.remove('done');
+        btn.textContent = '复制发给老板 →';
+      }, 2400);
+    }
+    toast('已复制，去微信粘贴发给老板');
+  };
   if (navigator.clipboard && window.isSecureContext){
-    navigator.clipboard.writeText(txt).then(done).catch(() => fallbackCopy(txt, done));
+    let settled = false;
+    // 浏览器可能既不 resolve 也不 reject（权限被拦），1.6s 后给个明确提示
+    const guard = setTimeout(() => {
+      if (!settled){ settled = true; fallbackCopy(txt, done); }
+    }, 1200);
+    navigator.clipboard.writeText(txt).then(() => {
+      settled = true; clearTimeout(guard); done();
+    }).catch(() => {
+      settled = true; clearTimeout(guard);
+      fallbackCopy(txt, done);
+    });
   } else fallbackCopy(txt, done);
 }
 
@@ -1460,46 +1659,97 @@ function fallbackCopy(txt, done){
 }
 
 let toastTimer;
-function toast(msg){
+function toast(msg, type){
   const t = $('#toast');
   t.textContent = msg;
-  t.classList.add('on');
+  t.className = 'toast on' + (type === 'warn' ? ' warn' : '');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('on'), 1900);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2100);
 }
 
-function openSheet(){ $('#mask').classList.add('on'); $('#sheet').classList.add('on'); }
-function closeSheet(){ $('#mask').classList.remove('on'); $('#sheet').classList.remove('on'); }
+function openSheet(){
+  $('#mask').classList.add('on');
+  $('#sheet').classList.add('on');
+  const bd = $('#sheetBody');
+  if (bd) bd.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+function closeSheet(){
+  $('#mask').classList.remove('on');
+  $('#sheet').classList.remove('on');
+  document.body.style.overflow = '';
+}
 
 /* ========================= 事件 ========================= */
+function findCoat(id){
+  for (const g of COAT){ const it = g.items.find(x => x.id === id); if (it) return it; }
+}
+function findFilm(id){
+  for (const se of FILM){
+    const t = se.tiers.find(x => x.id === id);
+    if (t) return { se, t };
+  }
+}
+function findAcc(id){
+  return ACC_BIG.concat(ACC_SMALL).find(x => x.id === id);
+}
+
 document.addEventListener('click', e => {
+  /* 屏幕保护 */
   const sc = e.target.closest('[data-screen]');
   if (sc){
     const id = sc.dataset.screen;
-    state.screen = state.screen === id ? null : id;
-    renderScreen(); refresh(); return;
+    const was = state.screen === id;
+    const r = sc.getBoundingClientRect();
+    state.screen = was ? null : id;
+    renderScreen(); refresh();
+    if (!was){
+      const it = SCREEN.find(x => x.id === id);
+      if (it){ flyToBag(r); toast(`已加入 · ${it.name}（${it.set}）· ¥${money(it.price)}`, 'ok'); }
+    } else toast('已移出配置单', 'warn');
+    return;
   }
 
+  /* 漆面膜 */
   const co = e.target.closest('[data-coat]');
   if (co){
     const id = co.dataset.coat;
-    state.coat = state.coat === id ? null : id;
-    renderCoat(); refresh(); return;
+    const was = state.coat === id;
+    const r = co.getBoundingClientRect();
+    state.coat = was ? null : id;
+    renderCoat(); refresh();
+    if (!was){
+      const it = findCoat(id);
+      if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(it.price)}`, 'ok'); }
+    } else toast('已移出配置单', 'warn');
+    return;
   }
 
+  /* 玻璃膜取消 */
   const clr = e.target.closest('[data-clear]');
   if (clr){
     state[clr.dataset.clear] = null;
-    renderFilm(); refresh(); return;
+    renderFilm(); refresh();
+    toast('已移出配置单', 'warn');
+    return;
   }
 
+  /* 玻璃膜档位 */
   const fi = e.target.closest('[data-film]');
   if (fi){
     const id = fi.dataset.film;
-    state.film = state.film === id ? null : id;
-    renderFilm(); refresh(); return;
+    const was = state.film === id;
+    const r = fi.getBoundingClientRect();
+    state.film = was ? null : id;
+    renderFilm(); refresh();
+    if (!was){
+      const hit = findFilm(id);
+      if (hit){ flyToBag(r); toast(`已加入 · ${hit.se.name} · ${hit.t.code} 档 · ¥${money(hit.t.price)}`, 'ok'); }
+    } else toast('已移出配置单', 'warn');
+    return;
   }
 
+  /* 硅胶颜色 */
   const sw = e.target.closest('[data-sil]');
   if (sw){
     if (state.silColor !== sw.dataset.sil){
@@ -1509,20 +1759,24 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* 配件 */
   const ac = e.target.closest('[data-acc]');
   if (ac){
     const id = ac.dataset.acc;
-    state.acc.has(id) ? state.acc.delete(id) : state.acc.add(id);
-    renderAcc(); refresh(); return;
+    const was = state.acc.has(id);
+    const r = ac.getBoundingClientRect();
+    was ? state.acc.delete(id) : state.acc.add(id);
+    renderAcc(); refresh();
+    if (!was){
+      const it = findAcc(id);
+      if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(it.price)}`, 'ok'); }
+    } else toast('已移出配置单', 'warn');
+    return;
   }
 });
 
-$('#btnSheet').onclick = () => {
-  if (!picked().length){ toast('先勾选你需要的内容'); return; }
-  openSheet();
-};
-$('#dockBtn').onclick = () => {
-  if (!picked().length){ toast('先勾选你需要的内容'); return; }
+$('#cbGo').onclick = () => {
+  if (!picked().length){ toast('先勾选你需要的内容', 'warn'); return; }
   openSheet();
 };
 $('#btnClose').onclick = closeSheet;
@@ -1543,7 +1797,7 @@ window.addEventListener('scroll', onScroll, { passive:true });
 onScroll();
 
 document.getElementById('navBtn').onclick = () => {
-  if (!picked().length){ toast('先勾选你需要的内容'); return; }
+  if (!picked().length){ toast('先勾选你需要的内容', 'warn'); return; }
   openSheet();
 };
 document.getElementById('navAsk').onclick = () => {
