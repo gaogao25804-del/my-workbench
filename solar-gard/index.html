@@ -1442,14 +1442,15 @@ body.intro-lock{ overflow:hidden; }
 
 /* 图：比面板大一圈，才能在里面轻微漂移而不露边 */
 .ag-media{
-  position:absolute; inset:-6% -20%;
+  /* 比面板大一圈留作视差余量；横向别给太多，否则竖图会被裁掉两侧 */
+  position:absolute; inset:-4% -5%;
   transition:transform .95s cubic-bezier(.215,.61,.355,1);
   will-change:transform;
 }
 .ag-media img{
   width:100%; height:100%; object-fit:cover; object-position:72% 60%;
   display:block; user-select:none; -webkit-user-drag:none;
-  filter:grayscale(1) brightness(.76) contrast(1.02);
+  filter:grayscale(1) brightness(.58) contrast(1.06);
   transition:filter .72s ease;
 }
 .ag-p.on .ag-media img{ filter:grayscale(0) brightness(1) contrast(1); }
@@ -1588,7 +1589,7 @@ body.intro-lock{ overflow:hidden; }
 .pk-skip:hover{ color:rgba(255,255,255,.72); border-color:rgba(255,255,255,.4); }
 
 /* ---------- 窄屏：竖着叠，收起是一行薄片 ---------- */
-@media (max-width:719px){
+@media (max-width:899px){
   .ag{ flex-direction:column; gap:8px; perspective:none; }
   .ag-p{ border-radius:11px; transform:none !important; flex-basis:0; }
   .ag-rail{
@@ -3067,15 +3068,16 @@ document.getElementById('navAsk').onclick = () => {
   /* 只有 i6 的价是核对过的。其余车型只给"可选 + 待上线"，一个数字都不许出现。
      img：把实拍图放进 asset/ 再把文件名填进来即可（建议 4:5 竖图，1200×1500）。
      留空就走石墨渐变占位，绝不拿别的车的图冒充。 */
+  /* pos = object-position，按每张图里车身的位置对好，换图时一起调 */
   var LIST = [
-    { id:'i6',   code:'i6',   name:'理想 i6',   ready:true, img:'asset/car_hero.jpg', fit:'fit' },
-    { id:'i8',   code:'i8',   name:'理想 i8',   img:'' },
-    { id:'i9',   code:'i9',   name:'理想 i9',   img:'' },
-    { id:'l6',   code:'L6',   name:'理想 L6',   img:'' },
-    { id:'l7',   code:'L7',   name:'理想 L7',   img:'' },
-    { id:'l8',   code:'L8',   name:'理想 L8',   img:'' },
-    { id:'l9',   code:'L9',   name:'理想 L9',   img:'' },
-    { id:'mega', code:'MEGA', name:'理想 MEGA', img:'' }
+    { id:'i6',   code:'i6',   name:'理想 i6',    ready:true, img:'asset/car_i6_panel.jpg', pos:'50% 50%' },
+    { id:'i8',   code:'i8',   name:'理想 i8',    img:'asset/car_i8.jpg',  pos:'52% 58%' },
+    { id:'i9',   code:'i9',   name:'理想 i9',    img:'asset/car_i9.jpg',  pos:'46% 54%' },
+    { id:'l6',   code:'L6',   name:'理想 L6',    img:'asset/car_l6.jpg',  pos:'56% 50%' },
+    { id:'l7',   code:'L7',   name:'理想 L7',    img:'' },
+    { id:'l8',   code:'L8',   name:'理想 L8',    img:'asset/car_l8.jpg',  pos:'39% 54%' },
+    { id:'l9',   code:'L9',   name:'理想 L9',    img:'asset/car_l9.jpg',  pos:'53% 54%' },
+    { id:'mega', code:'MEGA', name:'理想 MEGA',  img:'' }
   ];
 
   var cur = 'i6';
@@ -3086,7 +3088,8 @@ document.getElementById('navAsk').onclick = () => {
   /* ---------- 建面板 ---------- */
   gal.innerHTML = LIST.map(function (m, i) {
     var media = m.img
-      ? '<span class="ag-media' + (m.fit ? ' ' + m.fit : '') + '"><img src="' + m.img + '" alt="' + m.name + '" loading="lazy"></span>'
+      ? '<span class="ag-media"><img src="' + m.img + '" alt="' + m.name + '" loading="lazy"' +
+        (m.pos ? ' style="object-position:' + m.pos + '"' : '') + '></span>'
       : '<span class="ag-media empty"></span>';
     return '<button class="ag-p' + (m.ready ? ' ready' : '') + '" type="button" ' +
         'data-pk="' + m.id + '" role="listitem" aria-pressed="false" style="--i:' + i + '">' +
@@ -3116,7 +3119,7 @@ document.getElementById('navAsk').onclick = () => {
     });
   });
 
-  function vertical() { return window.innerWidth < 720; }
+  function vertical() { return window.innerWidth < 900; }
   function idxOf(id) {
     for (var i = 0; i < LIST.length; i += 1) if (LIST[i].id === id) return i;
     return 0;
