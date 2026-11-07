@@ -1508,7 +1508,11 @@ body.intro-lock{ overflow:hidden; }
 .picker.done .pk-c{ transition-delay:0ms; }
 
 /* 封套里的车：两层，打底虚化铺满 + 主体完整不裁 */
-.pk-c-img{ position:absolute; inset:0; display:block; pointer-events:none; overflow:hidden; }
+.pk-c-img{
+  position:absolute; inset:0; display:block; pointer-events:none; overflow:hidden;
+  /* 图还没到的时候别是一块纯黑，给个石墨底 */
+  background:linear-gradient(158deg,#23272E 0%,#181B20 58%,#111418 100%);
+}
 .pk-c-img img{ display:block; -webkit-user-drag:none; user-select:none; }
 
 /* 车图本身就是 1:1 方图（边上羽化进暗底），直接铺满，不裁切也不留硬边 */
