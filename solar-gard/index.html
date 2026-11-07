@@ -116,6 +116,34 @@ a{ color:inherit; text-decoration:none; }
 }
 .hero-act{ display:flex; gap:12px; margin-top:34px; flex-wrap:wrap; }
 .hero-img{ overflow:hidden; background:#fff; line-height:0; }
+/* 非 i6 车型没有超宽横幅，用该车型的方图裁成同比例横幅；容器定住比例，别让裁切忽高忽低 */
+.hero-img.cover{ aspect-ratio:2.25 / 1; }
+.hero-img.cover img{
+  width:100%; height:100%; object-fit:cover; object-position:50% 50%;
+  /* 方图下半截是地面和草地，早一点渐隐，别在白色页面上留一条绿边 */
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 72%, transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 72%, transparent 100%);
+}
+/* 还没图的车型（L7）：石墨底 + 代号，绝不拿别的车顶上 */
+.hero-img{ position:relative; }
+.hero-img.empty{ aspect-ratio:2.8 / 1; background:
+    radial-gradient(120% 90% at 62% 12%, rgba(190,163,110,.16), rgba(0,0,0,0) 62%),
+    linear-gradient(158deg,#252A31 0%,#1A1E24 48%,#0F1216 100%); }
+.hero-img.empty img{ display:none; }
+/* 还没有车图的车型：不放别的车，居中给代号，写明「报价照常」 */
+.hero-ph{ display:none; }
+.hero-img.empty .hero-ph{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  position:absolute; inset:0; gap:14px;
+}
+.hero-ph b{
+  font-family:var(--fn); font-size:clamp(56px,8vw,120px); font-weight:700;
+  letter-spacing:.02em; color:rgba(255,255,255,.9); line-height:1;
+}
+.hero-ph i{
+  font-style:normal; font-size:12.5px; letter-spacing:.28em; padding-left:.28em;
+  color:rgba(224,199,146,.82);
+}
 .hero-img img{
   width:100%; height:auto; display:block;
   -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 7%, #000 95%, transparent 100%);
@@ -633,6 +661,9 @@ a{ color:inherit; text-decoration:none; }
 .sheet.on .qline{ animation:qIn .36s cubic-bezier(.2,.7,.3,1) both; animation-delay:calc(var(--i,0) * 44ms); }
 .sheet.on .qtotal{ animation:qIn .4s cubic-bezier(.2,.7,.3,1) both; animation-delay:.22s; }
 .sheet.on .qnote, .sheet.on .qact, .sheet.on .qrwrap{ animation:qIn .42s ease both; animation-delay:.3s; }
+@media (max-width:899px){
+  .hero-img.cover, .hero-img.empty{ aspect-ratio:16 / 9; }
+}
 @media (prefers-reduced-motion: reduce){
   .sheet.on .qline, .sheet.on .qtotal, .sheet.on .qnote,
   .sheet.on .qact, .sheet.on .qrwrap, .sil-grid.swap .sil-item{ animation:none; }
@@ -1514,12 +1545,12 @@ body.intro-lock{ overflow:hidden; }
   /* 图还没到的时候别是一块纯黑，给个石墨底 */
   background:linear-gradient(158deg,#23272E 0%,#181B20 58%,#111418 100%);
 }
-/* 6 台车拼在一张 3x2 精灵图里：只发 1 个请求，不会被多图并发拖死。
-   每格是正方形，卡片也是正方形，background-size:300% 200% 正好不拉伸 */
+/* 8 个格子拼在一张 4x2 精灵图里：只发 1 个请求，不会被多图并发拖死。
+   每格是正方形，卡片也是正方形，background-size:400% 200% 正好不拉伸 */
 .pk-sprite{
   position:absolute; inset:0; display:block;
   background-image:url('asset/car_sprite.jpg');
-  background-size:300% 200%;
+  background-size:400% 200%;
   background-repeat:no-repeat;
   filter:brightness(.88) saturate(.86);
   transition:filter .45s ease;
@@ -1901,7 +1932,7 @@ body.intro-lock{ overflow:hidden; }
       </div>
     </div>
   </div>
-  <div class="hero-img" data-page-node-id="0DM6MKWo0P0EP1G5TNSji5"><img src="asset/car_hero.jpg" alt="理想 i6" id="heroImg" data-page-node-id="ZzXxJBxm2qTCJehtgwSAOW"></div>
+  <div class="hero-img" data-page-node-id="0DM6MKWo0P0EP1G5TNSji5"><img src="asset/car_hero.jpg" alt="理想 i6" id="heroImg" data-page-node-id="ZzXxJBxm2qTCJehtgwSAOW"><span class="hero-ph" aria-hidden="true"><b id="heroPhCode">L7</b><i>车图整理中 · 报价照常</i></span></div>
 </header>
 
 <!-- ========== 主理人 ========== -->
@@ -2065,7 +2096,7 @@ body.intro-lock{ overflow:hidden; }
       <h2 data-page-node-id="tWUkIZOZefv8Y0bbbw5lr1">车内配件</h2>
       <span class="en" data-page-node-id="Lj2kBPqYW3EF1hA6jLIFeC">Accessories</span>
     </div>
-    <p class="sec-p" data-page-node-id="gbojpFVKxM1oxlsT6ATU1X">整车配件 · 单项可加装。脚垫与座椅垫为整套价，其余小件为单品价，不含施工。</p>
+    <p class="sec-p" id="accSecP" data-page-node-id="gbojpFVKxM1oxlsT6ATU1X">整车配件 · 单项可加装。脚垫与座椅垫为整套价，其余小件为单品价，不含施工。</p>
 
     <div id="secAccFoot" style="margin-top:44px" data-page-node-id="PWxzagmpCNCkcV5ZWmAd8w">
     <div class="addon-card pick pick--lg" data-acc="a1">
@@ -2318,13 +2349,19 @@ body.intro-lock{ overflow:hidden; }
 /* =========================================================
    数据层：加新车型 = MODELS 补一条 + 补对应价目
    ========================================================= */
-/* 理想全系。目前只有 i6 有真实价目，其余车型一律不进列表——没核对过的价格不上页面。
-   以后补某一款：① 把它挪进下面的数组并标 ready:true
-                ② 若该款窗膜/膜价与 i6 不同，单独建一份价目表，别用系数硬算
-   示例（等你给准数再放开）：
-   { id:'l9', name:'理想 L9', sub:'', body:'增程 SUV · 6 座', giftCount:24, ready:true } */
+/* 理想全系 8 款。
+   车衣 / 玻璃膜 / 钢化膜：老板确认全系通用，直接复用同一份价目，不做任何系数换算。
+   配件：脚垫、座椅垫这类按座舱布局来的件，5 座沿用 i6 价目；6/7 座只标「按车型配齐」，
+        giftCount 留 0 表示件数以实车为准，不编造数字。 */
 const MODELS = [
-  { id:'i6', name:'理想 i6', sub:'26 款', body:'纯电 SUV · 5 座', giftCount:21, ready:true }
+  { id:'i6',   name:'理想 i6',   sub:'26 款', body:'纯电 SUV · 5 座', seats:5, giftCount:21, ready:true },
+  { id:'i8',   name:'理想 i8',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:0,  ready:true },
+  { id:'i9',   name:'理想 i9',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:0,  ready:true },
+  { id:'l6',   name:'理想 L6',   sub:'',      body:'增程 SUV · 5 座', seats:5, giftCount:21, ready:true },
+  { id:'l7',   name:'理想 L7',   sub:'',      body:'增程 SUV · 5 座', seats:5, giftCount:21, ready:true },
+  { id:'l8',   name:'理想 L8',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:0,  ready:true },
+  { id:'l9',   name:'理想 L9',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:0,  ready:true },
+  { id:'mega', name:'理想 MEGA', sub:'',      body:'纯电 MPV · 7 座', seats:7, giftCount:0,  ready:true }
 ];
 
 const SCREEN = [
@@ -2426,6 +2463,16 @@ const COAT_REST = COAT_ALL.filter(i => i.id !== BASE_COAT.id).sort((a,b) => a.pr
 
 /* ===== 车型 ===== */
 const curModel = () => MODELS.find(m => m.id === state.model) || MODELS[0];
+/* hero 大图：i6 用超宽横幅，其余车型用各自的方图裁成横幅；L7 还没图就走空态 */
+const HERO = {
+  i6:'asset/car_hero.jpg', i8:'asset/car_i8_sq.jpg', i9:'asset/car_i9_sq.jpg',
+  l6:'asset/car_l6_sq.jpg', l7:'', l8:'asset/car_l8_sq.jpg',
+  l9:'asset/car_l9_sq.jpg', mega:'asset/car_mega_sq.jpg'
+};
+
+/* 5 座（i6/L6/L7）沿用 i6 的具体件数；6/7 座舱布局不同，件数一律说「按车型配齐」，不编数字 */
+const is5Seat = () => (curModel().seats || 5) === 5;
+const giftN = () => curModel().giftCount || 0;
 /* 价目原样输出。只有 i6 一款在售，不做任何车型系数推算——没核过的价不上页面 */
 const px  = n => n;
 /* 车衣：全系同价 */
@@ -2582,7 +2629,7 @@ function bigCard(a){
           <div class="addon-k">${a.brand}</div>
           <div class="addon-name">${a.name}</div>
           <div class="addon-spec">${a.spec}</div>
-          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶 ${curModel().giftCount} 件</span>`:''}</div>`:''}
+          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'}</span>`:''}</div>`:''}
           ${a.note?`<div class="addon-note">${a.note}</div>`:''}
           <div class="addon-buy">
             <div class="addon-price"><i>¥</i>${money(px(a.price))}<span>${a.em}</span></div>
@@ -2598,7 +2645,9 @@ function bigCard(a){
             ? `<div class="gift-chips">${a.giftItems.map(t => `<span>${t}</span>`).join('')}</div>`
             : `<span>${a.giftNote || ''}</span>`}
         </div>
-        <div class="gift-set"><b>${curModel().giftCount}</b><i>件</i><small>${curModel().name.replace('理想 ','')} 整车配齐</small></div>
+        <div class="gift-set">${giftN()
+          ? `<b>${giftN()}</b><i>件</i><small>${curModel().name.replace('理想 ','')} 整车配齐</small>`
+          : `<small>按 ${curModel().seats} 座舱布局<br>整车配齐</small>`}</div>
       </div>
     </div>`;
   }
@@ -2607,12 +2656,14 @@ function bigCard(a){
       <div class="seat-body">
         <div class="sub-head" style="padding-bottom:10px">
           <b>座椅垫</b>
-          <span class="cnt">七件套</span>
+          <span class="cnt">${is5Seat() ? '七件套' : curModel().seats + ' 座整套'}</span>
           <span>${a.brand}</span>
-          <i class="sub-price">¥996.2<em>${a.em}</em></i>
+          <i class="sub-price">¥${money(px(a.price))}<em>${a.em}</em></i>
         </div>
         <div class="mat-kit"><img src="${a.img}" alt="${a.name}"></div>
-        ${a.partsNote ? `<p class="mat-parts">${a.partsNote}</p>` : ''}
+        ${is5Seat()
+          ? (a.partsNote ? `<p class="mat-parts">${a.partsNote}</p>` : '')
+          : `<p class="mat-parts">按 ${curModel().seats} 座舱布局配齐：前排 + 二排${curModel().seats > 6 ? ' + 三排' : ''}${curModel().seats > 5 ? '（含二排独立座椅）' : ''}，件数以实车核对为准</p>`}
         <div class="trio">
           ${a.colors.map(c=>`<div class="trio-item">
             <div class="pframe"><img src="${c.img}" alt="${a.name} ${c.n}"></div>
@@ -3070,7 +3121,18 @@ function syncModelText(){
   const now = $('#mbNow');
   if (now) now.innerHTML = `${m.name} <em>· ${m.body}</em>`;
   const hi = $('#heroImg');
-  if (hi) hi.alt = m.name;
+  if (hi){
+    hi.alt = m.name;
+    const src = HERO[m.id] || '';
+    const wrap = hi.parentNode;
+    if (wrap){
+      wrap.classList.toggle('cover', !!src && m.id !== 'i6');
+      wrap.classList.toggle('empty', !src);
+    }
+    if (src && hi.getAttribute('src') !== src) hi.setAttribute('src', src);
+    const ph = document.getElementById('heroPhCode');
+    if (ph) ph.textContent = m.name.replace('理想 ', '');
+  }
 
   const b1 = $('#b3Screen');
   if (b1) b1.textContent = money(px(SCREEN[0].price));
@@ -3080,7 +3142,14 @@ function syncModelText(){
   if (b2) b2.textContent = money(filmFrom(FILM_BASE));
 
   const gn = $('#giftNote');
-  if (gn) gn.innerHTML = `${m.sub ? m.sub + ' ' : ''}${short} 送 <b>${m.giftCount} 件套</b>；按对应车型配齐，三色可选。`;
+  if (gn) gn.innerHTML = m.giftCount
+    ? `${m.sub ? m.sub + ' ' : ''}${short} 送 <b>${m.giftCount} 件套</b>；按对应车型配齐，三色可选。`
+    : `${m.sub ? m.sub + ' ' : ''}${short} 送 <b>全车硅胶套装</b>；件数按 ${m.seats} 座舱布局配齐，三色可选。`;
+
+  const ap = $('#accSecP');
+  if (ap) ap.innerHTML = (m.seats || 5) === 5
+    ? '整车配件 · 单项可加装。脚垫与座椅垫为整套价，其余小件为单品价，不含施工。'
+    : `整车配件 · 单项可加装。脚垫与座椅垫按 <b>${m.seats} 座舱布局</b>配齐，件数与价格以到店核对为准；其余小件为单品价，不含施工。`;
 
   document.title = `${m.name} · 全车配置报价 | 圣佳 SolarGard 授权店`;
 }
@@ -3231,16 +3300,16 @@ document.getElementById('navBack').onclick = () => {
   /* 只有 i6 的价是核对过的。其余车型只给"可选 + 待上线"，一个数字都不许出现。
      img 留空就走石墨占位，绝不拿别的车的图冒充。
      pos = object-position，按每张图里车身位置对好；换图时一起调。 */
-  /* sp = 精灵图里的格子位置（3 列 2 行）。没图的车 sp 为空，走石墨占位 */
+  /* sp = 精灵图里的格子位置（4 列 2 行）。L7 还没有图，留空走石墨占位 */
   var LIST = [
     { id:'i6',   code:'i6',   name:'理想 i6',    ready:true, sp:'0% 0%' },
-    { id:'i8',   code:'i8',   name:'理想 i8',    sp:'50% 0%' },
-    { id:'i9',   code:'i9',   name:'理想 i9',    sp:'100% 0%' },
-    { id:'l6',   code:'L6',   name:'理想 L6',    sp:'0% 100%' },
-    { id:'l7',   code:'L7',   name:'理想 L7',    sp:'' },
-    { id:'l8',   code:'L8',   name:'理想 L8',    sp:'50% 100%' },
-    { id:'l9',   code:'L9',   name:'理想 L9',    sp:'100% 100%' },
-    { id:'mega', code:'MEGA', name:'理想 MEGA',  sp:'' }
+    { id:'i8',   code:'i8',   name:'理想 i8',    ready:true, sp:'33.333% 0%' },
+    { id:'i9',   code:'i9',   name:'理想 i9',    ready:true, sp:'66.667% 0%' },
+    { id:'l6',   code:'L6',   name:'理想 L6',    ready:true, sp:'100% 0%' },
+    { id:'l7',   code:'L7',   name:'理想 L7',    ready:true, sp:'' },
+    { id:'l8',   code:'L8',   name:'理想 L8',    ready:true, sp:'33.333% 100%' },
+    { id:'l9',   code:'L9',   name:'理想 L9',    ready:true, sp:'66.667% 100%' },
+    { id:'mega', code:'MEGA', name:'理想 MEGA',  ready:true, sp:'100% 100%' }
   ];
 
   var cur = 'i6';
