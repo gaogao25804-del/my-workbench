@@ -51,6 +51,24 @@ a{ color:inherit; text-decoration:none; }
 .nav-r a{ font-size:13px; letter-spacing:.04em; opacity:.85; transition:opacity .2s; }
 .nav-r a:hover{ opacity:1; }
 
+/* 返回车型选择：报价页唯一回头路，别做成隐蔽的 */
+.nav-back{
+  display:inline-flex; align-items:center; gap:5px;
+  height:30px; padding:0 9px 0 5px; margin-left:-5px;
+  border-radius:8px; font-family:var(--ff);
+  font-size:12.5px; letter-spacing:.03em; color:var(--ink);
+  opacity:.7;
+  transition:opacity .2s, background .2s;
+}
+.nav-back svg{
+  width:15px; height:15px; fill:none; stroke:currentColor;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;
+  transition:transform .25s cubic-bezier(.22,.9,.22,1);
+}
+.nav-back:hover{ opacity:1; background:rgba(0,0,0,.05); }
+.nav-back:hover svg{ transform:translateX(-2px); }
+.nav-back:active{ background:rgba(0,0,0,.08); }
+
 .nav.on{ box-shadow:0 6px 24px rgba(0,0,0,.06); }
 .nav .pill.light{ background:var(--ink); color:#fff; border-color:var(--ink); }
 .nav .pill.ghost{ color:var(--ink); border-color:rgba(0,0,0,.2); }
@@ -712,6 +730,17 @@ a{ color:inherit; text-decoration:none; }
   .nav-in{ padding:0 18px; gap:10px; }
   .nav-sub{ display:none; }
   .nav-l i{ display:none; }
+  /* 手机上没文字，箭头得做成一眼能认出来的圆形按钮，触控区 44px */
+  .nav-back span{ display:none; }
+  .nav-back{
+    position:relative; width:40px; height:40px; min-width:40px;
+    padding:0; margin-left:-8px; margin-right:-2px; gap:0;
+    justify-content:center; border-radius:50%;
+    background:rgba(0,0,0,.05);
+    opacity:.85;
+  }
+  .nav-back svg{ width:18px; height:18px; }
+  .nav-back::after{ content:""; position:absolute; inset:-2px; }
   .nav-r{ gap:10px; }
   .nav-r .pill.ghost{ display:none; }
   .nav-r .pill{ height:34px; padding:0 16px; font-size:12px; }
@@ -1549,13 +1578,7 @@ body.intro-lock{ overflow:hidden; }
 /* i6 用的是竖版海报，车只占画面中间一条，卡片里放大一点更认得出来 */
 .pk-c[data-pk="i6"] .pk-c-img img{ transform:scale(1.26); object-position:50% 46%; }
 
-@media (hover:hover) and (pointer:fine){
-  .pk-c:not(.on):hover{
-    transform:translateY(-5px);
-    box-shadow:0 18px 36px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.28);
-  }
-  .pk-c:not(.on):hover .pk-c-img img{ filter:brightness(.82) saturate(.85); }
-}
+/* 卡片不响应悬停：鼠标划过不改任何状态，只有点击才选中 */
 
 /* ---------- 黑胶 ---------- */
 .pk-discwrap{
@@ -1819,6 +1842,10 @@ body.intro-lock{ overflow:hidden; }
 <nav class="nav on" id="nav" data-page-node-id="GGAp5lNC1qHbFd7GE3vzDI">
   <div class="nav-in" data-page-node-id="bvmMsApPuG3vsk6S29s3rF">
     <div class="nav-l" data-page-node-id="KNRgAlnaqvbCD1SpKYPdmP">
+      <button class="nav-back" id="navBack" type="button" aria-label="重新选择车型">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg>
+        <span>换车型</span>
+      </button>
       <span class="nav-model" id="navModel" data-page-node-id="4IDWLljmqy9vRXcS1ZHVHZ">2026 款 理想 i6</span>
       <i data-page-node-id="cG0UFTJZa6vpz3OCRGCOg0"></i>
       <span class="nav-sub" data-page-node-id="igHQLUmsQbaLS9Tzp2iafT">全车配置报价</span>
@@ -3087,6 +3114,9 @@ document.getElementById('navBtn').onclick = () => {
 document.getElementById('navAsk').onclick = () => {
   document.getElementById('foot').scrollIntoView({ behavior:'smooth' });
 };
+document.getElementById('navBack').onclick = () => {
+  if (typeof window.__openPicker === 'function') window.__openPicker();
+};
 
 </script>
 
@@ -3311,18 +3341,18 @@ document.getElementById('navAsk').onclick = () => {
   }
 
   /* ---------- 进场 ---------- */
-  var hoverReady = 0;
+  var everOpened = false;
   function open() {
     if (picker.classList.contains('show')) return;
+    picker.classList.remove('out');
     picker.classList.add('show');
     picker.setAttribute('aria-hidden', 'false');
     document.body.classList.add('intro-lock');
-    window.scrollTo(0, 0);
-    cur = 'i6';
+    /* 第一次进来从头看；从报价页退回来则保留刚才选的那台 */
+    if (!everOpened) { cur = 'i6'; window.scrollTo(0, 0); }
+    everOpened = true;
     scrollLock = Date.now() + 1400;   /* 进场时别被 snap 触发的 scroll 抢掉选中 */
-    if (typeof armHover === 'function') armHover();
     paint();
-    hoverReady = Date.now() + 700;
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         picker.classList.add('in');
@@ -3336,44 +3366,20 @@ document.getElementById('navAsk').onclick = () => {
   }
   window.__openPicker = open;
 
-  var left = false;
+  /* 关掉只是收起，不销毁：从报价页点「换车型」还能再打开 */
   function close() {
-    if (left) return;
-    left = true;
     picker.classList.remove('in');
+    picker.classList.remove('done');
     picker.classList.add('out');
+    picker.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('intro-lock');
-    window.scrollTo(0, 0);
-    setTimeout(function () { if (picker.parentNode) picker.parentNode.removeChild(picker); }, 680);
+    setTimeout(function () {
+      if (picker.classList.contains('in')) return;   /* 这 0.6 秒内又被打开了 */
+      picker.classList.remove('show', 'out');
+    }, 640);
   }
 
-  /* ---------- 交互 ---------- */
-  var fine = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-  var hoverTimer = 0;
-
-  /* 鼠标不动就不许 hover 抢选中：卡片一出现正好压在光标下面，会直接把默认 i6 顶掉 */
-  var mx = -1, my = -1, hoverBase = null, hoverOk = false;
-  window.addEventListener('mousemove', function (e) {
-    mx = e.clientX; my = e.clientY;
-    if (hoverBase && (Math.abs(mx - hoverBase.x) > 12 || Math.abs(my - hoverBase.y) > 12)) hoverOk = true;
-  }, { passive: true });
-
-  function armHover() {
-    hoverBase = { x: mx, y: my };
-    hoverOk = false;
-  }
-
-  row.addEventListener('mouseover', function (e) {
-    if (!fine || !hoverOk || Date.now() < hoverReady) return;
-    var c = e.target.closest ? e.target.closest('.pk-c') : null;
-    if (!c) return;
-    var id = c.getAttribute('data-pk');
-    if (id === cur) return;
-    clearTimeout(hoverTimer);
-    hoverTimer = setTimeout(function () { set(id); }, 40);
-  });
-  row.addEventListener('mouseleave', function () { clearTimeout(hoverTimer); });
-
+  /* ---------- 交互：只有点击才改选中，悬停不做任何事 ---------- */
   row.addEventListener('click', function (e) {
     var c = e.target.closest ? e.target.closest('.pk-c') : null;
     if (!c) return;
@@ -3449,14 +3455,18 @@ document.getElementById('navAsk').onclick = () => {
   goBtn.addEventListener('click', function () {
     var m = LIST[idxOf(cur)];
     /* 只有真有价目的车型才切，绝不切到空价目 */
-    if (m && m.ready && typeof setModel === 'function') setModel(m.id);
+    if (m && m.ready && typeof setModel === 'function') {
+      setModel(m.id);
+    } else if (m && typeof toast === 'function') {
+      toast(m.name + ' 的价目还没核完，这份先按理想 i6 给你算', 'warn');
+    }
     close();
   });
 
   skipBtn.addEventListener('click', close);
 
   document.addEventListener('keydown', function (e) {
-    if (!picker.classList.contains('show') || left) return;
+    if (!picker.classList.contains('show')) return;
     if (e.key === 'Escape' || e.key === 'Enter') { close(); return; }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
