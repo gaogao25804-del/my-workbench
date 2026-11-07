@@ -3455,6 +3455,13 @@ body{
   background:var(--tone-ink); opacity:.9;
 }
 .tc-chip-all i{ background:var(--accent); }
+.tc-chip-more{
+  border-style:dashed;
+  border-color:rgba(255,255,255,.14);
+  color:var(--ink-3);
+  background:transparent;
+}
+.tc-chip-more:hover{ color:var(--ink-2); background:rgba(255,255,255,.04); }
 .tc-chip em{
   font-style:normal; font-family:var(--mono);
   font-size:11px; color:var(--ink-3);
