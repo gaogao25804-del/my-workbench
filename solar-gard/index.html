@@ -1395,6 +1395,8 @@ body.intro-lock{ overflow:hidden; }
    ========================================================= */
 .picker{
   position:fixed; inset:0; z-index:260;
+  /* 卡片高度上限；实际高度由可用行高决定，吃满但不超过这个值 */
+  --card-h:540px;
   display:none; flex-direction:column;
   background:#0A0B0C; overflow:hidden;
   font-family:var(--ff); color:#fff;
@@ -1464,30 +1466,40 @@ body.intro-lock{ overflow:hidden; }
 .pk-stage{
   position:relative; z-index:2; flex:1 1 auto; min-height:0;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:0 5vw;
+  padding:0;
   opacity:0; transform:translateY(18px);
   transition:opacity .8s ease .16s, transform .92s cubic-bezier(.22,.9,.22,1) .16s;
 }
 .picker.in .pk-stage{ opacity:1; transform:none; }
 
+/* 卡高由视口高度定，8 张放不下就横滑——宁可横滑也不把卡做小 */
 .pk-row{
-  position:relative;
-  display:flex; align-items:flex-end; justify-content:center;
-  gap:clamp(7px,1vw,13px);
-  width:100%; max-width:1380px;
+  position:relative; flex:1 1 0; min-height:0;
+  display:flex; align-items:stretch; justify-content:flex-start;
+  gap:clamp(14px,1.45vw,28px);
+  width:100%;
+  padding:clamp(14px,2.4vh,30px) 6vw clamp(14px,2.2vh,26px);
+  scroll-padding-left:6vw; scroll-padding-right:6vw;
+  overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
+  cursor:grab;
 }
+.pk-row.dragging{ cursor:grabbing; scroll-snap-type:none; }
 .pk-row::-webkit-scrollbar{ display:none; }
 
-/* 一张封套 */
+/* 一张封套：高度由行高拉伸，宽度按 2:3 反推，所以永远不溢出也不会变小 */
 .pk-c{
-  position:relative; flex:1 1 0; min-width:0; max-width:164px;
-  aspect-ratio:2 / 3;
-  padding:0; border:0; border-radius:5px;
+  position:relative; flex:0 0 auto; min-width:0;
+  align-self:stretch; width:auto; height:auto;
+  aspect-ratio:.66; max-height:var(--card-h);
+  scroll-snap-align:start;
+  padding:0; border:0; border-radius:7px;
   overflow:hidden; cursor:pointer;
   background:#15171B;
   color:#fff; font-family:var(--ff); text-align:left;
-  box-shadow:0 12px 28px rgba(0,0,0,.55);
+  box-shadow:0 18px 44px rgba(0,0,0,.62);
   transform:translateY(0);
   transition:transform .38s cubic-bezier(.22,.9,.22,1), box-shadow .38s;
   transition-delay:calc(var(--i,0) * 46ms);
@@ -1497,11 +1509,12 @@ body.intro-lock{ overflow:hidden; }
 .picker.done .pk-c{ transition-delay:0ms; }
 
 /* 封套里的车 */
-.pk-c-img{ position:absolute; inset:0; display:block; }
+.pk-c-img{ position:absolute; inset:0; display:block; pointer-events:none; }
 .pk-c-img img{
   width:100%; height:100%; object-fit:cover; display:block;
   filter:brightness(.74) saturate(.62);
   transition:filter .45s ease;
+  -webkit-user-drag:none; user-select:none;
 }
 .pk-c.on .pk-c-img img{ filter:brightness(.95) saturate(1); }
 /* 没图的车：石墨渐变 + 代号水印，绝不拿别的车冒充 */
@@ -1527,30 +1540,30 @@ body.intro-lock{ overflow:hidden; }
 }
 
 .pk-c-tag{
-  position:absolute; left:10px; right:10px; top:9px; z-index:2;
-  font-size:9px; letter-spacing:.1em; text-align:right;
-  color:rgba(255,255,255,.42);
+  position:absolute; left:16px; right:16px; top:14px; z-index:2;
+  font-size:clamp(9px,.78vw,13px); letter-spacing:.1em; text-align:right;
+  color:rgba(255,255,255,.5);
   transition:color .3s;
 }
 .pk-c.on .pk-c-tag{ color:rgba(228,205,151,.98); }
 
 .pk-c-code{
-  position:absolute; left:10px; bottom:26px; z-index:2;
-  font-family:var(--fn); font-size:clamp(21px,2.2vw,33px); font-weight:700;
+  position:absolute; left:16px; bottom:40px; z-index:2;
+  font-family:var(--fn); font-size:clamp(30px,3.2vw,58px); font-weight:700;
   line-height:1; letter-spacing:.01em;
   color:rgba(255,255,255,.96);
   text-shadow:0 2px 16px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.6);
   transition:color .3s;
 }
-.pk-c-code.long{ font-size:clamp(15px,1.5vw,22px); }
+.pk-c-code.long{ font-size:clamp(22px,2.4vw,44px); }
 .pk-c.on .pk-c-code{ color:#F3DFB2; }
 
 .pk-c-name{
-  position:absolute; left:10px; bottom:10px; z-index:2;
-  font-size:clamp(8.5px,.82vw,10.5px); letter-spacing:.05em;
-  color:rgba(255,255,255,.52);
+  position:absolute; left:16px; bottom:16px; z-index:2;
+  font-size:clamp(10px,1vw,14px); letter-spacing:.05em;
+  color:rgba(255,255,255,.55);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  max-width:calc(100% - 20px);
+  max-width:calc(100% - 32px);
 }
 .pk-c.on .pk-c-name{ color:rgba(255,255,255,.82); }
 
@@ -1564,7 +1577,7 @@ body.intro-lock{ overflow:hidden; }
 }
 
 /* i6 用的是竖版海报，车只占画面中间一条，卡片里放大一点更认得出来 */
-.pk-c[data-pk="i6"] .pk-c-img img{ transform:scale(1.18); }
+.pk-c[data-pk="i6"] .pk-c-img img{ transform:scale(1.26); object-position:50% 46%; }
 
 @media (hover:hover) and (pointer:fine){
   .pk-c:not(.on):hover{
@@ -1576,11 +1589,12 @@ body.intro-lock{ overflow:hidden; }
 
 /* ---------- 黑胶 ---------- */
 .pk-discwrap{
-  --disc:clamp(156px,16vw,208px);
-  position:relative; flex:0 0 auto;
+  --disc:clamp(150px,15vw,260px);
+  position:absolute; right:-9vw; bottom:-22vh; z-index:1;
   width:var(--disc); height:var(--disc);
-  margin-top:clamp(4px,1vh,12px);
   border-radius:50%;
+  opacity:.34;
+  pointer-events:none;
   box-shadow:0 34px 66px rgba(0,0,0,.72), 0 0 0 1px rgba(255,255,255,.045);
 }
 /* 盘体：纹理随旋转一起转，看起来才像在放 */
@@ -1621,6 +1635,42 @@ body.intro-lock{ overflow:hidden; }
   width:5px; height:5px; margin:-2.5px 0 0 -2.5px;
   border-radius:50%; background:rgba(42,33,20,.34);
 }
+
+/* ---------- 左右箭头 + 位置指示 ---------- */
+.pk-arrow{
+  position:absolute; top:50%; transform:translateY(-50%);
+  z-index:5;
+  width:clamp(38px,3vw,50px); height:clamp(38px,3vw,50px);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(10,11,13,.5);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  color:rgba(255,255,255,.8);
+  opacity:0;
+  transition:opacity .35s, background .3s, border-color .3s, color .3s;
+  -webkit-tap-highlight-color:transparent;
+}
+.picker.in .pk-arrow{ opacity:1; }
+.picker.in .pk-arrow.is-off{ opacity:0; pointer-events:none; }
+.pk-arrow.prev{ left:clamp(9px,1.3vw,24px); }
+.pk-arrow.next{ right:clamp(9px,1.3vw,24px); }
+.pk-arrow svg{ width:36%; height:36%; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.pk-arrow:hover{ background:rgba(185,154,91,.22); border-color:rgba(216,188,132,.55); color:#F3DFB2; }
+
+.pk-rail{
+  position:relative; z-index:4; flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  margin-top:clamp(14px,2.2vh,26px);
+  opacity:0; transition:opacity .8s ease .3s;
+}
+.picker.in .pk-rail{ opacity:1; }
+.pk-rail i{
+  width:10px; height:2px; border-radius:2px;
+  background:rgba(255,255,255,.2);
+  transition:width .35s, background .35s;
+}
+.pk-rail i.on{ width:30px; background:rgba(216,188,132,.95); }
 
 /* ---------- 底部 ---------- */
 .pk-foot{
@@ -1663,52 +1713,46 @@ body.intro-lock{ overflow:hidden; }
 }
 .pk-skip:hover{ color:rgba(255,255,255,.72); border-color:rgba(255,255,255,.4); }
 
-/* ---------- 窄屏：一排八张摊不开，改成可横滑 ---------- */
+/* ---------- 窄屏：卡片收一档，首张居中 ---------- */
 @media (max-width:899px){
   .pk-bg{ background-position:50% 52%; }
+  .picker{ --card-h:clamp(198px, 33vh, 310px); }
   .pk-row{
-    justify-content:flex-start;
     gap:10px;
-    padding:6px calc(50vw - 48px) 10px;
-    overflow-x:auto; overflow-y:hidden;
+    padding:10px calc(50vw - var(--card-h) * .33) 12px;
+    scroll-padding-left:calc(50vw - var(--card-h) * .33);
+    scroll-padding-right:calc(50vw - var(--card-h) * .33);
     scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
   }
-  .pk-c{
-    flex:0 0 clamp(112px,17vw,150px); max-width:none;
-    padding:0;
-    scroll-snap-align:center;
-    transition-delay:calc(var(--i,0) * 52ms);
-  }
-  .pk-c-code{ font-size:22px; left:9px; bottom:24px; }
-  .pk-c-code.long{ font-size:15px; }
-  .pk-c-name{ font-size:9px; left:9px; bottom:10px; max-width:calc(100% - 18px); }
-  .pk-c-tag{ font-size:8px; left:9px; right:9px; top:8px; }
-  .pk-row{ padding:6px 22px 10px; }
+  .pk-c{ scroll-snap-align:center; border-radius:6px; align-self:flex-end; height:var(--card-h); max-height:none; aspect-ratio:.66; }
+  .pk-c-code{ left:12px; bottom:30px; font-size:clamp(23px,6.2vw,33px); }
+  .pk-c-code.long{ font-size:clamp(17px,4.4vw,24px); }
+  .pk-c-name{ font-size:9.5px; left:12px; bottom:11px; max-width:calc(100% - 24px); }
+  .pk-c-tag{ font-size:8.5px; left:12px; right:12px; top:10px; }
+  .pk-arrow{ display:none; }
 }
 
-/* 手机这么窄，首张必须居中，否则一进来只看到半张卡 */
+/* 手机：卡片按屏宽给，一屏正好看到两张，压迫感还在 */
 @media (max-width:559px){
-  .pk-row{ padding:6px calc(50vw - 56px) 10px; }
-  .pk-discwrap{ --disc:clamp(142px,37vw,178px); margin-top:12px; }
+  .picker{ --card-h:clamp(190px, 30vh, 290px); }
   .pk-tag{ font-size:8.5px; letter-spacing:.22em; padding-left:.22em; }
   .pk-h2{ letter-spacing:.06em; padding-left:.06em; font-size:clamp(23px,5.4vw,30px); }
   .pk-sub{ font-size:11px; letter-spacing:.1em; }
   .pk-go{ height:48px; padding:0 28px; font-size:13px; }
+  .pk-discwrap{ display:none; }
 }
 
-/* ---------- 矮屏：收紧抬头和页脚，把高度让给唱片 ---------- */
+/* ---------- 矮屏：收紧抬头和页脚，把高度让给卡片 ---------- */
 @media (max-height:780px){
-  .pk-c{ aspect-ratio:3 / 4; }
-  .pk-head{ padding-top:18px; }
-  .pk-h2{ margin-top:8px; font-size:clamp(19px,2.2vw,27px); }
+  .pk-head{ padding-top:16px; }
+  .pk-h2{ margin-top:7px; font-size:clamp(19px,2.2vw,27px); }
   .pk-sub{ display:none; }
   .pk-foot{ padding-top:12px; }
   .pk-now b{ font-size:15px; }
   .pk-go{ height:44px; margin-top:10px; padding:0 28px; }
   .pk-note{ margin-top:8px; font-size:10px; }
   .pk-skip{ margin-top:6px; }
-  .pk-discwrap{ --disc:clamp(132px,14vw,182px); margin-top:10px; }
+  .pk-discwrap{ --disc:clamp(120px,12vw,180px); bottom:-6vh; }
 }
 @media (max-height:620px){
   .pk-head{ padding-top:12px; }
@@ -1762,6 +1806,21 @@ body.intro-lock{ overflow:hidden; }
   <div class="pk-bg"></div>
   <div class="pk-veil"></div>
 
+  <div class="pk-discwrap" aria-hidden="true">
+    <div class="pk-disc"></div>
+    <div class="pk-disc-label">
+      <b>圣佳</b>
+      <i>SOLARGARD</i>
+    </div>
+  </div>
+
+  <button class="pk-arrow prev" id="pkPrev" type="button" aria-label="上一台">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <button class="pk-arrow next" id="pkNext" type="button" aria-label="下一台">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+  </button>
+
   <div class="pk-head">
     <div class="pk-tag">SOLARGARD 圣佳 · SELECT YOUR MODEL</div>
     <h2 class="pk-h2">您的理想，是<em>哪一台</em></h2>
@@ -1770,13 +1829,7 @@ body.intro-lock{ overflow:hidden; }
 
   <div class="pk-stage">
     <div class="pk-row" id="pkRow" role="list" aria-label="理想车型"></div>
-    <div class="pk-discwrap" aria-hidden="true">
-      <div class="pk-disc"></div>
-      <div class="pk-disc-label">
-        <b>圣佳</b>
-        <i>SOLARGARD</i>
-      </div>
-    </div>
+    <div class="pk-rail" id="pkRail" aria-hidden="true"></div>
   </div>
 
   <div class="pk-foot">
@@ -3193,6 +3246,11 @@ document.getElementById('navAsk').onclick = () => {
 
   cards = Array.prototype.slice.call(row.querySelectorAll('.pk-c'));
 
+  /* 位置指示：8 个短杠，选中哪台亮哪根 */
+  var rail = document.getElementById('pkRail');
+  if (rail) rail.innerHTML = LIST.map(function () { return '<i></i>'; }).join('');
+  var railItems = rail ? Array.prototype.slice.call(rail.querySelectorAll('i')) : [];
+
   /* 图挂了就走占位，不留破图 */
   cards.forEach(function (p) {
     var img = p.querySelector('.pk-c-img img');
@@ -3216,6 +3274,30 @@ document.getElementById('navAsk').onclick = () => {
   function narrow() { return window.innerWidth < 900; }
 
   /* ---------- 选中态 ---------- */
+  var scrollLock = 0;          /* 程序滚动期间，scroll 事件不要反过来改选中 */
+  var prevBtn = document.getElementById('pkPrev');
+  var nextBtn = document.getElementById('pkNext');
+
+  function ensureVisible(c) {
+    var l = c.offsetLeft;
+    var r = l + c.offsetWidth;
+    var vl = row.scrollLeft;
+    var vr = vl + row.clientWidth;
+    var pad = 20;
+    var target = null;
+    if (narrow()) {
+      /* 窄屏：选中的那张居中 */
+      target = l - (row.clientWidth - c.offsetWidth) / 2;
+    } else if (l - pad < vl) {
+      target = l - pad;
+    } else if (r + pad > vr) {
+      target = r + pad - row.clientWidth;
+    }
+    if (target === null) return;
+    scrollLock = Date.now() + 560;
+    row.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }
+
   function paint() {
     var i = idxOf(cur);
     var m = LIST[i];
@@ -3226,12 +3308,11 @@ document.getElementById('navAsk').onclick = () => {
       c.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
 
-    /* 窄屏横滑：把选中的拖到正中 */
-    if (narrow()) {
-      var c = cards[i];
-      var target = c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2;
-      row.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
-    }
+    railItems.forEach(function (d, k) { d.classList.toggle('on', k === i); });
+    if (prevBtn) prevBtn.classList.toggle('is-off', i === 0);
+    if (nextBtn) nextBtn.classList.toggle('is-off', i === LIST.length - 1);
+
+    ensureVisible(cards[i]);
 
     nowName.textContent = m.name;
 
@@ -3266,6 +3347,8 @@ document.getElementById('navAsk').onclick = () => {
     document.body.classList.add('intro-lock');
     window.scrollTo(0, 0);
     cur = 'i6';
+    scrollLock = Date.now() + 1400;   /* 进场时别被 snap 触发的 scroll 抢掉选中 */
+    if (typeof armHover === 'function') armHover();
     paint();
     hoverReady = Date.now() + 700;
     requestAnimationFrame(function () {
@@ -3296,8 +3379,20 @@ document.getElementById('navAsk').onclick = () => {
   var fine = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
   var hoverTimer = 0;
 
+  /* 鼠标不动就不许 hover 抢选中：卡片一出现正好压在光标下面，会直接把默认 i6 顶掉 */
+  var mx = -1, my = -1, hoverBase = null, hoverOk = false;
+  window.addEventListener('mousemove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    if (hoverBase && (Math.abs(mx - hoverBase.x) > 12 || Math.abs(my - hoverBase.y) > 12)) hoverOk = true;
+  }, { passive: true });
+
+  function armHover() {
+    hoverBase = { x: mx, y: my };
+    hoverOk = false;
+  }
+
   row.addEventListener('mouseover', function (e) {
-    if (!fine || Date.now() < hoverReady) return;
+    if (!fine || !hoverOk || Date.now() < hoverReady) return;
     var c = e.target.closest ? e.target.closest('.pk-c') : null;
     if (!c) return;
     var id = c.getAttribute('data-pk');
@@ -3310,15 +3405,18 @@ document.getElementById('navAsk').onclick = () => {
   row.addEventListener('click', function (e) {
     var c = e.target.closest ? e.target.closest('.pk-c') : null;
     if (!c) return;
+    var d = row.getAttribute('data-drag');
+    if (d && Date.now() - Number(d) < 160) return;   /* 刚拖过不算点击 */
     set(c.getAttribute('data-pk'));
   });
 
-  /* 窄屏横滑停下后，自动选中间那张 */
+  /* 横滑停下后，自动选离中心最近那张（手机和桌面都生效） */
   var scrollTimer = 0;
   row.addEventListener('scroll', function () {
-    if (!narrow()) return;
+    if (Date.now() < scrollLock) return;
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(function () {
+      if (Date.now() < scrollLock) return;
       var mid = row.scrollLeft + row.clientWidth / 2;
       var best = 0, bestD = 1e9;
       cards.forEach(function (c, i) {
@@ -3329,6 +3427,52 @@ document.getElementById('navAsk').onclick = () => {
       if (id !== cur) { cur = id; paint(); }
     }, 170);
   }, { passive: true });
+
+  /* ---------- 桌面横滑：滚轮 / 拖拽 / 箭头 ---------- */
+  row.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    var before = row.scrollLeft;
+    row.scrollLeft = before + (e.deltaY || 0);
+    if (row.scrollLeft !== before) {
+      e.preventDefault();
+      scrollLock = 0;
+    }
+  }, { passive: false });
+
+  var dragDown = false, dragMoved = false, dragX = 0, dragL = 0;
+  row.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'touch') return;          /* 触屏走原生惯性滚动 */
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragDown = true; dragMoved = false;
+    dragX = e.clientX; dragL = row.scrollLeft;
+    row.classList.add('dragging');
+    scrollLock = 0;
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (!dragDown) return;
+    var dx = e.clientX - dragX;
+    if (Math.abs(dx) > 5) dragMoved = true;
+    row.scrollLeft = dragL - dx;
+  });
+  window.addEventListener('pointerup', function () {
+    if (!dragDown) return;
+    dragDown = false;
+    row.classList.remove('dragging');
+    if (dragMoved) row.setAttribute('data-drag', String(Date.now()));
+  });
+  window.addEventListener('pointercancel', function () {
+    dragDown = false;
+    row.classList.remove('dragging');
+  });
+
+  function stepBy(n) {
+    scrollLock = 0;
+    var i = idxOf(cur) + n;
+    if (i < 0 || i >= LIST.length) return;
+    set(LIST[i].id);
+  }
+  if (prevBtn) prevBtn.addEventListener('click', function () { stepBy(-1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { stepBy(1); });
 
   goBtn.addEventListener('click', function () {
     var m = LIST[idxOf(cur)];
