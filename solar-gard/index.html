@@ -3244,7 +3244,7 @@ document.getElementById('navBack').onclick = () => {
   row.innerHTML = LIST.map(function (m, i) {
     var media = m.img
       ? '<span class="pk-c-img"><img class="pk-main" src="' + m.img +
-        '" alt="' + m.name + '" loading="lazy"></span>'
+        '" alt="' + m.name + '" decoding="async"></span>'
       : '<span class="pk-c-img empty"></span>';
     return '<button class="pk-c' + (m.ready ? ' ready' : '') + '" type="button" ' +
         'data-pk="' + m.id + '" role="listitem" aria-pressed="false" style="--i:' + i + '">' +
