@@ -746,22 +746,14 @@ function renderTasksPage() {
         '<div class="tc-progress lg"><i style="width:' + donePct + '%"></i></div>' +
       '</div>' +
     '</div>' +
-    '<div class="tc-sec"><i></i>分类进度 · 点击筛选</div>' +
+    '<div class="tc-sec"><i></i>按分类筛选</div>' +
     '<div class="tc-cats">' +
-      '<button class="tc-cat tc-cat-all' + (st.cal.taskCat === 'all' ? ' on' : '') + '" data-task-cat="all">' +
-        '<div class="tc-cat-top"><span class="tc-dot"></span><span class="tc-cat-name">全部分类</span></div>' +
-        '<div class="tc-cat-num"><b>' + info.completed + '</b><span>/ ' + info.total + '</span><em>' + donePct + '%</em></div>' +
-        '<div class="tc-progress"><i style="width:' + donePct + '%"></i></div>' +
+      '<button class="tc-chip tc-chip-all' + (st.cal.taskCat === 'all' ? ' on' : '') + '" data-task-cat="all">' +
+        '<i></i>全部分类<em>' + info.total + '</em>' +
       '</button>' +
       catRows.map(function (c) {
-        return '<button class="tc-cat t' + catTone(c.key) + (st.cal.taskCat === c.key ? ' on' : '') + '" data-task-cat="' + esc(c.key) + '">' +
-          '<div class="tc-cat-top">' +
-            '<span class="tc-dot"></span>' +
-            '<span class="tc-cat-name">' + esc(c.key) + '</span>' +
-            '<span class="tc-state' + (c.pct >= 100 ? ' done' : ' run') + '">' + (c.pct >= 100 ? '已完成' : '进行中') + '</span>' +
-          '</div>' +
-          '<div class="tc-cat-num"><b>' + c.done + '</b><span>/ ' + c.total + '</span><em>' + c.pct + '%</em></div>' +
-          '<div class="tc-progress"><i style="width:' + c.pct + '%"></i></div>' +
+        return '<button class="tc-chip t' + catTone(c.key) + (st.cal.taskCat === c.key ? ' on' : '') + '" data-task-cat="' + esc(c.key) + '">' +
+          '<i></i>' + esc(c.key) + '<em>' + c.total + '</em>' +
         '</button>';
       }).join('') +
     '</div>' +
