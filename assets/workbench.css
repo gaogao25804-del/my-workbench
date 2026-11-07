@@ -3427,68 +3427,40 @@ body{
 }
 
 .tc-cats{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
-  gap:10px;
+  display:flex; flex-wrap:wrap; gap:8px;
 }
 
-.tc-cat{
-  text-align:left; padding:13px 14px 14px;
-  border:1px solid rgba(255,255,255,.09);
-  border-radius:14px;
-  background:linear-gradient(150deg, rgba(255,255,255,.055), rgba(255,255,255,.015));
+.tc-chip{
+  display:inline-flex; align-items:center; gap:7px;
+  height:32px; padding:0 12px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;
+  background:rgba(255,255,255,.035);
+  color:var(--ink-2); font-size:12.5px; white-space:nowrap;
   cursor:pointer;
-  transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+  transition:background .15s, border-color .15s, color .15s;
 }
-.tc-cat:hover{
-  transform:translateY(-2px);
+.tc-chip:hover{
   background:rgba(255,255,255,.075);
-  border-color:rgba(255,255,255,.18);
+  border-color:rgba(255,255,255,.2);
+  color:var(--ink);
 }
-.tc-cat.on{
-  border-color:rgba(255,106,47,.5);
-  background:rgba(255,106,47,.1);
-  box-shadow:0 0 0 1px rgba(255,106,47,.16), 0 10px 26px rgba(255,106,47,.12);
+.tc-chip.on{
+  background:rgba(255,106,47,.12);
+  border-color:rgba(255,106,47,.45);
+  color:var(--ink);
 }
-.tc-cat-top{ display:flex; align-items:center; gap:7px; min-width:0; }
-.tc-dot{
-  width:7px; height:7px; flex:0 0 7px; border-radius:2px;
-  background:var(--tone-ink);
-  box-shadow:0 0 10px var(--tone-ink);
-  opacity:.9;
+.tc-chip i{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--tone-ink); opacity:.9;
 }
-.tc-cat-all .tc-dot{ background:var(--accent); box-shadow:0 0 10px rgba(255,106,47,.8); }
-.tc-cat-name{
-  font-size:12.5px; font-weight:600; color:var(--ink);
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+.tc-chip-all i{ background:var(--accent); }
+.tc-chip em{
+  font-style:normal; font-family:var(--mono);
+  font-size:11px; color:var(--ink-3);
 }
-.tc-cat-top .tc-state{
-  margin-left:auto; height:18px; padding:0 7px; font-size:9px;
-}
-.tc-cat .tc-state.done{ color:var(--tone-ink); background:var(--tone-bg); border-color:transparent; }
-.tc-cat-all .tc-state{ color:var(--accent-deep); background:rgba(255,106,47,.14); border-color:transparent; }
+.tc-chip.on em{ color:var(--accent-deep); }
 
-.tc-cat-num{ display:flex; align-items:baseline; gap:6px; margin:12px 0 9px; }
-.tc-cat-num b{
-  font-family:var(--mono); font-size:21px; font-weight:600;
-  line-height:1; letter-spacing:-.02em; color:var(--ink);
-}
-.tc-cat-num span{ font-size:11px; color:var(--ink-3); }
-.tc-cat-num em{
-  margin-left:auto; font-style:normal;
-  font-family:var(--mono); font-size:11.5px; color:var(--tone-ink);
-}
-.tc-cat-all .tc-cat-num em{ color:var(--accent-deep); }
-
-.tc-cat .tc-progress{ height:4px; }
-.tc-cat .tc-progress i{
-  background:linear-gradient(90deg, var(--tone-ink), var(--tone-ink));
-  opacity:.85; box-shadow:0 0 10px var(--tone-ink);
-}
-.tc-cat-all .tc-progress i{
-  background:linear-gradient(90deg, #ff8b55, #ff5f1f);
-  box-shadow:0 0 12px rgba(255,106,47,.45);
-}
 
 /* 任务卡片 */
 .tc-grid{
@@ -3545,7 +3517,6 @@ body{
 @media (max-width:900px){
   .tc-head-row{ align-items:flex-start; gap:16px; }
   .tc-stats{ gap:22px; }
-  .tc-cats{ grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); }
   .tc-grid{ grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); }
 }
 
@@ -3554,10 +3525,9 @@ body{
   .tc-stat b{ font-size:20px; }
   .tc-overall{ padding:14px; margin-top:16px; }
   .tc-bar-big b{ font-size:24px; }
-  .tc-cats{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; }
-  .tc-cat{ padding:11px 11px 12px; }
-  .tc-cat-name{ font-size:11.5px; }
-  .tc-cat-num b{ font-size:18px; }
+  .tc-cats{ gap:6px; }
+  .tc-chip{ height:29px; padding:0 10px; font-size:12px; gap:6px; }
+  .tc-chip em{ font-size:10.5px; }
   .tc-grid{ grid-template-columns:1fr; gap:8px; }
   .tc-card{ padding:12px 12px 10px; }
   .tc-card-title{ min-height:0; margin:9px 0 8px; }
