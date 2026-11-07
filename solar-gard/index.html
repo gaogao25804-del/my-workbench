@@ -1394,8 +1394,8 @@ body.intro-lock{ overflow:hidden; }
    ========================================================= */
 .picker{
   position:fixed; inset:0; z-index:260;
-  /* 卡片高度上限；实际高度由可用行高决定，吃满但不超过这个值 */
-  --card-h:540px;
+  /* 正方卡：边长同时受「高度」「一屏放 4.35 张」两个约束，取小的那个 */
+  --card-h:max(196px, min(50vh, (100vw - 12vw - 63px) / 4, 500px));
   display:none; flex-direction:column;
   background:#0A0B0C; overflow:hidden;
   font-family:var(--ff); color:#fff;
@@ -1488,13 +1488,13 @@ body.intro-lock{ overflow:hidden; }
 .pk-row.dragging{ cursor:grabbing; scroll-snap-type:none; }
 .pk-row::-webkit-scrollbar{ display:none; }
 
-/* 一张封套：高度由行高拉伸，宽度按 2:3 反推，所以永远不溢出也不会变小 */
+/* 一张封套：正方形，边长卡在 --card-h，整台车都放得下 */
 .pk-c{
   position:relative; flex:0 0 auto; min-width:0;
-  align-self:stretch; width:auto; height:auto;
-  aspect-ratio:.66; max-height:var(--card-h);
+  align-self:center;
+  width:var(--card-h); height:var(--card-h);
   scroll-snap-align:start;
-  padding:0; border:0; border-radius:7px;
+  padding:0; border:0; border-radius:10px;
   overflow:hidden; cursor:pointer;
   background:#15171B;
   color:#fff; font-family:var(--ff); text-align:left;
@@ -1507,15 +1507,19 @@ body.intro-lock{ overflow:hidden; }
 }
 .picker.done .pk-c{ transition-delay:0ms; }
 
-/* 封套里的车 */
-.pk-c-img{ position:absolute; inset:0; display:block; pointer-events:none; }
-.pk-c-img img{
-  width:100%; height:100%; object-fit:cover; display:block;
-  filter:brightness(.74) saturate(.62);
+/* 封套里的车：两层，打底虚化铺满 + 主体完整不裁 */
+.pk-c-img{ position:absolute; inset:0; display:block; pointer-events:none; overflow:hidden; }
+.pk-c-img img{ display:block; -webkit-user-drag:none; user-select:none; }
+
+/* 车图本身就是 1:1 方图（边上羽化进暗底），直接铺满，不裁切也不留硬边 */
+.pk-main{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  filter:brightness(.88) saturate(.86);
   transition:filter .45s ease;
-  -webkit-user-drag:none; user-select:none;
 }
-.pk-c.on .pk-c-img img{ filter:brightness(.95) saturate(1); }
+.pk-c.on .pk-main{ filter:brightness(1.02) saturate(1); }
 /* 没图的车：石墨渐变 + 代号水印，绝不拿别的车冒充 */
 .pk-c-img.empty{
   background:
@@ -1530,12 +1534,15 @@ body.intro-lock{ overflow:hidden; }
     linear-gradient(158deg,#33383F 0%,#22272E 46%,#141920 100%);
 }
 
-/* 上下压暗，让字压得住 */
+/* 只在字的位置压一道，别把整张照片都吃黑 */
 .pk-c::after{
   content:""; position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(180deg,
-    rgba(8,9,11,.5) 0%, rgba(8,9,11,.04) 32%,
-    rgba(8,9,11,.1) 50%, rgba(8,9,11,.9) 100%);
+  background:
+    linear-gradient(180deg,
+      rgba(8,9,11,.34) 0%, rgba(8,9,11,0) 22%,
+      rgba(8,9,11,0) 64%, rgba(8,9,11,.30) 84%,
+      rgba(8,9,11,.78) 100%),
+    radial-gradient(120% 120% at 50% 42%, rgba(0,0,0,0) 52%, rgba(0,0,0,.34) 100%);
 }
 
 .pk-c-tag{
@@ -1547,19 +1554,19 @@ body.intro-lock{ overflow:hidden; }
 .pk-c.on .pk-c-tag{ color:rgba(228,205,151,.98); }
 
 .pk-c-code{
-  position:absolute; left:16px; bottom:40px; z-index:2;
-  font-family:var(--fn); font-size:clamp(30px,3.2vw,58px); font-weight:700;
+  position:absolute; left:16px; bottom:34px; z-index:2;
+  font-family:var(--fn); font-size:clamp(24px,2.4vw,40px); font-weight:700;
   line-height:1; letter-spacing:.01em;
   color:rgba(255,255,255,.96);
   text-shadow:0 2px 16px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.6);
   transition:color .3s;
 }
-.pk-c-code.long{ font-size:clamp(22px,2.4vw,44px); }
+.pk-c-code.long{ font-size:clamp(18px,1.9vw,31px); }
 .pk-c.on .pk-c-code{ color:#F3DFB2; }
 
 .pk-c-name{
   position:absolute; left:16px; bottom:16px; z-index:2;
-  font-size:clamp(10px,1vw,14px); letter-spacing:.05em;
+  font-size:clamp(9.5px,.86vw,12px); letter-spacing:.05em;
   color:rgba(255,255,255,.55);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   max-width:calc(100% - 32px);
@@ -1574,9 +1581,6 @@ body.intro-lock{ overflow:hidden; }
     0 0 0 1.5px rgba(222,192,132,.92),
     0 0 26px rgba(185,154,91,.2);
 }
-
-/* i6 用的是竖版海报，车只占画面中间一条，卡片里放大一点更认得出来 */
-.pk-c[data-pk="i6"] .pk-c-img img{ transform:scale(1.26); object-position:50% 46%; }
 
 /* 卡片不响应悬停：鼠标划过不改任何状态，只有点击才选中 */
 
@@ -1706,18 +1710,23 @@ body.intro-lock{ overflow:hidden; }
 }
 .pk-skip:hover{ color:rgba(255,255,255,.72); border-color:rgba(255,255,255,.4); }
 
+/* 900~1199 的笔记本：按 4 张算出来偏小，一屏改看 3.3 张 */
+@media (min-width:900px) and (max-width:1199px){
+  .picker{ --card-h:max(210px, min(46vh, (100vw - 12vw - 50px) / 3.3, 360px)); }
+}
+
 /* ---------- 窄屏：卡片收一档，首张居中 ---------- */
 @media (max-width:899px){
   .pk-bg{ background-position:50% 52%; }
-  .picker{ --card-h:clamp(198px, 33vh, 310px); }
+  .picker{ --card-h:clamp(180px, 34vh, 360px); }
   .pk-row{
     gap:10px;
-    padding:10px calc(50vw - var(--card-h) * .33) 12px;
-    scroll-padding-left:calc(50vw - var(--card-h) * .33);
-    scroll-padding-right:calc(50vw - var(--card-h) * .33);
+    padding:10px calc(50vw - var(--card-h) * .5) 12px;
+    scroll-padding-left:calc(50vw - var(--card-h) * .5);
+    scroll-padding-right:calc(50vw - var(--card-h) * .5);
     scroll-snap-type:x mandatory;
   }
-  .pk-c{ scroll-snap-align:center; border-radius:6px; align-self:flex-end; height:var(--card-h); max-height:none; aspect-ratio:.66; }
+  .pk-c{ scroll-snap-align:center; border-radius:8px; align-self:center; width:var(--card-h); height:var(--card-h); max-height:none; }
   .pk-c-code{ left:12px; bottom:30px; font-size:clamp(23px,6.2vw,33px); }
   .pk-c-code.long{ font-size:clamp(17px,4.4vw,24px); }
   .pk-c-name{ font-size:9.5px; left:12px; bottom:11px; max-width:calc(100% - 24px); }
@@ -1727,7 +1736,7 @@ body.intro-lock{ overflow:hidden; }
 
 /* 手机：卡片按屏宽给，一屏正好看到两张，压迫感还在 */
 @media (max-width:559px){
-  .picker{ --card-h:clamp(190px, 30vh, 290px); }
+  .picker{ --card-h:clamp(168px, 32vh, 300px); }
   .pk-tag{ font-size:8.5px; letter-spacing:.22em; padding-left:.22em; }
   .pk-h2{ letter-spacing:.06em; padding-left:.06em; font-size:clamp(23px,5.4vw,30px); }
   .pk-sub{ font-size:11px; letter-spacing:.1em; }
@@ -3218,13 +3227,13 @@ document.getElementById('navBack').onclick = () => {
      img 留空就走石墨占位，绝不拿别的车的图冒充。
      pos = object-position，按每张图里车身位置对好；换图时一起调。 */
   var LIST = [
-    { id:'i6',   code:'i6',   name:'理想 i6',    ready:true, img:'asset/car_i6_panel.jpg', pos:'50% 50%' },
-    { id:'i8',   code:'i8',   name:'理想 i8',    img:'asset/car_i8.jpg',  pos:'52% 58%' },
-    { id:'i9',   code:'i9',   name:'理想 i9',    img:'asset/car_i9.jpg',  pos:'46% 54%' },
-    { id:'l6',   code:'L6',   name:'理想 L6',    img:'asset/car_l6.jpg',  pos:'56% 50%' },
+    { id:'i6',   code:'i6',   name:'理想 i6',    ready:true, img:'asset/car_i6.jpg' },
+    { id:'i8',   code:'i8',   name:'理想 i8',    img:'asset/car_i8_sq.jpg' },
+    { id:'i9',   code:'i9',   name:'理想 i9',    img:'asset/car_i9_sq.jpg' },
+    { id:'l6',   code:'L6',   name:'理想 L6',    img:'asset/car_l6_sq.jpg' },
     { id:'l7',   code:'L7',   name:'理想 L7',    img:'' },
-    { id:'l8',   code:'L8',   name:'理想 L8',    img:'asset/car_l8.jpg',  pos:'39% 54%' },
-    { id:'l9',   code:'L9',   name:'理想 L9',    img:'asset/car_l9.jpg',  pos:'53% 54%' },
+    { id:'l8',   code:'L8',   name:'理想 L8',    img:'asset/car_l8_sq.jpg' },
+    { id:'l9',   code:'L9',   name:'理想 L9',    img:'asset/car_l9_sq.jpg' },
     { id:'mega', code:'MEGA', name:'理想 MEGA',  img:'' }
   ];
 
@@ -3234,8 +3243,8 @@ document.getElementById('navBack').onclick = () => {
   /* ---------- 建卡片 ---------- */
   row.innerHTML = LIST.map(function (m, i) {
     var media = m.img
-      ? '<span class="pk-c-img"><img src="' + m.img + '" alt="' + m.name + '" loading="lazy"' +
-        (m.pos ? ' style="object-position:' + m.pos + '"' : '') + '></span>'
+      ? '<span class="pk-c-img"><img class="pk-main" src="' + m.img +
+        '" alt="' + m.name + '" loading="lazy"></span>'
       : '<span class="pk-c-img empty"></span>';
     return '<button class="pk-c' + (m.ready ? ' ready' : '') + '" type="button" ' +
         'data-pk="' + m.id + '" role="listitem" aria-pressed="false" style="--i:' + i + '">' +
@@ -3255,12 +3264,18 @@ document.getElementById('navBack').onclick = () => {
 
   /* 图挂了就走占位，不留破图 */
   cards.forEach(function (p) {
-    var img = p.querySelector('.pk-c-img img');
-    if (!img) return;
-    img.addEventListener('error', function () {
-      var wrap = img.parentNode;
-      wrap.classList.add('empty');
-      img.remove();
+    var wrap = p.querySelector('.pk-c-img');
+    if (!wrap) return;
+    var imgs = wrap.querySelectorAll('img');
+    Array.prototype.forEach.call(imgs, function (img) {
+      var onFail = function () {
+        wrap.classList.add('empty');
+        Array.prototype.forEach.call(wrap.querySelectorAll('img'), function (n) {
+          if (n.parentNode) n.parentNode.removeChild(n);
+        });
+      };
+      img.addEventListener('error', onFail);
+      if (img.complete && img.naturalWidth === 0) onFail();
     });
   });
 
