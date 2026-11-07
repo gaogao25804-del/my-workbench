@@ -751,11 +751,22 @@ function renderTasksPage() {
       '<button class="tc-chip tc-chip-all' + (st.cal.taskCat === 'all' ? ' on' : '') + '" data-task-cat="all">' +
         '<i></i>全部分类<em>' + info.total + '</em>' +
       '</button>' +
-      catRows.map(function (c) {
-        return '<button class="tc-chip t' + catTone(c.key) + (st.cal.taskCat === c.key ? ' on' : '') + '" data-task-cat="' + esc(c.key) + '">' +
-          '<i></i>' + esc(c.key) + '<em>' + c.total + '</em>' +
-        '</button>';
-      }).join('') +
+      (function () {
+        const LIMIT = 12;
+        const expanded = !!st.cal.catOpen || st.cal.taskCat !== 'all';
+        const shown = expanded ? catRows : catRows.slice(0, LIMIT);
+        let s = shown.map(function (c) {
+          return '<button class="tc-chip t' + catTone(c.key) + (st.cal.taskCat === c.key ? ' on' : '') + '" data-task-cat="' + esc(c.key) + '">' +
+            '<i></i>' + esc(c.key) + '<em>' + c.total + '</em>' +
+          '</button>';
+        }).join('');
+        if (catRows.length > LIMIT) {
+          s += '<button class="tc-chip tc-chip-more" data-action="cat-more">' +
+            (expanded ? '收起' : '+ ' + (catRows.length - LIMIT) + ' 个分类') +
+          '</button>';
+        }
+        return s;
+      })() +
     '</div>' +
     '<div class="pz-foot">' +
       '<div class="task-tabs">' +
@@ -2272,6 +2283,7 @@ function onViewClick(e) {
     if (a === 'retry-library') { st.load.library = 'idle'; loadLibrary(); return; }
     if (a === 'clear-lib') { st.lib.q = ''; st.lib.page = 1; renderView(true); return; }
     if (a === 'lib-random') { st.lib.focus = Math.floor(Math.random() * 997); renderView(true); return; }
+    if (a === 'cat-more') { st.cal.catOpen = !st.cal.catOpen; renderView(true); return; }
     if (a === 'clear-wenan') { st.wenan.q = ''; st.wenan.cat = 'all'; st.wenan.page = 1; renderView(true); return; }
   }
 
