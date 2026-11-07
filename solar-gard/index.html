@@ -3,6 +3,7 @@
 <meta charset="UTF-8" data-page-node-id="kMkTPeHBpQWZgJxITPG6Ml">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="y0mbxkpZ6F7MQjgQeaSHgz">
 <title>理想 i6 · 全车配置报价 | 圣佳 SolarGard 授权店</title>
+<link rel="preload" as="image" href="asset/car_sprite.jpg" fetchpriority="high">
 <style>
 /* ============================================================
    理想风视觉系统：纯白 / 墨黑 / 香槟金点缀 / 满血实拍 / 细线网格
@@ -1513,17 +1514,17 @@ body.intro-lock{ overflow:hidden; }
   /* 图还没到的时候别是一块纯黑，给个石墨底 */
   background:linear-gradient(158deg,#23272E 0%,#181B20 58%,#111418 100%);
 }
-.pk-c-img img{ display:block; -webkit-user-drag:none; user-select:none; }
-
-/* 车图本身就是 1:1 方图（边上羽化进暗底），直接铺满，不裁切也不留硬边 */
-.pk-main{
-  position:absolute; inset:0;
-  width:100%; height:100%;
-  object-fit:cover;
+/* 6 台车拼在一张 3x2 精灵图里：只发 1 个请求，不会被多图并发拖死。
+   每格是正方形，卡片也是正方形，background-size:300% 200% 正好不拉伸 */
+.pk-sprite{
+  position:absolute; inset:0; display:block;
+  background-image:url('asset/car_sprite.jpg');
+  background-size:300% 200%;
+  background-repeat:no-repeat;
   filter:brightness(.88) saturate(.86);
   transition:filter .45s ease;
 }
-.pk-c.on .pk-main{ filter:brightness(1.02) saturate(1); }
+.pk-c.on .pk-sprite{ filter:brightness(1.02) saturate(1); }
 /* 没图的车：石墨渐变 + 代号水印，绝不拿别的车冒充 */
 .pk-c-img.empty{
   background:
@@ -1771,7 +1772,7 @@ body.intro-lock{ overflow:hidden; }
   .pk-discwrap{ --disc:120px; }
 }
 @media (prefers-reduced-motion: reduce){
-  .pk-c, .pk-c-img img{ transition:none !important; }
+  .pk-c, .pk-sprite{ transition:none !important; }
   .pk-disc{ animation:none; }
   .pk-head, .pk-stage, .pk-foot{ transition:none !important; opacity:1 !important; transform:none !important; }
 }
@@ -3230,15 +3231,16 @@ document.getElementById('navBack').onclick = () => {
   /* 只有 i6 的价是核对过的。其余车型只给"可选 + 待上线"，一个数字都不许出现。
      img 留空就走石墨占位，绝不拿别的车的图冒充。
      pos = object-position，按每张图里车身位置对好；换图时一起调。 */
+  /* sp = 精灵图里的格子位置（3 列 2 行）。没图的车 sp 为空，走石墨占位 */
   var LIST = [
-    { id:'i6',   code:'i6',   name:'理想 i6',    ready:true, img:'asset/car_i6.jpg' },
-    { id:'i8',   code:'i8',   name:'理想 i8',    img:'asset/car_i8_sq.jpg' },
-    { id:'i9',   code:'i9',   name:'理想 i9',    img:'asset/car_i9_sq.jpg' },
-    { id:'l6',   code:'L6',   name:'理想 L6',    img:'asset/car_l6_sq.jpg' },
-    { id:'l7',   code:'L7',   name:'理想 L7',    img:'' },
-    { id:'l8',   code:'L8',   name:'理想 L8',    img:'asset/car_l8_sq.jpg' },
-    { id:'l9',   code:'L9',   name:'理想 L9',    img:'asset/car_l9_sq.jpg' },
-    { id:'mega', code:'MEGA', name:'理想 MEGA',  img:'' }
+    { id:'i6',   code:'i6',   name:'理想 i6',    ready:true, sp:'0% 0%' },
+    { id:'i8',   code:'i8',   name:'理想 i8',    sp:'50% 0%' },
+    { id:'i9',   code:'i9',   name:'理想 i9',    sp:'100% 0%' },
+    { id:'l6',   code:'L6',   name:'理想 L6',    sp:'0% 100%' },
+    { id:'l7',   code:'L7',   name:'理想 L7',    sp:'' },
+    { id:'l8',   code:'L8',   name:'理想 L8',    sp:'50% 100%' },
+    { id:'l9',   code:'L9',   name:'理想 L9',    sp:'100% 100%' },
+    { id:'mega', code:'MEGA', name:'理想 MEGA',  sp:'' }
   ];
 
   var cur = 'i6';
@@ -3246,9 +3248,9 @@ document.getElementById('navBack').onclick = () => {
 
   /* ---------- 建卡片 ---------- */
   row.innerHTML = LIST.map(function (m, i) {
-    var media = m.img
-      ? '<span class="pk-c-img"><img class="pk-main" src="' + m.img +
-        '" alt="' + m.name + '" decoding="async"></span>'
+    var media = m.sp
+      ? '<span class="pk-c-img"><span class="pk-sprite" role="img" aria-label="' +
+        m.name + '" style="background-position:' + m.sp + '"></span></span>'
       : '<span class="pk-c-img empty"></span>';
     return '<button class="pk-c' + (m.ready ? ' ready' : '') + '" type="button" ' +
         'data-pk="' + m.id + '" role="listitem" aria-pressed="false" style="--i:' + i + '">' +
@@ -3265,23 +3267,6 @@ document.getElementById('navBack').onclick = () => {
   var rail = document.getElementById('pkRail');
   if (rail) rail.innerHTML = LIST.map(function () { return '<i></i>'; }).join('');
   var railItems = rail ? Array.prototype.slice.call(rail.querySelectorAll('i')) : [];
-
-  /* 图挂了就走占位，不留破图 */
-  cards.forEach(function (p) {
-    var wrap = p.querySelector('.pk-c-img');
-    if (!wrap) return;
-    var imgs = wrap.querySelectorAll('img');
-    Array.prototype.forEach.call(imgs, function (img) {
-      var onFail = function () {
-        wrap.classList.add('empty');
-        Array.prototype.forEach.call(wrap.querySelectorAll('img'), function (n) {
-          if (n.parentNode) n.parentNode.removeChild(n);
-        });
-      };
-      img.addEventListener('error', onFail);
-      if (img.complete && img.naturalWidth === 0) onFail();
-    });
-  });
 
   function idxOf(id) {
     for (var i = 0; i < LIST.length; i += 1) if (LIST[i].id === id) return i;
