@@ -150,6 +150,7 @@ a{ color:inherit; text-decoration:none; }
 }
 .hero-img img{
   width:100%; height:auto; display:block;
+  transition:opacity .3s ease;
   -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 7%, #000 95%, transparent 100%);
   mask-image:linear-gradient(to bottom, transparent 0, #000 7%, #000 95%, transparent 100%);
 }
@@ -3133,7 +3134,15 @@ function syncModelText(){
       wrap.classList.toggle('cover', !!src && m.id !== 'i6');
       wrap.classList.toggle('empty', !src);
     }
-    if (src && hi.getAttribute('src') !== src) hi.setAttribute('src', src);
+    if (src && hi.getAttribute('src') !== src){
+      /* 浏览器在同一个 img 上换 src 时，新图没下完会继续显示旧图 —— 客户会看到「MEGA 页面配 i6 的车」。
+         所以先把旧图遮掉（露出深色底），等新图 decode 完再淡入。 */
+      hi.style.opacity = '0';
+      hi.onload = function (){ hi.style.opacity = '1'; };
+      hi.onerror = function (){ hi.style.opacity = '0'; };
+      hi.setAttribute('src', src);
+      if (hi.complete && hi.naturalWidth > 0) hi.style.opacity = '1';
+    }
     const ph = document.getElementById('heroPhCode');
     if (ph) ph.textContent = m.name.replace('理想 ', '');
   }
