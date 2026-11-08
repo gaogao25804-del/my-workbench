@@ -512,6 +512,9 @@ a{ color:inherit; text-decoration:none; }
 .addon-price span{ font-size:11px; color:var(--sub); margin-left:6px; letter-spacing:.04em; }
 .addon-mats{ font-size:11.5px; line-height:1.85; color:var(--sub); text-align:right; }
 .addon-mats b{ color:var(--ink); font-weight:600; }
+.addon-mats:empty{ display:none; }
+/* 「到店核」和 ¥ 数字同号位，别一高一低跳戏 */
+.addon-price .tbd-p{ font-family:var(--fn); font-size:26px; font-weight:500; color:var(--ink); letter-spacing:0; }
 /* 赠品条：深色反差，把"白送的东西"做成整张卡最抢眼的一块 */
 .gift-bar{
   grid-column:1/-1; display:flex; align-items:center; gap:20px;
@@ -2714,6 +2717,35 @@ function curSeatKind(){
   return list.find(o => o.k === want) || list.find(o => o.k === 'full') || list[list.length - 1] || null;
 }
 
+/* 这一档具体含哪些件：把前几档的增量串成一句，单据上不会出现「5 件套却写着含前仓垫/毯面」 */
+function tierSpec(t){
+  const lad = MAT_LADDER[state.model] || [];
+  const i = lad.findIndex(x => x.n === (t && t.n));
+  if (i < 0) return '';
+  return lad.slice(0, i + 1).map(x => x.inc.replace(/^\+\s*/, '')).join(' + ');
+}
+
+/* 本店价必须跟着「正在看的那一档」走 —— 之前卡片和配置单永远挂整车全套 1,610，
+   点 5 件套也收 1,610，等于多收钱。规则：
+   · 整车全套（hot 档）用本店口径价（比京东低一截，含装车）
+   · 其余档与京东同价，是多少写多少
+   · 没有实价的档返回 null → 界面写「到店核」，绝不编数 */
+function tierStore(t, ms){
+  if (!t) return (ms && ms.price) || null;
+  if (t.hot && ms && ms.price) return ms.price;
+  if (t.p != null) return t.p;
+  return null;
+}
+/* 这一档带不带毯面：inc 是「相对上一档加了什么」，得从第一档累加看到当前档，
+   否则 14 件套（只写 +靠背垫/前仓垫）会被误判成裸垫 */
+function tierHasMats(t){
+  if (!t) return false;
+  const lad = MAT_LADDER[state.model] || [];
+  const i = lad.findIndex(x => x.n === t.n);
+  const upto = i < 0 ? [t] : lad.slice(0, i + 1);
+  return upto.some(x => /毯面/.test(x.inc || ''));
+}
+
 const ACC_BIG = [
   /* price 只是兜底：脚垫真实价走 MAT_SET，按当前车型取，别拿一款的价套七款 */
   { id:'a1', slot:'foot', brand:'GOODYEAR · 固特异', name:'TPE 脚垫整套', price:810, em:'整套',
@@ -2960,35 +2992,45 @@ function renderFilmBar(){
 
 function bigCard(a){
   if (a.slot === 'foot'){
-    const ct  = curTier();                    /* 当前在看哪一档，图跟着它换 */
+    const ct  = curTier();                    /* 当前在看哪一档：图、价、件数三者一起跟它换 */
+    const ms  = MAT_SET[curModel().id] || MAT_SET.i6;
+    const megaOnly = !(ms && ms.n);            /* MEGA 官方只出原车毯面，没有件套可分 */
     const pic = (ct && ct.n)
       ? `asset/mats/tier/${curModel().id}_${ct.n}.jpg`
       : ((a.imgs && a.imgs[curModel().id]) || a.img);
-    const ms  = MAT_SET[curModel().id] || MAT_SET.i6;
-    const fp  = (ms && ms.price) || a.price;
-    const nTxt = ms && ms.n ? ms.n + ' 件套' : '专属毯面';
+    /* 主价跟档位走：点 5 件套就 714，不再永远显示整车全套的 1,610 */
+    const tPrice  = tierStore(ct, ms);
+    const tbd     = tPrice == null;
+    const fp      = tbd ? ((ms && ms.price) || a.price) : tPrice;
+    const nTxt    = ct ? (ct.n ? ct.n + ' 件套' : '专属毯面')
+                       : (ms && ms.n ? ms.n + ' 件套' : '专属毯面');
+    const hasMats = megaOnly || tierHasMats(ct);   /* 裸垫档没有毯面，文案不能写「配 XX 毯」 */
     const aName = (ms && ms.title) || a.name;
-    const aSpec = (ms && ms.spec) || a.spec;
+    /* 裸垫档不能还挂着「三款毯面可换」，客人会以为毯子是送的 */
+    const aSpec = ((ms && ms.spec) || a.spec).replace(hasMats ? '' : ' · 三款毯面可换', '');
     const aMats = (ms && ms.matsLine) || a.mats;
     const aTags = (ms && ms.tags) || a.tags;
     const aNote = ms && ms.note !== undefined ? ms.note : a.note;
     const aGift = (ms && ms.gift) || a.gift;
     return `
     <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
-         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${aName} ${nTxt}，¥${money(px(fp))}">
+         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${aName} ${nTxt}，${tbd?'价格到店核':'¥'+money(px(fp))}">
       <div class="addon-top">
-        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${ct && ct.n ? ct.n + ' 件套' : nTxt}">${ct && ct.n ? `<i class="pic-tier">正在看 ${ct.n} 件套</i>` : ''}</div>
+        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}">${ct && ct.n ? `<i class="pic-tier">正在看 ${ct.n} 件套</i>` : ''}</div>
         <div class="addon-body">
-          <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送全套配件</span></div>
+          <div class="addon-k">${a.brand}<span class="hi-tag">${(ct && ct.n >= 12) ? '主推 · 送全套配件' : '主推 · 送硅胶套装'}</span></div>
           <div class="addon-name">${aName}<u class="set-n">${curModel().name} · ${nTxt}</u></div>
-          <div class="addon-spec">${ms && ms.mats ? `本款配 <b>${ms.mats}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : ''}${aSpec}</div>
+          <div class="addon-spec">${megaOnly || hasMats
+            ? (ms && ms.mats ? `本款配 <b>${ms.mats}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : '')
+            : '<b>本款裸垫 · 不含毯面</b>，加毯面就上一档<br>'}${aSpec}</div>
           ${aTags?`<div class="addon-tags">${aTags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'}</span>`:''}</div>`:''}
           ${aNote?`<div class="addon-note">${aNote}</div>`:''}
           <div class="addon-buy">
-            <div class="addon-price"><i>¥</i>${money(px(fp))}<span>${ms && ms.n
-              ? `整车 ${nTxt} · 含装车`
-              : '原车专属毯面 · 含装车'}</span></div>
-            <div class="addon-mats">${aMats}</div>
+            <div class="addon-price">${tbd
+              ? '<b class="tbd-p">到店核</b>'
+              : `<i>¥</i>${money(px(fp))}`}<span>${nTxt} · 含装车${!tbd && ct && ct.hot && ct.p && ct.p > fp
+                ? ` · 京东 ¥${money(ct.p)}` : ''}</span></div>
+            <div class="addon-mats">${hasMats ? aMats : ''}</div>
             <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '点此加入配置单'}</span>
           </div>
         </div>
@@ -2998,8 +3040,6 @@ function bigCard(a){
         if (!lad) return '';
         const topN = lad[lad.length - 1].n;
         const nTxt = ms && ms.n ? ms.n : topN;
-        const full = lad.find(x => x.hot) || lad[lad.length - 1];
-        const fullTxt = full.p ? '¥' + money(full.p) : full.r;
         /* MEGA 官方只出原车毯面，没有件套可分，文案不能套用「分 N 档」 */
         const isMats = !nTxt;
         return `<div class="mtier">
@@ -3008,22 +3048,23 @@ function bigCard(a){
             <b>${curModel().name} · ${isMats ? '原车专属毯面' : '全档位'}</b>
             <span>${isMats
               ? '官方只出原车专属毯面，不分件套 · 星空丝绒 / 星空年华 两款同价'
-              : '点任一行，上面的大图就换成这一档的部件 · 件数越多护得越全'}</span>
+              : '点任一行，上面的大图和价格就换成这一档 · 件数越多护得越全'}</span>
           </div>
           <div class="mt-hd-r">
             <i>${isMats ? '专属毯面 · 含装车'
               : `正在看 ${ct.n} 件套 · 京东 ${ct.p ? '¥' + money(ct.p) : ct.r}`}</i>
-            <em>${isMats ? '京东 ¥' + money(1000) : `整车 ${nTxt} 件`}</em>
+            <em>${tbd ? '本店 到店核' : '本店 ¥' + money(fp)}</em>
           </div>
         </div>
         <div class="mtier-rows">
           ${lad.map(t => {
             const nm = t.n ? t.n + ' 件套' : '专属毯面';
-            const pv = t.p ? '¥' + money(t.p) : t.r;
+            const st = tierStore(t, ms);            /* 行价必须是本店价：客人点到哪档，卡片就收哪档 */
+            const pv = st == null ? (t.r || '到店核') : '¥' + money(st);
             const on = ct && t.n === ct.n;
             return `<div class="mt-row${t.hot ? ' hot' : ''}${on ? ' on' : ''}" data-tier="${t.n}"
               role="button" tabindex="0" aria-pressed="${on}"
-              aria-label="看 ${nm} 的部件图，京东 ${pv}">
+              aria-label="看 ${nm} 的部件图，本店 ${pv}">
             <i>${nm}${t.hot ? '<u>本店在售</u>' : ''}</i>
             <span class="mt-spec">${t.inc}</span>
             <em>${pv}</em>
@@ -3032,7 +3073,7 @@ function bigCard(a){
         </div>
         <p class="mtier-note">${isMats
           ? '价格为京东「固特异车品旗舰店」2026-11 在售价；原车专属毯面只有一个档，星空丝绒 / 星空年华 同价。本店含装车，并赠全车硅胶套装。'
-          : '价格为京东「固特异车品旗舰店」2026-11 同产品线在售价：裸垫 → 加后备箱垫 → 加毯面 → 整车全套，逐档加钱；标区间的是该档跨车型浮动（整车全套实测 ¥1,169–1,627）。本店整车整套统一 ¥1,610，含装车 + 全车硅胶套装。'}</p>
+          : '价格为本店含装车价：裸垫 → 加后备箱垫 → 加毯面 → 整车全套，逐档加钱，点哪档就按哪档结算；京东同款整车全套在售 ¥1,627，本店整车整套 ¥1,610（低 17 块，再送全车硅胶套装）。'}</p>
       </div>`;
       })()}
       <div class="gift-bar">
@@ -3242,13 +3283,19 @@ function picked(){
 
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
     if (state.acc.has(a.id)){
-      /* 脚垫、座椅垫都按车型走：件套与价格跟着当前车型，不能拿一款的价套七款 */
-      let ms = null, aName = a.name, setTxt = '', ap = a.price;
+      /* 脚垫、座椅垫都按车型走：件套与价格跟着当前车型 + 当前档位，不能拿一款的价套七款 */
+      let ms = null, aName = a.name, setTxt = '', ap = a.price, gift = false, tbd = false;
       if (a.slot === 'foot'){
         ms = MAT_SET[curModel().id] || null;
+        const ct = curTier();
         aName = (ms && ms.title) || a.name;
-        setTxt = ms && ms.n ? (ms.t || ms.n + ' 件套') : '';
-        ap = ms && ms.price ? ms.price : a.price;
+        setTxt = ct ? (ct.n ? ct.n + ' 件套' : '专属毯面')
+                    : (ms && ms.n ? ms.n + ' 件套' : '');
+        /* 档位价：点 5 件套就按 5 件套收，绝不能还挂整车全套的 1,610 */
+        const st = tierStore(ct, ms);
+        tbd = st == null;
+        ap = st != null ? st : ((ms && ms.price) || a.price);
+        gift = { sil:true, acc:!!(ct && ct.n >= 12) };   /* 满 12 件套才加送配件 */
       } else if (a.slot === 'seat'){
         const o = curSeatKind();
         const sv = SEAT_SET[curModel().id] || null;
@@ -3256,11 +3303,30 @@ function picked(){
         setTxt = o ? o.t : (sv ? sv.t : '');
         if (o && !o.p) setTxt += ' · 到店核';
         ap = (o && o.p) ? o.p : (sv && sv.price ? sv.price : a.price);
+        gift = !!a.gift;
       }
+      const ct2 = a.slot === 'foot' ? curTier() : null;
+      /* MEGA 只有专属毯面（ms.n 为空）恒有毯面；其他车按当前档看带不带毯 */
+      const hasMats = a.slot === 'foot' && !!(ms && (ms.n ? tierHasMats(ct2) : true));
       const nm = setTxt ? `${aName} · ${setTxt}` : aName;
+      /* 脚垫的说明按档重写：5 件套就别再写「含前仓垫 / 靠背垫 / 三款毯面」 */
+      let sub;
+      if (a.slot === 'foot'){
+        sub = (ms && !ms.n)
+          ? ((ms.spec || a.spec) || '').replace(/<br>/g, ' ')          /* MEGA 只有专属毯面 */
+          : [tierSpec(ct2), hasMats ? (ms && ms.mats) : ''].filter(Boolean).join(' · ');
+      } else {
+        sub = (a.spec || '').replace(/<br>/g, ' ');
+      }
       out.push({
-        k:'配件', v:nm, sub:(a.spec||'').replace(/<br>/g,' '),
-        p: px(ap), gift:!!a.gift, footSet: ms
+        k:'配件', v:nm, sub,
+        p: px(ap), gift, tbd,
+        footSet: ms ? {
+          mats: hasMats ? ms.mats : '',
+          yr: hasMats ? ms.yr : '',
+          n: ct2 ? ct2.n : ms.n,
+          inc: ct2 ? ct2.inc : ''
+        } : null
       });
     }
   });
@@ -3408,8 +3474,8 @@ function renderSheet(list, total){
     <div class="qline" style="--i:${i}">
       <span class="qk">${x.k}</span>
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
-        ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶套装</small>`:''}</span>
-      <span class="qp"><i>¥</i>${money(x.p)}</span>
+        ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶套装${x.gift.acc?' + 全套配件 6 类':''}</small>`:''}</span>
+      <span class="qp">${x.tbd?'<b class="tbd-p">到店核</b>':`<i>¥</i>${money(x.p)}`}</span>
     </div>`).join('');
 
   $('#sheetBody').innerHTML = `
@@ -3443,16 +3509,16 @@ function copyQuote(list, total, m){
     '————————————'
   ];
   list.forEach(x => {
-    lines.push(`${x.k}　${x.v}　${fmt(x.p)}`);
-    /* 脚垫的件数与毯面跟车型走，单据上要写清楚，老板交车时才不用再问一遍 */
+    lines.push(`${x.k}　${x.v}　${x.tbd ? '价格到店核' : fmt(x.p)}`);
+    /* 脚垫的件数、毯面跟着「选中的那一档」走，单据上写清楚，老板交车时才不用再问一遍 */
     if (x.footSet){
       const f = x.footSet;
-      lines.push(`　　配 ${f.mats}${f.yr ? ' · ' + f.yr : ''}${f.n ? '　' + f.n + ' 件' : ''}`);
+      lines.push(`　　配 ${f.mats ? f.mats + (f.yr ? ' · ' + f.yr : '') + '　' : ''}${f.n ? f.n + ' 件套' : '专属毯面'}`);
     }
     /* 件数跟车型走：i8 是 22 件、L9 是 24 件，写死 21 会让老板交车时对不上 */
     if (x.gift){
-      lines.push(`　　赠 全车硅胶套装 ${(m.gift && m.gift.n) || x.gift} 件`);
-      lines.push('　　赠 全套配件 6 类（价值 ¥450–500）');
+      lines.push(`　　赠 全车硅胶套装 ${(m.gift && m.gift.n) || ''} 件`);
+      if (x.gift.acc) lines.push('　　赠 全套配件 6 类（价值 ¥450–500）');
     }
   });
   lines.push('————————————');
@@ -3535,6 +3601,20 @@ function findFilm(id){
 }
 function findAcc(id){
   return ACC_BIG.concat(ACC_SMALL).find(x => x.id === id);
+}
+/* 提示条上的价也得是「当前档 / 当前款式」的价：脚垫点了 5 件套就不能还报 1,610 */
+function accPrice(a){
+  if (!a) return 0;
+  if (a.slot === 'foot'){
+    const ms = MAT_SET[curModel().id] || null;
+    const st = tierStore(curTier(), ms);
+    return st != null ? st : ((ms && ms.price) || a.price);
+  }
+  if (a.slot === 'seat'){
+    const o = curSeatKind(), sv = SEAT_SET[curModel().id] || null;
+    return (o && o.p) ? o.p : (sv && sv.price ? sv.price : a.price);
+  }
+  return a.price;
 }
 
 /* 选中瞬间让勾选圆弹一下：render 会重建 DOM，所以传的是重建后的新节点 */
@@ -3662,7 +3742,7 @@ document.addEventListener('click', e => {
     if (!was){
       flashPick(document.querySelector(`[data-acc="${id}"]`));
       const it = findAcc(id);
-      if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(px(it.price))}`, 'ok'); }
+      if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(px(accPrice(it)))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
     return;
   }
@@ -3744,7 +3824,7 @@ function syncModelText(){
   const ms = MAT_SET[m.id];
   const nTxt = ms && ms.n ? `${ms.n} 件套` : '专属毯面';
   if (ap) ap.innerHTML = `整车配件 · 单项可加装。脚垫与座椅垫按 <b>${m.seats || 5} 座舱布局</b>配齐，` +
-    `本款脚垫为 <b>${nTxt}</b>${ms && ms.mats ? '（' + ms.mats + '）' : ''}；其余小件为单品价，不含施工。`;
+    `脚垫可分档加装，整车满配 <b>${nTxt}</b>${ms && ms.mats ? '（' + ms.mats + '）' : ''}；其余小件为单品价，不含施工。`;
 
   document.title = `${m.name} · 全车配置报价 | 圣佳 SolarGard 授权店`;
 }
