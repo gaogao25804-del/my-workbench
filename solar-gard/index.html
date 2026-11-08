@@ -949,6 +949,12 @@ a{ color:inherit; text-decoration:none; }
 .sil-item{ background:#fff; padding:22px 14px 18px; text-align:center; }
 .sil-item img{ display:block; width:100%; height:auto; mix-blend-mode:multiply; }
 .sil-item b{ display:block; font-size:13px; font-weight:600; color:var(--ink); margin-top:10px; }
+/* 硅胶图走精灵图：一个请求拿全 10~12 件，避免并发把连接拖死 */
+.sil-item .sil-pic{
+  display:block; width:100%; aspect-ratio:1/1;
+  background-image:var(--bg); background-repeat:no-repeat;
+  background-size:var(--bs); background-position:var(--bx) var(--by);
+}
 .sil-item span{ display:block; font-size:11.5px; color:var(--sub2); margin-top:4px; letter-spacing:.04em; }
 /* 没有实拍图的车型：格子改出「序号 + 名称 + 件数」清单，别拿别的车的图冒充 */
 .sil-item--txt{
@@ -2066,13 +2072,21 @@ function renderSil(animate){
       <span class="se-d">无线充垫 / 水杯套 / 扶手箱储物盒 / 中控下储物盒 / 车门按键垫 / 门碗贴 / 安全带套 / OBD 保护盖 等按 7 座舱逐项配齐，件数以实车核对为准。</span>
     </div>`;
   } else if (g.photo){
-    const pre = g.photo === 'i6' ? (state.silColor === 'w' ? 's' : state.silColor) : g.photo;
-    const sep = g.photo === 'i6' ? '' : '_';
-    grid.innerHTML = g.items.map((it, i) => `
+    /* 十二张图并排会被浏览器连接数拖死（实测 15 秒只解码 5 张），改一张精灵图定位 */
+    const spr  = g.photo === 'i6' ? `sp_i6_${state.silColor === 'w' ? 's' : state.silColor}` : `sp_${g.photo}`;
+    const rows = Math.ceil(g.items.length / cols);
+    const bs   = `${cols * 100}% ${rows * 100}%`;
+    grid.innerHTML = g.items.map((it, i) => {
+      const c = i % cols, r = Math.floor(i / cols);
+      const bx = cols > 1 ? (c / (cols - 1) * 100).toFixed(4) : 0;
+      const by = rows > 1 ? (r / (rows - 1) * 100).toFixed(4) : 0;
+      return `
     <div class="sil-item" style="--i:${i}">
-      <img src="asset/acc/sil/${pre}${sep}${String(i + 1).padStart(2, '0')}.jpg" alt="硅胶${it[0]} × ${it[1]}">
+      <i class="sil-pic" role="img" aria-label="硅胶${it[0]} × ${it[1]}"
+         style="--bg:url(asset/acc/sil/${spr}.jpg);--bs:${bs};--bx:${bx}%;--by:${by}%"></i>
       <b>${it[0]}</b><span>${it[2] ? it[2] + ' · ' : ''}× ${it[1]}</span>
-    </div>`).join('');
+    </div>`;
+    }).join('');
   } else {
     grid.innerHTML = g.items.map((it, i) => `
     <div class="sil-item sil-item--txt" style="--i:${i}">
