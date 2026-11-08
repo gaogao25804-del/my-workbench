@@ -1473,6 +1473,57 @@ body.sheet-open .toast{ display:none; }
 .cartbar.pulse{ animation-duration:.24s; }
 .cb-v.pop em{ animation-duration:.3s; }
 
+/* 10) 折叠区的整块热区
+   02 的「另有 N 款」是 812×179、03 的卡片头部也占大半张卡，之前这些地方 cursor 还是箭头、点了没反应。
+   现在整块可点，但状态仍然只由 JS 的 .on 决定，样式只负责「看得出能点」。 */
+.foldbox--hit{
+  cursor:pointer;
+  transition:background .2s, box-shadow .2s;
+  box-shadow:inset 0 0 0 1px transparent;
+}
+.foldbox--hit:hover{ background:#FBF8F1; box-shadow:inset 0 0 0 1px rgba(185,154,91,.42); }
+.sec--gray .foldbox--hit:hover{ background:#FDFBF6; box-shadow:inset 0 0 0 1px rgba(185,154,91,.42); }
+.foldbox--hit:active{ background:#F6F1E5; box-shadow:inset 0 0 0 1px rgba(185,154,91,.7); }
+.foldbox--hit .fb-go{
+  position:relative; align-self:flex-start;
+  display:inline-flex; align-items:center; gap:7px;
+  margin-top:6px; padding-bottom:4px;
+  font-size:11px; letter-spacing:.08em; color:var(--gold);
+  border-bottom:1px solid rgba(185,154,91,.36);
+  transition:border-color .2s, gap .2s;
+}
+.foldbox--hit:hover .fb-go{ border-bottom-color:var(--gold); gap:11px; }
+.foldbox--hit .fb-go i{ font-style:normal; }
+.foldbox--hit:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+/* 02 折叠态的表头「入门 ¥5,980 起」——底色铺满整块，别只动一条 1px 线 */
+.pcolhead--hit{
+  cursor:pointer; position:relative;
+  margin:0 -12px; padding-left:12px; padding-right:12px;
+  transition:background .2s, border-color .2s;
+}
+.pcolhead--hit:hover{ background:rgba(185,154,91,.09); border-bottom-color:var(--gold); }
+.pcolhead--hit:hover .ptag{ color:#8E7440; }
+.pcolhead--hit:hover .pfrom{ color:var(--gold); }
+.pcolhead--hit:active{ background:rgba(185,154,91,.16); border-bottom-color:#8E7440; }
+.pcolhead--hit:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+/* 手机没有 hover，只靠 hover 变色等于没提示：常驻一层淡金底 + 金下划线 */
+@media (hover:none){
+  .pcolhead--hit{ background:rgba(185,154,91,.07); border-bottom-color:rgba(185,154,91,.55); }
+  .pcolhead--hit .pfrom{ color:var(--gold); }
+  .foldbox--hit{ background:#FDFBF6; box-shadow:inset 0 0 0 1px rgba(185,154,91,.32); }
+  .card--hit{ box-shadow:inset 0 0 0 1px rgba(185,154,91,.32); }
+}
+
+/* 03 折叠态整张卡 */
+.card--hit{ cursor:pointer; }
+.card--hit:hover{ box-shadow:inset 0 0 0 1px rgba(185,154,91,.42); background:#FDFCF9; }
+.card--hit.hl:hover{ box-shadow:inset 0 0 0 1px rgba(185,154,91,.6); }
+.card--hit:active{ background:#F7F4EC; box-shadow:inset 0 0 0 1.5px rgba(185,154,91,.7); }
+.card--hit.hl:active{ background:#242320; }
+.card--hit:focus-visible{ outline:2px solid var(--gold); outline-offset:-2px; }
+
+
 @media (max-width:759px){
   :root{ --stick:128px; }
   /* 手机端固定头约 123px、分区上内边距 56px */
@@ -1602,7 +1653,7 @@ body.sheet-open .toast{ display:none; }
     <div class="sec-h" data-page-node-id="MD41bKudNEAU9cDJEMQBhz">
       <span class="no" data-page-node-id="HaoMsAYkToRKNjLBbzpKSM">02</span>
       <h2 data-page-node-id="W2QoHKzQZWiqa2WlbK7Xyx">隐形车衣</h2>
-      <span class="en" data-page-node-id="BWQL1SoLMWqveb8mbIG6tO">Paint Protection Film</span><span class="picktip">点价格行即可勾选</span>
+      <span class="en" data-page-node-id="BWQL1SoLMWqveb8mbIG6tO">Paint Protection Film</span><span class="picktip">点「入门」这一整块就能勾选</span>
       <span class="same">全系同价 · 不分车型</span>
     </div>
     <p class="sec-p" data-page-node-id="X5hidVUFMubZFzwIXXfn80">全车漆面 · 整车贴装价。<b data-page-node-id="KhtrBWzVqNaLqRvAgvEJeS">不分车型、不按车身尺寸加价</b>，按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。<br data-page-node-id="KwAU9cNvL4e3m37y7YYBuF">默认只显示起步款，更高价位可展开对比。</p>
@@ -1636,10 +1687,10 @@ body.sheet-open .toast{ display:none; }
     <div class="sec-h" data-page-node-id="kC42U6UwlUyAiDfUoZO7OS">
       <span class="no" data-page-node-id="CHvHTZvfCArbvnbOaT4ROk">03</span>
       <h2 data-page-node-id="hPfmmyhs4icivgQI1OMdlS">玻璃膜</h2>
-      <span class="en" data-page-node-id="zQ6fsPM4KmyJ5eZZsVt3SD">Window Film</span><span class="picktip">点 A / B / C 档即可勾选</span>
+      <span class="en" data-page-node-id="zQ6fsPM4KmyJ5eZZsVt3SD">Window Film</span><span class="picktip">点卡片任意位置即可勾选</span>
     </div>
     <p class="sec-p" data-page-node-id="B7JtmpQAuy0nqN6UKsX5s6">前挡 + 侧挡 全车套餐，四档任选。每档内按前挡与侧挡的组合再分 A / B / C，价格差在隔热与透光。<br data-page-node-id="xmuZxUBDW8TjL0qvy7HZDn">默认只显示性价比档，更高规格可展开对比。</p>
-    <div class="pickbar" id="filmBar" data-page-node-id="BMIpYv81dD1VUIbUskDY0C"><span class="pb-empty">尚未选择 · 点下方卡片里的 A / B / C 档即可</span></div>
+    <div class="pickbar" id="filmBar" data-page-node-id="BMIpYv81dD1VUIbUskDY0C"><span class="pb-empty">尚未选择 · 点下方卡片即可勾选</span></div>
     <div class="film4 fold" id="secFilm" data-page-node-id="MB2JqlJtFHGMnlAFEXexI5">
     <div class="card">
       
@@ -1900,7 +1951,8 @@ body.sheet-open .toast{ display:none; }
    车衣 / 玻璃膜 / 钢化膜：老板确认全系通用，直接复用同一份价目，不做任何系数换算。
    配件：脚垫、座椅垫这类按座舱布局来的件，5 座沿用 i6 价目；6/7 座只标「按车型配齐」。
    gift = 买脚垫赠送的全车硅胶套装清单（件数按老板提供的实车套装登记，不推算）。
-        photo:true 表示有 i6 三色实拍图；其余车型按清单列出，件数照抄不编。 */
+        photo 是精灵图前缀（i6 有白/棕/橙三色，i8/i9 从套装长图逐件切出，L6 复用同款 5 座图）；
+        cols 是该套装在格子里的列数；photo:false 的车型按清单列出，件数照抄不编。 */
 const MODELS = [
   { id:'i6',   name:'理想 i6',   sub:'26 款', body:'纯电 SUV · 5 座', seats:5, giftCount:21, ready:true,
     gift:{ n:21, color:'原车白 / 棕色 / 橙黄', photo:'i6', items:[
@@ -1909,19 +1961,19 @@ const MODELS = [
       ['车门下硅胶盒',4], ['OBD 保护盖',1]
     ]}},
   { id:'i8',   name:'理想 i8',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:22, ready:true,
-    gift:{ n:22, color:'灰棕 / 白色', photo:false, items:[
+    gift:{ n:22, color:'灰棕 / 白色', photo:'i8', cols:3, items:[
       ['无线充硅胶垫',2], ['扶手箱硅胶盒',3], ['前排水杯套',2], ['后排水杯套',2],
       ['二排座椅储物盒',2], ['车门硅胶垃圾桶',2], ['冰箱硅胶储物盒',2], ['安全带硅胶套',6],
       ['OBD 硅胶防尘盖',1]
     ]}},
   { id:'i9',   name:'理想 i9',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:21, ready:true,
-    gift:{ n:21, color:'白色', photo:false, items:[
+    gift:{ n:21, color:'白色', photo:'i9', cols:5, items:[
       ['无线充硅胶垫',1], ['水杯套',1,'连体全包'], ['扶手箱储物盒',3], ['后排水杯套',1],
       ['中控下储物盒',2], ['三排水杯套',2], ['二排座椅储物盒',1], ['冰箱储物盒',2],
       ['车门按键硅胶垫',4], ['车门下硅胶盒',4,'升级杯架']
     ]}},
   { id:'l6',   name:'理想 L6',   sub:'',      body:'增程 SUV · 5 座', seats:5, giftCount:21, ready:true,
-    gift:{ n:21, color:'雪原白', photo:false, items:[
+    gift:{ n:21, color:'雪原白', photo:'l6', cols:5, items:[
       ['无线充硅胶垫',1,'前排'], ['水杯套',1,'连体全包'], ['扶手箱储物盒',1], ['后排水杯套',1],
       ['中控下储物盒',2], ['冰箱储物盒',2], ['车门上按键防护垫',4], ['车门内门碗贴',4],
       ['车门下储物盒',4], ['OBD 保护盖',1]
@@ -2097,11 +2149,13 @@ function foldBoxCoat(){
   const hit = state.coat ? findCoat(state.coat) : null;
   const sel = hit && hit.id !== BASE_COAT.id ? hit : null;
   return `
-  <div class="foldbox">
+  <div class="foldbox foldbox--hit" data-fold="coat" role="button" tabindex="0"
+       aria-expanded="false" aria-label="展开查看全部 ${COAT_ALL.length} 款价位">
     <div class="fb-k">以上是起步款</div>
     <div class="fb-t">另有 <b>${COAT_REST.length}</b> 款更高价位</div>
     <div class="fb-s"><b>¥${money(COAT_REST[0].price)} – ¥${money(COAT_REST[COAT_REST.length - 1].price)}</b>，差在厚度、自修复、质保年限。<br>默认收起，需要对比时再展开。</div>
-    ${sel ? `<button class="fb-sel" data-fold="coat"><i>✓</i>当前已选 <b>${sel.name} ¥${money(sel.price)}</b><u>展开看</u></button>` : ''}
+    ${sel ? `<span class="fb-sel"><i>✓</i>当前已选 <b>${sel.name} ¥${money(sel.price)}</b><u>展开看</u></span>` : ''}
+    <span class="fb-go">展开全部 ${COAT_ALL.length} 款 <i>↓</i></span>
   </div>`;
 }
 
@@ -2109,11 +2163,13 @@ function foldBoxFilm(){
   const hit = state.film ? findFilm(state.film) : null;
   const sel = hit && !FILM_BASE.tiers.some(t => t.id === hit.t.id) ? hit : null;
   return `
-  <div class="foldbox">
+  <div class="foldbox foldbox--hit" data-fold="film" role="button" tabindex="0"
+       aria-expanded="false" aria-label="展开查看全部 ${FILM.length} 档规格">
     <div class="fb-k">以上是性价比档</div>
     <div class="fb-t">另有 <b>${FILM_REST.length}</b> 档更高规格</div>
     <div class="fb-s">${FILM_REST.map(se => `<span class="fdi"><b>${se.name}</b> ¥${money(filmFrom(se))} 起</span>`).join(' · ')}<br>隔热和透光再往上走，默认收起，需要对比时展开。</div>
-    ${sel ? `<button class="fb-sel" data-fold="film"><i>✓</i>当前已选 <b>${sel.se.name} · ${sel.t.code} 档 ¥${money(sel.t.price)}</b><u>展开看</u></button>` : ''}
+    ${sel ? `<span class="fb-sel"><i>✓</i>当前已选 <b>${sel.se.name} · ${sel.t.code} 档 ¥${money(sel.t.price)}</b><u>展开看</u></span>` : ''}
+    <span class="fb-go">展开全部 ${FILM.length} 档 <i>↓</i></span>
   </div>`;
 }
 
@@ -2122,9 +2178,12 @@ function renderCoat(){
   const box = $('#secCoat');
   box.classList.toggle('fold', !open);
   const groups = open ? COAT : [{ ...COAT[0], items: [COAT[0].items[0]] }];
-  box.innerHTML = groups.map(g => `
+  box.innerHTML = groups.map(g => {
+    /* 折叠态只剩一款：把「入门 ¥5,980 起」这块表头也做成热区，点它等于点下面那一款 */
+    const hit = (!open && g.items.length) ? g.items[0].id : '';
+    return `
     <div class="pcol">
-      <div class="pcolhead">
+      <div class="pcolhead${hit ? ' pcolhead--hit' : ''}"${hit ? ` data-coat="${hit}" role="button" tabindex="0" aria-label="选择 ${g.grp}款，¥${money(g.from)} 起"` : ''}>
         <span class="ptag">${g.grp}</span>
         <span class="pfrom"><s>¥</s>${money(g.from)} 起</span>
       </div>
@@ -2135,7 +2194,7 @@ function renderCoat(){
           <span class="pprice"><i>¥</i>${money(it.price)}</span>
           <i class="ck"></i>
         </button>`).join('')}
-    </div>`).join('') + (open ? '' : foldBoxCoat());
+    </div>`;}).join('') + (open ? '' : foldBoxCoat());
 
   const bar = $('#coatFold');
   if (bar) bar.innerHTML = open
@@ -2150,8 +2209,10 @@ function renderFilm(){
   const list = open ? FILM : [FILM_BASE];
   box.innerHTML = list.map(se => {
     const cur = se.tiers.find(t => t.id === state.film);
+    /* 折叠态每张卡只有一档：整张卡都做成热区，点标题/价格/星级也等于选这一档 */
+    const only = (!open && se.tiers.length === 1) ? se.tiers[0] : null;
     return `
-    <div class="card${se.hl?' hl':''}${cur?' picked':''}">
+    <div class="card${se.hl?' hl':''}${cur?' picked':''}${only?' card--hit':''}"${only?` data-film="${only.id}" role="button" tabindex="0" aria-label="选择 ${se.name} ${only.code} 档，¥${money(px(only.price))}"`:''}>
       ${se.hot && !cur?`<div class="ctag">${se.hot}</div>`:''}
       ${cur?`<div class="cpicked">✓ 已选 ${cur.code} 档</div>`:''}
       <div class="ctagline"></div>
@@ -2184,7 +2245,7 @@ function renderFilmBar(){
   FILM.forEach(se => se.tiers.forEach(t => { if (t.id === state.film){ hit = t; pack = se; } }));
   if (!hit){
     bar.className = 'pickbar';
-    bar.innerHTML = `<span class="pb-empty">尚未选择 · 点下方卡片里的 A / B / C 档即可</span>`;
+    bar.innerHTML = `<span class="pb-empty">尚未选择 · 点下方卡片即可勾选</span>`;
     return;
   }
   bar.className = 'pickbar on';
@@ -2279,7 +2340,7 @@ function renderSil(animate){
   }
 
   /* 格子：i6 出实拍图，其余车型出「序号 + 名称 + 件数」清单 */
-  const cols = !g ? 5 : (g.photo === 'i6' ? 5 : (g.photo ? 4 : (g.items.length % 5 === 0 ? 5 : 4)));
+  const cols = !g ? 5 : (g.cols || (g.photo === 'i6' ? 5 : (g.photo ? 4 : (g.items.length % 5 === 0 ? 5 : 4))));
   grid.style.setProperty('--silc', cols);
   grid.classList.toggle('gal', !!g);   /* 空态不挂「图集」角标 */
   if (!g){
@@ -2327,9 +2388,11 @@ function renderSil(animate){
   if (kn) kn.textContent = g
     ? (g.photo === 'i6'
         ? `上图为 i6 车型 ${g.n} 件套实拍（白 / 棕 / 橙黄三色），按车型配齐后随脚垫一并装车。`
-        : g.photo
-          ? `上图为 ${curModel().name} ${g.n} 件套实拍（${g.color.split(' / ')[0]}），按车型配齐后随脚垫一并装车。`
-          : `上表为 ${curModel().name} ${g.n} 件套清单，件数照实车登记；实物颜色以到店现货为准。`)
+        : g.photo === 'l6'
+          ? `上图为同款 5 座套装实拍（雪原白），按 L6 座舱配齐后随脚垫一并装车。`
+          : g.photo
+            ? `上图为 ${curModel().name} ${g.n} 件套实拍，可选 ${g.color}，按车型配齐后随脚垫一并装车。`
+            : `上表为 ${curModel().name} ${g.n} 件套清单，件数照实车登记；实物颜色以到店现货为准。`)
     : 'MEGA 的硅胶套装清单还在整理，件数以实车为准。';
 
   document.querySelectorAll('[data-sil]').forEach(el => {
@@ -2558,11 +2621,13 @@ function copyQuote(list, total, m){
   ];
   list.forEach(x => {
     lines.push(`${x.k}　${x.v}　${fmt(x.p)}`);
-    if (x.gift) lines.push('　　赠 全车硅胶套装（21 件）');
+    /* 件数跟车型走：i8 是 22 件、L9 是 24 件，写死 21 会让老板交车时对不上 */
+    if (x.gift) lines.push(`　　赠 全车硅胶套装（${(m.gift && m.gift.n) || x.gift} 件）`);
   });
   lines.push('————————————');
   lines.push(`合计　${fmt(total)}`);
-  lines.push('SolarGard 圣佳授权店 · 到店免费实测');
+  lines.push('不含施工 · 到店免费实测');
+  lines.push('SolarGard 圣佳授权店');
 
   const txt = lines.join('\n');
   const done = () => {
