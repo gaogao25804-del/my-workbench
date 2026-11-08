@@ -155,23 +155,38 @@ a{ color:inherit; text-decoration:none; }
 /* ---------- 区块通用 ---------- */
 .sec{ padding:120px 0; }
 .sec--gray{ background:var(--panel); }
-.sec-h{ display:flex; align-items:baseline; gap:16px; padding-bottom:22px; border-bottom:1px solid var(--ink); }
-/* 分区编号加大加金：01–04 就是本页目录，得一眼扫出来 */
-.sec-h .no{
-  font-family:var(--fn); font-size:clamp(30px,3.4vw,46px); font-weight:300; line-height:1;
-  color:var(--gold); letter-spacing:.02em; flex:none;
+/* 分区头：01–04 是本页目录，做成金框编号牌 + 大标题，扫一眼就知道走到第几区 */
+.sec-h{
+  display:flex; align-items:center; gap:20px;
+  padding-bottom:24px; border-bottom:1px solid var(--ink);
+  position:relative;
 }
-.sec-h h2{ font-size:clamp(24px,2.6vw,34px); font-weight:600; letter-spacing:.02em; }
+/* 标题下方压一段金色粗线，章节感更强 */
+.sec-h::before{
+  content:""; position:absolute; left:0; bottom:-1px;
+  width:104px; height:3px; background:var(--gold);
+}
+.sec-h .no{
+  font-family:var(--fn); font-size:19px; font-weight:500; line-height:1; letter-spacing:.05em;
+  color:var(--gold); flex:none;
+  width:58px; height:58px; box-sizing:border-box;
+  border:1.5px solid rgba(185,154,91,.9); border-radius:2px;
+  background:rgba(185,154,91,.1);
+  display:flex; align-items:center; justify-content:center;
+}
+.sec-h h2{ font-size:clamp(26px,3vw,40px); font-weight:600; letter-spacing:.01em; }
 .sec-h .en{
   margin-left:auto; font-family:var(--fn); font-size:10px; letter-spacing:.24em;
   color:var(--sub2); text-transform:uppercase;
 }
 /* 分区标题右侧的「能点」提示：客人不用猜哪里能点 */
-.sec-h .picktip{
-  font-size:11.5px; letter-spacing:.06em; color:var(--gold); white-space:nowrap;
-  border:1px solid rgba(185,154,91,.5); background:rgba(185,154,91,.07);
-  padding:4px 13px; border-radius:999px; flex:none;
+/* 分区 / 子分区标题右侧的「能点」提示：客人不用猜哪里能点 */
+.picktip{
+  font-size:11.5px; font-weight:500; letter-spacing:.06em; color:#8A6A2E; white-space:nowrap;
+  border:1px solid rgba(185,154,91,.66); background:rgba(185,154,91,.14);
+  padding:5px 14px; border-radius:999px; flex:none;
 }
+.sub-head .picktip{ margin-left:auto; font-size:11px; padding:4px 12px; }
 .sec-p{ font-size:13.5px; line-height:2.1; color:var(--sub); max-width:660px; margin-top:26px; }
 
 /* ---------- 01 屏幕保护 ---------- */
@@ -463,6 +478,17 @@ a{ color:inherit; text-decoration:none; }
   color:var(--gold); letter-spacing:.12em; margin-left:7px;
   border:1px solid rgba(185,154,91,.5); padding:1px 5px; border-radius:2px;
 }
+/* 其余配件 = 单品加装：左上角「单品」墨色小标 + 墨色勾选圈，
+   和金色系的套装 / 主推卡分开（选中后依旧是金色实心勾） */
+.acc-item .unit-tag{
+  position:absolute; left:0; top:0; z-index:6;
+  padding:5px 10px; font-size:9.5px; font-style:normal; line-height:1; letter-spacing:.16em;
+  color:#fff; background:rgba(27,26,23,.85);
+  border-radius:0 0 3px 0; pointer-events:none;
+}
+.acc-item.pick--sm::after{ border-color:#98927F; color:#5C584C; }
+.acc-item.pick--sm:hover::after{ border-color:var(--ink); color:var(--ink); }
+
 .acc-item--more{
   background:var(--ink); color:#fff; padding:26px 22px; justify-content:center; align-items:flex-start;
 }
@@ -760,11 +786,12 @@ a{ color:inherit; text-decoration:none; }
   .b3 em{ grid-column:2; margin:0; font-size:11px; }
 
   .sec{ padding:56px 0; }
-  .sec-h{ gap:10px; padding-bottom:14px; flex-wrap:wrap; }
-  .sec-h h2{ font-size:22px; }
-  .sec-h .no{ font-size:26px; }
+  .sec-h{ gap:12px; padding-bottom:16px; flex-wrap:wrap; }
+  .sec-h h2{ font-size:23px; }
+  .sec-h .no{ width:46px; height:46px; font-size:15px; }
+  .sec-h::before{ width:76px; height:2px; }
   .sec-h .en{ display:none; }
-  .sec-h .picktip{ font-size:10.5px; padding:3px 10px; }
+  .sec-h .picktip{ font-size:10px; padding:4px 10px; }
   .sec-p{ font-size:12.5px; margin-top:18px; line-height:2; }
 
   .tiers{ grid-template-columns:1fr; gap:10px; margin:26px 0 34px; }
@@ -935,9 +962,17 @@ a{ color:inherit; text-decoration:none; }
 .sil-item--txt b{ margin-top:0; font-size:12.5px; line-height:1.5; }
 .sil-item--txt span{ margin-top:6px; }
 .sil-empty{
-  grid-column:1 / -1; background:#fff; padding:40px 24px;
-  text-align:center; font-size:12.5px; line-height:2; color:var(--sub);
+  grid-column:1 / -1; background:#fff; padding:54px 24px 50px;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+  text-align:center; font-size:12.5px; line-height:1.9; color:var(--sub);
 }
+.sil-empty .se-k{
+  font-family:var(--fn); font-size:9.5px; letter-spacing:.24em; color:var(--gold);
+  border:1px solid rgba(185,154,91,.5); background:rgba(185,154,91,.07);
+  padding:5px 12px; border-radius:999px;
+}
+.sil-empty b{ font-size:17px; font-weight:600; color:var(--ink); letter-spacing:.02em; }
+.sil-empty .se-d{ max-width:440px; }
 /* 非 i6 车型只注明可选颜色，不摆三色色卡 */
 .gk-color{ font-size:12.5px; letter-spacing:.04em; color:var(--ink); }
 .gk-note{
@@ -998,9 +1033,30 @@ a{ color:inherit; text-decoration:none; }
 }
 /* 选中后左右两半统一底色 */
 .addon-card.on .addon-pic{ background:transparent; }
+
+/* 大卡（TPE 脚垫 / 座椅垫）：常驻金边 + 大号勾选圆 + 「主推」金标
+   —— 这两张是配件区的主推套件，必须一眼看出来能点、且带赠品 */
+.addon-card, .seat-card{
+  box-shadow:0 0 0 1.5px rgba(185,154,91,.5);
+  transition:box-shadow .2s, transform .2s;
+}
+.addon-card:hover, .seat-card:hover{
+  box-shadow:0 0 0 2px rgba(185,154,91,.95), 0 20px 40px -30px rgba(0,0,0,.55);
+}
+.addon-card.pick--lg::after, .seat-card.pick--lg::after{
+  top:18px; right:18px; width:40px; height:40px; font-size:22px; border-width:2px;
+}
+/* 「主推 / 买就送」墨底金字小标，压在标题行里 */
+.hi-tag{
+  display:inline-flex; align-items:center; gap:6px; vertical-align:2px;
+  margin-left:10px; padding:4px 10px; border-radius:2px;
+  background:var(--ink); color:#fff; font-size:10.5px; font-weight:500; letter-spacing:.08em;
+}
+.hi-tag::before{ content:""; width:4px; height:4px; border-radius:50%; background:var(--gold); }
+
 /* 座椅卡右上角是价格，给勾选框让位 */
-.seat-card .sub-head{ padding-right:30px; }
-@media (max-width:759px){ .seat-card .sub-head{ padding-right:26px; } }
+.seat-card .sub-head{ padding-right:48px; }
+@media (max-width:759px){ .seat-card .sub-head{ padding-right:44px; } }
 /* 大卡再加一个文字标记，远距离一眼看到 */
 .addon-card.on .addon-price::after, .seat-card.on .sub-price::after{
   content:"已选"; margin-left:10px;
@@ -1491,33 +1547,41 @@ body.has-models .hero{ padding-top:0; }
       <div class="sub-head" data-page-node-id="VhExngovxdr1JpYDGSKByu">
         <b data-page-node-id="eJARqzdm4iuhrweT34gZBT">其余配件</b>
         <span data-page-node-id="a1HseS93LKrXsb5drf7kKx">单品报价 · 可单独加装</span>
+        <span class="picktip">点击卡片单独加装</span>
       </div>
       <div class="acc-grid" id="secAccSmall" data-page-node-id="b8xdFv9ilAUCijN07WgBBX">
     <button class="acc-item pick pick--sm" data-acc="a3">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic"><img src="asset/acc/n/a3_sill.jpg" alt="门槛条 10 件套"></div>
       <div class="acc-n"><b>门槛条 10 件套</b><span>RosyClouds · 不锈钢</span><i>¥468</i></div>
     </button>
     <button class="acc-item pick pick--sm" data-acc="a4">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic"><img src="asset/acc/n/a4_mesh.jpg" alt="满天星防虫网"></div>
       <div class="acc-n"><b>满天星防虫网</b><span>卡扣版 · 亮黑</span><i>¥178</i></div>
     </button>
     <button class="acc-item pick pick--sm" data-acc="a5">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic"><img src="asset/acc/n/a5_wheel.jpg" alt="2 代全包方向盘把套"></div>
       <div class="acc-n"><b>2 代全包方向盘把套</b><span>RosyClouds · 全包手缝</span><i>¥128</i></div>
     </button>
     <button class="acc-item pick pick--sm" data-acc="a6">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic"><img src="asset/acc/n/a6_hud.jpg" alt="HUD 保护罩"></div>
       <div class="acc-n"><b>HUD 保护罩</b><span>曲面贴合 · 原车弧面</span><i>¥115</i></div>
     </button>
     <button class="acc-item pick pick--sm" data-acc="a7">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic"><img src="asset/acc/n/a7_kick.jpg" alt="冰箱防踢板"></div>
       <div class="acc-n"><b>冰箱防踢板</b><span>卡扣版 · 白 / 橙 / 黑 三色</span><i>¥98</i></div>
     </button>
     <button class="acc-item pick pick--sm" data-acc="a8">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic"><img src="asset/acc/n/a8_armrest.jpg" alt="扶手箱保护盖"></div>
       <div class="acc-n"><b>扶手箱保护盖</b><span>RosyClouds · 加厚纳帕皮</span><i>¥88</i></div>
     </button>
     <button class="acc-item pick pick--sm" data-acc="a9">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic"><img src="asset/acc/n/a9_vent.jpg" alt="座椅下出风口罩"></div>
       <div class="acc-n"><b>座椅下出风口罩</b><span>三件套 · 黑钛色</span><i>¥83</i></div>
     </button><div class="acc-item acc-item--more">
@@ -1920,7 +1984,7 @@ function bigCard(a){
       <div class="addon-top">
         <div class="addon-pic"><img src="${a.img}" alt="${a.name}"></div>
         <div class="addon-body">
-          <div class="addon-k">${a.brand}</div>
+          <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 买一送一</span></div>
           <div class="addon-name">${a.name}</div>
           <div class="addon-spec">${a.spec}</div>
           ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'}</span>`:''}</div>`:''}
@@ -1950,6 +2014,7 @@ function bigCard(a){
       <div class="seat-body">
         <div class="sub-head" style="padding-bottom:10px">
           <b>座椅垫</b>
+          <span class="hi-tag">主推 · 三色可选</span>
           <span class="cnt">${is5Seat() ? '七件套' : curModel().seats + ' 座整套'}</span>
           <span>${a.brand}</span>
           <i class="sub-price">¥${money(px(a.price))}<em>${a.em}</em></i>
@@ -1995,7 +2060,11 @@ function renderSil(animate){
   grid.style.setProperty('--silc', cols);
   grid.classList.toggle('gal', !!g);   /* 空态不挂「图集」角标 */
   if (!g){
-    grid.innerHTML = `<div class="sil-empty">MEGA 的全车硅胶套装按 7 座舱布局配齐，清单跟件数以实车为准，可到店核对。</div>`;
+    grid.innerHTML = `<div class="sil-empty">
+      <span class="se-k">MEGA · 7 座舱布局</span>
+      <b>全车硅胶套装按车型配齐</b>
+      <span class="se-d">无线充垫 / 水杯套 / 扶手箱储物盒 / 中控下储物盒 / 车门按键垫 / 门碗贴 / 安全带套 / OBD 保护盖 等按 7 座舱逐项配齐，件数以实车核对为准。</span>
+    </div>`;
   } else if (g.photo){
     const p = state.silColor === 'w' ? 's' : state.silColor;
     grid.innerHTML = g.items.map((it, i) => `
@@ -2045,6 +2114,7 @@ function renderAcc(){
 
   $('#secAccSmall').innerHTML = ACC_SMALL.map(a => `
     <button class="acc-item pick pick--sm${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
+      <i class="unit-tag">单品</i>
       <div class="acc-pic${a.dual?' acc-pic--dual':''}">${a.imgs.map(s=>`<img src="${s}" alt="${a.name}">`).join('')}</div>
       <div class="acc-n"><b>${a.name}</b><span>${a.spec}</span><i>¥${money(px(a.price))}</i></div>
     </button>`).join('')
