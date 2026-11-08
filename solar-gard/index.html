@@ -454,6 +454,15 @@ a{ color:inherit; text-decoration:none; }
 .addon-body{ padding:56px 60px; display:flex; flex-direction:column; justify-content:center; }
 .addon-k{ font-family:var(--fn); font-size:10px; letter-spacing:.2em; color:var(--gold); }
 .addon-name{ font-size:26px; font-weight:600; letter-spacing:.02em; margin-top:14px; }
+/* 「本车 · 18 件套」小签：件数跟着车型换，价格才有依据 */
+.addon-name u.set-n{
+  display:inline-block; vertical-align:middle; margin-left:12px;
+  text-decoration:none; font-size:11.5px; font-weight:500; letter-spacing:.03em;
+  color:#8A6A2E; background:rgba(185,154,91,.13);
+  box-shadow:inset 0 0 0 1px rgba(185,154,91,.5);
+  padding:4px 10px; border-radius:3px; white-space:nowrap;
+}
+.addon-spec b{ color:var(--ink); font-weight:600; }
 .addon-spec{ font-size:12.5px; line-height:2; color:var(--sub); margin-top:16px; }
 .addon-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
 .addon-tags span{ font-size:10.5px; padding:4px 10px; border:1px solid var(--line); color:var(--sub); }
@@ -929,6 +938,7 @@ a{ color:inherit; text-decoration:none; }
   .addon-pic img{ object-fit:contain; background:#fff; }
   .addon-body{ padding:26px 22px 28px; }
   .addon-name{ font-size:21px; margin-top:10px; }
+  .addon-name u.set-n{ font-size:10.5px; margin-left:8px; padding:3px 8px; }
   .addon-spec{ font-size:12px; }
   .addon-buy{ margin-top:20px; padding-top:18px; flex-wrap:wrap; gap:12px; }
   .addon-price{ font-size:28px; }
@@ -2028,13 +2038,13 @@ body.sheet-open .toast{ display:none; }
         <div class="addon-pic"><img src="asset/mats/i6.jpg" alt="理想 i6 TPE 脚垫整套实拍"></div>
         <div class="addon-body">
           <div class="addon-k">GOODYEAR · 固特异</div>
-          <div class="addon-name">TPE 脚垫整套</div>
-          <div class="addon-spec">高边 TPE 脚垫 · 后备箱垫 · 前仓垫 · 后排座椅靠背垫<br>配星空丝绒毯面 · 卡扣固定不打滑</div>
+          <div class="addon-name">TPE 脚垫整套<u class="set-n">理想 i6 · 14 件套</u></div>
+          <div class="addon-spec">本款配 <b>星空年华毯 黑</b> · 25 款<br>高边 TPE 脚垫 · 后备箱垫 · 前仓垫 · 后排座椅靠背垫</div>
           <div class="addon-tags"><span>TPE 脚垫 / 尾箱垫 质保 6 年</span><span class="gtag">赠 全车硅胶 21 件</span></div>
           <div class="addon-note">6 年内正常使用磨破断裂达 20%，直接换新一次</div>
           <div class="addon-buy">
-            <div class="addon-price"><i>¥</i>1,610<span>整套</span></div>
-            <div class="addon-mats">基础防护 12 件套<br><b>三款毯面 可选一款</b></div>
+            <div class="addon-price"><i>¥</i>810<span>起 · 14 件套</span></div>
+            <div class="addon-mats">官方在售价 · 21 件硅胶照送<br><b>三款毯面 可选一款</b></div>
           </div>
         </div>
       </div>
@@ -2370,22 +2380,34 @@ const FILM = [
     ]}
 ];
 
-/* 固特异 TPE 脚垫套装分档
-   价格来源：京东「固特异汽车用品自营旗舰店」/天猫「固特异汽车用品旗舰店」
-   2026-11-08 在售价；同档不同车型有差异，故写「起」。12 件套是本店在售档，
-   价格取自本店报价，不套官方数。18 件套官方页未列明细，只写范围不写死件名。 */
-const MAT_TIERS = [
-  { n:'4 件套',  incl:'主驾 + 副驾 + 二排', ref:653,  refTxt:'¥653–933' },
-  { n:'6 件套',  incl:'4 件脚垫 + 后备箱垫 + 后排靠背垫', ref:1048, refTxt:'¥1,048' },
-  { n:'9 件套',  incl:'4 件脚垫 + 4 片毯面 + 后备箱垫',   ref:1084, refTxt:'¥1,084–1,440' },
-  { n:'12 件套', incl:'9 件 + 后排靠背垫 + 前仓垫',        ref:null, refTxt:'本店在售', hot:true },
-  { n:'13 件套', incl:'12 件 + 硅胶水杯架 / 无线充垫',      ref:1254, refTxt:'¥1,254–1,836' },
-  { n:'18 件套', incl:'全车最全：加后仓垫 + 双面尾箱垫 + 收纳', ref:null, refTxt:'按车型报' }
-];
+/* 每款车型对应的固特异套装档位
+   件数 / 毯面 / 年款 全部取自老板提供的固特异官方商品图（2026-11-08 逐张核对），
+   不是推算：L6 = 12 件套、L8 = 13 件套、i6 / i8 / i9 = 14 件套、L9 = 18 件套，
+   MEGA 官方只出「原车专属毯面」，图上不标件数。
+   ref = 该车型在售页能查到的价格区间，写进脚注备查，不当主价用。
+   price = 该车型官方在售价（起），一律取京东固特异旗舰店 2026-11 在售页
+   同款套装的最低档，七款同口径，不混着比。 */
+const MAT_SET = {
+  i6:  { n:14, mats:'星空年华毯 黑', yr:'25 款',    price:810,  ref:'¥810–1,298' },
+  i8:  { n:14, mats:'黛尼斯毯',      yr:'25–26 款', price:1093, ref:'¥1,093–1,422' },
+  i9:  { n:14, mats:'黛尼斯毯',      yr:'26 款',    price:1169, ref:'¥1,169 起' },
+  l6:  { n:12, mats:'星空年华毯 黑', yr:'24–25 款', price:1260, ref:'¥1,260' },
+  l8:  { n:13, mats:'仿羊绒毯',      yr:'26 款',    price:772,  ref:'¥772–933' },
+  l9:  { n:18, mats:'仿羊绒毯',      yr:'26 款',    price:1134, ref:'¥1,134 起' },
+  /* MEGA 官方只出「原车专属毯面」，没有 TPE 脚垫整套，卡片文案得整条换掉，不能沿用 */
+  mega:{ n:0,  mats:'星空丝绒 / 星空年华毯', yr:'26 款', price:1000, ref:'¥1,000–1,060',
+    title:'原车专属毯面',
+    spec:'原车 3D 扫描开模 · 双层毯面结构 · 卡扣固定不打滑<br>星空丝绒 / 星空年华 两款可选',
+    matsLine:'<b>两款毯面 可选一款</b>',
+    tags:['原车版型 · 专车专用'],
+    note:'',
+    gift:'买专属毯面送硅胶套装 · 满 12 件套加送配件' }
+};
 
 const ACC_BIG = [
-  { id:'a1', slot:'foot', brand:'GOODYEAR · 固特异', name:'TPE 脚垫整套', price:1610, em:'整套',
-    spec:'高边 TPE 脚垫 · 后备箱垫 · 前仓垫 · 后排座椅靠背垫<br>配星空丝绒毯面 · 卡扣固定不打滑',
+  /* price 只是兜底：脚垫真实价走 MAT_SET，按当前车型取，别拿一款的价套七款 */
+  { id:'a1', slot:'foot', brand:'GOODYEAR · 固特异', name:'TPE 脚垫整套', price:810, em:'整套',
+    spec:'高边 TPE 脚垫 · TPE 后备箱垫 · 前仓垫 · 后排座椅靠背垫<br>毯面卡扣固定不打滑 · 三款毯面可换',
     tags:['TPE 脚垫 / 尾箱垫 质保 6 年'],
     note:'6 年内正常使用磨破断裂达 20%，直接换新一次',
     mats:'<b>三款毯面 可选一款</b>',
@@ -2396,7 +2418,7 @@ const ACC_BIG = [
       l6:'asset/mats/l6.jpg', l8:'asset/mats/l8.jpg', l9:'asset/mats/l9.jpg',
       mega:'asset/mats/mega.jpg'
     },
-    tiers:MAT_TIERS, giftFrom:12, giftValue:'¥450–500',
+    tiers:MAT_SET, giftFrom:12, giftValue:'¥450–500',
     gift:'买脚垫送硅胶套装 · 满 12 件套加送配件',
     giftItems:['无线充垫','水杯架','中控储物盒','车门按键膜','门碗贴','OBD 保护盖'],
     giftNote:'无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐',
@@ -2607,42 +2629,57 @@ function renderFilmBar(){
 function bigCard(a){
   if (a.slot === 'foot'){
     const pic = (a.imgs && a.imgs[curModel().id]) || a.img;
+    const ms  = MAT_SET[curModel().id] || MAT_SET.i6;
+    const fp  = (ms && ms.price) || a.price;
+    const nTxt = ms && ms.n ? ms.n + ' 件套' : '专属毯面';
+    const aName = (ms && ms.title) || a.name;
+    const aSpec = (ms && ms.spec) || a.spec;
+    const aMats = (ms && ms.matsLine) || a.mats;
+    const aTags = (ms && ms.tags) || a.tags;
+    const aNote = ms && ms.note !== undefined ? ms.note : a.note;
+    const aGift = (ms && ms.gift) || a.gift;
     return `
     <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
-         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${a.name}，¥${money(px(a.price))}">
+         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${aName} ${nTxt}，¥${money(px(fp))}">
       <div class="addon-top">
-        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${a.name}整套实拍"></div>
+        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}"></div>
         <div class="addon-body">
           <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送全套配件</span></div>
-          <div class="addon-name">${a.name}</div>
-          <div class="addon-spec">${a.spec}</div>
-          ${a.tags?`<div class="addon-tags">${a.tags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'}</span>`:''}</div>`:''}
-          ${a.note?`<div class="addon-note">${a.note}</div>`:''}
+          <div class="addon-name">${aName}<u class="set-n">${curModel().name} · ${nTxt}</u></div>
+          <div class="addon-spec">${ms && ms.mats ? `本款配 <b>${ms.mats}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : ''}${aSpec}</div>
+          ${aTags?`<div class="addon-tags">${aTags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'}</span>`:''}</div>`:''}
+          ${aNote?`<div class="addon-note">${aNote}</div>`:''}
           <div class="addon-buy">
-            <div class="addon-price"><i>¥</i>${money(px(a.price))}<span>${a.em}</span></div>
-            <div class="addon-mats">${a.mats}</div>
+            <div class="addon-price"><i>¥</i>${money(px(fp))}<span>起 · ${nTxt}</span></div>
+            <div class="addon-mats">${aMats}</div>
             <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '点此加入配置单'}</span>
           </div>
         </div>
       </div>
       ${a.tiers ? `<div class="mtier">
         <div class="mtier-hd">
-          <b>套装分档</b>
-          <span>件数不同护到的地方不同 · 本页按 12 件套报价，其它档到店增减</span>
+          <b>各车型套装件数</b>
+          <span>件数跟着车型走，护到的地方不一样 · 七款按官方在售价同口径列</span>
         </div>
         <div class="mtier-rows">
-          ${a.tiers.map(t => `<div class="mt-row${t.hot ? ' hot' : ''}">
-            <i>${t.n}${t.hot ? '<u>在售</u>' : ''}</i>
-            <span>${t.incl}</span>
-            <em>${t.hot ? '¥' + money(px(a.price)) : t.refTxt}</em>
-          </div>`).join('')}
+          ${MODELS.map(m => {
+            const s = MAT_SET[m.id]; if (!s) return '';
+            const cur = m.id === curModel().id;
+            const nm = m.name.replace('理想 ', '');
+            const nt = s.n ? s.n + ' 件套' : '专属毯面';
+            return `<div class="mt-row${cur ? ' hot' : ''}">
+            <i>${nm}${cur ? '<u>本车</u>' : ''}</i>
+            <span>${s.mats}${s.yr ? ' · ' + s.yr : ''}</span>
+            <em>${nt}</em>
+          </div>`;
+          }).join('')}
         </div>
-        <p class="mtier-note">官方参考价取自固特异京东/天猫旗舰店 2026 年 11 月在售页，同档不同车型有差异；本店实价按到店实测报。</p>
+        <p class="mtier-note">件数与毯面取自固特异官方商品图（2026-11 逐张核对）；上方价格为该车型官方在售价（起），取京东固特异旗舰店同款套装最低档，件套与毯面不同价差会拉大，本店实价按你的车核。</p>
       </div>` : ''}
       <div class="gift-bar">
         <div class="gift-tag">赠</div>
         <div class="gift-txt">
-          <b>${a.gift}</b>
+          <b>${aGift}</b>
           ${a.giftItems
             ? `<div class="gift-chips">${a.giftItems.map(t => `<span>${t}</span>`).join('')}</div>`
             : `<span>${a.giftNote || ''}</span>`}
@@ -2825,8 +2862,17 @@ function picked(){
   }));
 
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
-    if (state.acc.has(a.id))
-      out.push({ k:'配件', v:a.name, sub:(a.spec||'').replace(/<br>/g,' '), p:px(a.price), gift:!!a.gift });
+    if (state.acc.has(a.id)){
+      /* 脚垫按车型走：件数与价格都跟着当前车型，不能拿一款的价套七款 */
+      const ms = a.slot === 'foot' ? (MAT_SET[curModel().id] || null) : null;
+      const aName = (ms && ms.title) || a.name;
+      const nm = ms && ms.n ? `${aName} · ${ms.n} 件套` : aName;
+      out.push({
+        k:'配件', v:nm, sub:(a.spec||'').replace(/<br>/g,' '),
+        p: px(ms && ms.price ? ms.price : a.price),
+        gift:!!a.gift, footSet: ms || null
+      });
+    }
   });
   return out;
 }
@@ -3007,10 +3053,15 @@ function copyQuote(list, total, m){
   ];
   list.forEach(x => {
     lines.push(`${x.k}　${x.v}　${fmt(x.p)}`);
+    /* 脚垫的件数与毯面跟车型走，单据上要写清楚，老板交车时才不用再问一遍 */
+    if (x.footSet){
+      const f = x.footSet;
+      lines.push(`　　配 ${f.mats}${f.yr ? ' · ' + f.yr : ''}${f.n ? '　' + f.n + ' 件' : ''}`);
+    }
     /* 件数跟车型走：i8 是 22 件、L9 是 24 件，写死 21 会让老板交车时对不上 */
     if (x.gift){
       lines.push(`　　赠 全车硅胶套装 ${(m.gift && m.gift.n) || x.gift} 件`);
-      lines.push('　　赠 全套配件 6 类（价值 ¥450–500，满 12 件套）');
+      lines.push('　　赠 全套配件 6 类（价值 ¥450–500）');
     }
   });
   lines.push('————————————');
@@ -3283,9 +3334,10 @@ function syncModelText(){
 
 
   const ap = $('#accSecP');
-  if (ap) ap.innerHTML = (m.seats || 5) === 5
-    ? '整车配件 · 单项可加装。脚垫与座椅垫为整套价，其余小件为单品价，不含施工。'
-    : `整车配件 · 单项可加装。脚垫与座椅垫按 <b>${m.seats} 座舱布局</b>配齐，件数与价格以到店核对为准；其余小件为单品价，不含施工。`;
+  const ms = MAT_SET[m.id];
+  const nTxt = ms && ms.n ? `${ms.n} 件套` : '专属毯面';
+  if (ap) ap.innerHTML = `整车配件 · 单项可加装。脚垫与座椅垫按 <b>${m.seats || 5} 座舱布局</b>配齐，` +
+    `本款脚垫为 <b>${nTxt}</b>${ms && ms.mats ? '（' + ms.mats + '）' : ''}；其余小件为单品价，不含施工。`;
 
   document.title = `${m.name} · 全车配置报价 | 圣佳 SolarGard 授权店`;
 }
