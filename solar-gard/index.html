@@ -1371,6 +1371,108 @@ body.has-models .hero{ padding-top:0; }
 }
 .sec-h .same::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--gold); }
 
+/* ============================================================
+   微交互层：悬停 / 按压 / 选中确认 / 触摸反馈
+   原则：
+   1) 选中状态仍由 JS 的 .on 类说了算，这里只负责「看得见」；
+   2) 时长统一 150–250ms，不做弹跳式大缩放；
+   3) 手机没有 hover，所以按下（:active）必须给反馈。
+   ============================================================ */
+
+/* 触摸设备：去掉系统灰块，双击不再等 300ms */
+html{ -webkit-tap-highlight-color:transparent; }
+.pick, .pill, .mchip, .acc-item, .foldup, .sw, .cb-bag, .cb-go, .qbtn, .pb-x, .sheet-hd .x{ touch-action:manipulation; }
+
+/* 1) 选中确认：卡片是重渲染出来的，进场补一段 200ms 过渡（不至于「唰」地跳成金色） */
+@keyframes pickIn{
+  from{ background-color:transparent; box-shadow:inset 0 0 0 1px rgba(185,154,91,.4); }
+}
+@keyframes rowIn{
+  from{ background-color:transparent; border-color:transparent; }
+}
+.sc-tier.on, .card.picked, .addon-card.on, .seat-card.on{ animation:pickIn .2s ease-out backwards; }
+.prow.on, .crow.on, .acc-item.on{ animation:rowIn .2s ease-out backwards; }
+.sw.on{ animation:rowIn .18s ease-out backwards; }
+@media (prefers-reduced-motion: reduce){
+  .sc-tier.on, .card.picked, .addon-card.on, .seat-card.on,
+  .prow.on, .crow.on, .acc-item.on, .sw.on{ animation:none; }
+}
+
+/* 2) 按压反馈：桌面靠 :active，手机同样吃这套
+   注意特异性：hover 规则常带 :not(.on)，按压要压得住它 */
+.mchip:not(.on):active, .mchip.on:active{ transform:translateY(0) scale(.96); }
+.acc-item--more:active{ background:#000; transform:scale(.995); }
+.nav-r a:active{ opacity:.55; }
+.cb-bag{ transition:transform .2s, box-shadow .2s, background .2s; }
+.cb-bag:hover{ box-shadow:0 10px 24px -6px rgba(0,0,0,.62); }
+.cb-bag:active{ transform:scale(.93); box-shadow:0 4px 12px -6px rgba(0,0,0,.6); }
+.sw:active{ transform:scale(.95); }
+.foldup:active{ transform:translateY(1px); }
+.pb-x:active{ opacity:.55; }
+/* 千像素大卡不做位移，按压改用描边收紧来表达「按下去了」 */
+.addon-card.pick:active, .seat-card.pick:active{
+  transform:none;
+  box-shadow:inset 0 0 0 2px rgba(185,154,91,.95), 0 6px 16px -24px rgba(0,0,0,.5);
+}
+
+/* 手机：按下立刻给一层金边 + 淡金底，松手后由 .on 状态接管 */
+@media (hover:none){
+  .pick:active{
+    background:rgba(185,154,91,.12);
+    box-shadow:inset 0 0 0 2px rgba(185,154,91,.85);
+  }
+  .pick--lg:active, .addon-card.pick:active, .seat-card.pick:active{ transform:none; }
+  .pill:active, .mchip:active, .cb-go:active, .qbtn:active{ transform:scale(.97); }
+  .acc-item:active{ background:#F5F2EA; }
+}
+
+/* 3) 千像素级的大卡不做整体上浮——抖一下很怪，改用描边 + 投影 */
+@media (hover:hover){
+  .addon-card.pick:hover, .seat-card.pick:hover{ transform:none; }
+}
+
+/* 4) 主次分层：配置单为空时，它不该和「查看报价」一样是实心主按钮 */
+body:not(.has-cart) .nav .pill.light{
+  background:transparent; color:var(--ink);
+  border-color:rgba(0,0,0,.24); box-shadow:none;
+}
+body:not(.has-cart) .nav .pill.light:hover{
+  background:rgba(0,0,0,.05); border-color:var(--ink);
+}
+
+/* 5) 弹层关闭：热区补到 38px，别让手指去猜 */
+.sheet-hd .x{
+  width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+  margin:-8px -10px -8px 0; border-radius:50%;
+  transition:background .18s, color .18s;
+}
+.sheet-hd .x:hover{ background:#F5F3EE; color:var(--ink); }
+.sheet-hd .x:active{ background:#EDE9E0; }
+
+/* 6) 提示胶囊是说明不是按钮：鼠标不再给「可点」的手型 */
+.picktip{ cursor:default; user-select:none; }
+
+/* 7) 键盘可达：统一金色焦点环 */
+.pill:focus-visible, .mchip:focus-visible, .nav-r a:focus-visible,
+.foldup:focus-visible, .sw:focus-visible, .cb-bag:focus-visible,
+.cb-go:focus-visible, .pb-x:focus-visible, .sheet-hd .x:focus-visible{
+  outline:2px solid var(--gold); outline-offset:2px;
+}
+
+/* 8) 弹层打开时不弹全局提示条——它会压住弹层底部的二维码和说明 */
+body.sheet-open .toast{ display:none; }
+
+/* 9) 把过长的反馈动效收到 150–250ms，缩放幅度也收一档 */
+@keyframes ckPop{ 0%{ transform:scale(.8); } 60%{ transform:scale(1.1); } 100%{ transform:scale(1); } }
+.pick.just::after, .pick.just .ck{ animation-duration:.22s; }
+@keyframes numBump{ 0%{ transform:scale(1); } 40%{ transform:scale(1.16); } 100%{ transform:scale(1); } }
+.cb-n.bump, .cb-k b.bump{ animation-duration:.24s; }
+@keyframes bagPop{ 0%{ transform:scale(1); } 40%{ transform:scale(1.1); } 100%{ transform:scale(1); } }
+.cb-bag.pop{ animation-duration:.26s; }
+@keyframes cbPulse{ 0%{ transform:scale(1); } 40%{ transform:scale(1.015); } 100%{ transform:scale(1); } }
+.cartbar.pulse{ animation-duration:.24s; }
+.cb-v.pop em{ animation-duration:.3s; }
+
 @media (max-width:759px){
   :root{ --stick:128px; }
   /* 手机端固定头约 123px、分区上内边距 56px */
@@ -2291,7 +2393,7 @@ function countTo(el, to){
     void box.offsetWidth;
     box.classList.add('pop');
   }
-  const t0 = performance.now(), dur = 460;
+  const t0 = performance.now(), dur = 340;
   // 兜底：标签页切后台时 rAF 会暂停，定时器保证最终值一定落地
   const guard = setTimeout(() => { el.textContent = money(to); }, dur + 160);
   (function step(t){
@@ -2513,6 +2615,7 @@ function toast(msg, type){
 function openSheet(){
   $('#mask').classList.add('on');
   $('#sheet').classList.add('on');
+  document.body.classList.add('sheet-open');
   const bd = $('#sheetBody');
   if (bd) bd.scrollTop = 0;
   document.body.style.overflow = 'hidden';
@@ -2520,6 +2623,7 @@ function openSheet(){
 function closeSheet(){
   $('#mask').classList.remove('on');
   $('#sheet').classList.remove('on');
+  document.body.classList.remove('sheet-open');
   document.body.style.overflow = '';
 }
 
