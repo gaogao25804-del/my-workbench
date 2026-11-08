@@ -586,6 +586,41 @@ a{ color:inherit; text-decoration:none; }
 .trio-cap::before{ content:""; width:14px; height:1px; background:var(--sub2); flex:none; }
 .trio-cap + .trio{ margin-top:14px; }
 
+/* 座椅垫三款对照：件套与价跟着车型走。用胶囊排，比三张表省一半高度 */
+.sk-wrap{
+  margin-top:26px; display:flex; flex-direction:column; gap:1px;
+  background:var(--line); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.sk{ background:#fff; padding:16px 2px 18px; }
+.sk.hot{ background:#FDFAF3; }
+.sk-hd{ display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+.sk-hd b{ font-size:13.5px; font-weight:600; letter-spacing:.02em; color:var(--ink); }
+.sk-hd u{
+  text-decoration:none; font-size:9px; font-weight:500; letter-spacing:.06em;
+  color:#8A6A2E; background:rgba(185,154,91,.26);
+  padding:1px 5px; border-radius:2px; transform:translateY(-1px);
+}
+.sk-hd span{ font-size:11px; color:var(--sub); }
+.sk-list{ display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+.sk-p{
+  font-style:normal; display:inline-flex; align-items:baseline; gap:6px;
+  font-size:11.5px; line-height:1.35; color:#6E6A60;
+  background:#F8F6F1; border:1px solid #EDE7DA; border-radius:4px;
+  padding:5px 9px; white-space:nowrap;
+}
+.sk-p u{ text-decoration:none; font-weight:600; color:var(--ink); }
+.sk-p b{ font-weight:400; color:#6E6A60; }
+.sk-p em{ font-style:normal; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+.sk-p.cur{ background:rgba(185,154,91,.15); border-color:rgba(175,142,80,.55); box-shadow:inset 0 0 0 1px rgba(185,154,91,.3); }
+.sk-p.cur u{ color:#8A6A2E; }
+.sk-p.tbd{ background:#FAF9F6; border-style:dashed; }
+.sk-p.tbd em{ color:#A8A399; font-weight:500; }
+/* 当前车型撞上「到店核」的档，金色高亮别被 tbd 的白底吃掉 */
+.sk-p.cur.tbd{ background:rgba(185,154,91,.13); border-color:rgba(175,142,80,.55); }
+.sk-note{ font-size:10.5px; line-height:1.7; color:#A8A399; margin-top:12px; }
+.sk-sub{ font-size:10px; line-height:1.6; color:#A8A399; margin-top:8px; }
+.sub-price small{ font-size:12px; font-weight:400; color:var(--sub); margin-left:1px; }
+
 /* 其余配件网格 */
 .acc-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:26px; }
 .acc-item{ position:relative; background:#fff; text-align:left; padding:0; display:flex; flex-direction:column; cursor:pointer; transition:background .2s, box-shadow .2s, transform .2s; }
@@ -985,6 +1020,15 @@ a{ color:inherit; text-decoration:none; }
 
   .fit-row{ grid-template-columns:repeat(2,1fr); gap:8px; margin-top:18px; }
   .trio{ gap:8px; margin-top:18px; }
+  /* 座椅垫三款对照手机端：胶囊缩一号，MEGA 这类长名也不会被截 */
+  .sk-wrap{ margin-top:20px; }
+  .sk{ padding:13px 0 15px; }
+  .sk-hd{ gap:7px; }
+  .sk-hd b{ font-size:12.5px; }
+  .sk-hd span{ font-size:10.5px; flex:1 1 100%; margin-top:1px; }
+  .sk-list{ gap:5px; margin-top:9px; }
+  .sk-p{ font-size:11px; padding:5px 7px; gap:5px; }
+  .sk-note{ font-size:10px; line-height:1.65; }
   .pcap{ font-size:11px; margin-top:8px; }
 
   .seat-card{ margin-top:40px; }
@@ -1851,10 +1895,13 @@ body.sheet-open .toast{ display:none; }
 .mt-base b{ font-size:11px; font-weight:600; color:#6E6A60; flex:none; letter-spacing:.02em; }
 .mbase-chips{ display:flex; gap:6px; flex-wrap:wrap; }
 .mbase-chips i{
-  font-style:normal; display:inline-flex; align-items:baseline; gap:5px;
-  font-size:10.5px; color:#5A554C; padding:3px 8px; border-radius:4px;
+  font-style:normal; display:inline-grid; grid-template-columns:auto auto;
+  align-items:baseline; column-gap:8px; row-gap:2px;
+  font-size:10.5px; color:#5A554C; padding:5px 9px; border-radius:4px;
   background:#fff; border:1px solid #E8E2D5;
 }
+.mbase-chips i b{ font-weight:600; color:var(--ink); }
+.mbase-chips i s{ grid-column:1/-1; text-decoration:none; font-size:9.5px; color:#A8A399; line-height:1.4; }
 .mbase-chips em{ font-style:normal; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
 .mbase-note{ font-size:10px; color:#A8A399; line-height:1.5; flex:1 1 200px; }
 
@@ -2459,6 +2506,54 @@ const MAT_SET = {
     gift:'买专属毯面送硅胶套装 · 满 12 件套加送配件' }
 };
 
+/* 固特异座椅垫：京东在售的三条产品线，每款车都是专车专用开模，件数随座型走
+   来源：京东「固特异车品旗舰店」「固特异汽车用品京东自营旗舰店」2026-11 在售页
+   价格一律写区间 —— 同款车不同配色（白 / 棕）、不同年款、券后与大促价差 60–180 元，
+   写死一个数一定对不上；分档明细见卡内三款对照表。 */
+const SEAT_KIND = [
+  { key:'pad', k:'液态全硅座垫片', sub:'薄款 · 只铺坐垫面，不包靠背',
+    rows:[
+      { m:'l6',   t:'三件套',     p:'¥494–557' },
+      { m:'i6',   t:'三件套',     p:'¥494–513' },
+      { m:'i8',   t:'三件套',     p:'¥513' },
+      { m:'l8',   t:'五件套',     p:'¥721–781' },
+      { m:'i9',   t:'四件套',     p:'¥519' },
+      { m:'l9',   t:'六座',       p:'到店核' },
+      { m:'mega', t:'七座',       p:'到店核' }
+    ] },
+  { key:'front', k:'前二排座椅套', sub:'含靠背 · 只管前两排，三排不铺',
+    note:'五座车（L6 / i6）官方不发这一档，直接选全车七件套；六座八件套 = 前两排 4 靠背 + 4 座垫',
+    rows:[
+      { m:'l8',   t:'八件套',     p:'¥808' },
+      { m:'i8',   t:'八件套',     p:'¥808–866' },
+      { m:'mega', t:'八件套',     p:'¥866' },
+      { m:'l9',   t:'八件套',     p:'到店核' },
+      { m:'i9',   t:'八件套',     p:'到店核' }
+    ] },
+  { key:'full', k:'全车座椅套', sub:'含三排 · 抗污耐刮，整套护得最全', hot:true,
+    note:'五座七件套 = 4 靠背 + 3 座垫；六座十一件套 = 前两排 8 + 三排 2 靠背 + 1 座垫；七座十二件套在六座基础上三排多一张座垫',
+    rows:[
+      { m:'l6',   t:'七件套',     p:'¥936–996' },
+      { m:'i6',   t:'七件套',     p:'¥936–996' },
+      { m:'l8',   t:'十一件套',   p:'¥1,298–1,484' },
+      { m:'l9',   t:'十一件套',   p:'¥1,224–1,484' },
+      { m:'i8',   t:'十一件套',   p:'¥1,304–1,484' },
+      { m:'i9',   t:'十二件套',   p:'¥1,386' },
+      { m:'mega', t:'十二件套',   p:'¥1,286–1,393' }
+    ] }
+];
+
+/* 卡片主价取「全车座椅套」该车型最低档，和对照表里的最低价对齐 */
+const SEAT_SET = {
+  l6:  { n:7,  t:'七件套',   price:936  },
+  i6:  { n:7,  t:'七件套',   price:936  },
+  l8:  { n:11, t:'十一件套', price:1298 },
+  l9:  { n:11, t:'十一件套', price:1224 },
+  i8:  { n:11, t:'十一件套', price:1304 },
+  i9:  { n:12, t:'十二件套', price:1386 },
+  mega:{ n:12, t:'十二件套', price:1286 }
+};
+
 const ACC_BIG = [
   /* price 只是兜底：脚垫真实价走 MAT_SET，按当前车型取，别拿一款的价套七款 */
   { id:'a1', slot:'foot', brand:'GOODYEAR · 固特异', name:'TPE 脚垫整套', price:810, em:'整套',
@@ -2479,10 +2574,10 @@ const ACC_BIG = [
     giftNote:'无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐',
     giftCount:'21',
     giftTag:'i6 整车配齐' },
-  { id:'a2', slot:'seat', brand:'GOODYEAR · 固特异 L6 Ultra 系列', name:'座椅垫 七件套', price:996.2, em:'前排 + 后排全包围',
-    spec:'前排 + 后排全包围 · 头枕 / 腰靠 / 坐垫一体<br>原车白 / 橙黄 / 棕色 三色可选',
+  { id:'a2', slot:'seat', brand:'GOODYEAR · 固特异 · 专车专用开模', name:'座椅垫', price:936, em:'全车座椅套',
+    spec:'专车专用开模 · 坐垫 + 靠背一体，贴合原车座椅<br>原车白 / 橙黄 / 棕色 三色可选',
     img:'asset/acc/mat_kit_c2.jpg',
-    partsNote:'主副驾驶靠背垫 ×2 · 二排靠背垫 ×2 · 主副驾驶座垫 ×2 · 二排座垫 ×1',
+    partsNote:'',
     colors:[
       { img:'asset/acc/cus_white.jpg',  n:'原车白' },
       { img:'asset/acc/cus_orange.jpg', n:'橙黄' },
@@ -2735,7 +2830,7 @@ function bigCard(a){
       ${a.tiers ? `<div class="mtier">
         <div class="mtier-hd">
           <b>七款车型 · 件套与价</b>
-          <span>每款车件数不同，价格随之不同 · 当前车型金底标出</span>
+          <span>4 / 6 / 9 / 12 / 13 / 14 / 18 共七档，件套跟着车型走 · 当前车型金底标出</span>
         </div>
         <div class="mtier-rows">
           ${MODELS.map(m => {
@@ -2755,11 +2850,11 @@ function bigCard(a){
         <div class="mt-base">
           <b>基础档 · 官方单卖，本店不拆</b>
           <div class="mbase-chips">
-            <i>4 件套<em>¥653–933</em></i>
-            <i>6 件套<em>¥1,048</em></i>
-            <i>9 件套<em>¥1,084–1,440</em></i>
+            <i><b>4 件套</b><em>¥653–933</em><s>主副驾 + 二排脚垫</s></i>
+            <i><b>6 件套</b><em>¥1,048</em><s>4 片脚垫 + 尾箱垫 + 靠背垫</s></i>
+            <i><b>9 件套</b><em>¥1,084–1,440</em><s>6 件 + 4 片毯面</s></i>
           </div>
-          <span class="mbase-note">只护脚垫 / 尾箱，不含毯面与靠背垫；本店按整车整套报，护得更全。</span>
+          <span class="mbase-note">只护脚垫 / 尾箱，不含后排靠背与门边；本店按整车整套报，护得更全。</span>
         </div>
         <p class="mtier-note">件数与毯面逐张核自固特异官方商品图（2026-11）；价格为该车型「基础毯面最低配」官方在售价（起），取固特异京东自营旗舰店与官方活动口径，选星空年华 / 星空丝绒等毯面约再加 ¥100–200，大促会浮动。本店整套实价按你的车到店核。</p>
       </div>` : ''}
@@ -2778,22 +2873,41 @@ function bigCard(a){
       </div>
     </div>`;
   }
+  /* 座椅垫也按车型走：件套与价都跟着当前车型，不能拿五座的七件套去套六座 */
+  const ss = SEAT_SET[curModel().id] || null;
+  const sp = px(ss ? ss.price : a.price);
   return `
     <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
-         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="座椅垫，¥${money(px(a.price))}">
+         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"
+         aria-label="座椅垫，${curModel().name} 全车 ${ss ? ss.t : '按座型配'}，¥${money(sp)} 起">
       <div class="seat-body">
         <div class="sub-head" style="padding-bottom:10px">
           <b>座椅垫</b>
-          <span class="cnt">${is5Seat() ? '七件套' : curModel().seats + ' 座整套'}</span>
-          <span class="hi-tag">主推 · 三色可选</span>
+          <span class="cnt">${ss ? ss.t : curModel().seats + ' 座整套'}</span>
+          <span class="hi-tag">主推 · 三款可选</span>
           <span>${a.brand}</span>
-          <i class="sub-price">¥${money(px(a.price))}<em>${a.em}</em></i>
+          <i class="sub-price">¥${money(sp)}<small>起</small><em>${curModel().name} · 全车 ${ss ? ss.t : '整套'}</em></i>
         </div>
         <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '整卡可点 · 点此加入配置单'}</span>
-        <div class="mat-kit"><img src="${a.img}" alt="${a.name}"></div>
-        ${is5Seat()
-          ? (a.partsNote ? `<p class="mat-parts">${a.partsNote}</p>` : '')
-          : `<p class="mat-parts">按 ${curModel().seats} 座舱布局配齐：前排 + 二排${curModel().seats > 6 ? ' + 三排' : ''}${curModel().seats > 5 ? '（含二排独立座椅）' : ''}，件数以实车核对为准</p>`}
+        <div class="mat-kit"><img src="${a.img}" alt="${curModel().name} ${a.name}实拍"></div>
+        <p class="mat-parts">图为 5 座七件套实拍，六座 / 七座按座型多出独立座椅与三排片<br>主副驾 + 二排${curModel().seats > 6 ? ' + 三排' : ''}每座 坐垫 + 靠背，按 ${curModel().seats} 座舱布局配齐</p>
+        <div class="sk-wrap">
+          ${SEAT_KIND.map(g => `
+          <div class="sk${g.hot ? ' hot' : ''}">
+            <div class="sk-hd"><b>${g.k}</b>${g.hot ? '<u>最全</u>' : ''}<span>${g.sub}</span></div>
+            <div class="sk-list">
+              ${g.rows.map(r => {
+                const cur = r.m === curModel().id;
+                const nm = (MODELS.find(x => x.id === r.m) || {}).name || r.m;
+                const done = r.p === '到店核';
+                return `<i class="sk-p${cur ? ' cur' : ''}${done ? ' tbd' : ''}">
+                  <u>${nm.replace('理想 ', '')}</u><b>${r.t}</b><em>${r.p}</em></i>`;
+              }).join('')}
+            </div>
+            ${g.note ? `<p class="sk-sub">${g.note}</p>` : ''}
+          </div>`).join('')}
+        </div>
+        <p class="sk-note">件套与价格逐条取自固特异京东旗舰店 2026 年 11 月在售页；同款不同配色 / 年款、券后与大促价会差 60–180 元，故写区间。标「到店核」的档本店按你的车实测报价，不与京东比价。</p>
         <div class="trio-cap">配色参考 · 三色可选，实际以到店现货为准</div>
         <div class="trio">
           ${a.colors.map(c=>`<div class="trio-item">
@@ -2950,10 +3064,12 @@ function picked(){
 
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
     if (state.acc.has(a.id)){
-      /* 脚垫按车型走：件数与价格都跟着当前车型，不能拿一款的价套七款 */
-      const ms = a.slot === 'foot' ? (MAT_SET[curModel().id] || null) : null;
+      /* 脚垫、座椅垫都按车型走：件套与价格跟着当前车型，不能拿一款的价套七款 */
+      const ms = a.slot === 'foot' ? (MAT_SET[curModel().id] || null)
+               : a.slot === 'seat' ? (SEAT_SET[curModel().id] || null) : null;
       const aName = (ms && ms.title) || a.name;
-      const nm = ms && ms.n ? `${aName} · ${ms.n} 件套` : aName;
+      const setTxt = ms && ms.n ? (ms.t || ms.n + ' 件套') : '';
+      const nm = setTxt ? `${aName} · ${setTxt}` : aName;
       out.push({
         k:'配件', v:nm, sub:(a.spec||'').replace(/<br>/g,' '),
         p: px(ms && ms.price ? ms.price : a.price),
