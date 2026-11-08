@@ -279,6 +279,33 @@ a{ color:inherit; text-decoration:none; }
 .three figcaption b{ display:block; font-size:14px; font-weight:600; }
 .three figcaption span{ display:block; font-size:11.5px; color:var(--sub); margin-top:6px; }
 
+/* 图片跟着档位走：两件套 = 中控 + 冰箱，后排电视屏退回「仅三件套」。
+   不直接隐藏，是因为客人得看见自己少了什么，才有升级理由。 */
+.three figure{ transition:opacity .28s ease; }
+.three[data-set="s2"] figure[data-part="tv"]{ opacity:.46; }
+.three[data-set="s2"] figure[data-part="tv"] img{ filter:grayscale(1) contrast(.92); }
+.plus-tag{
+  display:none; position:absolute; right:8px; top:8px; z-index:2;
+  font-size:10.5px; font-style:normal; letter-spacing:.06em;
+  padding:4px 8px; border-radius:99px;
+  background:rgba(255,255,255,.94); color:#3A3A3A;
+  box-shadow:0 1px 6px rgba(0,0,0,.14);
+}
+.three[data-set="s2"] .plus-tag{ display:block; }
+.fig-in{
+  display:none; font-style:normal; font-size:9.5px; font-weight:500;
+  margin-left:7px; padding:2px 5px; border-radius:3px; vertical-align:2px;
+  background:#F1EDE4; color:#8A6A2E; letter-spacing:.03em;
+}
+.three[data-set] .fig-in{ display:inline-block; }
+.fig-in:empty{ display:none !important; }
+.three-note{
+  margin-top:20px; padding:10px 14px; border-radius:8px;
+  background:#F7F5F0; border:1px solid #EDE8DC;
+  font-size:12.5px; line-height:1.6; color:#4A4640;
+}
+.three-note b{ color:#8A6A2E; font-weight:600; }
+
 /* ---------- 02 车衣 ---------- */
 .coat4{ display:grid; grid-template-columns:repeat(4,1fr); margin-top:4px; }
 .pcol{ border-left:1px solid var(--line); padding:0 30px; }
@@ -1768,16 +1795,23 @@ body.sheet-open .toast{ display:none; }
 .mtier-hd span{ font-size:11.5px; line-height:1.5; color:var(--sub); }
 .mtier-rows{ display:flex; flex-direction:column; }
 .mt-row{
-  display:grid; grid-template-columns:100px minmax(0,1fr) auto;
+  display:grid; grid-template-columns:56px 78px minmax(0,1fr) auto;
   align-items:center; column-gap:14px;
-  padding:10px 12px; border-radius:5px;
+  padding:9px 12px; border-radius:6px;
   border-bottom:1px solid var(--line2);
   font-size:12.5px; line-height:1.5;
 }
 .mt-row:last-child{ border-bottom:0; }
+
+/* 每行配该款车的整套实拍缩略图：一图一价，客人不用凭空想象 */
+.mt-th{
+  display:block; width:56px; height:56px; border-radius:6px; overflow:hidden;
+  background:#fff; border:1px solid #EAE5DA; flex:none;
+}
+.mt-th img{ width:100%; height:100%; object-fit:contain; display:block; }
 .mt-row i{
   font-style:normal; font-weight:600; color:var(--ink);
-  white-space:nowrap; letter-spacing:.01em;
+  white-space:nowrap; letter-spacing:.01em; font-size:13px;
 }
 .mt-row i u{
   text-decoration:none; font-size:9px; font-weight:500; letter-spacing:.04em;
@@ -1785,16 +1819,19 @@ body.sheet-open .toast{ display:none; }
   padding:1px 5px; border-radius:2px; margin-left:6px;
   display:inline-block; transform:translateY(-1px);
 }
-.mt-row span{ color:#6E6A60; display:flex; align-items:baseline; gap:12px; }
+.mt-row .mt-spec{
+  color:#6E6A60; display:flex; align-items:baseline; gap:12px; min-width:0;
+}
 /* 价目表式引导线：把「包含」和右边的价连起来，中间不留一大块空 */
-.mt-row span::after{
+.mt-row .mt-spec::after{
   content:""; flex:1 1 auto; min-width:12px;
   border-bottom:1px dotted #DAD5C9; transform:translateY(-5px);
 }
 .mt-row em{
   font-style:normal; font-weight:600; color:var(--ink);
-  white-space:nowrap; font-variant-numeric:tabular-nums; font-size:12.5px;
+  white-space:nowrap; font-variant-numeric:tabular-nums; font-size:13px;
 }
+.mt-row em small{ font-size:10px; font-weight:500; color:var(--sub); margin-left:2px; }
 .mt-row.hot{
   background:rgba(185,154,91,.1);
   box-shadow:inset 3px 0 0 var(--gold);
@@ -1805,6 +1842,21 @@ body.sheet-open .toast{ display:none; }
 .mtier-note{
   margin:12px 2px 0; font-size:10.5px; line-height:1.65; color:#A8A399;
 }
+/* 基础档：4/6/9 件套官方单卖但本店不拆，写清价避免客人拿京东价来比 */
+.mt-base{
+  display:flex; align-items:center; flex-wrap:wrap; gap:8px 14px;
+  margin-top:12px; padding:10px 12px; border-radius:6px;
+  background:#F8F6F1; border:1px solid #EFEADF;
+}
+.mt-base b{ font-size:11px; font-weight:600; color:#6E6A60; flex:none; letter-spacing:.02em; }
+.mbase-chips{ display:flex; gap:6px; flex-wrap:wrap; }
+.mbase-chips i{
+  font-style:normal; display:inline-flex; align-items:baseline; gap:5px;
+  font-size:10.5px; color:#5A554C; padding:3px 8px; border-radius:4px;
+  background:#fff; border:1px solid #E8E2D5;
+}
+.mbase-chips em{ font-style:normal; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+.mbase-note{ font-size:10px; color:#A8A399; line-height:1.5; flex:1 1 200px; }
 
 /* 赠品条上的「值多少钱」 */
 .gift-val{
@@ -1822,15 +1874,17 @@ body.sheet-open .toast{ display:none; }
   .mtier-hd span{ font-size:11px; }
   /* 窄屏改成两行：上面「件套 + 价」，下面「包含」占满整行 */
   .mt-row{
-    grid-template-columns:1fr auto; grid-template-rows:auto auto;
-    row-gap:3px; column-gap:10px;
-    padding:10px 9px; font-size:11.5px;
+    grid-template-columns:46px minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    row-gap:2px; column-gap:10px;
+    padding:10px 8px; font-size:11.5px;
   }
-  .mt-row i{ grid-column:1; grid-row:1; font-size:12px; }
+  .mt-th{ grid-column:1; grid-row:1/3; width:46px; height:46px; }
+  .mt-row i{ grid-column:2; grid-row:1; font-size:12.5px; }
   .mt-row i u{ font-size:8.5px; padding:0 4px; margin-left:4px; }
-  .mt-row em{ grid-column:2; grid-row:1; font-size:12px; text-align:right; }
-  .mt-row span{ grid-column:1/-1; grid-row:2; display:block; }
-  .mt-row span::after{ display:none; }
+  .mt-row em{ grid-column:3; grid-row:1; font-size:12.5px; text-align:right; }
+  .mt-row .mt-spec{ grid-column:2/4; grid-row:2; display:block; font-size:11px; }
+  .mt-row .mt-spec::after{ display:none; }
   .mtier-note{ font-size:10px; margin-top:10px; }
   .gift-val{ font-size:11px; padding:3px 9px; }
 }
@@ -1931,19 +1985,20 @@ body.sheet-open .toast{ display:none; }
       <div class="t-num"><i>¥</i>699</div>
     </button></div>
     <div class="three" data-page-node-id="JKATlHWDcmfB6ZTCsw6Gfp">
-      <figure data-page-node-id="kiAm6OXbhYdC3wjNpttv67">
+      <figure data-part="mid" data-page-node-id="kiAm6OXbhYdC3wjNpttv67">
         <div class="ph gal" data-page-node-id="GRXbDqPdcD5rQIjTd3WaQm"><img src="asset/screen/mid.jpg" alt="中控大屏无尘仓钢化膜" data-page-node-id="sqm28IGVA1MtJ4KerevfOE"></div>
-        <figcaption data-page-node-id="H2artVJAor0qWl2PNXcQK4"><b data-page-node-id="SSJ3Un2IzcL5S6j73rHgcE">中控大屏</b><span data-page-node-id="91DcevbYXWgG4MiCpCoyeX">无尘仓 · 磨砂防眩光</span></figcaption>
+        <figcaption data-page-node-id="H2artVJAor0qWl2PNXcQK4"><b data-page-node-id="SSJ3Un2IzcL5S6j73rHgcE">中控大屏<i class="fig-in"></i></b><span data-page-node-id="91DcevbYXWgG4MiCpCoyeX">无尘仓 · 磨砂防眩光</span></figcaption>
       </figure>
-      <figure data-page-node-id="JFWeXbxqYAVkJGyyTddvSA">
-        <div class="ph gal" data-page-node-id="VXY8yFYBYxdWJkSGlACDth"><img src="asset/acc/ar_tv.jpg" alt="后排电视屏钢化膜" data-page-node-id="pTAjQEyDqLDvSPFCBCC2PV"></div>
-        <figcaption data-page-node-id="bpbmzkRrwYhqPhkkSBJQEY"><b data-page-node-id="gMRDlzqjL2u00HlpEuSSod">后排电视屏</b><span data-page-node-id="hjUJJOvMf2024sAtN3zIAI">钢化膜 · 原屏画质</span></figcaption>
+      <figure data-part="tv" data-page-node-id="JFWeXbxqYAVkJGyyTddvSA">
+        <div class="ph gal" data-page-node-id="VXY8yFYBYxdWJkSGlACDth"><img src="asset/acc/ar_tv.jpg" alt="后排电视屏钢化膜" data-page-node-id="pTAjQEyDqLDvSPFCBCC2PV"><i class="plus-tag">仅三件套</i></div>
+        <figcaption data-page-node-id="bpbmzkRrwYhqPhkkSBJQEY"><b data-page-node-id="gMRDlzqjL2u00HlpEuSSod">后排电视屏<i class="fig-in"></i></b><span data-page-node-id="hjUJJOvMf2024sAtN3zIAI">钢化膜 · 原屏画质</span></figcaption>
       </figure>
-      <figure data-page-node-id="sd37YNqGcpXGZtC749SEme">
+      <figure data-part="fridge" data-page-node-id="sd37YNqGcpXGZtC749SEme">
         <div class="ph gal" data-page-node-id="HYRdfvw82l45zCpGuv82eZ"><img src="asset/screen/fridge.jpg" alt="冰箱屏幕钢化膜" data-page-node-id="A2U238Juwg44gLBmM70Fdc"></div>
-        <figcaption data-page-node-id="F5prLnCgD0t09OJVLN1Jho"><b data-page-node-id="vTZNaFgWyiU4YDkGqSXfJ1">冰箱控制屏</b><span data-page-node-id="hoBFSXnEPzbdqtNHystBiM">钢化膜 · 高透爽滑</span></figcaption>
+        <figcaption data-page-node-id="F5prLnCgD0t09OJVLN1Jho"><b data-page-node-id="vTZNaFgWyiU4YDkGqSXfJ1">冰箱控制屏<i class="fig-in"></i></b><span data-page-node-id="hoBFSXnEPzbdqtNHystBiM">钢化膜 · 高透爽滑</span></figcaption>
       </figure>
     </div>
+    <p class="three-note" id="screenFigNote">两件套贴中控大屏 + 冰箱控制屏；后排电视屏要三件套才有，多 ¥100。</p>
   </div>
 </section>
 
@@ -2391,8 +2446,8 @@ const MAT_SET = {
   i6:  { n:14, mats:'星空年华毯 黑', yr:'25 款',    price:810,  ref:'¥810–1,298' },
   i8:  { n:14, mats:'黛尼斯毯',      yr:'25–26 款', price:1093, ref:'¥1,093–1,422' },
   i9:  { n:14, mats:'黛尼斯毯',      yr:'26 款',    price:1169, ref:'¥1,169 起' },
-  l6:  { n:12, mats:'星空年华毯 黑', yr:'24–25 款', price:1260, ref:'¥1,260' },
-  l8:  { n:13, mats:'仿羊绒毯',      yr:'26 款',    price:772,  ref:'¥772–933' },
+  l6:  { n:12, mats:'星空年华毯 黑', yr:'24–25 款', price:772,  ref:'¥772–1,031' },
+  l8:  { n:13, mats:'仿羊绒毯',      yr:'26 款',    price:933,  ref:'¥933–1,103' },
   l9:  { n:18, mats:'仿羊绒毯',      yr:'26 款',    price:1134, ref:'¥1,134 起' },
   /* MEGA 官方只出「原车专属毯面」，没有 TPE 脚垫整套，卡片文案得整条换掉，不能沿用 */
   mega:{ n:0,  mats:'星空丝绒 / 星空年华毯', yr:'26 款', price:1000, ref:'¥1,000–1,060',
@@ -2510,6 +2565,27 @@ function renderScreen(){
       <div class="t-num"><i>¥</i>${money(px(o.price))}</div>
       <span class="pick-hint">${state.screen === o.id ? '已加入配置单' : '点此加入配置单'}</span>
     </button>`).join('');
+}
+
+/* 三张屏的图跟着选中档位走：两件套只亮中控 + 冰箱，三件套三张全亮 */
+function syncScreenFigs(){
+  const box = document.querySelector('#s-screen .three');
+  const nt  = document.getElementById('screenFigNote');
+  if (!box) return;
+  const s = state.screen;
+  if (s === 's2' || s === 's3') box.dataset.set = s;
+  else delete box.dataset.set;
+  const word = s === 's3' ? '三件套含' : s === 's2' ? '两件套含' : '';
+  box.querySelectorAll('.fig-in').forEach(el => {
+    const part = el.closest('figure').dataset.part;
+    el.textContent = (s === 's2' && part === 'tv') ? '' : word;
+  });
+  if (!nt) return;
+  nt.innerHTML = s === 's2'
+    ? '已选 <b>两件套</b>：贴中控大屏 + 冰箱控制屏。后排电视屏要升级<b>三件套</b>才有，加 ¥100。'
+    : s === 's3'
+      ? '已选 <b>三件套</b>：中控大屏 + 后排电视屏 + 冰箱控制屏，三块屏全贴。'
+      : '两件套贴中控大屏 + 冰箱控制屏；后排电视屏要三件套才有，多 ¥100。';
 }
 
 /* 折叠时右侧的说明块：告诉客人还有更贵的，但不主动摊开 */
@@ -2658,23 +2734,34 @@ function bigCard(a){
       </div>
       ${a.tiers ? `<div class="mtier">
         <div class="mtier-hd">
-          <b>各车型套装件数</b>
-          <span>件数跟着车型走，护到的地方不一样 · 七款按官方在售价同口径列</span>
+          <b>七款车型 · 件套与价</b>
+          <span>每款车件数不同，价格随之不同 · 当前车型金底标出</span>
         </div>
         <div class="mtier-rows">
           ${MODELS.map(m => {
             const s = MAT_SET[m.id]; if (!s) return '';
             const cur = m.id === curModel().id;
-            const nm = m.name.replace('理想 ', '');
+            const nm = m.name.replace('理想 ', '').replace(' L', 'L').replace(' i', 'i');
             const nt = s.n ? s.n + ' 件套' : '专属毯面';
+            const ptxt = s.price ? '¥' + money(px(s.price)) + '<small>起</small>' : (s.ref || '到店核');
             return `<div class="mt-row${cur ? ' hot' : ''}">
+            <span class="mt-th"><img src="asset/mats/thumb/${m.id}.jpg" alt="${nm} ${nt} 脚垫实拍" width="56" height="56"></span>
             <i>${nm}${cur ? '<u>本车</u>' : ''}</i>
-            <span>${s.mats}${s.yr ? ' · ' + s.yr : ''}</span>
-            <em>${nt}</em>
+            <span class="mt-spec">${nt} · ${s.mats}${s.yr ? ' · ' + s.yr : ''}</span>
+            <em>${ptxt}</em>
           </div>`;
           }).join('')}
         </div>
-        <p class="mtier-note">件数与毯面取自固特异官方商品图（2026-11 逐张核对）；上方价格为该车型官方在售价（起），取京东固特异旗舰店同款套装最低档，件套与毯面不同价差会拉大，本店实价按你的车核。</p>
+        <div class="mt-base">
+          <b>基础档 · 官方单卖，本店不拆</b>
+          <div class="mbase-chips">
+            <i>4 件套<em>¥653–933</em></i>
+            <i>6 件套<em>¥1,048</em></i>
+            <i>9 件套<em>¥1,084–1,440</em></i>
+          </div>
+          <span class="mbase-note">只护脚垫 / 尾箱，不含毯面与靠背垫；本店按整车整套报，护得更全。</span>
+        </div>
+        <p class="mtier-note">件数与毯面逐张核自固特异官方商品图（2026-11）；价格为该车型「基础毯面最低配」官方在售价（起），取固特异京东自营旗舰店与官方活动口径，选星空年华 / 星空丝绒等毯面约再加 ¥100–200，大促会浮动。本店整套实价按你的车到店核。</p>
       </div>` : ''}
       <div class="gift-bar">
         <div class="gift-tag">赠</div>
@@ -2990,6 +3077,7 @@ function refresh(){
   }
   renderSheet(list, total);
   syncNavDots();
+  syncScreenFigs();
 }
 
 /* 顶部分区链接上标金点：哪几区已经选过，不用滚回去找 */
