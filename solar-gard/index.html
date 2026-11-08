@@ -1045,10 +1045,11 @@ a{ color:inherit; text-decoration:none; }
 .sil-grid.swap .sil-item:nth-child(n){ animation-delay:calc(var(--i,0) * 18ms); }
 .sil-grid{
   display:grid; grid-template-columns:repeat(var(--silc,5),minmax(0,1fr));
-  gap:1px; background:var(--line);
+  gap:0; background:#fff;
   border:1px solid var(--line); border-top:0;
 }
-.sil-item{ background:#fff; padding:22px 14px 18px; text-align:center; }
+/* 网格线画在格子内侧：手机端件数除不尽时，末尾空格就不会露出一块灰底 */
+.sil-item{ background:#fff; padding:22px 14px 18px; text-align:center; box-shadow:inset 0 0 0 .5px var(--line); }
 .sil-item img{ display:block; width:100%; height:auto; mix-blend-mode:multiply; }
 .sil-item b{ display:block; font-size:13px; font-weight:600; color:var(--ink); margin-top:10px; }
 /* 硅胶图走精灵图：一个请求拿全 10~12 件，避免并发把连接拖死 */
