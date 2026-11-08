@@ -2570,6 +2570,31 @@ function bigCard(a){
 }
 
 /* ---------- 硅胶套装：按车型出清单（i6 有实拍，其余按实车清单） ---------- */
+/* 整套图原始像素：先按比例把位置占住，图没到之前不会跳一下 */
+const GKSIZE = {
+  'asset/acc/sil/set_i6_b.jpg':[1100,825],
+  'asset/acc/sil/set_i6_o.jpg':[1100,825],
+  'asset/acc/sil/set_i6_s.jpg':[1100,825],
+  'asset/acc/sil/set_i8_grey.jpg':[879,797],
+  'asset/acc/sil/set_i8_orange.jpg':[883,796],
+  'asset/acc/sil/set_i8_white.jpg':[883,796],
+  'asset/acc/sil/set_i9_brown.jpg':[883,680],
+  'asset/acc/sil/set_i9_white.jpg':[883,680],
+  'asset/acc/sil/set_l6_brown.jpg':[883,680],
+  'asset/acc/sil/set_l6_orange.jpg':[883,680],
+  'asset/acc/sil/set_l6_white.jpg':[883,680],
+  'asset/acc/sil/set_l8_brown.jpg':[883,780],
+  'asset/acc/sil/set_l8_green.jpg':[883,780],
+  'asset/acc/sil/set_l8_purple.jpg':[883,780],
+  'asset/acc/sil/set_l8_white.jpg':[883,780],
+  'asset/acc/sil/set_l9_brown.jpg':[883,780],
+  'asset/acc/sil/set_l9_green.jpg':[883,780],
+  'asset/acc/sil/set_l9_purple.jpg':[883,780],
+  'asset/acc/sil/set_l9_white.jpg':[883,783],
+  'asset/acc/sil/set_mega_brown.jpg':[883,680],
+  'asset/acc/sil/set_mega_white.jpg':[883,680]
+};
+
 const silGift = () => curModel().gift || null;
 
 /* 当前车型下选中的颜色：换车型后若该色不存在，自动落回第一色 */
@@ -2612,7 +2637,8 @@ function renderSil(animate){
     /* 一张官方整套图 + 逐件名称，手机上比 21 张缩略图更好认 */
     grid.innerHTML = `
       <figure class="gk-pic">
-        <img src="${set.img}" alt="${curModel().name} ${g.n} 件全车硅胶套装实拍 · ${set.n}" loading="lazy">
+        <img src="${set.img}" alt="${curModel().name} ${g.n} 件全车硅胶套装实拍 · ${set.n}"
+             style="aspect-ratio:${(GKSIZE[set.img] || [4,3])[0]}/${(GKSIZE[set.img] || [4,3])[1]}" decoding="async">
         <span class="gk-tag">整套实拍</span>
       </figure>
       <div class="gk-chips">${g.items.map(it =>
