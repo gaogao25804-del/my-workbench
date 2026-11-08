@@ -915,7 +915,7 @@ a{ color:inherit; text-decoration:none; }
 .sil-grid.swap .sil-item{ animation:silIn .34s ease both; }
 .sil-grid.swap .sil-item:nth-child(n){ animation-delay:calc(var(--i,0) * 18ms); }
 .sil-grid{
-  display:grid; grid-template-columns:repeat(5,minmax(0,1fr));
+  display:grid; grid-template-columns:repeat(var(--silc,5),minmax(0,1fr));
   gap:1px; background:var(--line);
   border:1px solid var(--line); border-top:0;
 }
@@ -923,6 +923,23 @@ a{ color:inherit; text-decoration:none; }
 .sil-item img{ display:block; width:100%; height:auto; mix-blend-mode:multiply; }
 .sil-item b{ display:block; font-size:13px; font-weight:600; color:var(--ink); margin-top:10px; }
 .sil-item span{ display:block; font-size:11.5px; color:var(--sub2); margin-top:4px; letter-spacing:.04em; }
+/* 没有实拍图的车型：格子改出「序号 + 名称 + 件数」清单，别拿别的车的图冒充 */
+.sil-item--txt{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:26px 12px; min-height:132px;
+}
+.sil-item--txt .si-no{
+  font-family:var(--fn); font-style:normal; font-size:11px; letter-spacing:.18em;
+  color:var(--gold); margin-bottom:12px;
+}
+.sil-item--txt b{ margin-top:0; font-size:12.5px; line-height:1.5; }
+.sil-item--txt span{ margin-top:6px; }
+.sil-empty{
+  grid-column:1 / -1; background:#fff; padding:40px 24px;
+  text-align:center; font-size:12.5px; line-height:2; color:var(--sub);
+}
+/* 非 i6 车型只注明可选颜色，不摆三色色卡 */
+.gk-color{ font-size:12.5px; letter-spacing:.04em; color:var(--ink); }
 .gk-note{
   font-size:12.5px; line-height:1.95; color:var(--sub); margin-top:18px;
 }
@@ -1428,61 +1445,19 @@ body.has-models .hero{ padding-top:0; }
     <div class="sub-block" data-page-node-id="lGIOGFHA4uGzNwajSwdCRd">
       <div class="sub-head" data-page-node-id="KFxzQzbBT5e66J9DkwrNyR">
         <b data-page-node-id="LrcCI3o0r0g3QF9CirUK6Z">购脚垫即赠</b>
-        <span class="cnt" data-page-node-id="e1BAUzjOvSaqih3qJ7Am9n">全车硅胶 21 件</span>
-        <span data-page-node-id="ATdYjboFdPIuxTio1a4ymM">无线充垫 / 水杯架 / 储物盒 / 车门按键 / 门碗贴 / OBD 盖</span>
+        <span class="cnt" id="giftCnt" data-page-node-id="e1BAUzjOvSaqih3qJ7Am9n">全车硅胶 21 件</span>
+        <span id="giftSum" data-page-node-id="ATdYjboFdPIuxTio1a4ymM">无线充垫 / 水杯套 / 储物盒 / 车门按键 / 门碗贴 / OBD 盖</span>
       </div>
-      <p class="sub-note" id="giftNote" data-page-node-id="0EaFwDIqxgOHtAaEJ9geMQ">26 款 i6 送 <b data-page-node-id="Us0VKoB9SeID5MowaPjz0k">21 件套</b>；其他车型件数以实车为准，按对应车型配齐，三色可选。</p>
+      <p class="sub-note" id="giftNote" data-page-node-id="0EaFwDIqxgOHtAaEJ9geMQ">26 款 i6 送 <b data-page-node-id="Us0VKoB9SeID5MowaPjz0k">21 件套</b>；按对应车型配齐，随脚垫一并装车。</p>
       <div class="giftkit" data-page-node-id="e2hUPhyLRFMizsu88zXB2N">
         <div class="gk-head" data-page-node-id="BTHbYZpeOWhLP4ski1f5lh">
-          <div class="gk-l" data-page-node-id="scecE2q4cCPJgMJfwqD4k9">GIFT · 21 件 / 随脚垫整车配送</div>
-          <div class="gk-swatches" data-page-node-id="NwGFjUFUu0w4IDao405mbp">
-            <button class="sw on" data-sil="w" data-page-node-id="QaUGmEBAEKwDTBeex0SGpr"><i style="background:#EFEDE6" data-page-node-id="yzS8aHpPUxjbi7Q0DFhUse"></i>原车白</button>
-            <button class="sw" data-sil="b" data-page-node-id="f9aLheFtm1tr1vDSuBB11c"><i style="background:#9C8478" data-page-node-id="2P97CEvUMkqQeK7mCyNf3u"></i>棕色</button>
-            <button class="sw" data-sil="o" data-page-node-id="lXKEt78yXuovrkTZJjfSqj"><i style="background:#D9822B" data-page-node-id="629Ljtfs15VAA5RlOnaKv4"></i>橙黄</button>
-          </div>
+          <div class="gk-l" id="giftHead" data-page-node-id="scecE2q4cCPJgMJfwqD4k9">GIFT · 21 件 / 随脚垫整车配送</div>
+          <div class="gk-swatches" id="giftSw" data-page-node-id="NwGFjUFUu0w4IDao405mbp"></div>
         </div>
-        <div class="sil-grid gal" id="silGrid" data-page-node-id="ZOBu3ob2uu76nRBWG96Mcj">
-    <div class="sil-item" style="--i:0">
-      <img src="asset/acc/sil/s01.jpg" alt="硅胶无线充垫 × 1">
-      <b>无线充垫</b><span>× 1</span>
+        <div class="sil-grid gal" id="silGrid" data-page-node-id="ZOBu3ob2uu76nRBWG96Mcj"></div>
+        <p class="gk-note" id="giftKnote" data-page-node-id="OhBDlF1RjS6ikSpogMkWHd">上图为 i6 车型 21 件套实拍，按车型配齐后随脚垫一并装车；其他车型件数与组合以实车为准。</p>
+      </div>
     </div>
-    <div class="sil-item" style="--i:1">
-      <img src="asset/acc/sil/s02.jpg" alt="硅胶前排水杯套 × 1">
-      <b>前排水杯套</b><span>× 1</span>
-    </div>
-    <div class="sil-item" style="--i:2">
-      <img src="asset/acc/sil/s03.jpg" alt="硅胶扶手箱储物盒 全包连体 · × 1">
-      <b>扶手箱储物盒</b><span>全包连体 · × 1</span>
-    </div>
-    <div class="sil-item" style="--i:3">
-      <img src="asset/acc/sil/s04.jpg" alt="硅胶后排水杯套 × 1">
-      <b>后排水杯套</b><span>× 1</span>
-    </div>
-    <div class="sil-item" style="--i:4">
-      <img src="asset/acc/sil/s05.jpg" alt="硅胶中控下储物盒 × 2">
-      <b>中控下储物盒</b><span>× 2</span>
-    </div>
-    <div class="sil-item" style="--i:5">
-      <img src="asset/acc/sil/s06.jpg" alt="硅胶冰箱储物盒 × 2">
-      <b>冰箱储物盒</b><span>× 2</span>
-    </div>
-    <div class="sil-item" style="--i:6">
-      <img src="asset/acc/sil/s07.jpg" alt="硅胶车门按键防护垫 × 4">
-      <b>车门按键防护垫</b><span>× 4</span>
-    </div>
-    <div class="sil-item" style="--i:7">
-      <img src="asset/acc/sil/s08.jpg" alt="硅胶车门内门碗贴 × 4">
-      <b>车门内门碗贴</b><span>× 4</span>
-    </div>
-    <div class="sil-item" style="--i:8">
-      <img src="asset/acc/sil/s09.jpg" alt="硅胶车门下硅胶盒 × 4">
-      <b>车门下硅胶盒</b><span>× 4</span>
-    </div>
-    <div class="sil-item" style="--i:9">
-      <img src="asset/acc/sil/s10.jpg" alt="硅胶OBD 保护盖 × 1">
-      <b>OBD 保护盖</b><span>× 1</span>
-    </div></div>
-        <p class="gk-note" data-page-node-id="OhBDlF1RjS6ikSpogMkWHd">上图为 i6 车型 21 件套实拍，按车型配齐后随脚垫一并装车；其他车型件数与组合以实车为准。</p>
       </div>
     </div>
 
@@ -1639,16 +1614,48 @@ body.has-models .hero{ padding-top:0; }
    ========================================================= */
 /* 理想全系 7 款。
    车衣 / 玻璃膜 / 钢化膜：老板确认全系通用，直接复用同一份价目，不做任何系数换算。
-   配件：脚垫、座椅垫这类按座舱布局来的件，5 座沿用 i6 价目；6/7 座只标「按车型配齐」，
-        giftCount 留 0 表示件数以实车为准，不编造数字。 */
+   配件：脚垫、座椅垫这类按座舱布局来的件，5 座沿用 i6 价目；6/7 座只标「按车型配齐」。
+   gift = 买脚垫赠送的全车硅胶套装清单（件数按老板提供的实车套装登记，不推算）。
+        photo:true 表示有 i6 三色实拍图；其余车型按清单列出，件数照抄不编。 */
 const MODELS = [
-  { id:'i6',   name:'理想 i6',   sub:'26 款', body:'纯电 SUV · 5 座', seats:5, giftCount:21, ready:true },
-  { id:'i8',   name:'理想 i8',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:0,  ready:true },
-  { id:'i9',   name:'理想 i9',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:0,  ready:true },
-  { id:'l6',   name:'理想 L6',   sub:'',      body:'增程 SUV · 5 座', seats:5, giftCount:21, ready:true },
-  { id:'l8',   name:'理想 L8',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:0,  ready:true },
-  { id:'l9',   name:'理想 L9',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:0,  ready:true },
-  { id:'mega', name:'理想 MEGA', sub:'',      body:'纯电 MPV · 7 座', seats:7, giftCount:0,  ready:true }
+  { id:'i6',   name:'理想 i6',   sub:'26 款', body:'纯电 SUV · 5 座', seats:5, giftCount:21, ready:true,
+    gift:{ n:21, color:'原车白 / 棕色 / 橙黄', photo:true, items:[
+      ['无线充垫',1], ['前排水杯套',1], ['扶手箱储物盒',1,'全包连体'], ['后排水杯套',1],
+      ['中控下储物盒',2], ['冰箱储物盒',2], ['车门按键防护垫',4], ['车门内门碗贴',4],
+      ['车门下硅胶盒',4], ['OBD 保护盖',1]
+    ]}},
+  { id:'i8',   name:'理想 i8',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:22, ready:true,
+    gift:{ n:22, color:'灰棕 / 白色', photo:false, items:[
+      ['无线充硅胶垫',2], ['扶手箱硅胶盒',3], ['前排水杯套',2], ['后排水杯套',2],
+      ['二排座椅储物盒',2], ['车门硅胶垃圾桶',2], ['冰箱硅胶储物盒',2], ['安全带硅胶套',6],
+      ['OBD 硅胶防尘盖',1]
+    ]}},
+  { id:'i9',   name:'理想 i9',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:21, ready:true,
+    gift:{ n:21, color:'白色', photo:false, items:[
+      ['无线充硅胶垫',1], ['水杯套',1,'连体全包'], ['扶手箱储物盒',3], ['后排水杯套',1],
+      ['中控下储物盒',2], ['三排水杯套',2], ['二排座椅储物盒',1], ['冰箱储物盒',2],
+      ['车门按键硅胶垫',4], ['车门下硅胶盒',4,'升级杯架']
+    ]}},
+  { id:'l6',   name:'理想 L6',   sub:'',      body:'增程 SUV · 5 座', seats:5, giftCount:21, ready:true,
+    gift:{ n:21, color:'雪原白', photo:false, items:[
+      ['无线充硅胶垫',1,'前排'], ['水杯套',1,'连体全包'], ['扶手箱储物盒',1], ['后排水杯套',1],
+      ['中控下储物盒',2], ['冰箱储物盒',2], ['车门上按键防护垫',4], ['车门内门碗贴',4],
+      ['车门下储物盒',4], ['OBD 保护盖',1]
+    ]}},
+  { id:'l8',   name:'理想 L8',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:21, ready:true,
+    gift:{ n:21, color:'棕白 / 绿白', photo:false, items:[
+      ['无线充硅胶垫',1], ['前排硅胶水杯套',1], ['扶手箱硅胶盒',1], ['后排硅胶水杯套',1],
+      ['中控下硅胶储物盒',2], ['屏幕硅胶保护套',1], ['车门下硅胶盒',4], ['冰箱硅胶垫',2],
+      ['后排扶手无线充',1], ['后排扶手水杯套',1], ['安全带硅胶套',5], ['OBD 保护盖',1]
+    ]}},
+  { id:'l9',   name:'理想 L9',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:24, ready:true,
+    gift:{ n:24, color:'棕白 / 绿白', photo:false, items:[
+      ['无线充硅胶垫',1], ['前排硅胶水杯套',1], ['扶手箱硅胶盒',1], ['后排硅胶水杯套',1],
+      ['中控下硅胶储物盒',2], ['屏幕硅胶保护套',1], ['车门下储物盒',4,'升级杯架款'], ['冰箱硅胶垫',2],
+      ['三排硅胶水杯套',2], ['二排座椅硅胶垫',2], ['安全带硅胶套',6], ['OBD 保护盖',1]
+    ]}},
+  { id:'mega', name:'理想 MEGA', sub:'',      body:'纯电 MPV · 7 座', seats:7, giftCount:0, ready:true,
+    gift:null }
 ];
 
 const SCREEN = [
@@ -1685,7 +1692,7 @@ const FILM = [
       { id:'f2', code:'B', spec:'LR73 3.5mil + PRO35/20',  price:5580 },
       { id:'f3', code:'C', spec:'LR73 3.5mil + GK35/20',   price:5280 }
     ]},
-  { name:'HONOUR', stars:4, from:3080, hot:'最多人选', hl:true,
+  { name:'HONOUR', stars:4, from:3080,
     desc:'新一代纳米陶瓷磁控溅射膜，新能源首选不阻隔信号。', tiers:[
       { id:'f4', code:'A', spec:'HP80 2mil + HP30/15',     price:3580 },
       { id:'f5', code:'B', spec:'HP80 2mil + PRO35/20',    price:3280 },
@@ -1961,30 +1968,67 @@ function bigCard(a){
     </div>`;
 }
 
-/* ---------- 硅胶套装：三色切换 ---------- */
-const SIL_ITEMS = [
-  { n:'无线充垫',      q:'× 1' },
-  { n:'前排水杯套',    q:'× 1' },
-  { n:'扶手箱储物盒',  q:'全包连体 · × 1' },
-  { n:'后排水杯套',    q:'× 1' },
-  { n:'中控下储物盒',  q:'× 2' },
-  { n:'冰箱储物盒',    q:'× 2' },
-  { n:'车门按键防护垫', q:'× 4' },
-  { n:'车门内门碗贴',  q:'× 4' },
-  { n:'车门下硅胶盒',  q:'× 4' },
-  { n:'OBD 保护盖',    q:'× 1' }
-];
+/* ---------- 硅胶套装：按车型出清单（i6 有实拍，其余按实车清单） ---------- */
+const silGift = () => curModel().gift || null;
+const SIL_SWATCH = [['w','原车白','#EFEDE6'], ['b','棕色','#9C8478'], ['o','橙黄','#D9822B']];
 
 function renderSil(animate){
-  // 原车白用 s 前缀，棕色 b，橙黄 o
-  const p = state.silColor === 'w' ? 's' : state.silColor;
+  const g = silGift();
   const grid = $('#silGrid');
   if (!grid) return;
-  grid.innerHTML = SIL_ITEMS.map((it, i) => `
+
+  /* 色卡：只有 i6 有白/棕/橙三色实拍；其他车型只注明可选颜色，不假装三色都有图 */
+  const sw = $('#giftSw');
+  if (sw){
+    if (g && g.photo){
+      sw.innerHTML = SIL_SWATCH.map(([k, n, c]) =>
+        `<button class="sw${state.silColor === k ? ' on' : ''}" data-sil="${k}"><i style="background:${c}"></i>${n}</button>`).join('');
+    } else if (g){
+      sw.innerHTML = `<span class="gk-color">可选颜色 · ${g.color}</span>`;
+    } else {
+      sw.innerHTML = '';
+    }
+  }
+
+  /* 格子：i6 出实拍图，其余车型出「序号 + 名称 + 件数」清单 */
+  const cols = !g ? 5 : (g.photo ? 5 : (g.items.length % 5 === 0 ? 5 : 4));
+  grid.style.setProperty('--silc', cols);
+  grid.classList.toggle('gal', !!g);   /* 空态不挂「图集」角标 */
+  if (!g){
+    grid.innerHTML = `<div class="sil-empty">MEGA 的全车硅胶套装按 7 座舱布局配齐，清单跟件数以实车为准，可到店核对。</div>`;
+  } else if (g.photo){
+    const p = state.silColor === 'w' ? 's' : state.silColor;
+    grid.innerHTML = g.items.map((it, i) => `
     <div class="sil-item" style="--i:${i}">
-      <img src="asset/acc/sil/${p}${String(i + 1).padStart(2, '0')}.jpg" alt="硅胶${it.n} ${it.q}">
-      <b>${it.n}</b><span>${it.q}</span>
+      <img src="asset/acc/sil/${p}${String(i + 1).padStart(2, '0')}.jpg" alt="硅胶${it[0]} × ${it[1]}">
+      <b>${it[0]}</b><span>${it[2] ? it[2] + ' · ' : ''}× ${it[1]}</span>
     </div>`).join('');
+  } else {
+    grid.innerHTML = g.items.map((it, i) => `
+    <div class="sil-item sil-item--txt" style="--i:${i}">
+      <i class="si-no">${String(i + 1).padStart(2, '0')}</i>
+      <b>${it[0]}</b><span>${it[2] ? it[2] + ' · ' : ''}× ${it[1]}</span>
+    </div>`).join('');
+  }
+
+  /* 标题、件数、备注都跟着车型走 */
+  const cnt = $('#giftCnt');
+  if (cnt) cnt.textContent = g ? `全车硅胶 ${g.n} 件` : '全车硅胶套装';
+  const head = $('#giftHead');
+  if (head) head.textContent = g ? `GIFT · ${g.n} 件 / 随脚垫整车配送` : 'GIFT · 随脚垫整车配送';
+  const sum = $('#giftSum');
+  if (sum) sum.textContent = g ? g.items.slice(0, 5).map(x => x[0]).join(' / ') + ' 等' : '按 7 座舱布局配齐';
+  const note = $('#giftNote');
+  if (note) note.innerHTML = g
+    ? `${curModel().sub ? curModel().sub + ' ' : ''}${curModel().name.replace('理想 ', '')} 送 <b>${g.n} 件套</b>；随脚垫一并装车，颜色可选 ${g.color}。`
+    : `MEGA 送 <b>全车硅胶套装</b>；件数按 7 座舱布局配齐，以实车为准。`;
+  const kn = $('#giftKnote');
+  if (kn) kn.textContent = g
+    ? (g.photo
+        ? `上图为 i6 车型 ${g.n} 件套实拍（白 / 棕 / 橙黄三色），按车型配齐后随脚垫一并装车。`
+        : `上表为 ${curModel().name} ${g.n} 件套清单，件数照实车登记；实物颜色以到店现货为准。`)
+    : 'MEGA 的硅胶套装清单还在整理，件数以实车为准。';
+
   document.querySelectorAll('[data-sil]').forEach(el => {
     el.classList.toggle('on', el.dataset.sil === state.silColor);
   });
@@ -2427,10 +2471,6 @@ function syncModelText(){
   }
 
 
-  const gn = $('#giftNote');
-  if (gn) gn.innerHTML = m.giftCount
-    ? `${m.sub ? m.sub + ' ' : ''}${short} 送 <b>${m.giftCount} 件套</b>；按对应车型配齐，三色可选。`
-    : `${m.sub ? m.sub + ' ' : ''}${short} 送 <b>全车硅胶套装</b>；件数按 ${m.seats} 座舱布局配齐，三色可选。`;
 
   const ap = $('#accSecP');
   if (ap) ap.innerHTML = (m.seats || 5) === 5
@@ -2446,7 +2486,7 @@ function setModel(id){
   if (!m || m.ready === false || state.model === id) return;
   state.model = id;
   renderModelBar();
-  renderScreen(); renderFilm(); renderAcc();
+  renderScreen(); renderFilm(); renderSil(); renderAcc();
   refresh();
   toast(`已切换到 ${curModel().name} · 价格按车型重算`, 'ok');
 }
