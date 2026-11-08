@@ -218,14 +218,27 @@ a{ color:inherit; text-decoration:none; }
   margin-left:auto; font-family:var(--fn); font-size:10px; letter-spacing:.24em;
   color:var(--sub2); text-transform:uppercase;
 }
-/* 分区标题右侧的「能点」提示：客人不用猜哪里能点 */
-/* 分区 / 子分区标题右侧的「能点」提示：客人不用猜哪里能点 */
+/* 「能点」提示：原来是 11.5px 浅金小胶囊，看着像装饰标签，没人会读成操作指令。
+   现在改成 14px 墨底实心条 + 金色箭头，一条真正的指令，压在卡片区正上方。 */
 .picktip{
-  font-size:11.5px; font-weight:500; letter-spacing:.06em; color:#8A6A2E; white-space:nowrap;
-  border:1px solid rgba(185,154,91,.66); background:rgba(185,154,91,.14);
-  padding:5px 14px; border-radius:999px; flex:none;
+  display:flex; align-items:center; gap:10px;
+  width:100%; box-sizing:border-box;
+  margin:22px 0 14px; padding:10px 16px; min-height:44px;
+  background:var(--ink); color:#fff; border:0; border-radius:8px;
+  font-size:13.5px; font-weight:600; letter-spacing:.03em; white-space:normal;
+  cursor:default; user-select:none;
 }
-.sub-head .picktip{ margin-left:auto; font-size:11px; padding:4px 12px; }
+.picktip::before{
+  content:"↓"; flex:none; width:22px; height:22px; border-radius:50%;
+  background:var(--gold); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; line-height:1; font-weight:400;
+}
+/* 子分区标题里的那条：整行铺开，不跟标题抢一行 */
+.sub-head .picktip{
+  flex:1 1 100%; order:9; margin:12px 0 0; min-height:40px;
+  font-size:12.5px; padding:8px 14px;
+}
 .sec-p{ font-size:13.5px; line-height:2.1; color:var(--sub); max-width:660px; margin-top:26px; }
 
 /* ---------- 01 屏幕保护 ---------- */
@@ -280,7 +293,7 @@ a{ color:inherit; text-decoration:none; }
 .pfrom s{ text-decoration:none; font-size:9px; }
 .prow{
   display:block; width:calc(100% + 24px); text-align:left;
-  padding:15px 40px 14px 12px; margin:0 -12px;
+  padding:15px 74px 14px 12px; margin:0 -12px;
   border:1px solid transparent; border-bottom-color:var(--line); border-radius:4px;
   position:relative; cursor:pointer;
   transition:background .2s, border-color .2s, box-shadow .2s, transform .2s;
@@ -311,7 +324,7 @@ a{ color:inherit; text-decoration:none; }
 .card{ background:#fff; padding:34px 26px 26px; display:flex; flex-direction:column; position:relative; transition:background .2s, box-shadow .2s; }
 .card.hl{ background:var(--ink); color:#fff; }
 /* 组内被选中时整卡描金边 */
-.card.picked{ background:rgba(185,154,91,.05); box-shadow:inset 0 0 0 1.5px var(--gold); }
+.card.picked{ background:rgba(185,154,91,.05); box-shadow:inset 0 0 0 2px var(--gold); }
 .card.hl.picked{ background:#1B1A17; }
 .ctag{
   position:absolute; left:26px; top:14px; right:auto; z-index:3;
@@ -338,7 +351,7 @@ a{ color:inherit; text-decoration:none; }
 .crow{
   display:grid; grid-template-columns:24px minmax(0,1fr) auto; align-items:center;
   gap:12px; width:auto; text-align:left; cursor:pointer;
-  padding:12px 40px 12px 12px; margin:3px -12px 0;
+  padding:12px 74px 12px 12px; margin:3px -12px 0;
   border:1.5px solid transparent; border-radius:4px; position:relative;
   transition:background .2s, border-color .2s, color .2s, box-shadow .2s, transform .2s;
 }
@@ -554,11 +567,6 @@ a{ color:inherit; text-decoration:none; }
 .acc-item.on .acc-pic{ background:#fff; }
 .acc-item.on .acc-n{ background:transparent; }
 .acc-item.on .acc-n i{ color:var(--gold); font-weight:600; }
-.acc-item.on .acc-n i::after{
-  content:"已选"; font-family:var(--ff); font-size:9px; font-weight:400;
-  color:var(--gold); letter-spacing:.12em; margin-left:7px;
-  border:1px solid rgba(185,154,91,.5); padding:1px 5px; border-radius:2px;
-}
 /* 其余配件 = 单品加装：左上角「单品」墨色小标 + 墨色勾选圈，
    和金色系的套装 / 主推卡分开（选中后依旧是金色实心勾） */
 .acc-item .unit-tag{
@@ -567,8 +575,6 @@ a{ color:inherit; text-decoration:none; }
   color:#fff; background:rgba(27,26,23,.85);
   border-radius:0 0 3px 0; pointer-events:none;
 }
-.acc-item.pick--sm::after{ border-color:#98927F; color:#5C584C; }
-.acc-item.pick--sm:hover::after{ border-color:var(--ink); color:var(--ink); }
 
 .acc-item--more{
   background:var(--ink); color:#fff; padding:26px 22px; justify-content:center; align-items:flex-start;
@@ -854,7 +860,7 @@ a{ color:inherit; text-decoration:none; }
   .nav-l i{ display:none; }
   .nav-r{ gap:10px; }
   .nav-r .pill.ghost{ display:none; }
-  .nav-r .pill{ height:34px; padding:0 16px; font-size:12px; }
+  .nav-r .pill{ height:44px; padding:0 18px; font-size:12.5px; }
 
   .hero-top{ padding:44px 0 34px; }
   .hero h1{ font-size:36px; margin-top:14px; }
@@ -863,7 +869,7 @@ a{ color:inherit; text-decoration:none; }
   .hero-act{ margin-top:24px; gap:10px; }
   .hero-img{ aspect-ratio:16/9; }
   .hero-img img{ width:100%; height:100%; object-fit:cover; object-position:74% 54%; }
-  .pill{ height:36px; padding:0 18px; font-size:12.5px; }
+  .pill{ height:44px; padding:0 20px; font-size:13px; }   /* 手指点得到 */
 
   .host{ padding:56px 0 48px; }
   .host-wrap{ grid-template-columns:1fr; gap:0; }
@@ -905,14 +911,14 @@ a{ color:inherit; text-decoration:none; }
   .pcol{ border-left:0; padding:0; }
   .pcol + .pcol{ margin-top:34px; }
   .pcolhead{ padding:0 0 12px; }
-  .prow{ padding:14px 38px 13px 10px; margin:0 -10px; }
+  .prow{ padding:14px 70px 13px 10px; margin:0 -10px; }
 
   .film4{ grid-template-columns:1fr; }
   .card{ padding:28px 22px 22px; }
   .cdesc{ min-height:0; }
   .ctag{ left:22px; top:10px; }
   .cpicked{ left:22px; top:10px; }
-  .crow{ padding:13px 38px 13px 10px; margin:3px -10px 0; }
+  .crow{ padding:13px 70px 13px 10px; margin:3px -10px 0; }
 
   .sub-block{ margin-top:48px; }
   .sub-head b{ font-size:15px; }
@@ -1092,47 +1098,54 @@ a{ color:inherit; text-decoration:none; }
   .sil-item b{ font-size:12px; }
 }
 /* ============================================================
-   可点选 vs 纯展示：统一「圆圈勾选」系统
-   可点 → 右上角金边大圆 + 加号 + hover 上浮 + 选中金底白勾
-   纯图 → 无描边无 hover + 淡色「图集」角标
+   可点选 vs 纯展示：可发现性系统（2026-11-08 重做）
+   问题不在「按钮太小」，而在「未选中态长得跟展示图一模一样」：
+   卡片默认白底 + 1px 浅灰边 + 无投影，唯一的信号是右上角 26px 细线圆圈，
+   客人就以为只有那个圈能点（390px 实测：可点面积 15%，展示图 24%）。
+   现在的规则：默认态就得像个按钮 —— 墨线描边 + 投影 + 带字实心按钮。
+   选中态（.on / .picked 的金边、✓、配置单联动）一律不动。
    ============================================================ */
 .pick{ position:relative; cursor:pointer; -webkit-user-select:none; user-select:none; }
+
+/* 右上角动作控件：26px 空心「＋」→ 44px 墨底实心「＋ 加入配置」 */
 .pick::after{
-  content:"＋"; position:absolute; top:12px; right:12px;
-  width:26px; height:26px; border-radius:50%; box-sizing:border-box;
-  border:2px solid var(--gold); background:#fff;
-  display:flex; align-items:center; justify-content:center;
-  font-family:var(--ff); font-size:15px; font-weight:600; line-height:1; color:var(--gold);
-  box-shadow:0 2px 10px rgba(0,0,0,.18);
-  transition:background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-  z-index:5; pointer-events:none;
+  content:"＋ 加入配置";
+  position:absolute; top:12px; right:12px; z-index:6;
+  height:44px; min-width:104px; padding:0 16px; box-sizing:border-box;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:0; border-radius:999px;
+  background:var(--ink); color:#fff;
+  font-family:var(--ff); font-size:13px; font-weight:600; letter-spacing:.02em; line-height:1;
+  box-shadow:0 6px 16px -8px rgba(0,0,0,.55);
+  transition:background .18s ease, box-shadow .18s ease, transform .12s ease;
+  z-index:6; pointer-events:none;
 }
-.pick--sm::after{ top:9px; right:9px; width:21px; height:21px; font-size:12px; }
-.pick--lg::after{ top:16px; right:16px; width:30px; height:30px; font-size:17px; }
-.pick--row::after{ display:none; }
+.pick--lg::after{ top:14px; right:14px; height:48px; min-width:116px; font-size:13.5px; }
+.pick--row::after{ display:none; }        /* 行内不用角标，用跟着网格走的 .ck */
+/* 配件小卡：动作按钮放在价格下方整条，不去盖产品图 */
+.acc-item.pick::after{ display:none; }
 
-.pick.on{ border-color:var(--gold); background:rgba(185,154,91,.07); }
 .pick.on::after{
-  content:"✓"; background:var(--gold); border-color:var(--gold); color:#fff;
-  box-shadow:0 5px 14px -5px rgba(185,154,91,.9);
+  content:"✓ 已加入"; background:var(--gold);
+  box-shadow:0 6px 18px -8px rgba(185,154,91,.85);
 }
 
-/* 行内勾：车衣 / 玻璃膜档位，与卡片同款 */
+/* 行内按钮（车衣 / 玻璃膜每一档）：22px 空心圈 → 44px 墨底实心方钮 */
 .ck{
-  position:absolute; right:12px; top:50%; margin-top:-11px;
-  width:22px; height:22px; border-radius:50%; box-sizing:border-box;
-  border:2px solid var(--gold); background:#fff;
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  width:44px; height:44px; border-radius:13px; box-sizing:border-box;
   display:flex; align-items:center; justify-content:center;
-  font-family:var(--ff); font-size:12px; font-weight:600; color:var(--gold); font-style:normal;
-  box-shadow:0 2px 8px rgba(0,0,0,.14);
-  transition:background .2s, border-color .2s, box-shadow .2s;
+  background:var(--ink); color:#fff; border:0;
+  font-family:var(--ff); font-size:19px; font-weight:600; font-style:normal; line-height:1;
+  box-shadow:0 6px 14px -8px rgba(0,0,0,.5);
+  transition:background .18s, box-shadow .18s, transform .12s;
   pointer-events:none;
 }
 .ck::before{ content:"＋"; line-height:1; }
-.pick.on .ck{ background:var(--gold); border-color:var(--gold); color:#fff; }
-.pick.on .ck::before{ content:"✓"; }
-/* 黑卡（HONOUR）内：未选为透明圈金加号，选中才实心金 */
-.card.hl .ck{ background:transparent; border-color:rgba(255,255,255,.42); }
+.pick.on .ck{ background:var(--gold); box-shadow:0 6px 16px -8px rgba(185,154,91,.9); }
+.pick.on .ck::before{ content:"✓"; font-size:15px; }
+/* 黑卡（HONOUR）内：白底墨字，别在深色上放一块黑 */
+.card.hl .ck{ background:#fff; color:var(--ink); }
 .card.hl .pick.on .ck{ background:var(--gold); border-color:var(--gold); color:#fff; }
 
 /* 大卡（脚垫 / 座椅垫）本身没有 border，用覆盖层描金，避免被子元素白底挡住 */
@@ -1143,18 +1156,19 @@ a{ color:inherit; text-decoration:none; }
 /* 选中后左右两半统一底色 */
 .addon-card.on .addon-pic{ background:transparent; }
 
-/* 大卡（TPE 脚垫 / 座椅垫）：常驻金边 + 大号勾选圆 + 「主推」金标
-   —— 这两张是配件区的主推套件，必须一眼看出来能点、且带赠品 */
+/* 大卡（TPE 脚垫 / 座椅垫）：默认态就要像个「能点的卡」
+   —— 墨线外框 + 浮起投影；选中换金框（.on::before 那条金边不再重复画） */
 .addon-card, .seat-card{
-  box-shadow:0 0 0 1.5px rgba(185,154,91,.5);
+  box-shadow:0 0 0 2px var(--ink), 0 20px 44px -34px rgba(0,0,0,.5);
   transition:box-shadow .2s, transform .2s;
 }
-.addon-card:hover, .seat-card:hover{
-  box-shadow:0 0 0 2px rgba(185,154,91,.95), 0 20px 40px -30px rgba(0,0,0,.55);
+.addon-card:not(.on):hover, .seat-card:not(.on):hover{
+  box-shadow:0 0 0 2px var(--ink), 0 28px 54px -34px rgba(0,0,0,.55);
 }
-.addon-card.pick--lg::after, .seat-card.pick--lg::after{
-  top:18px; right:18px; width:40px; height:40px; font-size:22px; border-width:2px;
+.addon-card.on, .seat-card.on{
+  box-shadow:0 0 0 2px var(--gold), 0 20px 44px -34px rgba(185,154,91,.6);
 }
+.addon-card.on::before, .seat-card.on::before{ display:none; }
 /* 「主推 / 买就送」墨底金字小标，压在标题行里 */
 .hi-tag{
   display:inline-flex; align-items:center; gap:6px; vertical-align:2px;
@@ -1164,8 +1178,8 @@ a{ color:inherit; text-decoration:none; }
 .hi-tag::before{ content:""; width:4px; height:4px; border-radius:50%; background:var(--gold); }
 
 /* 座椅卡右上角是价格，给勾选框让位 */
-.seat-card .sub-head{ padding-right:48px; }
-@media (max-width:759px){ .seat-card .sub-head{ padding-right:44px; } }
+.seat-card .sub-head{ padding-right:132px; }
+@media (max-width:759px){ .seat-card .sub-head{ padding-right:124px; } }
 /* 大卡再加一个文字标记，远距离一眼看到 */
 .addon-card.on .addon-price::after, .seat-card.on .sub-price::after{
   content:"已选"; margin-left:10px;
@@ -1198,13 +1212,15 @@ a{ color:inherit; text-decoration:none; }
 /* 纯展示图集：淡色角标 */
 .gal{ position:relative; }
 .gal::after{
-  content:"图集"; position:absolute; top:10px; right:10px; z-index:2;
-  font-size:9px; letter-spacing:.14em; line-height:1.5;
-  color:#A5A5A5; background:rgba(255,255,255,.9);
-  border:1px solid rgba(0,0,0,.06); border-radius:999px;
-  padding:2px 9px; pointer-events:none;
+  content:"实拍参考"; position:absolute; left:8px; bottom:8px; z-index:2;
+  font-size:9.5px; letter-spacing:.1em; line-height:1.5;
+  color:#fff; background:rgba(27,26,23,.6);
+  border:0; border-radius:3px;
+  padding:2px 8px; pointer-events:none;
 }
-.sil-grid.gal::after{ top:8px; right:8px; }
+/* 纯展示图统一轻降饱和：一眼分层，但不动尺寸、不裁内容 */
+.gal img{ filter:saturate(.9); }
+.sil-grid.gal::after{ left:auto; right:8px; bottom:8px; }
 
 @media (max-width:759px){
   .gk-head{ flex-direction:column; align-items:flex-start; gap:12px; }
@@ -1501,6 +1517,7 @@ body.sheet-open .toast{ display:none; }
 .pcolhead--hit{
   cursor:pointer; position:relative;
   margin:0 -12px; padding-left:12px; padding-right:12px;
+  min-height:48px;
   transition:background .2s, border-color .2s;
 }
 .pcolhead--hit:hover{ background:rgba(185,154,91,.09); border-bottom-color:var(--gold); }
@@ -1536,6 +1553,160 @@ body.sheet-open .toast{ display:none; }
   .mchip span{ font-size:9px; }
   .sec-h .same{ font-size:9.5px; padding:4px 9px; letter-spacing:.06em; }
 }
+
+/* ============================================================
+   默认态可发现性（2026-11-08 按交互诊断重做）
+   目标：390px 手机上不滚动、不读小字，0.5 秒能指出这一屏哪几块能点。
+   每张可点卡片 = 墨线描边 + 投影 + 带字实心按钮；纯展示图退到第二层。
+   选中态（.on / .picked 的金边、✓、配置单联动）与 JS 逻辑一律不动。
+   ============================================================ */
+
+/* 卡片里那行 12–13px 深色动作说明：只出现在按钮离价格较远的卡上 */
+.pick-hint{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:12.5px; font-weight:600; letter-spacing:.02em; color:var(--ink);
+}
+.pick-hint::before{ content:""; width:16px; height:1.5px; background:var(--ink); flex:none; }
+.pick.on .pick-hint{ color:#8A6A2E; }
+.pick.on .pick-hint::before{ background:var(--gold); }
+
+/* ---------- 01 屏幕保护：两张档位卡 = 两张「卡片按钮」 ---------- */
+.sc-tier.pick:not(.on){
+  border:2px solid var(--ink);
+  box-shadow:0 14px 30px -24px rgba(0,0,0,.6);
+}
+.sc-tier.pick:not(.on):hover{
+  border-color:var(--ink); background:#fff;
+  box-shadow:0 20px 36px -24px rgba(0,0,0,.62);
+}
+.sc-tier.pick.on{
+  border:2px solid var(--gold);
+  box-shadow:0 14px 30px -24px rgba(185,154,91,.95);
+}
+.sc-tier .t-top{ padding-right:126px; }
+.sc-tier .pick-hint{ margin-top:12px; }
+
+/* ---------- 02 / 03 展开态：每一行都是一张能点的小卡 ---------- */
+.coat4:not(.fold) .prow, .film4:not(.fold) .crow{
+  border:1px solid #DFDACD; background:#fff;
+  box-shadow:0 4px 12px -10px rgba(0,0,0,.45);
+  margin-bottom:8px;
+}
+.coat4:not(.fold) .prow:not(.on):hover,
+.film4:not(.fold) .crow:not(.on):hover{
+  border-color:var(--ink); background:#FAF9F7;
+}
+
+/* 档位行改成三栏：左编号 / 中间「规格在上、价格在下」/ 右侧按钮在流内，
+   4 列桌面也能把规格留成一行，价格不再被按钮挤住 */
+.crow{
+  grid-template-columns:24px minmax(0,1fr) auto;
+  align-items:center; column-gap:12px; row-gap:1px;
+  padding-right:14px;
+}
+.crow > span{ grid-column:1; grid-row:1 / span 2; }
+.crow > b{ grid-column:2; grid-row:1; }
+.crow > em{ grid-column:2; grid-row:2; justify-self:start; }
+.crow > .ck{ position:static; transform:none; grid-column:3; grid-row:1 / span 2; }
+.film4.fold .crow{ padding-right:14px; }
+@media (max-width:759px){
+  .crow{ padding-right:12px; }
+  .film4.fold .crow{ padding-right:12px; }
+}
+
+/* ---------- 02 / 03 折叠态：只剩一款/一档，它就是主 CTA，按钮带字 ---------- */
+.coat4.fold .prow{
+  background:#fff; border:1px solid #DFDACD;
+  box-shadow:0 6px 18px -14px rgba(0,0,0,.45);
+}
+.coat4.fold .prow{ padding-right:150px; }
+.coat4.fold .prow .ck, .film4.fold .crow .ck{
+  width:auto; min-width:120px; height:44px; padding:0 16px; border-radius:999px;
+  font-size:13px; font-weight:600; letter-spacing:.02em;
+}
+.coat4.fold .prow .ck::before, .film4.fold .crow .ck::before{ content:"＋ 加入配置"; }
+.coat4.fold .prow.on .ck::before, .film4.fold .crow.on .ck::before{ content:"✓ 已加入"; }
+/* 03 折叠态整张卡也是热区：给卡一圈墨线，点哪儿都算 */
+.film4.fold .card--hit:not(.picked){ box-shadow:inset 0 0 0 2px var(--ink); }
+.film4.fold .card--hit.picked{ box-shadow:inset 0 0 0 2px var(--gold); }
+
+/* ---------- 04 配件小卡：内描边 + 价格下方一整条按钮 ---------- */
+.acc-item.pick:not(.on){ background:#fff; box-shadow:inset 0 0 0 2px var(--ink); }
+.acc-item.pick.on{ box-shadow:inset 0 0 0 2px var(--gold); }
+.acc-item.pick:not(.on):hover{ background:#FAF9F7; box-shadow:inset 0 0 0 2px var(--ink); }
+.acc-n i{ margin-bottom:14px; }
+.acc-n::after{
+  content:"＋ 加入配置";
+  display:flex; align-items:center; justify-content:center;
+  height:40px; margin-top:auto; border-radius:999px;
+  background:var(--ink); color:#fff;
+  font-size:12px; font-weight:600; letter-spacing:.02em;
+  transition:background .18s ease, box-shadow .18s ease;
+}
+.acc-item.on .acc-n::after{ content:"✓ 已加入配置单"; background:var(--gold); }
+
+/* ---------- 大卡：动作说明跟在价格下面 ---------- */
+.addon-buy{ flex-wrap:wrap; }
+.addon-buy .pick-hint{ flex:1 1 100%; order:3; margin-top:14px; }
+.seat-card .pick-hint{ display:flex; margin-top:12px; }
+
+/* ---------- 纯展示图：加「实拍参考」角标，退到第二层 ---------- */
+.addon-pic, .mat-kit, .fit-item .pframe{ position:relative; }
+.addon-pic::after, .mat-kit::after{
+  content:"实拍参考"; position:absolute; left:10px; bottom:10px; z-index:2;
+  font-size:9.5px; letter-spacing:.1em; line-height:1.5;
+  color:#fff; background:rgba(27,26,23,.6);
+  padding:2px 8px; border-radius:3px; pointer-events:none;
+}
+.addon-pic img, .mat-kit img{ filter:saturate(.94); }
+
+/* ---------- 折叠区「展开全部」做成真按钮的形状 ---------- */
+.foldbox--hit .fb-go{
+  margin-top:8px; padding:0 16px; height:40px; box-sizing:border-box;
+  display:inline-flex; align-items:center; gap:8px;
+  border:1.5px solid var(--ink); border-radius:999px; background:#fff;
+  font-size:12px; letter-spacing:.04em; color:var(--ink);
+}
+.foldbox--hit:hover .fb-go{ border-color:var(--ink); background:var(--ink); color:#fff; gap:10px; }
+
+/* ---------- 按下 80ms 内给反馈 ---------- */
+.pick:active::after{ transform:scale(.97); transition-duration:.06s; }
+.pick:active .ck{ transform:translateY(-50%) scale(.94); transition-duration:.06s; }
+.prow:active, .crow:active, .acc-item:active{ transition-duration:.06s; }
+
+/* ---------- 触控目标：一律 ≥44 ---------- */
+.sw{ min-height:44px; }
+.pb-x{ min-height:44px; display:inline-flex; align-items:center; }
+.sheet-hd .x{ width:44px; height:44px; }
+
+@media (max-width:759px){
+  .pick::after{ top:10px; right:10px; height:44px; min-width:96px; padding:0 13px; font-size:12.5px; }
+  .pick--lg::after{ top:12px; right:12px; height:44px; min-width:104px; }
+  .sc-tier .t-top{ padding-right:110px; }
+  .coat4.fold .prow{ padding-right:132px; }
+  /* 展开态的行：手机够宽，按钮也带上字 */
+  .coat4:not(.fold) .prow{ padding-right:106px; }
+  .film4:not(.fold) .crow .ck,
+  .coat4:not(.fold) .prow .ck{
+    width:auto; min-width:86px; height:44px; padding:0 12px; border-radius:999px;
+    font-size:12px; letter-spacing:.02em;
+  }
+  .coat4:not(.fold) .prow .ck::before{ content:"＋ 加入"; }
+  .film4:not(.fold) .crow .ck::before{ content:"＋ 加入"; }
+  .coat4.fold .prow .ck, .film4.fold .crow .ck{ min-width:104px; font-size:12.5px; padding:0 13px; }
+  /* 折叠态唯一一档的价格，卡片标题上已经写了；手机窄，让位给规格文字 */
+  .film4.fold .crow em{ display:none; }
+  /* 「全都有」标签不再用 auto 外边距漂在中间 */
+  .sc-tier .t-reco{ margin-left:0; }
+  .acc-n::after{ height:38px; font-size:11.5px; }
+  .picktip{ font-size:12.5px; padding:9px 14px; }
+  .sub-head .picktip{ font-size:12px; }
+  .foldbox--hit .fb-go{ height:38px; font-size:11.5px; padding:0 14px; }
+}
+
+/* 档位行的按钮在流内，按下时不要带上 -50% 的位移 */
+.crow:active .ck{ transform:scale(.94); }
+.crow > .ck{ right:auto; top:auto; }
 
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
@@ -1611,9 +1782,10 @@ body.sheet-open .toast{ display:none; }
     <div class="sec-h" data-page-node-id="FDROQbi4EozVlMwKVBuPaS">
       <span class="no" data-page-node-id="2GvmHYOdNl6romtH98TdBb">01</span>
       <h2 data-page-node-id="Q8xxCNM5qpA8UD7LcEEG8H">屏幕保护</h2>
-      <span class="en" data-page-node-id="L838gghWeWFLbGLFXbmbeM">Screen Protection</span><span class="picktip">点击卡片即可勾选</span>
+      <span class="en" data-page-node-id="L838gghWeWFLbGLFXbmbeM">Screen Protection</span>
     </div>
     <p class="sec-p" data-page-node-id="adCbDUUkujR8pmHv2uoafe">ARAG 钢化膜 · 无尘仓一体贴膜器，一盖一拉就贴好。按你要贴的屏数选两件套还是三件套。</p>
+    <div class="picktip">点下面任意一张卡片，就是选中这一档</div>
     <div class="tiers" id="secScreen" data-page-node-id="J37upbop4nMmvFv6fYhCu6">
     <button class="sc-tier pick pick--lg" data-screen="s2">
       <div class="t-top">
@@ -1654,10 +1826,11 @@ body.sheet-open .toast{ display:none; }
     <div class="sec-h" data-page-node-id="MD41bKudNEAU9cDJEMQBhz">
       <span class="no" data-page-node-id="HaoMsAYkToRKNjLBbzpKSM">02</span>
       <h2 data-page-node-id="W2QoHKzQZWiqa2WlbK7Xyx">隐形车衣</h2>
-      <span class="en" data-page-node-id="BWQL1SoLMWqveb8mbIG6tO">Paint Protection Film</span><span class="picktip">点「入门」这一整块就能勾选</span>
+      <span class="en" data-page-node-id="BWQL1SoLMWqveb8mbIG6tO">Paint Protection Film</span>
       <span class="same">全系同价 · 不分车型</span>
     </div>
     <p class="sec-p" data-page-node-id="X5hidVUFMubZFzwIXXfn80">全车漆面 · 整车贴装价。<b data-page-node-id="KhtrBWzVqNaLqRvAgvEJeS">不分车型、不按车身尺寸加价</b>，按系列分四档，质保 5 至 15 年，越往上基材越厚、自修复越强。<br data-page-node-id="KwAU9cNvL4e3m37y7YYBuF">默认只显示起步款，更高价位可展开对比。</p>
+    <div class="picktip">点「入门」这一整块，就是选中 ¥5,980 这款</div>
     <div class="coat4 fold" id="secCoat" data-page-node-id="5GKMmuUjQJotaKOewVb5hF">
     <div class="pcol">
       <div class="pcolhead">
@@ -1688,9 +1861,10 @@ body.sheet-open .toast{ display:none; }
     <div class="sec-h" data-page-node-id="kC42U6UwlUyAiDfUoZO7OS">
       <span class="no" data-page-node-id="CHvHTZvfCArbvnbOaT4ROk">03</span>
       <h2 data-page-node-id="hPfmmyhs4icivgQI1OMdlS">玻璃膜</h2>
-      <span class="en" data-page-node-id="zQ6fsPM4KmyJ5eZZsVt3SD">Window Film</span><span class="picktip">点卡片任意位置即可勾选</span>
+      <span class="en" data-page-node-id="zQ6fsPM4KmyJ5eZZsVt3SD">Window Film</span>
     </div>
     <p class="sec-p" data-page-node-id="B7JtmpQAuy0nqN6UKsX5s6">前挡 + 侧挡 全车套餐，四档任选。每档内按前挡与侧挡的组合再分 A / B / C，价格差在隔热与透光。<br data-page-node-id="xmuZxUBDW8TjL0qvy7HZDn">默认只显示性价比档，更高规格可展开对比。</p>
+    <div class="picktip">点下面任意一张卡片，勾选该档位</div>
     <div class="pickbar" id="filmBar" data-page-node-id="BMIpYv81dD1VUIbUskDY0C"><span class="pb-empty">尚未选择 · 点下方卡片即可勾选</span></div>
     <div class="film4 fold" id="secFilm" data-page-node-id="MB2JqlJtFHGMnlAFEXexI5">
     <div class="card">
@@ -1726,10 +1900,11 @@ body.sheet-open .toast{ display:none; }
     <div class="sec-h" data-page-node-id="Q4UJpefLKKuX7LAFko9Exh">
       <span class="no" data-page-node-id="8buIKXwOGUwD5HIYNttBiP">04</span>
       <h2 data-page-node-id="tWUkIZOZefv8Y0bbbw5lr1">车内配件</h2>
-      <span class="en" data-page-node-id="Lj2kBPqYW3EF1hA6jLIFeC">Accessories</span><span class="picktip">点击卡片即可勾选</span>
+      <span class="en" data-page-node-id="Lj2kBPqYW3EF1hA6jLIFeC">Accessories</span>
     </div>
     <p class="sec-p" id="accSecP" data-page-node-id="gbojpFVKxM1oxlsT6ATU1X">整车配件 · 单项可加装。脚垫与座椅垫为整套价，其余小件为单品价，不含施工。</p>
 
+    <div class="picktip">点卡片加入配置单，同一区可以多选</div>
     <div id="secAccFoot" style="margin-top:44px" data-page-node-id="PWxzagmpCNCkcV5ZWmAd8w">
     <div class="addon-card pick pick--lg" data-acc="a1">
       <div class="addon-top">
@@ -1818,7 +1993,7 @@ body.sheet-open .toast{ display:none; }
       <div class="sub-head" data-page-node-id="VhExngovxdr1JpYDGSKByu">
         <b data-page-node-id="eJARqzdm4iuhrweT34gZBT">其余配件</b>
         <span data-page-node-id="a1HseS93LKrXsb5drf7kKx">单品报价 · 可单独加装</span>
-        <span class="picktip">点击卡片单独加装</span>
+        <span class="picktip">点任意一件，单独加装</span>
       </div>
       <div class="acc-grid" id="secAccSmall" data-page-node-id="b8xdFv9ilAUCijN07WgBBX">
     <button class="acc-item pick pick--sm" data-acc="a3">
@@ -1923,7 +2098,7 @@ body.sheet-open .toast{ display:none; }
     <div class="cb-sum" data-page-node-id="7HpOpPD5ansicHk7I75azx">
       <span class="cb-k" data-page-node-id="aszlHWc2CtvOYnYBU9DXNV">已选 <b id="cbCnt" data-page-node-id="MQRLSx4MsfabBvmR4iyNDK">0</b> 项 · 合计</span>
       <span class="cb-v" data-page-node-id="1pB4PVEX5evq61b51nPtW4"><i data-page-node-id="yWpGBWwcChpraJHPetzl5b">¥</i><em id="cbVal" data-v="0" data-page-node-id="L7Orx8tBiGDHa8Uc3KCFfz">0</em></span>
-      <span class="cb-hint">还没选项目 · 点下方卡片勾选</span>
+      <span class="cb-hint">还没选项目 · 往上点卡片就能加</span>
     </div>
     <button class="cb-go off" id="cbGo" data-page-node-id="iMWLGW6RCVW1r0v1ipA9vW">查看配置单 <i data-page-node-id="PW2WknSX55ZWiQzwWbEM0I">→</i></button>
   </div>
@@ -2142,6 +2317,7 @@ function renderScreen(){
         ${o.reco?`<span class="t-reco">${o.reco}</span>`:''}
       </div>
       <div class="t-num"><i>¥</i>${money(px(o.price))}</div>
+      <span class="pick-hint">${state.screen === o.id ? '已加入配置单' : '点此加入配置单'}</span>
     </button>`).join('');
 }
 
@@ -2275,6 +2451,7 @@ function bigCard(a){
           <div class="addon-buy">
             <div class="addon-price"><i>¥</i>${money(px(a.price))}<span>${a.em}</span></div>
             <div class="addon-mats">${a.mats}</div>
+            <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '点此加入配置单'}</span>
           </div>
         </div>
       </div>
@@ -2303,6 +2480,7 @@ function bigCard(a){
           <span>${a.brand}</span>
           <i class="sub-price">¥${money(px(a.price))}<em>${a.em}</em></i>
         </div>
+        <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '整卡可点 · 点此加入配置单'}</span>
         <div class="mat-kit"><img src="${a.img}" alt="${a.name}"></div>
         ${is5Seat()
           ? (a.partsNote ? `<p class="mat-parts">${a.partsNote}</p>` : '')
