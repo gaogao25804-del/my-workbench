@@ -576,7 +576,7 @@ a{ color:inherit; text-decoration:none; }
 .sub-price em{ font-style:normal; font-family:var(--ff); font-size:11px; color:var(--sub); font-weight:400; }
 .mat-kit{ margin-top:26px; background:#F7F7F7; overflow:hidden; border:1px solid var(--line); }
 .sec--gray .mat-kit{ background:#fff; }
-.mat-kit img{ display:block; width:auto; max-width:100%; max-height:560px; margin:0 auto; padding:22px; box-sizing:border-box; }
+.mat-kit img{ display:block; width:100%; max-height:clamp(240px, 32vw, 440px); object-fit:contain; margin:0 auto; padding:16px; box-sizing:border-box; }
 .mat-parts{ font-size:11.5px; line-height:1.9; color:var(--sub); margin-top:12px; text-align:center; letter-spacing:.02em; }
 /* 三张配色图是纯展示、不可点（页面别处有色卡可点），先用一行字说清楚，免得客人反复点 */
 .trio-cap{
@@ -1742,6 +1742,37 @@ body.sheet-open .toast{ display:none; }
 }
 .addon-pic img, .mat-kit img{ filter:saturate(.94); }
 
+/* 大图右上角：正在看第几档，点档位表时跟着变，客人不会以为图没反应 */
+.pic-tier{
+  /* 放左上：手机端「＋ 加入配置」按钮钉在卡片右上，角标放右边会被压住 */
+  position:absolute; left:0; top:0; z-index:3;
+  font-style:normal; font-size:10.5px; letter-spacing:.06em;
+  color:#fff; background:rgba(27,26,23,.78);
+  padding:5px 10px; border-radius:0 0 5px 0; pointer-events:none;
+}
+
+/* 坐垫三款式：一块一块可点，选中的反白 */
+.sk-tabs{
+  display:grid; gap:8px; margin:14px 0 4px;
+  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+}
+.sk-tab{
+  display:block; cursor:pointer; font-style:normal;
+  background:#fff; border:1.5px solid #E4DFD4; border-radius:7px;
+  padding:9px 12px; transition:background .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.sk-tab b{ display:block; font-size:13px; font-weight:600; color:var(--ink); letter-spacing:.01em; }
+.sk-tab span{ display:block; font-size:11.5px; color:var(--sub); margin-top:3px; font-variant-numeric:tabular-nums; }
+.sk-tab:hover{ border-color:#C9C2B2; }
+.sk-tab.on{
+  background:var(--ink); border-color:var(--ink);
+  box-shadow:0 8px 18px rgba(27,26,23,.18);
+}
+.sk-tab.on b{ color:#fff; }
+.sk-tab.on span{ color:rgba(255,255,255,.74); }
+.sk-tab:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+.sub-price .tbd-p{ font-size:20px; font-weight:600; color:var(--ink); letter-spacing:.02em; }
+
 /* ---------- 折叠区「展开全部」做成真按钮的形状 ---------- */
 .foldbox--hit .fb-go{
   margin-top:8px; padding:0 16px; height:40px; box-sizing:border-box;
@@ -1887,12 +1918,21 @@ body.sheet-open .toast{ display:none; }
   white-space:nowrap; font-variant-numeric:tabular-nums; font-size:13px;
 }
 .mt-row em small{ font-size:10px; font-weight:500; color:var(--sub); margin-left:2px; }
-.mt-row.hot{
-  background:rgba(185,154,91,.1);
+/* 整行可点：点一下把上面的大图换成这一档的部件 */
+.mt-row{ cursor:pointer; transition:background .16s ease, box-shadow .16s ease; }
+.mt-row:hover{ background:#FAF8F3; }
+.mt-row.on{
+  background:rgba(185,154,91,.13);
   box-shadow:inset 3px 0 0 var(--gold);
   border-bottom-color:transparent;
   margin:3px 0;
 }
+.mt-row.hot.on{ background:rgba(185,154,91,.13); }
+.mt-row.on i::before{
+  content:"●"; font-size:8px; color:var(--gold);
+  margin-right:5px; vertical-align:2px;
+}
+.mt-row:focus-visible{ outline:2px solid var(--gold); outline-offset:-2px; }
 .mt-row.hot i, .mt-row.hot em{ color:#8A6A2E; }
 .mtier-note{
   margin:12px 2px 0; font-size:10.5px; line-height:1.65; color:#A8A399;
@@ -2619,6 +2659,61 @@ const SEAT_SET = {
   mega:{ n:12, t:'十二件套', price:1286 }
 };
 
+/* 坐垫三条产品线：官方给每款车只开自己那几档，件数与价逐车不同。
+   p 为 null 表示京东无对应 SKU，本店按实车核价，不编数字。 */
+const SEAT_OPT = {
+  i6:  [ { k:'pad',  name:'液态全硅座垫片', t:'三件套', n:3, p:494,
+           inc:'主驾 + 副驾 + 二排，只铺座垫面 · 薄款不硌腰，夏天不闷' },
+         { k:'full', name:'全车座椅套',     t:'七件套', n:7, p:936,
+           inc:'4 片靠背 + 3 片座垫，含头枕位开孔 · 整车全包' } ],
+  l6:  [ { k:'pad',  name:'液态全硅座垫片', t:'三件套', n:3, p:494,
+           inc:'主驾 + 副驾 + 二排，只铺座垫面 · 薄款不硌腰，夏天不闷' },
+         { k:'full', name:'全车座椅套',     t:'七件套', n:7, p:936,
+           inc:'4 片靠背 + 3 片座垫，含头枕位开孔 · 整车全包' } ],
+  l8:  [ { k:'pad',   name:'液态全硅座垫片', t:'五件套',  n:5,  p:721,
+           inc:'主副驾 + 二排左右，只铺座垫面' },
+         { k:'front', name:'前二排座椅套',   t:'八件套',  n:8,  p:808,
+           inc:'前两排 4 靠背 + 4 座垫，三排不铺' },
+         { k:'full',  name:'全车座椅套',     t:'十一件套', n:11, p:1298,
+           inc:'含二排独立座椅 + 三排 2 靠背 1 座垫' } ],
+  l9:  [ { k:'pad',   name:'液态全硅座垫片', t:'六件套',  n:6,  p:null,
+           inc:'六座全铺：主副驾 + 二排双独立 + 三排' },
+         { k:'front', name:'前二排座椅套',   t:'八件套',  n:8,  p:null,
+           inc:'前两排 4 靠背 + 4 座垫，三排不铺' },
+         { k:'full',  name:'全车座椅套',     t:'十一件套', n:11, p:1224,
+           inc:'含二排独立座椅 + 三排 2 靠背 1 座垫' } ],
+  i8:  [ { k:'pad',   name:'液态全硅座垫片', t:'三件套',  n:3,  p:513,
+           inc:'主驾 + 副驾 + 二排，只铺座垫面' },
+         { k:'front', name:'前二排座椅套',   t:'八件套',  n:8,  p:808,
+           inc:'前两排 4 靠背 + 4 座垫，三排不铺' },
+         { k:'full',  name:'全车座椅套',     t:'十一件套', n:11, p:1304,
+           inc:'含二排独立座椅 + 三排 2 靠背 1 座垫' } ],
+  i9:  [ { k:'pad',   name:'液态全硅座垫片', t:'四件套',  n:4,  p:519,
+           inc:'主副驾 + 二排左右，只铺座垫面' },
+         { k:'front', name:'前二排座椅套',   t:'八件套',  n:8,  p:null,
+           inc:'前两排 4 靠背 + 4 座垫，三排不铺' },
+         { k:'full',  name:'全车座椅套',     t:'十二件套', n:12, p:1386,
+           inc:'六座满配：前两排 + 三排独立座椅全包' } ],
+  mega:[ { k:'pad',   name:'液态全硅座垫片', t:'七件套',  n:7,  p:null,
+           inc:'七座全铺，只铺座垫面' },
+         { k:'front', name:'前二排座椅套',   t:'八件套',  n:8,  p:866,
+           inc:'前两排 4 靠背 + 4 座垫，三排不铺' },
+         { k:'full',  name:'全车座椅套',     t:'十二件套', n:12, p:1286,
+           inc:'六座满配 + 过道片，含三排独立座椅' } ]
+};
+
+/* 脚垫：当前车型在看的那一档；坐垫：当前车型选中的那一款 */
+function curTier(){
+  const lad = MAT_LADDER[state.model] || [];
+  const want = state.tier[state.model];
+  return lad.find(t => t.n === want) || lad.find(t => t.hot) || lad[lad.length - 1] || null;
+}
+function curSeatKind(){
+  const list = SEAT_OPT[state.model] || [];
+  const want = state.seatKind[state.model];
+  return list.find(o => o.k === want) || list.find(o => o.k === 'full') || list[list.length - 1] || null;
+}
+
 const ACC_BIG = [
   /* price 只是兜底：脚垫真实价走 MAT_SET，按当前车型取，别拿一款的价套七款 */
   { id:'a1', slot:'foot', brand:'GOODYEAR · 固特异', name:'TPE 脚垫整套', price:810, em:'整套',
@@ -2665,7 +2760,8 @@ const ACC_SMALL = [
 /* ========================= 状态 ========================= */
 const state = {
   model:'i6', screen:null, coat:null, film:null, silColor:'w', acc:new Set(),
-  coatOpen:false, filmOpen:false           /* 折叠：默认只看起步价 */
+  coatOpen:false, filmOpen:false,          /* 折叠：默认只看起步价 */
+  tier:{}, seatKind:{}                     /* 脚垫看哪一档 / 坐垫选哪一款，按车型各记一份 */
 };
 
 /* 起步价基准：车衣取第一款，玻璃膜取最低的一档 */
@@ -2864,7 +2960,10 @@ function renderFilmBar(){
 
 function bigCard(a){
   if (a.slot === 'foot'){
-    const pic = (a.imgs && a.imgs[curModel().id]) || a.img;
+    const ct  = curTier();                    /* 当前在看哪一档，图跟着它换 */
+    const pic = (ct && ct.n)
+      ? `asset/mats/tier/${curModel().id}_${ct.n}.jpg`
+      : ((a.imgs && a.imgs[curModel().id]) || a.img);
     const ms  = MAT_SET[curModel().id] || MAT_SET.i6;
     const fp  = (ms && ms.price) || a.price;
     const nTxt = ms && ms.n ? ms.n + ' 件套' : '专属毯面';
@@ -2878,7 +2977,7 @@ function bigCard(a){
     <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${aName} ${nTxt}，¥${money(px(fp))}">
       <div class="addon-top">
-        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}"></div>
+        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${ct && ct.n ? ct.n + ' 件套' : nTxt}">${ct && ct.n ? `<i class="pic-tier">正在看 ${ct.n} 件套</i>` : ''}</div>
         <div class="addon-body">
           <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送全套配件</span></div>
           <div class="addon-name">${aName}<u class="set-n">${curModel().name} · ${nTxt}</u></div>
@@ -2909,20 +3008,23 @@ function bigCard(a){
             <b>${curModel().name} · ${isMats ? '原车专属毯面' : '全档位'}</b>
             <span>${isMats
               ? '官方只出原车专属毯面，不分件套 · 星空丝绒 / 星空年华 两款同价'
-              : `同一套脚垫按「护到哪」分 ${lad.length} 档，件数越多护得越全`}</span>
+              : '点任一行，上面的大图就换成这一档的部件 · 件数越多护得越全'}</span>
           </div>
           <div class="mt-hd-r">
-            <i>${isMats ? '专属毯面 · 含装车' : `整车全套 ${nTxt} 件`}</i>
-            <em>京东 ${fullTxt}</em>
+            <i>${isMats ? '专属毯面 · 含装车'
+              : `正在看 ${ct.n} 件套 · 京东 ${ct.p ? '¥' + money(ct.p) : ct.r}`}</i>
+            <em>${isMats ? '京东 ¥' + money(1000) : `整车 ${nTxt} 件`}</em>
           </div>
         </div>
         <div class="mtier-rows">
-          ${lad.map((t, i) => {
+          ${lad.map(t => {
             const nm = t.n ? t.n + ' 件套' : '专属毯面';
             const pv = t.p ? '¥' + money(t.p) : t.r;
-            const isFull = t.hot;
-            return `<div class="mt-row${isFull ? ' hot' : ''}">
-            <i>${nm}${isFull ? '<u>本店在售</u>' : ''}</i>
+            const on = ct && t.n === ct.n;
+            return `<div class="mt-row${t.hot ? ' hot' : ''}${on ? ' on' : ''}" data-tier="${t.n}"
+              role="button" tabindex="0" aria-pressed="${on}"
+              aria-label="看 ${nm} 的部件图，京东 ${pv}">
+            <i>${nm}${t.hot ? '<u>本店在售</u>' : ''}</i>
             <span class="mt-spec">${t.inc}</span>
             <em>${pv}</em>
           </div>`;
@@ -2948,48 +3050,49 @@ function bigCard(a){
       </div>
     </div>`;
   }
-  /* 座椅垫也按车型走：件套与价都跟着当前车型，不能拿五座的七件套去套六座 */
-  const ss = SEAT_SET[curModel().id] || null;
-  const sp = px(ss ? ss.price : a.price);
+  /* 座椅垫：每款车官方开的款式不一样，只列本车能选的，点一下换图换价 */
+  const ss   = SEAT_SET[curModel().id] || null;
+  const list = SEAT_OPT[curModel().id] || [];
+  const opt  = curSeatKind();
+  const tbd  = !!(opt && !opt.p);                 /* 京东没有这一档的 SKU，别拿整车价冒充 */
+  const sp   = px(opt ? (opt.p || 0) : (ss ? ss.price : a.price));
+  const skName = opt ? opt.name : a.name;
+  const skSet  = opt ? opt.t : (ss ? ss.t : '整套');
+  /* 座垫片按件数分图：三件只画三片，五件才多出二排右与三排，不能拿一张套所有件数 */
+  const skPic  = opt
+    ? `asset/acc/seat_${opt.k === 'pad' ? (opt.n <= 3 ? 'pad3' : opt.n === 4 ? 'pad4' : 'pad5') : opt.k}.jpg`
+    : a.img;
   return `
     <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"
-         aria-label="座椅垫，${curModel().name} 全车 ${ss ? ss.t : '按座型配'}，¥${money(sp)} 起">
+         aria-label="座椅垫，${curModel().name} ${skName} ${skSet}，¥${money(sp)}">
       <div class="seat-body">
         <div class="sub-head" style="padding-bottom:10px">
           <b>座椅垫</b>
-          <span class="cnt">${ss ? ss.t : curModel().seats + ' 座整套'}</span>
-          <span class="hi-tag">主推 · 三款可选</span>
+          <span class="cnt">${skSet}</span>
+          <span class="hi-tag">主推 · 按车型配齐</span>
           <span>${a.brand}</span>
-          <i class="sub-price">¥${money(sp)}<small>起</small><em>${curModel().name} · 全车 ${ss ? ss.t : '整套'}</em></i>
+          <i class="sub-price">${tbd ? '<b class="tbd-p">到店核</b>' : `¥${money(sp)}<small>起</small>`}<em>${curModel().name} · ${skName}</em></i>
         </div>
         <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '整卡可点 · 点此加入配置单'}</span>
-        <div class="mat-kit"><img src="${a.img}" alt="${curModel().name} ${a.name}实拍"></div>
-        <p class="mat-parts">图为 5 座七件套实拍，六座 / 七座按座型多出独立座椅与三排片<br>主副驾 + 二排${curModel().seats > 6 ? ' + 三排' : ''}每座 坐垫 + 靠背，按 ${curModel().seats} 座舱布局配齐</p>
-        <div class="sk-wrap">
-          ${SEAT_KIND.map(g => `
-          <div class="sk${g.hot ? ' hot' : ''}">
-            <div class="sk-hd"><b>${g.k}</b>${g.hot ? '<u>最全</u>' : ''}<span>${g.sub}</span></div>
-            <div class="sk-list">
-              ${g.rows.map(r => {
-                const cur = r.m === curModel().id;
-                const nm = (MODELS.find(x => x.id === r.m) || {}).name || r.m;
-                const done = r.p === '到店核';
-                return `<i class="sk-p${cur ? ' cur' : ''}${done ? ' tbd' : ''}">
-                  <u>${nm.replace('理想 ', '')}</u><b>${r.t}</b><em>${r.p}</em></i>`;
-              }).join('')}
-            </div>
-            ${g.note ? `<p class="sk-sub">${g.note}</p>` : ''}
-          </div>`).join('')}
+        <div class="sk-tabs">
+          ${list.map(o => `<i class="sk-tab${o === opt ? ' on' : ''}" data-sk="${o.k}"
+            role="button" tabindex="0" aria-pressed="${o === opt}">
+            <b>${o.name}</b><span>${o.t}${o.p ? ' · ¥' + money(px(o.p)) : ' · 到店核'}</span>
+          </i>`).join('')}
         </div>
-        <p class="sk-note">件套与价格逐条取自固特异京东旗舰店 2026 年 11 月在售页；同款不同配色 / 年款、券后与大促价会差 60–180 元，故写区间。标「到店核」的档本店按你的车实测报价，不与京东比价。</p>
-        <div class="trio-cap">配色参考 · 三色可选，实际以到店现货为准</div>
+        <div class="mat-kit"><img src="${skPic}" alt="${curModel().name} ${skName} ${skSet} 部件图"></div>
+        <p class="mat-parts">${opt ? opt.inc : ''}<br>${opt && opt.k === 'pad' && opt.n > 5
+          ? `图为同系列座垫片实拍，${skSet} 另含三排独立位 · ${curModel().seats} 座舱布局按座型配齐`
+          : `图为 ${skSet} 部件实拍 · ${curModel().seats} 座舱布局，按座型配齐`}</p>
+        <div class="trio-cap">配色参考 · 实车效果，实际以到店现货为准</div>
         <div class="trio">
           ${a.colors.map(c=>`<div class="trio-item">
             <div class="pframe"><img src="${c.img}" alt="${a.name} ${c.n}"></div>
             <div class="pcap">${c.n}</div>
           </div>`).join('')}
         </div>
+        <p class="sk-note">件套与价格取自固特异京东旗舰店 2026-11 在售价，同款不同配色 / 年款会差 60–180 元；标「到店核」的档本店按你的车实测报价，不与京东比价。</p>
       </div>
     </div>`;
 }
@@ -3140,15 +3243,24 @@ function picked(){
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
     if (state.acc.has(a.id)){
       /* 脚垫、座椅垫都按车型走：件套与价格跟着当前车型，不能拿一款的价套七款 */
-      const ms = a.slot === 'foot' ? (MAT_SET[curModel().id] || null)
-               : a.slot === 'seat' ? (SEAT_SET[curModel().id] || null) : null;
-      const aName = (ms && ms.title) || a.name;
-      const setTxt = ms && ms.n ? (ms.t || ms.n + ' 件套') : '';
+      let ms = null, aName = a.name, setTxt = '', ap = a.price;
+      if (a.slot === 'foot'){
+        ms = MAT_SET[curModel().id] || null;
+        aName = (ms && ms.title) || a.name;
+        setTxt = ms && ms.n ? (ms.t || ms.n + ' 件套') : '';
+        ap = ms && ms.price ? ms.price : a.price;
+      } else if (a.slot === 'seat'){
+        const o = curSeatKind();
+        const sv = SEAT_SET[curModel().id] || null;
+        aName = o ? o.name : a.name;
+        setTxt = o ? o.t : (sv ? sv.t : '');
+        if (o && !o.p) setTxt += ' · 到店核';
+        ap = (o && o.p) ? o.p : (sv && sv.price ? sv.price : a.price);
+      }
       const nm = setTxt ? `${aName} · ${setTxt}` : aName;
       out.push({
         k:'配件', v:nm, sub:(a.spec||'').replace(/<br>/g,' '),
-        p: px(ms && ms.price ? ms.price : a.price),
-        gift:!!a.gift, footSet: ms || null
+        p: px(ap), gift:!!a.gift, footSet: ms
       });
     }
   });
@@ -3524,6 +3636,22 @@ document.addEventListener('click', e => {
   }
 
   /* 配件 */
+  /* 档位行、款式 tab：只切「看哪一档」，不碰配置单，所以必须在整卡点击之前拦掉 */
+  const tr = e.target.closest('[data-tier]');
+  if (tr){
+    e.stopPropagation();
+    const n = +tr.dataset.tier;
+    if (state.tier[state.model] !== n){ state.tier[state.model] = n; renderAcc(); refresh(); }
+    return;
+  }
+  const sk = e.target.closest('[data-sk]');
+  if (sk){
+    e.stopPropagation();
+    const k = sk.dataset.sk;
+    if (state.seatKind[state.model] !== k){ state.seatKind[state.model] = k; renderAcc(); refresh(); }
+    return;
+  }
+
   const ac = e.target.closest('[data-acc]');
   if (ac){
     const id = ac.dataset.acc;
