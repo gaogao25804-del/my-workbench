@@ -924,7 +924,8 @@ a{ color:inherit; text-decoration:none; }
   .sub-head b{ font-size:15px; }
 
   .addon-card{ grid-template-columns:1fr; }
-  .addon-pic{ aspect-ratio:4/3; }
+  /* 脚垫整套图长宽比各不相同，别锁死方框，否则窄图会飘在一大块白里 */
+  .addon-pic{ aspect-ratio:auto; padding:10px; }
   .addon-pic img{ object-fit:contain; background:#fff; }
   .addon-body{ padding:26px 22px 28px; }
   .addon-name{ font-size:21px; margin-top:10px; }
@@ -1708,6 +1709,40 @@ body.sheet-open .toast{ display:none; }
 .crow:active .ck{ transform:scale(.94); }
 .crow > .ck{ right:auto; top:auto; }
 
+/* ============================================================
+   硅胶套装：一张官方整套图 + 逐件名称（2026-11-08）
+   原来 21 张缩略图在手机上是 1206px 高，现在 354×272；桌面也不再靠拼格子
+   ============================================================ */
+.sil-grid--hero{ display:block; border:0; background:transparent; }
+.gk-pic{
+  position:relative; margin:0; padding:16px; background:#fff;
+  border:1px solid var(--line); display:flex; justify-content:center;
+}
+.gk-pic img{ display:block; width:100%; max-width:760px; height:auto; mix-blend-mode:multiply; }
+.gk-pic .gk-tag{
+  position:absolute; left:10px; bottom:10px;
+  font-size:9.5px; letter-spacing:.1em; line-height:1.5; color:#fff;
+  background:rgba(27,26,23,.6); padding:2px 8px; border-radius:3px; pointer-events:none;
+}
+.gk-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+.gk-chips span{
+  display:inline-flex; align-items:baseline; gap:0;
+  font-size:11.5px; line-height:1.55; color:var(--ink); letter-spacing:.01em;
+  background:#F7F5EF; border:1px solid #E8E3D6; padding:4px 10px;
+}
+.gk-chips span i{ font-style:normal; font-size:10px; color:var(--sub2); margin-left:5px; }
+.gk-chips span b{ font-weight:600; font-size:11px; color:#8A6A2E; margin-left:6px; letter-spacing:.02em; }
+
+@media (max-width:759px){
+  .gk-pic{ padding:8px; }
+  .gk-chips{ gap:5px; margin-top:12px; }
+  .gk-chips span{ font-size:11px; padding:3px 8px; }
+  /* 手机窄：色卡收紧一档，四色也能排一行，不在下面孤零零吊一颗 */
+  .gk-swatches{ gap:6px; }
+  .sw{ font-size:12px; padding:0 10px 0 7px; gap:6px; }
+  .sw i{ width:18px; height:18px; }
+}
+
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
@@ -1908,7 +1943,7 @@ body.sheet-open .toast{ display:none; }
     <div id="secAccFoot" style="margin-top:44px" data-page-node-id="PWxzagmpCNCkcV5ZWmAd8w">
     <div class="addon-card pick pick--lg" data-acc="a1">
       <div class="addon-top">
-        <div class="addon-pic"><img src="asset/acc/set.jpg" alt="TPE 脚垫整套"></div>
+        <div class="addon-pic"><img src="asset/mats/i6.jpg" alt="理想 i6 TPE 脚垫整套实拍"></div>
         <div class="addon-body">
           <div class="addon-k">GOODYEAR · 固特异</div>
           <div class="addon-name">TPE 脚垫整套</div>
@@ -2127,47 +2162,79 @@ body.sheet-open .toast{ display:none; }
    车衣 / 玻璃膜 / 钢化膜：老板确认全系通用，直接复用同一份价目，不做任何系数换算。
    配件：脚垫、座椅垫这类按座舱布局来的件，5 座沿用 i6 价目；6/7 座只标「按车型配齐」。
    gift = 买脚垫赠送的全车硅胶套装清单（件数按老板提供的实车套装登记，不推算）。
-        photo 是精灵图前缀（i6 有白/棕/橙三色，i8/i9 从套装长图逐件切出，L6 复用同款 5 座图）；
-        cols 是该套装在格子里的列数；photo:false 的车型按清单列出，件数照抄不编。 */
+        sets 是老板提供的每车型官方整套实拍（一色一张图，2026-11-08 补），k 是颜色键、
+        c 是色卡底色、img 是整套图；items 是随脚垫配齐的单件清单，只用来列名称与件数。 */
 const MODELS = [
   { id:'i6',   name:'理想 i6',   sub:'26 款', body:'纯电 SUV · 5 座', seats:5, giftCount:21, ready:true,
-    gift:{ n:21, color:'原车白 / 棕色 / 橙黄', photo:'i6', items:[
+    gift:{ n:21, color:'原车白 / 棕色 / 橙黄', sets:[
+      { k:'w', n:'原车白', c:'#EFEDE6', img:'asset/acc/sil/set_i6_s.jpg' },
+      { k:'b', n:'棕色',   c:'#9C8478', img:'asset/acc/sil/set_i6_b.jpg' },
+      { k:'o', n:'橙黄',   c:'#D9822B', img:'asset/acc/sil/set_i6_o.jpg' }
+    ], items:[
       ['无线充垫',1], ['前排水杯套',1], ['扶手箱储物盒',1,'全包连体'], ['后排水杯套',1],
       ['中控下储物盒',2], ['冰箱储物盒',2], ['车门按键防护垫',4], ['车门内门碗贴',4],
       ['车门下硅胶盒',4], ['OBD 保护盖',1]
     ]}},
   { id:'i8',   name:'理想 i8',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:22, ready:true,
-    gift:{ n:22, color:'灰棕 / 白色', photo:'i8', cols:3, items:[
+    gift:{ n:22, color:'灰棕 / 白色 / 橙黄', sets:[
+      { k:'r', n:'灰棕', c:'#8D8078', img:'asset/acc/sil/set_i8_grey.jpg' },
+      { k:'w', n:'白色', c:'#EDEBE4', img:'asset/acc/sil/set_i8_white.jpg' },
+      { k:'o', n:'橙黄', c:'#DD7A24', img:'asset/acc/sil/set_i8_orange.jpg' }
+    ], items:[
       ['无线充硅胶垫',2], ['扶手箱硅胶盒',3], ['前排水杯套',2], ['后排水杯套',2],
       ['二排座椅储物盒',2], ['车门硅胶垃圾桶',2], ['冰箱硅胶储物盒',2], ['安全带硅胶套',6],
       ['OBD 硅胶防尘盖',1]
     ]}},
   { id:'i9',   name:'理想 i9',   sub:'',      body:'纯电 SUV · 6 座', seats:6, giftCount:21, ready:true,
-    gift:{ n:21, color:'白色', photo:'i9', cols:5, items:[
+    gift:{ n:21, color:'棕色 / 白色', sets:[
+      { k:'b', n:'棕色', c:'#A98C74', img:'asset/acc/sil/set_i9_brown.jpg' },
+      { k:'w', n:'白色', c:'#EFEDE6', img:'asset/acc/sil/set_i9_white.jpg' }
+    ], items:[
       ['无线充硅胶垫',1], ['水杯套',1,'连体全包'], ['扶手箱储物盒',3], ['后排水杯套',1],
       ['中控下储物盒',2], ['三排水杯套',2], ['二排座椅储物盒',1], ['冰箱储物盒',2],
       ['车门按键硅胶垫',4], ['车门下硅胶盒',4,'升级杯架']
     ]}},
   { id:'l6',   name:'理想 L6',   sub:'',      body:'增程 SUV · 5 座', seats:5, giftCount:21, ready:true,
-    gift:{ n:21, color:'雪原白', photo:'l6', cols:5, items:[
+    gift:{ n:21, color:'旷野棕 / 雪原白 / 琥珀橙', sets:[
+      { k:'b', n:'旷野棕', c:'#8E7768', img:'asset/acc/sil/set_l6_brown.jpg' },
+      { k:'w', n:'雪原白', c:'#F0EEE7', img:'asset/acc/sil/set_l6_white.jpg' },
+      { k:'o', n:'琥珀橙', c:'#D58A2E', img:'asset/acc/sil/set_l6_orange.jpg' }
+    ], items:[
       ['无线充硅胶垫',1,'前排'], ['水杯套',1,'连体全包'], ['扶手箱储物盒',1], ['后排水杯套',1],
       ['中控下储物盒',2], ['冰箱储物盒',2], ['车门上按键防护垫',4], ['车门内门碗贴',4],
       ['车门下储物盒',4], ['OBD 保护盖',1]
     ]}},
   { id:'l8',   name:'理想 L8',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:21, ready:true,
-    gift:{ n:21, color:'棕白 / 绿白', photo:'l8', items:[
+    gift:{ n:21, color:'棕色 / 白色 / 绿白 / 灰紫', sets:[
+      { k:'b', n:'棕色', c:'#A98C74', img:'asset/acc/sil/set_l8_brown.jpg' },
+      { k:'w', n:'白色', c:'#EFEDE6', img:'asset/acc/sil/set_l8_white.jpg' },
+      { k:'g', n:'绿白', c:'#8FA69B', img:'asset/acc/sil/set_l8_green.jpg' },
+      { k:'p', n:'灰紫', c:'#A9A3BE', img:'asset/acc/sil/set_l8_purple.jpg' }
+    ], items:[
       ['无线充硅胶垫',1], ['前排硅胶水杯套',1], ['扶手箱硅胶盒',1], ['后排硅胶水杯套',1],
       ['中控下硅胶储物盒',2], ['屏幕硅胶保护套',1], ['车门下硅胶盒',4], ['冰箱硅胶垫',2],
       ['后排扶手无线充',1], ['后排扶手水杯套',1], ['安全带硅胶套',5], ['OBD 保护盖',1]
     ]}},
   { id:'l9',   name:'理想 L9',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:24, ready:true,
-    gift:{ n:24, color:'棕白 / 绿白', photo:'l9', items:[
+    gift:{ n:24, color:'棕色 / 白色 / 绿白 / 灰紫', sets:[
+      { k:'b', n:'棕色', c:'#A98C74', img:'asset/acc/sil/set_l9_brown.jpg' },
+      { k:'w', n:'白色', c:'#EFEDE6', img:'asset/acc/sil/set_l9_white.jpg' },
+      { k:'g', n:'绿白', c:'#8FA69B', img:'asset/acc/sil/set_l9_green.jpg' },
+      { k:'p', n:'灰紫', c:'#A9A3BE', img:'asset/acc/sil/set_l9_purple.jpg' }
+    ], items:[
       ['无线充硅胶垫',1], ['前排硅胶水杯套',1], ['扶手箱硅胶盒',1], ['后排硅胶水杯套',1],
-      ['中控下硅胶储物盒',2], ['屏幕硅胶保护套',1], ['车门下储物盒',4,'升级杯架款'], ['冰箱硅胶垫',2],
+      ['中控下硅胶储物盒',2], ['屏幕硅胶保护套',1], ['车门下储物盒',4,'升级杯架'], ['冰箱硅胶垫',2],
       ['三排硅胶水杯套',2], ['二排座椅硅胶垫',2], ['安全带硅胶套',6], ['OBD 保护盖',1]
     ]}},
-  { id:'mega', name:'理想 MEGA', sub:'',      body:'纯电 MPV · 7 座', seats:7, giftCount:0, ready:true,
-    gift:null }
+  { id:'mega', name:'理想 MEGA', sub:'',      body:'纯电 MPV · 7 座', seats:7, giftCount:22, ready:true,
+    gift:{ n:22, color:'棕色 / 白色', sets:[
+      { k:'b', n:'棕色', c:'#A98C74', img:'asset/acc/sil/set_mega_brown.jpg' },
+      { k:'w', n:'白色', c:'#EFEDE6', img:'asset/acc/sil/set_mega_white.jpg' }
+    ], items:[
+      ['无线充硅胶垫',1], ['水杯套',1,'连体全包'], ['扶手箱储物盒',3], ['后排水杯套',1],
+      ['中控下储物盒',2], ['三排水杯套',2], ['二排座椅储物盒',2], ['冰箱储物盒',2],
+      ['车门上按键防护垫',2], ['前排车门储物盒',2], ['车门下硅胶盒',2,'升级杯架'], ['二排车门储物盒',2]
+    ]}}
 ];
 
 const SCREEN = [
@@ -2228,6 +2295,11 @@ const ACC_BIG = [
     note:'6 年内正常使用磨破断裂达 20%，直接换新一次',
     mats:'基础防护 12 件套<br><b>三款毯面 可选一款</b>',
     img:'asset/acc/set.jpg',
+    /* 每车型整套实拍（2026-11-08 补）；MEGA 只拿到毯面图，先留通用图不硬凑 */
+    imgs:{
+      i6:'asset/mats/i6.jpg', i8:'asset/mats/i8.jpg', i9:'asset/mats/i9.jpg',
+      l6:'asset/mats/l6.jpg', l8:'asset/mats/l8.jpg', l9:'asset/mats/l9.jpg'
+    },
     gift:'买 TPE 脚垫 · 即送全车硅胶套装',
     giftItems:['无线充垫','水杯架','中控储物盒','车门按键膜','门碗贴','OBD 保护盖'],
     giftNote:'无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐',
@@ -2437,11 +2509,12 @@ function renderFilmBar(){
 
 function bigCard(a){
   if (a.slot === 'foot'){
+    const pic = (a.imgs && a.imgs[curModel().id]) || a.img;
     return `
     <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${a.name}，¥${money(px(a.price))}">
       <div class="addon-top">
-        <div class="addon-pic"><img src="${a.img}" alt="${a.name}"></div>
+        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${a.name}整套实拍"></div>
         <div class="addon-body">
           <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 买一送一</span></div>
           <div class="addon-name">${a.name}</div>
@@ -2498,19 +2571,25 @@ function bigCard(a){
 
 /* ---------- 硅胶套装：按车型出清单（i6 有实拍，其余按实车清单） ---------- */
 const silGift = () => curModel().gift || null;
-const SIL_SWATCH = [['w','原车白','#EFEDE6'], ['b','棕色','#9C8478'], ['o','橙黄','#D9822B']];
+
+/* 当前车型下选中的颜色：换车型后若该色不存在，自动落回第一色 */
+function curSilSet(g){
+  if (!g || !g.sets || !g.sets.length) return null;
+  return g.sets.find(x => x.k === state.silColor) || g.sets[0];
+}
 
 function renderSil(animate){
   const g = silGift();
   const grid = $('#silGrid');
   if (!grid) return;
+  const set = curSilSet(g);
 
-  /* 色卡：只有 i6 有白/棕/橙三色实拍；其他车型只注明可选颜色，不假装三色都有图 */
+  /* 色卡：跟着该车型真实有的颜色走，有几种出几种 */
   const sw = $('#giftSw');
   if (sw){
-    if (g && g.photo === 'i6'){
-      sw.innerHTML = SIL_SWATCH.map(([k, n, c]) =>
-        `<button class="sw${state.silColor === k ? ' on' : ''}" data-sil="${k}"><i style="background:${c}"></i>${n}</button>`).join('');
+    if (set){
+      sw.innerHTML = g.sets.map(x =>
+        `<button class="sw${x.k === set.k ? ' on' : ''}" data-sil="${x.k}"><i style="background:${x.c}"></i>${x.n}</button>`).join('');
     } else if (g){
       sw.innerHTML = `<span class="gk-color">可选颜色 · ${g.color}</span>`;
     } else {
@@ -2518,32 +2597,26 @@ function renderSil(animate){
     }
   }
 
-  /* 格子：i6 出实拍图，其余车型出「序号 + 名称 + 件数」清单 */
-  const cols = !g ? 5 : (g.cols || (g.photo === 'i6' ? 5 : (g.photo ? 4 : (g.items.length % 5 === 0 ? 5 : 4))));
-  grid.style.setProperty('--silc', cols);
-  grid.classList.toggle('gal', !!g);   /* 空态不挂「图集」角标 */
-  if (!g){
+  grid.classList.toggle('sil-grid--hero', !!set);
+  /* 旧的「图集」角标是给精灵格子的，整块图自带 gk-tag，别挂两个 */
+  grid.classList.remove('gal');
+  grid.style.removeProperty('--silc');
+
+  if (!set && !g){
     grid.innerHTML = `<div class="sil-empty">
-      <span class="se-k">MEGA · 7 座舱布局</span>
+      <span class="se-k">${curModel().name.replace('理想 ','')} · ${curModel().seats} 座舱布局</span>
       <b>全车硅胶套装按车型配齐</b>
-      <span class="se-d">无线充垫 / 水杯套 / 扶手箱储物盒 / 中控下储物盒 / 车门按键垫 / 门碗贴 / 安全带套 / OBD 保护盖 等按 7 座舱逐项配齐，件数以实车核对为准。</span>
+      <span class="se-d">无线充垫 / 水杯套 / 扶手箱储物盒 / 中控下储物盒 / 车门按键垫 / 门碗贴 / 安全带套 / OBD 保护盖 等按座舱逐项配齐，件数以实车核对为准。</span>
     </div>`;
-  } else if (g.photo){
-    /* 十二张图并排会被浏览器连接数拖死（实测 15 秒只解码 5 张），改一张精灵图定位 */
-    const spr  = g.photo === 'i6' ? `sp_i6_${state.silColor === 'w' ? 's' : state.silColor}` : `sp_${g.photo}`;
-    const rows = Math.ceil(g.items.length / cols);
-    const bs   = `${cols * 100}% ${rows * 100}%`;
-    grid.innerHTML = g.items.map((it, i) => {
-      const c = i % cols, r = Math.floor(i / cols);
-      const bx = cols > 1 ? (c / (cols - 1) * 100).toFixed(4) : 0;
-      const by = rows > 1 ? (r / (rows - 1) * 100).toFixed(4) : 0;
-      return `
-    <div class="sil-item" style="--i:${i}">
-      <i class="sil-pic" role="img" aria-label="硅胶${it[0]} × ${it[1]}"
-         style="--bg:url(asset/acc/sil/${spr}.jpg);--bs:${bs};--bx:${bx}%;--by:${by}%"></i>
-      <b>${it[0]}</b><span>${it[2] ? it[2] + ' · ' : ''}× ${it[1]}</span>
-    </div>`;
-    }).join('');
+  } else if (set){
+    /* 一张官方整套图 + 逐件名称，手机上比 21 张缩略图更好认 */
+    grid.innerHTML = `
+      <figure class="gk-pic">
+        <img src="${set.img}" alt="${curModel().name} ${g.n} 件全车硅胶套装实拍 · ${set.n}" loading="lazy">
+        <span class="gk-tag">整套实拍</span>
+      </figure>
+      <div class="gk-chips">${g.items.map(it =>
+        `<span>${it[0]}${it[2] ? '<i>' + it[2] + '</i>' : ''}<b>× ${it[1]}</b></span>`).join('')}</div>`;
   } else {
     grid.innerHTML = g.items.map((it, i) => `
     <div class="sil-item sil-item--txt" style="--i:${i}">
@@ -2558,24 +2631,20 @@ function renderSil(animate){
   const head = $('#giftHead');
   if (head) head.textContent = g ? `GIFT · ${g.n} 件 / 随脚垫整车配送` : 'GIFT · 随脚垫整车配送';
   const sum = $('#giftSum');
-  if (sum) sum.textContent = g ? g.items.slice(0, 5).map(x => x[0]).join(' / ') + ' 等' : '按 7 座舱布局配齐';
+  if (sum) sum.textContent = g ? g.items.slice(0, 5).map(x => x[0]).join(' / ') + ' 等' : '按座舱布局配齐';
   const note = $('#giftNote');
   if (note) note.innerHTML = g
     ? `${curModel().sub ? curModel().sub + ' ' : ''}${curModel().name.replace('理想 ', '')} 送 <b>${g.n} 件套</b>；随脚垫一并装车，颜色可选 ${g.color}。`
-    : `MEGA 送 <b>全车硅胶套装</b>；件数按 7 座舱布局配齐，以实车为准。`;
+    : `${curModel().name.replace('理想 ', '')} 送 <b>全车硅胶套装</b>；件数按座舱布局配齐，以实车为准。`;
   const kn = $('#giftKnote');
-  if (kn) kn.textContent = g
-    ? (g.photo === 'i6'
-        ? `上图为 i6 车型 ${g.n} 件套实拍（白 / 棕 / 橙黄三色），按车型配齐后随脚垫一并装车。`
-        : g.photo === 'l6'
-          ? `上图为同款 5 座套装实拍（雪原白），按 L6 座舱配齐后随脚垫一并装车。`
-          : g.photo
-            ? `上图为 ${curModel().name} ${g.n} 件套实拍，可选 ${g.color}，按车型配齐后随脚垫一并装车。`
-            : `上表为 ${curModel().name} ${g.n} 件套清单，件数照实车登记；实物颜色以到店现货为准。`)
-    : 'MEGA 的硅胶套装清单还在整理，件数以实车为准。';
+  if (kn) kn.textContent = set
+    ? `上图为 ${curModel().name} ${g.n} 件套「${set.n}」整套实拍，${g.sets.length} 色可选；按该车型座舱配齐后随脚垫一并装车。`
+    : g
+      ? `上表为 ${curModel().name} ${g.n} 件套清单，件数照实车登记；实物颜色以到店现货为准。`
+      : `${curModel().name.replace('理想 ', '')} 的硅胶套装清单还在整理，件数以实车为准。`;
 
   document.querySelectorAll('[data-sil]').forEach(el => {
-    el.classList.toggle('on', el.dataset.sil === state.silColor);
+    el.classList.toggle('on', set && el.dataset.sil === set.k);
   });
   if (animate){
     grid.classList.remove('swap');
@@ -3085,6 +3154,10 @@ function setModel(id){
   /* 没价目的车型不给切，避免出现推算出来的假价格 */
   if (!m || m.ready === false || state.model === id) return;
   state.model = id;
+  /* 每个车型默认落到它自己的第一种颜色（就是老板截图里选中的那色），
+     避免带着上一款的色号过来，出现「选的是白色但这款没白色」的错位 */
+  const g = m.gift;
+  if (g && g.sets && g.sets.length) state.silColor = g.sets[0].k;
   renderModelBar();
   renderScreen(); renderFilm(); renderSil(); renderAcc();
   refresh();
