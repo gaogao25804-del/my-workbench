@@ -1683,7 +1683,7 @@ body.has-models .hero{ padding-top:0; }
         photo:true 表示有 i6 三色实拍图；其余车型按清单列出，件数照抄不编。 */
 const MODELS = [
   { id:'i6',   name:'理想 i6',   sub:'26 款', body:'纯电 SUV · 5 座', seats:5, giftCount:21, ready:true,
-    gift:{ n:21, color:'原车白 / 棕色 / 橙黄', photo:true, items:[
+    gift:{ n:21, color:'原车白 / 棕色 / 橙黄', photo:'i6', items:[
       ['无线充垫',1], ['前排水杯套',1], ['扶手箱储物盒',1,'全包连体'], ['后排水杯套',1],
       ['中控下储物盒',2], ['冰箱储物盒',2], ['车门按键防护垫',4], ['车门内门碗贴',4],
       ['车门下硅胶盒',4], ['OBD 保护盖',1]
@@ -1707,13 +1707,13 @@ const MODELS = [
       ['车门下储物盒',4], ['OBD 保护盖',1]
     ]}},
   { id:'l8',   name:'理想 L8',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:21, ready:true,
-    gift:{ n:21, color:'棕白 / 绿白', photo:false, items:[
+    gift:{ n:21, color:'棕白 / 绿白', photo:'l8', items:[
       ['无线充硅胶垫',1], ['前排硅胶水杯套',1], ['扶手箱硅胶盒',1], ['后排硅胶水杯套',1],
       ['中控下硅胶储物盒',2], ['屏幕硅胶保护套',1], ['车门下硅胶盒',4], ['冰箱硅胶垫',2],
       ['后排扶手无线充',1], ['后排扶手水杯套',1], ['安全带硅胶套',5], ['OBD 保护盖',1]
     ]}},
   { id:'l9',   name:'理想 L9',   sub:'',      body:'增程 SUV · 6 座', seats:6, giftCount:24, ready:true,
-    gift:{ n:24, color:'棕白 / 绿白', photo:false, items:[
+    gift:{ n:24, color:'棕白 / 绿白', photo:'l9', items:[
       ['无线充硅胶垫',1], ['前排硅胶水杯套',1], ['扶手箱硅胶盒',1], ['后排硅胶水杯套',1],
       ['中控下硅胶储物盒',2], ['屏幕硅胶保护套',1], ['车门下储物盒',4,'升级杯架款'], ['冰箱硅胶垫',2],
       ['三排硅胶水杯套',2], ['二排座椅硅胶垫',2], ['安全带硅胶套',6], ['OBD 保护盖',1]
@@ -2045,7 +2045,7 @@ function renderSil(animate){
   /* 色卡：只有 i6 有白/棕/橙三色实拍；其他车型只注明可选颜色，不假装三色都有图 */
   const sw = $('#giftSw');
   if (sw){
-    if (g && g.photo){
+    if (g && g.photo === 'i6'){
       sw.innerHTML = SIL_SWATCH.map(([k, n, c]) =>
         `<button class="sw${state.silColor === k ? ' on' : ''}" data-sil="${k}"><i style="background:${c}"></i>${n}</button>`).join('');
     } else if (g){
@@ -2056,7 +2056,7 @@ function renderSil(animate){
   }
 
   /* 格子：i6 出实拍图，其余车型出「序号 + 名称 + 件数」清单 */
-  const cols = !g ? 5 : (g.photo ? 5 : (g.items.length % 5 === 0 ? 5 : 4));
+  const cols = !g ? 5 : (g.photo === 'i6' ? 5 : (g.photo ? 4 : (g.items.length % 5 === 0 ? 5 : 4)));
   grid.style.setProperty('--silc', cols);
   grid.classList.toggle('gal', !!g);   /* 空态不挂「图集」角标 */
   if (!g){
@@ -2066,10 +2066,11 @@ function renderSil(animate){
       <span class="se-d">无线充垫 / 水杯套 / 扶手箱储物盒 / 中控下储物盒 / 车门按键垫 / 门碗贴 / 安全带套 / OBD 保护盖 等按 7 座舱逐项配齐，件数以实车核对为准。</span>
     </div>`;
   } else if (g.photo){
-    const p = state.silColor === 'w' ? 's' : state.silColor;
+    const pre = g.photo === 'i6' ? (state.silColor === 'w' ? 's' : state.silColor) : g.photo;
+    const sep = g.photo === 'i6' ? '' : '_';
     grid.innerHTML = g.items.map((it, i) => `
     <div class="sil-item" style="--i:${i}">
-      <img src="asset/acc/sil/${p}${String(i + 1).padStart(2, '0')}.jpg" alt="硅胶${it[0]} × ${it[1]}">
+      <img src="asset/acc/sil/${pre}${sep}${String(i + 1).padStart(2, '0')}.jpg" alt="硅胶${it[0]} × ${it[1]}">
       <b>${it[0]}</b><span>${it[2] ? it[2] + ' · ' : ''}× ${it[1]}</span>
     </div>`).join('');
   } else {
@@ -2093,9 +2094,11 @@ function renderSil(animate){
     : `MEGA 送 <b>全车硅胶套装</b>；件数按 7 座舱布局配齐，以实车为准。`;
   const kn = $('#giftKnote');
   if (kn) kn.textContent = g
-    ? (g.photo
+    ? (g.photo === 'i6'
         ? `上图为 i6 车型 ${g.n} 件套实拍（白 / 棕 / 橙黄三色），按车型配齐后随脚垫一并装车。`
-        : `上表为 ${curModel().name} ${g.n} 件套清单，件数照实车登记；实物颜色以到店现货为准。`)
+        : g.photo
+          ? `上图为 ${curModel().name} ${g.n} 件套实拍（${g.color.split(' / ')[0]}），按车型配齐后随脚垫一并装车。`
+          : `上表为 ${curModel().name} ${g.n} 件套清单，件数照实车登记；实物颜色以到店现货为准。`)
     : 'MEGA 的硅胶套装清单还在整理，件数以实车为准。';
 
   document.querySelectorAll('[data-sil]').forEach(el => {
