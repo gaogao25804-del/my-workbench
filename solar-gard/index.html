@@ -19,6 +19,9 @@
   --gold:#B99A5B;
   --max:1192px;
   --nav:64px;
+  /* 固定头（导航 + 车型条）总高：锚点跳转与 scrollIntoView 都要让开这段，
+     否则点了「车衣」标题会落在导航底下被压住 */
+  --stick:140px;
   --ff:"PingFang SC","HarmonyOS Sans SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,"Segoe UI",Roboto,sans-serif;
   --fn:"SF Pro Display","Helvetica Neue",Arial,sans-serif;
 }
@@ -48,9 +51,33 @@ a{ color:inherit; text-decoration:none; }
 .nav-model{ font-size:14px; font-weight:600; letter-spacing:.02em; }
 .nav-l i{ width:1px; height:12px; background:currentColor; opacity:.35; }
 .nav-sub{ font-size:12px; opacity:.75; letter-spacing:.04em; }
-.nav-r{ display:flex; align-items:center; gap:26px; color:var(--ink); }
-.nav-r a{ font-size:13px; letter-spacing:.04em; opacity:.85; transition:opacity .2s; }
-.nav-r a:hover{ opacity:1; }
+.nav-r{ display:flex; align-items:center; gap:22px; color:var(--ink); }
+/* 分区跳转：原来是四个灰字，看不出能点、也不知道自己在第几区。
+   现在每项都有 hover 下划线、当前分区常亮金线、已选过的分区右上角点一颗金点 */
+.nav-r a{
+  position:relative; display:inline-flex; align-items:center; height:34px;
+  padding:0 2px; font-size:13px; letter-spacing:.04em;
+  color:var(--ink); opacity:.58;
+  transition:opacity .2s, color .2s;
+}
+.nav-r a::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+  background:var(--gold); border-radius:2px;
+  transform:scaleX(0); transform-origin:left center;
+  transition:transform .26s cubic-bezier(.3,.9,.3,1);
+}
+@media (hover:hover){
+  .nav-r a:hover{ opacity:1; }
+  .nav-r a:hover::after{ transform:scaleX(1); }
+}
+.nav-r a.cur{ opacity:1; font-weight:600; }
+.nav-r a.cur::after{ transform:scaleX(1); }
+/* 该分区已勾选：一颗金点，扫一眼就知道哪几区选过了 */
+.nav-r a.has::before{
+  content:""; position:absolute; right:-7px; top:6px;
+  width:5px; height:5px; border-radius:50%; background:var(--gold);
+  box-shadow:0 0 0 2px #fff;
+}
 
 
 .nav.on{ box-shadow:0 6px 24px rgba(0,0,0,.06); }
@@ -69,6 +96,16 @@ a{ color:inherit; text-decoration:none; }
 .pill.light{ background:#fff; color:var(--ink); border-color:#fff; }
 .pill.outline{ border-color:rgba(0,0,0,.22); color:var(--ink); }
 .pill.outline:hover{ border-color:var(--ink); }
+/* 按钮统一悬停反馈：轻微上浮 + 投影，点击要有「按下去」的回弹 */
+@media (hover:hover){
+  .pill:hover{ transform:translateY(-1px); box-shadow:0 10px 22px -16px rgba(0,0,0,.65); }
+  .pill:active{ transform:translateY(0) scale(.985); }
+  .nav .pill.ghost:hover{ border-color:var(--ink); background:rgba(0,0,0,.04); }
+  .nav .pill.light:hover{ background:#000; border-color:#000; }
+}
+.qbtn:hover{ background:#000; }
+.qbtn.ghost:hover{ border-color:var(--ink); background:#FAF9F7; }
+.qbtn:active{ transform:scale(.99); }
 
 
 /* 白底产品图融入容器底色（multiply 让白色变透明） */
@@ -154,6 +191,8 @@ a{ color:inherit; text-decoration:none; }
 
 /* ---------- 区块通用 ---------- */
 .sec{ padding:120px 0; }
+/* 锚点跳转让开固定头：分区自带 120px 上内边距，所以只需补「固定头高 - 内边距 + 24」 */
+#s-screen, #s-coat, #s-film, #s-acc{ scroll-margin-top:52px; }
 .sec--gray{ background:var(--panel); }
 /* 分区头：01–04 是本页目录，做成金框编号牌 + 大标题，扫一眼就知道走到第几区 */
 .sec-h{
@@ -212,6 +251,12 @@ a{ color:inherit; text-decoration:none; }
 .t-ck{ display:none; }
 .sc-tier.on .t-num{ color:var(--gold); }
 .sc-tier.on .t-lab{ color:var(--ink); }
+/* 选中：2px 内描金 + 更实的淡金底，白卡上也能一眼看出被选中（1px 边线太弱） */
+.sc-tier.on{
+  background:rgba(185,154,91,.1);
+  box-shadow:inset 0 0 0 2px var(--gold), 0 14px 28px -26px rgba(185,154,91,.9);
+}
+.sc-tier.on .t-set{ color:var(--ink2); }
 
 .three{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
 .three figure{ margin:0; }
@@ -245,6 +290,15 @@ a{ color:inherit; text-decoration:none; }
 .pspec{ display:block; font-size:11px; color:var(--sub); margin-top:6px; letter-spacing:.02em; }
 .pprice{ display:block; font-family:var(--fn); font-size:15px; font-weight:400; margin-top:12px; }
 .pprice i{ font-style:normal; font-size:10.5px; margin-right:2px; color:var(--sub); }
+.prow.on{
+  background:rgba(185,154,91,.1);
+  border-color:rgba(185,154,91,.6);
+}
+/* 左侧一条金线，长列表里横向扫视也能看出哪行被选 */
+.prow.on::before{
+  content:""; position:absolute; left:2px; top:10px; bottom:10px; width:2px;
+  background:var(--gold); border-radius:2px;
+}
 .prow.on .pname{ font-weight:700; }
 .prow.on .pprice{ font-weight:600; color:var(--gold); }
 .prow.on .pprice i{ color:var(--gold); }
@@ -296,10 +350,11 @@ a{ color:inherit; text-decoration:none; }
 }
 .crow b{ font-size:11.5px; font-weight:400; letter-spacing:.01em; line-height:1.55; }
 .crow em{ font-family:var(--fn); font-style:normal; font-size:13.5px; }
+.crow em i{ font-style:normal; font-size:10px; margin-right:1px; opacity:.65; }
 .crow:hover{ background:#FAF9F7; border-color:#EAE6DC; }
 .crow:hover > span{ border-color:var(--gold); color:var(--gold); }
 /* 选中：金色描边 + 淡金底 + 实心金勾 */
-.crow.on{ background:rgba(185,154,91,.09); border-color:var(--gold); }
+.crow.on{ background:rgba(185,154,91,.12); border-color:var(--gold); box-shadow:0 6px 16px -14px rgba(185,154,91,.9); }
 .crow.on > span{ background:var(--gold); border-color:var(--gold); color:#fff; }
 .crow.on b{ color:var(--ink); font-weight:600; }
 .crow.on em{ color:var(--gold); font-weight:600; }
@@ -323,7 +378,17 @@ a{ color:inherit; text-decoration:none; }
   border:1px solid var(--ink); background:var(--ink); color:#fff;
   box-shadow:0 10px 26px -12px rgba(0,0,0,.5);
 }
-.pickbar .pb-empty{ letter-spacing:.02em; }
+.pickbar .pb-empty{
+  letter-spacing:.02em; color:#6B6659;
+  display:flex; align-items:center; gap:10px;
+}
+/* 向下箭头暗示「答案在下面」，别让它看起来像被禁用的占位 */
+.pickbar .pb-empty::before{
+  content:"↓"; flex:none; width:20px; height:20px; border-radius:50%;
+  border:1px dashed rgba(185,154,91,.7); color:var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; line-height:1;
+}
 .pickbar .pb-ck{
   width:20px; height:20px; flex:none; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
@@ -446,8 +511,17 @@ a{ color:inherit; text-decoration:none; }
 .seat-card{ position:relative; margin-top:56px; background:#fff; }
 .seat-body{ padding:36px 40px 40px; }
 .seat-body .sub-head{ border-bottom:0; padding-bottom:0; }
+/* 标题行原来把「座椅垫 / 件数 / 主推标 / 品牌 / 价格 / 勾选圆」六个元素挤成一排，主次不分。
+   现在标题·件数·主推标·价格留在第一行，品牌说明整行换到第二行，价格 22 → 26px 与脚垫卡对齐 */
+.seat-body .sub-head{ align-items:baseline; row-gap:6px; }
+.seat-body .sub-head > span:not(.cnt):not(.hi-tag){ flex:1 1 100%; order:9; margin-top:2px; }
+/* 件数是次要信息，别和「主推」抢同一个墨黑底 */
+.seat-body .sub-head .cnt{
+  background:transparent; color:var(--ink2);
+  border:1px solid rgba(0,0,0,.2); border-radius:2px;
+}
 .sub-price{
-  margin-left:auto; font-family:var(--fn); font-style:normal; font-size:22px; font-weight:300;
+  margin-left:auto; font-family:var(--fn); font-style:normal; font-size:26px; font-weight:300;
   display:flex; align-items:baseline; gap:8px; white-space:nowrap;
 }
 .sub-price em{ font-style:normal; font-family:var(--ff); font-size:11px; color:var(--sub); font-weight:400; }
@@ -455,6 +529,13 @@ a{ color:inherit; text-decoration:none; }
 .sec--gray .mat-kit{ background:#fff; }
 .mat-kit img{ display:block; width:auto; max-width:100%; max-height:560px; margin:0 auto; padding:22px; box-sizing:border-box; }
 .mat-parts{ font-size:11.5px; line-height:1.9; color:var(--sub); margin-top:12px; text-align:center; letter-spacing:.02em; }
+/* 三张配色图是纯展示、不可点（页面别处有色卡可点），先用一行字说清楚，免得客人反复点 */
+.trio-cap{
+  display:flex; align-items:center; gap:8px;
+  font-size:11px; letter-spacing:.06em; color:var(--sub2); margin-top:26px;
+}
+.trio-cap::before{ content:""; width:14px; height:1px; background:var(--sub2); flex:none; }
+.trio-cap + .trio{ margin-top:14px; }
 
 /* 其余配件网格 */
 .acc-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:26px; }
@@ -467,7 +548,7 @@ a{ color:inherit; text-decoration:none; }
 .acc-n{ padding:18px 18px 20px; display:flex; flex-direction:column; flex:1; transition:background .2s; }
 .acc-n b{ font-size:13px; font-weight:600; letter-spacing:.01em; transition:color .2s; }
 .acc-n span{ font-size:10.5px; color:var(--sub); margin-top:6px; transition:color .2s; }
-.acc-n i{ font-family:var(--fn); font-style:normal; font-size:14px; margin-top:12px; transition:color .2s; }
+.acc-n i{ font-family:var(--fn); font-style:normal; font-size:16px; font-weight:600; margin-top:12px; transition:color .2s; letter-spacing:-.01em; }
 /* 选中：金边 + 淡金底 + 价格转金 */
 .acc-item.on{ background:rgba(185,154,91,.07); box-shadow:inset 0 0 0 2px var(--gold); }
 .acc-item.on .acc-pic{ background:#fff; }
@@ -491,13 +572,19 @@ a{ color:inherit; text-decoration:none; }
 
 .acc-item--more{
   background:var(--ink); color:#fff; padding:26px 22px; justify-content:center; align-items:flex-start;
+  cursor:pointer;
 }
 .acc-item--more:hover{ background:#000; }
 .am-t{ font-size:15px; font-weight:600; letter-spacing:.06em; }
 .am-d{ display:block; width:20px; height:1px; background:rgba(255,255,255,.4); margin:14px 0 12px; }
 .am-l{ font-size:11px; line-height:1.9; color:rgba(255,255,255,.6); }
-.am-go{ font-style:normal; font-size:11.5px; margin-top:18px; display:flex; align-items:center; gap:6px; }
-.am-go b{ font-weight:400; }
+.am-go{
+  font-style:normal; font-size:11.5px; margin-top:18px;
+  display:flex; align-items:center; gap:6px;
+  color:var(--gold); border-bottom:1px solid rgba(185,154,91,.5); padding-bottom:2px;
+}
+.am-go b{ font-weight:400; transition:transform .2s; }
+.acc-item--more:hover .am-go b{ transform:translateX(3px); }
 
 /* ---------- 页脚 ---------- */
 .foot{ background:#0D0D0D; color:#fff; padding:84px 0 0; }
@@ -566,20 +653,27 @@ a{ color:inherit; text-decoration:none; }
 .cb-n.bump{ animation:numBump .42s cubic-bezier(.3,1.4,.5,1); }
 
 /* 金额 */
-.cb-sum{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.cb-sum{ display:flex; flex-direction:column; gap:2px; min-width:0; }
 .cb-k{ font-size:10.5px; color:var(--sub); letter-spacing:.12em; white-space:nowrap; }
 .cb-k b{ display:inline-block; color:var(--ink); font-weight:700; letter-spacing:0; font-size:12px; }
 .cb-k b.bump{ animation:numBump .42s cubic-bezier(.3,1.4,.5,1); }
 .cb-v{
-  font-family:var(--fn); font-size:25px; line-height:1.1; letter-spacing:-.01em;
+  font-family:var(--fn); font-size:29px; line-height:1.05; letter-spacing:-.015em;
   display:flex; align-items:baseline; gap:3px; white-space:nowrap;
 }
-.cb-v i{ font-style:normal; font-size:12px; color:var(--sub); margin-right:2px; margin-bottom:4px; }
+.cb-v i{ font-style:normal; font-size:13px; color:var(--ink); opacity:.55; margin-right:1px; margin-bottom:5px; }
 .cb-v em{ font-style:normal; }
 .cb-v.pop em{ animation:pricePop .68s ease; }
 @keyframes pricePop{
   0%{ color:var(--ink); } 24%{ color:var(--gold); } 100%{ color:var(--ink); }
 }
+/* 一件没选的时候，「合计 ¥0」会被误读成「报价 0 元」—— 改成明确的操作提示 */
+.cb-hint{ display:none; font-size:12.5px; color:var(--sub); letter-spacing:.01em; }
+.cartbar.empty .cb-k, .cartbar.empty .cb-v{ display:none; }
+.cartbar.empty .cb-hint{ display:block; }
+.cartbar.empty .cb-go{ cursor:not-allowed; }
+.cartbar.empty .cb-go:hover{ transform:none; box-shadow:0 12px 28px -14px rgba(0,0,0,.7); }
+.cartbar.empty .cb-go:hover i{ transform:none; }
 
 /* 已选内容摘要 */
 .cb-list{
@@ -682,13 +776,20 @@ a{ color:inherit; text-decoration:none; }
 .qv{ font-size:13px; font-weight:500; }
 .qv small{ display:block; font-size:10.5px; color:var(--sub); font-weight:400; margin-top:4px; }
 .qp{ font-family:var(--fn); font-size:14px; }
+.qp i{ font-style:normal; font-size:10px; color:var(--sub); margin-right:1px; }
+/* 合计：全单最该被看清的一个数，加重分隔 + 淡金底 + 更大字号 */
 .qtotal{
   display:flex; align-items:baseline; justify-content:space-between;
-  padding:24px 0 6px; margin-top:4px;
+  padding:22px 0 16px; margin-top:14px;
+  border-top:1px solid var(--ink);
+  position:relative;
 }
 .qtotal .tk{ font-size:13px; letter-spacing:.1em; }
-.qtotal .tv{ font-family:var(--fn); font-size:32px; font-weight:300; letter-spacing:-.01em; }
-.qtotal .tv i{ font-style:normal; font-size:14px; margin-right:3px; vertical-align:6px; }
+.qtotal .tv{ font-family:var(--fn); font-size:38px; font-weight:300; letter-spacing:-.02em; }
+.qtotal .tv i{ font-style:normal; font-size:15px; margin-right:3px; vertical-align:7px; color:var(--gold); }
+.qtotal .tnote{
+  display:block; font-size:10.5px; letter-spacing:.04em; color:var(--sub); margin-top:2px;
+}
 .qnote{ font-size:10px; line-height:1.95; color:var(--sub2); margin-top:14px; }
 .qact{ display:flex; gap:10px; margin-top:24px; }
 .qbtn{
@@ -845,7 +946,7 @@ a{ color:inherit; text-decoration:none; }
   .seat-card{ margin-top:40px; }
   .seat-body{ padding:24px 20px 24px; }
   .seat-body .sub-head{ row-gap:6px; }
-  .seat-body .sub-head > span:not(.cnt){ flex:1 1 100%; order:9; margin-top:2px; }
+  .seat-body .sub-head > span:not(.cnt):not(.hi-tag){ flex:1 1 100%; order:9; margin-top:2px; }
   .sub-price{ font-size:20px; }
   .sub-price em{ display:block; margin-top:3px; }
 
@@ -853,7 +954,7 @@ a{ color:inherit; text-decoration:none; }
   .acc-n{ padding:12px 12px 14px; }
   .acc-n b{ font-size:12px; }
   .acc-n span{ font-size:10px; margin-top:4px; }
-  .acc-n i{ font-size:13px; margin-top:8px; }
+  .acc-n i{ font-size:15px; margin-top:8px; }
   .acc-item--more{ padding:18px 16px; }
   .am-t{ font-size:13.5px; }
 
@@ -900,7 +1001,8 @@ a{ color:inherit; text-decoration:none; }
   .cb-bag svg{ width:21px; height:21px; }
   .cb-n{ min-width:19px; height:19px; font-size:10px; padding:0 4px; right:-5px; top:-5px; }
   .cb-k{ font-size:9px; letter-spacing:.08em; }
-  .cb-v{ font-size:22px; }
+  .cb-v{ font-size:25px; }
+  .cb-hint{ font-size:11.5px; }
   .cb-go{ height:46px; padding:0 18px; font-size:13px; gap:6px; }
   .cb-list{ display:none; }
   .sw{ min-height:44px; }
@@ -1079,6 +1181,12 @@ a{ color:inherit; text-decoration:none; }
 }
 .pick:active{ transform:translateY(-1px) scale(.994); }
 .pick:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+/* 点下去那一刻勾选圆弹一下——「点到了」最直接的反馈 */
+@keyframes ckPop{ 0%{ transform:scale(.62); } 58%{ transform:scale(1.24); } 100%{ transform:scale(1); } }
+.pick.just::after, .pick.just .ck{ animation:ckPop .36s cubic-bezier(.2,1.4,.4,1); }
+@media (prefers-reduced-motion: reduce){
+  .pick.just::after, .pick.just .ck{ animation:none; }
+}
 
 @media (prefers-reduced-motion: reduce){
   .pick, .pick::after, .ck, .cartbar{ transition:none; }
@@ -1237,7 +1345,7 @@ body.has-models .hero{ padding-top:0; }
 .mchip{
   position:relative; flex:none; text-align:left; cursor:pointer;
   padding:9px 16px 8px; border-radius:999px;
-  border:1px solid var(--line); background:#fff; color:var(--ink);
+  border:1px solid #DED9CE; background:#fff; color:var(--ink);
   transition:background .2s, border-color .2s, color .2s, transform .16s, box-shadow .2s;
 }
 .mchip b{ display:block; font-family:var(--fn); font-size:13.5px; font-weight:600; letter-spacing:.02em; }
@@ -1264,9 +1372,12 @@ body.has-models .hero{ padding-top:0; }
 .sec-h .same::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--gold); }
 
 @media (max-width:759px){
-  .mb-in{ height:auto; padding-top:9px; padding-bottom:10px; gap:0; }
+  :root{ --stick:128px; }
+  /* 手机端固定头约 123px、分区上内边距 56px */
+  #s-screen, #s-coat, #s-film, #s-acc{ scroll-margin-top:96px; }
+  .mb-in{ height:auto; padding-top:8px; padding-bottom:10px; gap:0; }
   .mb-l{ display:none; }
-  .mchip{ padding:7px 13px 6px; }
+  .mchip{ padding:8px 14px 7px; min-height:44px; display:flex; flex-direction:column; justify-content:center; }
   .mchip b{ font-size:12.5px; }
   .mchip span{ font-size:9px; }
   .sec-h .same{ font-size:9.5px; padding:4px 9px; letter-spacing:.06em; }
@@ -1658,6 +1769,7 @@ body.has-models .hero{ padding-top:0; }
     <div class="cb-sum" data-page-node-id="7HpOpPD5ansicHk7I75azx">
       <span class="cb-k" data-page-node-id="aszlHWc2CtvOYnYBU9DXNV">已选 <b id="cbCnt" data-page-node-id="MQRLSx4MsfabBvmR4iyNDK">0</b> 项 · 合计</span>
       <span class="cb-v" data-page-node-id="1pB4PVEX5evq61b51nPtW4"><i data-page-node-id="yWpGBWwcChpraJHPetzl5b">¥</i><em id="cbVal" data-v="0" data-page-node-id="L7Orx8tBiGDHa8Uc3KCFfz">0</em></span>
+      <span class="cb-hint">还没选项目 · 点下方卡片勾选</span>
     </div>
     <button class="cb-go off" id="cbGo" data-page-node-id="iMWLGW6RCVW1r0v1ipA9vW">查看配置单 <i data-page-node-id="PW2WknSX55ZWiQzwWbEM0I">→</i></button>
   </div>
@@ -1950,7 +2062,7 @@ function renderFilm(){
         <button class="crow pick pick--row${state.film===t.id?' on':''}" data-film="${t.id}">
           <span>${t.code}</span>
           <b>${t.spec}</b>
-          <em>${money(px(t.price))}</em>
+          <em><i>¥</i>${money(px(t.price))}</em>
           <i class="ck"></i>
         </button>`).join('')}
     </div>`}).join('') + (open ? '' : foldBoxFilm());
@@ -1986,7 +2098,8 @@ function renderFilmBar(){
 function bigCard(a){
   if (a.slot === 'foot'){
     return `
-    <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
+    <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
+         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${a.name}，¥${money(px(a.price))}">
       <div class="addon-top">
         <div class="addon-pic"><img src="${a.img}" alt="${a.name}"></div>
         <div class="addon-body">
@@ -2016,12 +2129,13 @@ function bigCard(a){
     </div>`;
   }
   return `
-    <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
+    <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
+         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="座椅垫，¥${money(px(a.price))}">
       <div class="seat-body">
         <div class="sub-head" style="padding-bottom:10px">
           <b>座椅垫</b>
-          <span class="hi-tag">主推 · 三色可选</span>
           <span class="cnt">${is5Seat() ? '七件套' : curModel().seats + ' 座整套'}</span>
+          <span class="hi-tag">主推 · 三色可选</span>
           <span>${a.brand}</span>
           <i class="sub-price">¥${money(px(a.price))}<em>${a.em}</em></i>
         </div>
@@ -2029,6 +2143,7 @@ function bigCard(a){
         ${is5Seat()
           ? (a.partsNote ? `<p class="mat-parts">${a.partsNote}</p>` : '')
           : `<p class="mat-parts">按 ${curModel().seats} 座舱布局配齐：前排 + 二排${curModel().seats > 6 ? ' + 三排' : ''}${curModel().seats > 5 ? '（含二排独立座椅）' : ''}，件数以实车核对为准</p>`}
+        <div class="trio-cap">配色参考 · 三色可选，实际以到店现货为准</div>
         <div class="trio">
           ${a.colors.map(c=>`<div class="trio-item">
             <div class="pframe"><img src="${c.img}" alt="${a.name} ${c.n}"></div>
@@ -2135,7 +2250,7 @@ function renderAcc(){
       <div class="acc-pic${a.dual?' acc-pic--dual':''}">${a.imgs.map(s=>`<img src="${s}" alt="${a.name}">`).join('')}</div>
       <div class="acc-n"><b>${a.name}</b><span>${a.spec}</span><i>¥${money(px(a.price))}</i></div>
     </button>`).join('')
-    + `<div class="acc-item acc-item--more">
+    + `<div class="acc-item acc-item--more" data-go="foot" role="button" tabindex="0" aria-label="更多配件，到店详询">
         <b class="am-t">更多配件</b>
         <i class="am-d"></i>
         <span class="am-l">脚垫 / 坐垫 / 门槛条<br>把套 / 防虫网 等</span>
@@ -2277,6 +2392,20 @@ function refresh(){
     tag.classList.toggle('on', n > 0);
   }
   renderSheet(list, total);
+  syncNavDots();
+}
+
+/* 顶部分区链接上标金点：哪几区已经选过，不用滚回去找 */
+function syncNavDots(){
+  const map = {
+    '#s-screen': !!state.screen,
+    '#s-coat': !!state.coat,
+    '#s-film': !!state.film,
+    '#s-acc': state.acc.size > 0
+  };
+  document.querySelectorAll('.nav-r a').forEach(a => {
+    a.classList.toggle('has', !!map[a.getAttribute('href')]);
+  });
 }
 
 function renderSheet(list, total){
@@ -2292,21 +2421,21 @@ function renderSheet(list, total){
       <span class="qk">${x.k}</span>
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
         ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶套装</small>`:''}</span>
-      <span class="qp">${money(x.p)}</span>
+      <span class="qp"><i>¥</i>${money(x.p)}</span>
     </div>`).join('');
 
   $('#sheetBody').innerHTML = `
     <div class="qcar">车型：<b>${m.name}${m.sub?' · '+m.sub:''}</b>　｜　共 ${list.length} 项</div>
     ${rows}
     <div class="qtotal">
-      <span class="tk">合计</span>
+      <span class="tk">合计<span class="tnote">共 ${list.length} 项 · 不含施工</span></span>
       <span class="tv"><i>¥</i>${money(total)}</span>
     </div>
-    <div class="qnote">以上为理想 i6 零售价；车衣为全系同价，其他车型尺寸价另计；窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。</div>
     <div class="qact">
       <button class="qbtn" id="btnCopy">复制发给老板 →</button>
       <button class="qbtn ghost" id="btnClose2">继续挑选</button>
     </div>
+    <div class="qnote">以上为${m.name}零售价；车衣为全系同价，其他车型尺寸价另计；窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。</div>
     <div class="qrwrap">
       <img src="asset/qr.png" alt="微信二维码">
       <div class="qt">
@@ -2408,6 +2537,15 @@ function findAcc(id){
   return ACC_BIG.concat(ACC_SMALL).find(x => x.id === id);
 }
 
+/* 选中瞬间让勾选圆弹一下：render 会重建 DOM，所以传的是重建后的新节点 */
+function flashPick(el){
+  if (!el) return;
+  el.classList.remove('just');
+  void el.offsetWidth;
+  el.classList.add('just');
+  setTimeout(() => el.classList.remove('just'), 440);
+}
+
 document.addEventListener('click', e => {
   /* 展开 / 收起更高价位 */
   const fd = e.target.closest('[data-fold]');
@@ -2424,6 +2562,12 @@ document.addEventListener('click', e => {
     return;
   }
 
+  /* 「更多配件」卡看着像按钮，就让它真的能点到联系方式 */
+  if (e.target.closest('[data-go="foot"]')){
+    document.getElementById('foot').scrollIntoView({ behavior:'smooth' });
+    return;
+  }
+
   /* 屏幕保护 */
   const sc = e.target.closest('[data-screen]');
   if (sc){
@@ -2433,6 +2577,7 @@ document.addEventListener('click', e => {
     state.screen = was ? null : id;
     renderScreen(); refresh();
     if (!was){
+      flashPick(document.querySelector(`[data-screen="${id}"]`));
       const it = SCREEN.find(x => x.id === id);
       if (it){ flyToBag(r); toast(`已加入 · ${it.name}（${it.set}）· ¥${money(px(it.price))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
@@ -2448,6 +2593,7 @@ document.addEventListener('click', e => {
     state.coat = was ? null : id;
     renderCoat(); refresh();
     if (!was){
+      flashPick(document.querySelector(`[data-coat="${id}"]`));
       const it = findCoat(id);
       if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(it.price)}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
@@ -2472,6 +2618,7 @@ document.addEventListener('click', e => {
     state.film = was ? null : id;
     renderFilm(); refresh();
     if (!was){
+      flashPick(document.querySelector(`[data-film="${id}"]`));
       const hit = findFilm(id);
       if (hit){ flyToBag(r); toast(`已加入 · ${hit.se.name} · ${hit.t.code} 档 · ¥${money(px(hit.t.price))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
@@ -2497,11 +2644,29 @@ document.addEventListener('click', e => {
     was ? state.acc.delete(id) : state.acc.add(id);
     renderAcc(); refresh();
     if (!was){
+      flashPick(document.querySelector(`[data-acc="${id}"]`));
       const it = findAcc(id);
       if (it){ flyToBag(r); toast(`已加入 · ${it.name} · ¥${money(px(it.price))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
     return;
   }
+});
+
+/* 卡片不是原生 button（大卡是 div），补上键盘可达：Tab 到、Enter / 空格触发 */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+  const t = e.target.closest('[role="button"][tabindex="0"]');
+  if (!t) return;
+  e.preventDefault();
+  const d = t.dataset;
+  const key = d.acc || d.screen || d.coat || d.film || '';
+  t.click();
+  if (!key) return;
+  /* render 会重建卡片，焦点必须还给新节点，否则连按两次回车第二次就没反应 */
+  requestAnimationFrame(() => {
+    const n = document.querySelector(`[data-acc="${key}"],[data-screen="${key}"],[data-coat="${key}"],[data-film="${key}"]`);
+    if (n && n.focus) n.focus();
+  });
 });
 
 $('#cbGo').onclick = () => {
@@ -2599,9 +2764,32 @@ requestAnimationFrame(() => {
 
 /* ========================= 导航与滚动 ========================= */
 const nav = document.getElementById('nav');
-const onScroll = () => nav.classList.toggle('on', window.scrollY > 40);
+const SEC_IDS = ['s-screen', 's-coat', 's-film', 's-acc'];
+let spyQueued = false;
+
+/* 滚到哪个分区，顶部对应链接就亮起来——不用自己数到第几区了 */
+function navSpy(){
+  spyQueued = false;
+  nav.classList.toggle('on', window.scrollY > 40);
+  const stick = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stick')) || 148;
+  const line = stick + 24;
+  let cur = '';
+  SEC_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= line) cur = id;
+  });
+  document.querySelectorAll('.nav-r a').forEach(a => {
+    a.classList.toggle('cur', a.getAttribute('href') === '#' + cur);
+  });
+}
+const onScroll = () => {
+  if (spyQueued) return;
+  spyQueued = true;
+  requestAnimationFrame(navSpy);
+};
 window.addEventListener('scroll', onScroll, { passive:true });
-onScroll();
+window.addEventListener('resize', onScroll, { passive:true });
+navSpy();
 
 document.getElementById('navBtn').onclick = () => {
   if (!picked().length){ toast('先勾选你需要的内容', 'warn'); return; }
