@@ -3331,7 +3331,9 @@ function picked(){
         const st = tierStore(ct, ms);
         tbd = st == null;
         ap = st != null ? st : ((ms && ms.price) || a.price);
-        gift = { sil:true, acc:!!(ct && ct.n >= 12) };   /* 满 12 件套才加送配件 */
+        /* 赠品必须写清件数和颜色：老板交车时照着单子配货，光写「套装」等于没写 */
+        const gg = silGift(), gs = curSilSet(gg);
+        gift = { n:(gg && gg.n) || 0, color: gs ? gs.n : '' };
       } else if (a.slot === 'seat'){
         const o = curSeatKind();
         const col = seatColorOf(o);
@@ -3512,7 +3514,7 @@ function renderSheet(list, total){
     <div class="qline" style="--i:${i}">
       <span class="qk">${x.k}</span>
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
-        ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶套装${x.gift.acc?' + 全套配件 6 类':''}</small>`:''}</span>
+        ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶 ${x.gift.n} 件套${x.gift.color?' · '+x.gift.color:''}</small>`:''}</span>
       <span class="qp">${x.tbd?'<b class="tbd-p">到店核</b>':`<i>¥</i>${money(x.p)}`}</span>
     </div>`).join('');
 
@@ -3553,10 +3555,9 @@ function copyQuote(list, total, m){
       const f = x.footSet;
       lines.push(`　　配 ${f.mats ? f.mats + (f.yr ? ' · ' + f.yr : '') + '　' : ''}${f.n ? f.n + ' 件套' : '专属毯面'}`);
     }
-    /* 件数跟车型走：i8 是 22 件、L9 是 24 件，写死 21 会让老板交车时对不上 */
+    /* 赠品写实：件数按当前车型、颜色按当前选的那一色，老板照单配货不会配错 */
     if (x.gift){
-      lines.push(`　　赠 全车硅胶套装 ${(m.gift && m.gift.n) || ''} 件`);
-      if (x.gift.acc) lines.push('　　赠 全套配件 6 类（价值 ¥450–500）');
+      lines.push(`　　赠 全车硅胶 ${x.gift.n} 件套${x.gift.color ? ' · ' + x.gift.color : ''}`);
     }
   });
   lines.push('————————————');
