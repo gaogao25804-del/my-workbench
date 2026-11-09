@@ -581,7 +581,7 @@ a{ color:inherit; text-decoration:none; }
 .sec--gray .mat-kit{ background:#fff; }
 .mat-kit img{ display:block; width:100%; max-height:clamp(240px, 32vw, 440px); object-fit:contain; margin:0 auto; padding:16px; box-sizing:border-box; }
 /* 坐垫实拍图：方形竖图，居中收窄，别在满宽容器里拉出大片空白 */
-.mat-kit--seat{ width:min(92vw, 566px); max-width:100%; margin:26px auto 0; background:transparent; border:0; }
+.mat-kit--seat{ width:min(96vw, 660px); max-width:100%; margin:20px auto 0; background:transparent; border:0; }
 .mat-kit--seat img{ max-height:none; padding:0; filter:none; }
 .mat-kit--seat::after{ display:none; }        /* 分解图不是实拍，去掉「实拍参考」角标 */
 .mat-kit--seat .pic-tier{ display:none; }     /* 卡头右上已有「正在看 …」，图上不再压一个 */
@@ -2655,109 +2655,51 @@ const SEAT_CSWATCH = { w:'#F2EEE5', br:'#8A5A3B', or:'#C05A28', bk:'#2A2620' };
    京东 / 天猫都没有 per-SKU 白底产品图，全平台共用这一套分解图；
    件数以当选 SKU 为准，图注会写明「图示 8 件套样板 · 本款 N 件」。 */
 const SEAT_KIT = {
-  w:  'asset/seat/kit8_w_c63738.jpg',
-  br: 'asset/seat/kit8_br_d2645d.jpg',
-  or: 'asset/seat/kit8_or_2138f9.jpg',
-  bk: 'asset/seat/kit8_bk_b0ecd8.jpg'
-};   /* 文件名 = kit8_{配色}_{内容 hash}.jpg，改图换名，CDN 不用等 */
+  7: { w:'asset/seat/kit7_w_4235c9.jpg', br:'asset/seat/kit7_br_80beac.jpg',
+        or:'asset/seat/kit7_or_9d0094.jpg', bk:'asset/seat/kit7_bk_191ae0.jpg' },
+  11: { w:'asset/seat/kit11_w_e5aee7.jpg', br:'asset/seat/kit11_br_3b5a60.jpg',
+        or:'asset/seat/kit11_or_73dd3b.jpg', bk:'asset/seat/kit11_bk_4a0331.jpg' },
+  12: { w:'asset/seat/kit12_w_466f6f.jpg', br:'asset/seat/kit12_br_a7b3c9.jpg',
+        or:'asset/seat/kit12_or_32f8a4.jpg', bk:'asset/seat/kit12_bk_f21ec9.jpg' }
+};   /* 文件名 = kit{件数}_{配色}_{内容 hash}.jpg，改图换名，CDN 不用等 */
 const SEAT2 = {
   i6: [
-    { k:'pad',  name:'液态全硅座垫片', n:3, p:494,
-      inc:'主驾 + 副驾 + 二排，只铺座垫面 · 薄款不硌腰，夏天不闷',
-      img:'asset/acc/seat_pad3.jpg' },
-    { k:'s1',   name:'主/副驾 座椅套 ×1', n:1, p:null,
-      inc:'单张含靠背，哪张磨了换哪张', colors:[
-        { c:'w', sku:'10198828530607' }, { c:'or', sku:'10198828530609' }, { c:'br', sku:'10209634039057' } ] },
-    { k:'s2',   name:'主副驾 座椅套 ×2', n:2, p:null,
-      inc:'主副驾一对装齐，比单张划算', colors:[
-        { c:'w', sku:'10198828530610' }, { c:'br', sku:'10198829816611' }, { c:'or', sku:'10198829816612' } ] },
     { k:'full', name:'全车座椅套', n:7, p:936,
-      inc:'4 片靠背 + 3 片座垫，含头枕位开孔 · 整车全包', colors:[
+      inc:'二排连体 · 含头枕位开孔 · 整车全包', colors:[
         { c:'w', sku:'10198829816613' }, { c:'br', sku:'10198829816614' }, { c:'or', sku:'10198829816615' } ] }
   ],
   l6: [
-    { k:'pad',   name:'单坐垫片 3件套', n:3, p:494,
-      inc:'主驾 + 副驾 + 二排，只铺座垫面 · 薄款不硌腰', colors:[
-        { c:'w', sku:'10111514841621' }, { c:'or', sku:'10111514841622' }, { c:'bk', sku:'10111514841623' } ] },
-    { k:'single', name:'主/副驾 坐垫 单片', n:1, p:null,
-      inc:'只有坐垫面不含靠背 · L6/L7/L8/L9 通用', colors:[
-        { c:'w', sku:'10107546344943' }, { c:'or', sku:'10107546344942' }, { c:'bk', sku:'10107546344944' } ] },
-    { k:'s1',    name:'主/副驾 座椅套 ×1', n:1, p:null,
-      inc:'单张含靠背，哪张磨了换哪张 · L6/L7/L8/L9 通用', colors:[
-        { c:'w', sku:'10107546344946' }, { c:'or', sku:'10107546344945' }, { c:'bk', sku:'10107546344947' }, { c:'br', sku:'10161115521093' } ] },
-    { k:'s2',    name:'主副驾 座椅套 ×2', n:2, p:null,
-      inc:'主副驾一对装齐 · L6/L7/L8/L9 通用', colors:[
-        { c:'w', sku:'10107546344949' }, { c:'or', sku:'10107546344948' }, { c:'bk', sku:'10107546344950' } ] },
-    { k:'row2',  name:'二排座椅套', n:null, p:null,
-      inc:'只管二排三连座 · L6 / L7 专用', colors:[
-        { c:'w', sku:'10111393243572' }, { c:'or', sku:'10111393243573' }, { c:'bk', sku:'10111393243574' } ] },
-    { k:'full',  name:'全车座椅套 7件套', n:7, p:936,
-      inc:'4 片靠背 + 3 片座垫 · 五座全包', colors:[
-        { c:'bk', sku:'10107546344953' }, { c:'w', sku:'10107546344952' }, { c:'or', sku:'10107546344951' }, { c:'br', sku:'10161115521094' } ] }
+    { k:'full', name:'全车座椅套', n:7, p:936,
+      inc:'二排连体 · 五座全包', colors:[
+        { c:'bk', sku:'10107546344953' }, { c:'w', sku:'10107546344952' },
+        { c:'or', sku:'10107546344951' }, { c:'br', sku:'10161115521094' } ] }
   ],
   l8: [
-    { k:'pad',   name:'全车坐垫片 5件套', n:5, p:721,
-      inc:'主副驾 + 二排左右，只铺座垫面', colors:[
-        { c:'w', sku:'10111514841624' }, { c:'or', sku:'10111514841625' }, { c:'bk', sku:'10111514841626' } ] },
-    { k:'row2back', name:'后排座椅套 7件套', n:7, p:null,
-      inc:'只管二排 + 三排，前两排不动', colors:[
-        { c:'w', sku:'10111393243575' }, { c:'or', sku:'10111393243576' }, { c:'bk', sku:'10111393243577' } ] },
-    { k:'front', name:'双排座椅套 8件套', n:8, p:808,
-      inc:'前两排 4 靠背 + 4 座垫，三排不铺', colors:[
-        { c:'w', sku:'10107546344955' }, { c:'or', sku:'10107546344954' }, { c:'bk', sku:'10107546344956' } ] },
-    { k:'full5', name:'全车座椅套 8件套（五座版）', n:8, p:null,
-      inc:'只适配五座版 L8，六座别拍这个', colors:[
-        { c:'w', sku:'10107546344961' } ] },
-    { k:'full',  name:'全车座椅套 11件套', n:11, p:1298,
-      inc:'六座版全车 4 靠背 + 二排独立位 + 三排', colors:[
-        { c:'or', sku:'10107546344960' }, { c:'bk', sku:'10107546344962' }, { c:'br', sku:'10161115521095' } ] }
+    { k:'full', name:'全车座椅套', n:11, p:1298,
+      inc:'三排连体 · 六座版整车全包', colors:[
+        { c:'or', sku:'10107546344960' }, { c:'bk', sku:'10107546344962' },
+        { c:'br', sku:'10161115521095' } ] }
   ],
   l9: [
-    { k:'pad',   name:'全车坐垫片 5件套', n:5, p:null,
-      inc:'只铺座垫面 · 六座布局', colors:[
-        { c:'w', sku:'10111514841627' }, { c:'or', sku:'10111514841628' }, { c:'bk', sku:'10111514841629' } ] },
-    { k:'row2back', name:'后排座椅套 7件套', n:7, p:null,
-      inc:'只管二排 + 三排，前两排不动', colors:[
-        { c:'w', sku:'10111393243578' }, { c:'or', sku:'10111393243579' }, { c:'bk', sku:'10111393243580' } ] },
-    { k:'front', name:'双排座椅套 8件套', n:8, p:null,
-      inc:'前两排 4 靠背 + 4 座垫，三排不铺', colors:[
-        { c:'w', sku:'10107546344958' }, { c:'or', sku:'10107546344957' }, { c:'bk', sku:'10107546344959' } ] },
-    { k:'full',  name:'全车座椅套 11件套', n:11, p:1224,
-      inc:'六座版全车 4 靠背 + 二排独立位 + 三排', colors:[
-        { c:'bk', sku:'10107546344965' }, { c:'w', sku:'10107546344964' }, { c:'or', sku:'10107546344963' }, { c:'br', sku:'10161115521096' } ] }
+    { k:'full', name:'全车座椅套', n:11, p:1224,
+      inc:'三排连体 · 六座版整车全包', colors:[
+        { c:'bk', sku:'10107546344965' }, { c:'w', sku:'10107546344964' },
+        { c:'or', sku:'10107546344963' }, { c:'br', sku:'10161115521096' } ] }
   ],
   i8: [
-    { k:'pad',   name:'液态全硅座垫片 3件套', n:3, p:513,
-      inc:'主驾 + 副驾 + 二排，只铺座垫面',
-      img:'asset/acc/seat_pad3.jpg' },
-    { k:'s1',    name:'主/副驾 座椅套 ×1', n:1, p:null,
-      inc:'单张含靠背，哪张磨了换哪张', colors:[
-        { c:'w', sku:'10188170204017' }, { c:'br', sku:'10188170204018' } ] },
-    { k:'s2',    name:'主副驾 座椅套 ×2', n:2, p:null,
-      inc:'主副驾一对装齐', colors:[
-        { c:'w', sku:'10188170204019' }, { c:'br', sku:'10188170204020' } ] },
-    { k:'front', name:'前二排座椅坐垫 8件套', n:8, p:808,
-      inc:'主副驾 + 二排 4 靠背 + 4 座垫 · 全液态硅皮草', colors:[
-        { c:'w', sku:'10188170204021' }, { c:'br', sku:'10188170204022' } ] },
-    { k:'full',  name:'全车座椅套 11件套', n:11, p:1304,
-      inc:'六座版全车 4 靠背 + 二排独立位 + 三排', colors:[
+    { k:'full', name:'全车座椅套', n:11, p:1304,
+      inc:'全液态硅皮草 · 三排连体 · 整车全包', colors:[
         { c:'br', sku:'10188170204016' }, { c:'w', sku:'10188170204015' } ] }
   ],
   i9: [
-    { k:'pad',   name:'液态全硅座垫片 4件套', n:4, p:519,
-      inc:'主副驾 + 二排左右，只铺座垫面', img:'asset/acc/seat_pad4.jpg' },
-    { k:'front', name:'前二排座椅套 8件套', n:8, p:null,
-      inc:'前两排 4 靠背 + 4 座垫，三排不铺', img:'asset/acc/seat_front.jpg' },
-    { k:'full',  name:'全车座椅套 12件套', n:12, p:1386,
-      inc:'六座满配：前两排 + 三排独立座椅全包', img:'asset/acc/seat_full.jpg' }
+    { k:'full', name:'全车座椅套', n:12, p:1386,
+      inc:'三排独立 · 六座满配 · 整车全包',
+      img:'asset/seat/kit12_br_a7b3c9.jpg' }
   ],
   mega: [
-    { k:'pad',   name:'液态全硅座垫片 7件套', n:7, p:null,
-      inc:'七座全铺，只铺座垫面', img:'asset/acc/seat_pad5.jpg' },
-    { k:'front', name:'前二排座椅套 8件套', n:8, p:866,
-      inc:'前两排 4 靠背 + 4 座垫，三排不铺', img:'asset/acc/seat_front.jpg' },
-    { k:'full',  name:'全车座椅套 12件套', n:12, p:1286,
-      inc:'七座满配 + 过道片，含三排独立座椅', img:'asset/acc/seat_full.jpg' }
+    { k:'full', name:'全车座椅套', n:12, p:1286,
+      inc:'三排独立 + 过道片 · 七座满配',
+      img:'asset/seat/kit12_br_a7b3c9.jpg' }
   ]
 };
 
@@ -3164,17 +3106,20 @@ function bigCard(a){
   const skName = opt ? opt.name : a.name;
   const skSet  = opt ? (opt.n ? opt.n + ' 件套' : '按车型配') : '整套';
   const curC   = col ? SEAT_CNAME[col.c] : '';
-  /* 官方款式行有京东主图（按色切换）；i9 / MEGA 沿用既有部件拼图 */
   const skPic  = opt ? (opt.colors ? a.img : opt.img) : a.img;
-  /* 有官方款式的用 8 件套分解图，按配色切换 */
+  /* 大图按「件数」取对应那套分解图，再按配色切换（7 / 11 / 12 件各一套，四色齐全） */
+  const kitSet = SEAT_KIT[opt && opt.n] || SEAT_KIT[11];
   const picHtml = (opt && opt.colors && col)
-    ? `<img src="${SEAT_KIT[col.c] || SEAT_KIT.br}" data-sku="${col.sku}" alt="${curModel().name} ${skName} 固特异金刚座垫 ${curC} 8 件套分解图">`
+    ? `<img src="${kitSet[col.c] || kitSet.br}" data-sku="${col.sku}" alt="${curModel().name} ${skName} 固特异金刚座垫 ${curC} 分解图">`
     : `<img src="${skPic}" alt="${curModel().name} ${skName} ${skSet}${curC ? ' ' + curC : ''}">`;
-  /* 图统一用 8 件套样板；件数与本款不一致时在图注里说清楚，别让人以为拍 7 件给 8 件 */
-  const capHtml  = (opt && opt.colors && col)
-    ? `<p class="seat-hero-cap">${opt.n === 8
-        ? '图示 8 件套：前两排 4 靠背 + 4 座垫'
-        : `图示为 8 件套样板 · 本款 ${opt.n || '按车型配'} 件，以下单配置为准`}</p>` : '';
+  /* 图注写清这一档到底几件，不让人对着图数件数 */
+  const KIT_NOTE = {
+    7:  '图示 7 件套 · 4 靠背 + 3 座垫',
+    11: '图示 11 件套 · 6 靠背 + 5 座垫',
+    12: '图示 12 件套 · 6 靠背 + 6 座垫'
+  };
+  const capHtml = (opt && opt.n && KIT_NOTE[opt.n])
+    ? `<p class="seat-hero-cap">${KIT_NOTE[opt.n]}</p>` : '';
   return `
     <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"
@@ -3191,11 +3136,11 @@ function bigCard(a){
         <div class="mtier">
           <div class="mtier-hd">
             <div class="mt-hd-l">
-              <b>${curModel().name} · 官方在售全部款式</b>
-              <span>点行选中款式 · 点行里的色点换配色</span>
+              <b>${curModel().name} · 整车坐垫配置</b>
+              <span>${list.length > 1 ? '点行选中款式 · 点行里的色点换配色' : '点色点换配色，大图跟着换'}</span>
             </div>
             <div class="mt-hd-r">
-              <i>正在看 ${skName}${curC ? ' · ' + curC : ''}</i>
+              <i>${skSet}${curC ? ' · ' + curC : ''}</i>
               <em>${tbd ? '到店核' : '¥' + money(sp)}</em>
             </div>
           </div>
@@ -3218,11 +3163,11 @@ function bigCard(a){
               </div>`;
             }).join('')}
           </div>
-          <p class="mtier-note">型号 / 件数 / 配色取自固特异京东旗舰店 2026-11 在售清单（i6 · i8 · L6/L7 · L8 · L9 共 64 个在售型号）；京东同款需登录才显示价格，本页有实数的取公开渠道实测价，没有实数的档到店核、按你的车实测报价，不编价。</p>
+          <p class="mtier-note">只列本车型件数最多的那一档满配（单张、一对、座垫片等不单列；要单买配件直接问）。件数 / 配色取自固特异京东旗舰店 2026-11 在售清单；有实数的取公开渠道实测价，没有实数的到店核、按你的车实测报价，不编价。</p>
         </div>
-        <div class="mat-kit${(opt && opt.colors && col) ? ' mat-kit--seat' : ''}" style="position:relative">${picHtml}<i class="pic-tier">正在看 ${skName}${curC ? ' · ' + curC : ''}</i></div>
+        <div class="mat-kit${(opt && opt.n) ? ' mat-kit--seat' : ''}" style="position:relative">${picHtml}<i class="pic-tier">正在看 ${skName}${curC ? ' · ' + curC : ''}</i></div>
         ${capHtml}
-        <p class="mat-parts">${opt ? opt.inc : ''}<br>${curModel().seats} 座舱布局，按座型配齐</p>
+        <p class="mat-parts">${curModel().seats} 座舱 · 按座型配齐${opt && opt.n ? ' · 与所选件数一致' : ''}</p>
       </div>
     </div>`;
 }
