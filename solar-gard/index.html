@@ -580,6 +580,22 @@ a{ color:inherit; text-decoration:none; }
 .mat-kit{ margin-top:26px; background:#F7F7F7; overflow:hidden; border:1px solid var(--line); }
 .sec--gray .mat-kit{ background:#fff; }
 .mat-kit img{ display:block; width:100%; max-height:clamp(240px, 32vw, 440px); object-fit:contain; margin:0 auto; padding:16px; box-sizing:border-box; }
+/* 坐垫大图暂用配色卡：京东官方主图是营销合成图（蓝面板+红条+水印），抠不干净，等真实白底图到位再换回照片 */
+.mat-kit--chip{ background:transparent; border:0; }
+.mat-kit--chip::after{ display:none; }   /* 配色卡不是实拍，去掉「实拍参考」角标 */
+.mat-kit--chip .pic-tier{ display:none; }  /* 卡头已有「正在看」，不重复 */
+.seat-chip{
+  position:relative; display:flex; flex-direction:column; justify-content:flex-end; align-items:flex-start;
+  width:min(100%, 560px); margin:0 auto;
+  min-height:clamp(220px, 24vw, 320px); padding:24px 30px 26px; box-sizing:border-box; border-radius:3px;
+  box-shadow:0 1px 1px rgba(0,0,0,.04), 0 18px 40px -18px rgba(0,0,0,.22), inset 0 0 0 1px rgba(0,0,0,.05);
+  background:
+    radial-gradient(120% 95% at 18% -20%, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 62%),
+    linear-gradient(158deg, var(--c1) 0%, var(--c2) 100%);
+  color:var(--tx);
+}
+.seat-chip b{ font-family:var(--fn); font-size:clamp(24px, 3vw, 34px); font-weight:300; letter-spacing:.15em; line-height:1.1; }
+.seat-chip span{ font-family:var(--ff); font-size:11px; letter-spacing:.16em; opacity:.62; margin-top:7px; }
 .mat-parts{ font-size:11.5px; line-height:1.9; color:var(--sub); margin-top:12px; text-align:center; letter-spacing:.02em; }
 /* 三张配色图是纯展示、不可点（页面别处有色卡可点），先用一行字说清楚，免得客人反复点 */
 .trio-cap{
@@ -2646,6 +2662,21 @@ const MAT_SET = {
 const SEAT_CNAME = { w:'原车白', br:'棕色', or:'橙黄', bk:'黑色' };
 const SEAT_CSWATCH = { w:'#F2EEE5', br:'#8A5A3B', or:'#C05A28', bk:'#2A2620' };
 const SEAT_IMG = sku => `asset/seat/clean/${sku}.jpg?v=31`;   /* v=31：只去叠加物、不动产品像素，纹理完整 */
+/* 坐垫大图开关：京东这 63 张官方主图全是营销合成图（蓝面板 + 红条 + JD 水印 + 多件拼贴），
+   没有一张干净白底产品照，算法抠图必然把产品切碎 —— 所以默认不显示这些照片，改用配色卡。
+   真实白底图到位后，把这里改成 true 即可整体换回照片。 */
+const SEAT_USE_PHOTO = false;
+const _hx  = h => [1,3,5].map(i => parseInt(h.substr(i,2), 16));
+const _hex = a => '#' + a.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2,'0')).join('');
+const _mix = (h, t, w) => { const A = _hx(h), B = _hx(t); return _hex(A.map((v,i) => v * (1-w) + B[i] * w)); };
+const _lum = h => { const [r,g,b] = _hx(h); return (0.299*r + 0.587*g + 0.114*b) / 255; };
+function seatChip(c, col, set){
+  const base = SEAT_CSWATCH[c] || '#E9E5DB';
+  const tx   = _lum(base) > 0.6 ? '#2A2620' : '#FFFFFF';
+  return `<div class="seat-chip" data-sku="${col && col.sku ? col.sku : ''}"
+    style="--c1:${_mix(base,'#ffffff',.18)};--c2:${_mix(base,'#000000',.16)};--tx:${tx}">
+    <b>${SEAT_CNAME[c] || '按车型配'}</b><span>固特异 · 全包围坐垫 · ${set || '按车型配'}</span></div>`;
+}
 const SEAT2 = {
   i6: [
     { k:'pad',  name:'液态全硅座垫片', n:3, p:494,
@@ -3152,6 +3183,10 @@ function bigCard(a){
   const curC   = col ? SEAT_CNAME[col.c] : '';
   /* 官方款式行有京东主图（按色切换）；i9 / MEGA 沿用既有部件拼图 */
   const skPic  = opt ? (opt.colors ? (col ? SEAT_IMG(col.sku) : a.img) : opt.img) : a.img;
+  /* 官方款式有京东主图；主图是营销合成图、抠不干净，默认改用配色卡 */
+  const picHtml = (opt && opt.colors && col && !SEAT_USE_PHOTO)
+    ? seatChip(col.c, col, skSet)
+    : `<img src="${skPic}" alt="${curModel().name} ${skName} ${skSet}${curC ? ' ' + curC : ''} 官方实拍">`;
   return `
     <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"
@@ -3197,7 +3232,7 @@ function bigCard(a){
           </div>
           <p class="mtier-note">型号 / 件数 / 配色取自固特异京东旗舰店 2026-11 在售清单（i6 · i8 · L6/L7 · L8 · L9 共 64 个在售型号）；京东同款需登录才显示价格，本页有实数的取公开渠道实测价，没有实数的档到店核、按你的车实测报价，不编价。</p>
         </div>
-        <div class="mat-kit" style="position:relative"><img src="${skPic}" alt="${curModel().name} ${skName} ${skSet}${curC ? ' ' + curC : ''} 官方实拍"><i class="pic-tier">正在看 ${skName}${curC ? ' · ' + curC : ''}</i></div>
+        <div class="mat-kit${(opt && opt.colors && col && !SEAT_USE_PHOTO) ? ' mat-kit--chip' : ''}" style="position:relative">${picHtml}<i class="pic-tier">正在看 ${skName}${curC ? ' · ' + curC : ''}</i></div>
         <p class="mat-parts">${opt ? opt.inc : ''}<br>${curModel().seats} 座舱布局，按座型配齐</p>
       </div>
     </div>`;
