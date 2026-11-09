@@ -3016,7 +3016,7 @@ function bigCard(a){
           <div class="addon-spec">${megaOnly || hasMats
             ? (ms && ms.mats ? `本款配 <b>${ms.mats}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : '')
             : '<b>本款裸垫 · 不含毯面</b>，加毯面就上一档<br>'}${aSpec}</div>
-          ${aTags?`<div class="addon-tags">${aTags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'}</span>`:''}</div>`:''}
+          ${aTags?`<div class="addon-tags">${aTags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'} · 颜色可选</span>`:''}</div>`:''}
           ${aNote?`<div class="addon-note">${aNote}</div>`:''}
           <div class="addon-buy">
             <div class="addon-price">${tbd
@@ -3731,12 +3731,15 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* 硅胶颜色 */
+  /* 硅胶颜色：只换颜色，不该动「加不加脚垫」
+     但换完必须 refresh —— 配置单上那行「含赠品：全车硅胶 N 件套 · 颜色」是 picked() 算的，
+     不刷新就永远停在加入时的默认色，客人点半天以为选不了。 */
   const sw = e.target.closest('[data-sil]');
   if (sw){
     if (state.silColor !== sw.dataset.sil){
       state.silColor = sw.dataset.sil;
       renderSil(true);
+      refresh();
     }
     return;
   }
