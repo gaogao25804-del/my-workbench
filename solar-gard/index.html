@@ -581,8 +581,10 @@ a{ color:inherit; text-decoration:none; }
 .sec--gray .mat-kit{ background:#fff; }
 .mat-kit img{ display:block; width:100%; max-height:clamp(240px, 32vw, 440px); object-fit:contain; margin:0 auto; padding:16px; box-sizing:border-box; }
 /* 坐垫实拍图：方形竖图，居中收窄，别在满宽容器里拉出大片空白 */
-.mat-kit--seat{ width:clamp(260px, 40vw, 452px); margin:26px auto 0; background:transparent; border:0; }
-.mat-kit--seat img{ max-height:none; padding:0; }
+.mat-kit--seat{ width:clamp(310px, 47vw, 566px); margin:26px auto 0; background:transparent; border:0; }
+.mat-kit--seat img{ max-height:none; padding:0; filter:none; }
+.mat-kit--seat::after{ display:none; }        /* 分解图不是实拍，去掉「实拍参考」角标 */
+.mat-kit--seat .pic-tier{ display:none; }     /* 卡头右上已有「正在看 …」，图上不再压一个 */
 .seat-hero-cap{ font-size:11px; letter-spacing:.05em; color:var(--sub2); margin-top:12px; text-align:center; }
 .mat-parts{ font-size:11.5px; line-height:1.9; color:var(--sub); margin-top:12px; text-align:center; letter-spacing:.02em; }
 /* 三张配色图是纯展示、不可点（页面别处有色卡可点），先用一行字说清楚，免得客人反复点 */
@@ -2642,18 +2644,22 @@ const MAT_SET = {
 /* 固特异坐垫 · 京东在售 SKU 全集
    来源：item.m.jd.com/product/10111514841628.html 的 newColorSize，
    2026-11-09 抓取，共 64 个在售型号（i6 / i8 / L6·L7 / L8 / L9，不含 i9 / MEGA）。
-   每行 = 官方一个款式；colors = 该款式在售的每个配色（各配京东官方主图，
-   已裁促销条、去水印，存 asset/seat/clean/）。
+   每行 = 官方一个款式；colors = 该款式在售的每个配色（大图统一用 8 件套分解图，
+   按配色着色，见下方 SEAT_KIT）。
    价格：这个 SPU 未登录一律「登录查看价格」，拿不到京东实价 ——
    页面上有实数的取自其他公开渠道（2026-11 实测），没有实数的一律「到店核」，不编数。
    i9 / MEGA 不在这个 SPU 里，沿用此前另查到的款式与价格。 */
 const SEAT_CNAME = { w:'原车白', br:'棕色', or:'橙黄', bk:'黑色' };
 const SEAT_CSWATCH = { w:'#F2EEE5', br:'#8A5A3B', or:'#C05A28', bk:'#2A2620' };
-const SEAT_IMG = sku => `asset/seat/clean/${sku}.jpg?v=31`;   /* v=31：只去叠加物、不动产品像素，纹理完整 */
-/* 坐垫大图：京东、天猫两家的图都是营销合成图，都没有 per-SKU 白底图
-   （天猫同一个 SPU 只有 5 张竖版海报主图，点任何「适用车系」主图都不变，实测过）。
-   所以大图统一用一张从官方详情图里裁出来的干净装车实拍，配色以下方色点/卡头文字为准。 */
-const SEAT_HERO = 'asset/seat/hero_seat.jpg?v=1';
+/* 坐垫大图：固特异官方 8 件套分解图（老板 2026-11-09 提供素材），逐件抠出后按 4 个配色重新着色。
+   京东 / 天猫都没有 per-SKU 白底产品图，全平台共用这一套分解图；
+   件数以当选 SKU 为准，图注会写明「图示 8 件套样板 · 本款 N 件」。 */
+const SEAT_KIT = {
+  w:  'asset/seat/kit8_w.jpg?v=1',
+  br: 'asset/seat/kit8_br.jpg?v=1',
+  or: 'asset/seat/kit8_or.jpg?v=1',
+  bk: 'asset/seat/kit8_bk.jpg?v=1'
+};
 const SEAT2 = {
   i6: [
     { k:'pad',  name:'液态全硅座垫片', n:3, p:494,
@@ -3159,13 +3165,16 @@ function bigCard(a){
   const skSet  = opt ? (opt.n ? opt.n + ' 件套' : '按车型配') : '整套';
   const curC   = col ? SEAT_CNAME[col.c] : '';
   /* 官方款式行有京东主图（按色切换）；i9 / MEGA 沿用既有部件拼图 */
-  const skPic  = opt ? (opt.colors ? (col ? SEAT_IMG(col.sku) : a.img) : opt.img) : a.img;
-  /* 有官方款式的用统一装车实拍（图不是按色拍的，配色看色点和卡头文字） */
+  const skPic  = opt ? (opt.colors ? a.img : opt.img) : a.img;
+  /* 有官方款式的用 8 件套分解图，按配色切换 */
   const picHtml = (opt && opt.colors && col)
-    ? `<img src="${SEAT_HERO}" data-sku="${col.sku}" alt="${curModel().name} ${skName} 固特异金刚座垫 装车实拍">`
+    ? `<img src="${SEAT_KIT[col.c] || SEAT_KIT.br}" data-sku="${col.sku}" alt="${curModel().name} ${skName} 固特异金刚座垫 ${curC} 8 件套分解图">`
     : `<img src="${skPic}" alt="${curModel().name} ${skName} ${skSet}${curC ? ' ' + curC : ''}">`;
+  /* 图统一用 8 件套样板；件数与本款不一致时在图注里说清楚，别让人以为拍 7 件给 8 件 */
   const capHtml  = (opt && opt.colors && col)
-    ? `<p class="seat-hero-cap">米棕装车实拍 · 全包围金刚座垫 · 配色以上方色点为准</p>` : '';
+    ? `<p class="seat-hero-cap">${opt.n === 8
+        ? '图示 8 件套：前两排 4 靠背 + 4 座垫'
+        : `图示为 8 件套样板 · 本款 ${opt.n || '按车型配'} 件，以下单配置为准`}</p>` : '';
   return `
     <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"
