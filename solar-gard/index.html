@@ -3045,7 +3045,7 @@ function bigCard(a){
           </div>
           <div class="mt-hd-r">
             <i>${isMats ? '专属毯面 · 含装车'
-              : `整车 ${ct.n} 件套 · 含装车`}</i>
+              : '整车整套 · 含装车'}</i>
             <em>${tbd ? '本店 到店核' : '本店 ¥' + money(fp)}</em>
           </div>
         </div>
@@ -3058,7 +3058,7 @@ function bigCard(a){
             return `<div class="mt-row${t.hot ? ' hot' : ''}${on ? ' on' : ''}" data-tier="${t.n}"
               role="button" tabindex="0" aria-pressed="${on}"
               aria-label="看 ${nm} 的部件图，本店 ${pv}">
-            <i>${nm}${t.hot ? '<u>只此一档</u>' : ''}</i>
+            <i>${nm}</i>
             <span class="mt-spec">${t.inc}</span>
             <em>${pv}</em>
           </div>`;
