@@ -581,7 +581,7 @@ a{ color:inherit; text-decoration:none; }
 .sec--gray .mat-kit{ background:#fff; }
 .mat-kit img{ display:block; width:100%; max-height:clamp(240px, 32vw, 440px); object-fit:contain; margin:0 auto; padding:16px; box-sizing:border-box; }
 /* 坐垫实拍图：方形竖图，居中收窄，别在满宽容器里拉出大片空白 */
-.mat-kit--seat{ width:clamp(310px, 47vw, 566px); margin:26px auto 0; background:transparent; border:0; }
+.mat-kit--seat{ width:min(92vw, 566px); max-width:100%; margin:26px auto 0; background:transparent; border:0; }
 .mat-kit--seat img{ max-height:none; padding:0; filter:none; }
 .mat-kit--seat::after{ display:none; }        /* 分解图不是实拍，去掉「实拍参考」角标 */
 .mat-kit--seat .pic-tier{ display:none; }     /* 卡头右上已有「正在看 …」，图上不再压一个 */
