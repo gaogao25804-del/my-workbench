@@ -2582,43 +2582,28 @@ const FILM = [
    价格口径：京东「固特异车品旗舰店」同一产品线 2026-11 在售价（裸垫→+尾箱→+毯面→整车全套），
    同档不同车型实测差 0–150；整车全套只有 i6 拿到实数 1,627，其余写区间不给假数。
    p = 实数；r = 区间（该档跨车型浮动，未拿到本车型实价）。 */
+/* 2026-11-09 老板定调：只卖整车整套 —— 每款车只剩最高的那一档，低档全部撤掉，界面也不给选。
+   原因：配件（6 类）是随整车整套送的，单独卖裸垫就不送配件，客人拿到手等于半套，索性不做。
+   因此每行的 inc 必须直接写「整车含哪些件」；原来是增量串（+ 后备箱垫 + 毯面…），
+   少了前几档给它垫底就会断在半路，写成裸垫。 */
 const MAT_LADDER = {
   i6: [
-    { n:4,  inc:'主驾 + 副驾 + 二排脚垫（裸垫）',        p:618 },
-    { n:5,  inc:'+ 后备箱垫',                          p:714 },
-    { n:7,  inc:'+ 黛尼斯毯面',                        p:1143 },
-    { n:9,  inc:'+ 星空年华毯面 · 黑',                  p:1304 },
-    { n:14, inc:'+ 后排靠背垫 + 前仓垫 + 后仓垫',        p:1627, hot:1 }
+    { n:14, inc:'主驾 + 副驾 + 二排脚垫 + 后备箱垫 + 后排靠背垫 + 前仓垫 + 后仓垫', p:1627, hot:1 }
   ],
   i8: [
-    { n:4,  inc:'主驾 + 副驾 + 二排脚垫（裸垫）',        p:618 },
-    { n:5,  inc:'+ 后备箱垫',                          p:714 },
-    { n:9,  inc:'+ 星空丝绒毯面 · 黑',                  p:1213 },
-    { n:14, inc:'+ 后排靠背垫 + 前仓垫 + 后仓垫',        r:'¥1,169–1,627', hot:1 }
+    { n:14, inc:'主驾 + 副驾 + 二排脚垫 + 后备箱垫 + 后排靠背垫 + 前仓垫 + 后仓垫', r:'¥1,169–1,627', hot:1 }
   ],
   i9: [
-    { n:4,  inc:'主驾 + 副驾 + 二排 + 三排脚垫（裸垫）',  p:703 },
-    { n:5,  inc:'+ 后备箱垫',                          p:914 },
-    { n:7,  inc:'+ 黛尼斯毯面',                        p:1101 },
-    { n:14, inc:'+ 后排靠背垫 + 后仓垫',                r:'¥1,169–1,627', hot:1 }
+    { n:14, inc:'主驾 + 副驾 + 二排 + 三排脚垫 + 后备箱垫 + 后排靠背垫 + 后仓垫',   r:'¥1,169–1,627', hot:1 }
   ],
   l6: [
-    { n:4,  inc:'主驾 + 副驾 + 二排脚垫（裸垫）',        p:618 },
-    { n:6,  inc:'+ 后备箱垫 + 后排靠背垫',              p:914 },
-    { n:9,  inc:'+ 星空年华毯面',                      p:1555 },
-    { n:12, inc:'+ 前仓垫 + 后仓垫',                    r:'¥1,169–1,627', hot:1 }
+    { n:12, inc:'主驾 + 副驾 + 二排脚垫 + 后备箱垫 + 后排靠背垫 + 前仓垫 + 后仓垫', r:'¥1,169–1,627', hot:1 }
   ],
   l8: [
-    { n:4,  inc:'主驾 + 副驾 + 二排脚垫（裸垫）',        p:587 },
-    { n:6,  inc:'+ 后备箱垫 + 后排靠背垫',              p:914 },
-    { n:9,  inc:'+ 星空年华毯面 · 橙',                  p:1304 },
-    { n:13, inc:'+ 前仓垫 + 后仓垫',                    r:'¥1,169–1,627', hot:1 }
+    { n:13, inc:'主驾 + 副驾 + 二排脚垫 + 后备箱垫 + 后排靠背垫 + 前仓垫 + 后仓垫', r:'¥1,169–1,627', hot:1 }
   ],
   l9: [
-    { n:4,  inc:'三排脚垫（裸垫）',                     p:703 },
-    { n:6,  inc:'+ 后备箱垫 + 后排靠背垫',              p:914 },
-    { n:9,  inc:'+ 星空年华毯面',                      p:1153 },
-    { n:18, inc:'+ 前仓垫 + 后仓垫 + 双面尾箱垫',        r:'¥1,254–1,627', hot:1 }
+    { n:18, inc:'三排脚垫 + 后备箱垫 + 后排靠背垫 + 前仓垫 + 后仓垫 + 双面尾箱垫',   r:'¥1,254–1,627', hot:1 }
   ],
   mega: [
     { n:0, inc:'原车专属毯面 · 星空丝绒 / 星空年华',     p:1000, hot:1 }
@@ -2640,7 +2625,7 @@ const MAT_SET = {
     matsLine:'<b>两款毯面 可选一款</b>',
     tags:['原车版型 · 专车专用'],
     note:'',
-    gift:'买专属毯面送硅胶套装 · 满 12 件套加送配件' }
+    gift:'买专属毯面 · 即送全车硅胶套装 + 6 类配件' }
 };
 
 /* 固特异坐垫 · 京东在售 SKU 全集
@@ -2743,14 +2728,15 @@ function tierStore(t, ms){
   if (t.p != null) return t.p;
   return null;
 }
-/* 这一档带不带毯面：inc 是「相对上一档加了什么」，得从第一档累加看到当前档，
-   否则 14 件套（只写 +靠背垫/前仓垫）会被误判成裸垫 */
+/* 这一档带不带毯面
+   以前 inc 是「相对上一档加了什么」，得从第一档累加才能看出含不含毯面。
+   2026-11-09 起每款车只剩顶配一档（整车整套），整车整套必带毯面，
+   直接看 MAT_SET.mats 更准；MEGA 只卖专属毯面本身，也是恒带。 */
 function tierHasMats(t){
   if (!t) return false;
-  const lad = MAT_LADDER[state.model] || [];
-  const i = lad.findIndex(x => x.n === t.n);
-  const upto = i < 0 ? [t] : lad.slice(0, i + 1);
-  return upto.some(x => /毯面/.test(x.inc || ''));
+  const ms = MAT_SET[state.model];
+  if (!ms) return false;
+  return !ms.n || !!ms.mats;
 }
 
 const ACC_BIG = [
@@ -2767,8 +2753,8 @@ const ACC_BIG = [
       l6:'asset/mats/l6.webp', l8:'asset/mats/l8.webp', l9:'asset/mats/l9.webp',
       mega:'asset/mats/mega.webp'
     },
-    tiers:MAT_SET, giftFrom:12, giftValue:'¥450–500',
-    gift:'买脚垫送硅胶套装 · 满 12 件套加送配件',
+    tiers:MAT_SET, giftValue:'¥450–500',
+    gift:'买整车整套脚垫 · 即送全车硅胶套装 + 6 类配件',
     giftItems:['无线充垫','水杯架','中控储物盒','车门按键膜','门碗贴','OBD 保护盖'],
     giftNote:'无线充垫 / 水杯架 / 中控储物盒 / 车门按键膜 / 门碗贴 / OBD 保护盖，一整套配齐',
     giftCount:'21',
@@ -3023,9 +3009,9 @@ function bigCard(a){
     <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${aName} ${nTxt}，${tbd?'价格到店核':'¥'+money(px(fp))}">
       <div class="addon-top">
-        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}" loading="lazy" decoding="async">${ct && ct.n ? `<i class="pic-tier">正在看 ${ct.n} 件套</i>` : ''}</div>
+        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}" loading="lazy" decoding="async">${ct && ct.n ? `<i class="pic-tier">整车 ${ct.n} 件套</i>` : ''}</div>
         <div class="addon-body">
-          <div class="addon-k">${a.brand}<span class="hi-tag">${(ct && ct.n >= 12) ? '主推 · 送全套配件' : '主推 · 送硅胶套装'}</span></div>
+          <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送硅胶套装 + 配件</span></div>
           <div class="addon-name">${aName}<u class="set-n">${curModel().name} · ${nTxt}</u></div>
           <div class="addon-spec">${megaOnly || hasMats
             ? (ms && ms.mats ? `本款配 <b>${ms.mats}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : '')
@@ -3052,14 +3038,14 @@ function bigCard(a){
         return `<div class="mtier">
         <div class="mtier-hd">
           <div class="mt-hd-l">
-            <b>${curModel().name} · ${isMats ? '原车专属毯面' : '全档位'}</b>
+            <b>${curModel().name} · ${isMats ? '原车专属毯面' : '整车整套'}</b>
             <span>${isMats
               ? '官方只出原车专属毯面，不分件套 · 星空丝绒 / 星空年华 两款同价'
-              : '点任一行，上面的大图和价格就换成这一档 · 件数越多护得越全'}</span>
+              : '本店只做整车整套，不拆档卖 · 配件随整车整套一起送'}</span>
           </div>
           <div class="mt-hd-r">
             <i>${isMats ? '专属毯面 · 含装车'
-              : `正在看 ${ct.n} 件套 · 京东 ${ct.p ? '¥' + money(ct.p) : ct.r}`}</i>
+              : `整车 ${ct.n} 件套 · 含装车`}</i>
             <em>${tbd ? '本店 到店核' : '本店 ¥' + money(fp)}</em>
           </div>
         </div>
@@ -3072,7 +3058,7 @@ function bigCard(a){
             return `<div class="mt-row${t.hot ? ' hot' : ''}${on ? ' on' : ''}" data-tier="${t.n}"
               role="button" tabindex="0" aria-pressed="${on}"
               aria-label="看 ${nm} 的部件图，本店 ${pv}">
-            <i>${nm}${t.hot ? '<u>本店在售</u>' : ''}</i>
+            <i>${nm}${t.hot ? '<u>只此一档</u>' : ''}</i>
             <span class="mt-spec">${t.inc}</span>
             <em>${pv}</em>
           </div>`;
@@ -3080,7 +3066,7 @@ function bigCard(a){
         </div>
         <p class="mtier-note">${isMats
           ? '价格为京东「固特异车品旗舰店」2026-11 在售价；原车专属毯面只有一个档，星空丝绒 / 星空年华 同价。本店含装车，并赠全车硅胶套装。'
-          : '价格为本店含装车价：裸垫 → 加后备箱垫 → 加毯面 → 整车全套，逐档加钱，点哪档就按哪档结算；京东同款整车全套在售 ¥1,627，本店整车整套 ¥1,610（低 17 块，再送全车硅胶套装）。'}</p>
+          : '本店只做整车整套：¥1,610 含装车，赠全车硅胶套装 + 6 类配件。京东同款整车全套在售 ¥1,169–1,627。裸垫、单尾箱垫等低档不拆卖 —— 拆开就不送配件了。'}</p>
       </div>`;
       })()}
       <div class="gift-bar">
@@ -3325,7 +3311,8 @@ function picked(){
         ms = MAT_SET[curModel().id] || null;
         const ct = curTier();
         aName = (ms && ms.title) || a.name;
-        setTxt = ct ? (ct.n ? ct.n + ' 件套' : '专属毯面')
+        /* MEGA 的 aName 本身就是「原车专属毯面」，再补一句「专属毯面」会重复 */
+        setTxt = ct ? (ct.n ? ct.n + ' 件套' : '')
                     : (ms && ms.n ? ms.n + ' 件套' : '');
         /* 档位价：点 5 件套就按 5 件套收，绝不能还挂整车全套的 1,610 */
         const st = tierStore(ct, ms);
@@ -3880,7 +3867,7 @@ function syncModelText(){
   const ms = MAT_SET[m.id];
   const nTxt = ms && ms.n ? `${ms.n} 件套` : '专属毯面';
   if (ap) ap.innerHTML = `整车配件 · 单项可加装。脚垫与座椅垫按 <b>${m.seats || 5} 座舱布局</b>配齐，` +
-    `脚垫可分档加装，整车满配 <b>${nTxt}</b>${ms && ms.mats ? '（' + ms.mats + '）' : ''}；其余小件为单品价，不含施工。`;
+    `脚垫只做整车整套 <b>${nTxt}</b>${ms && ms.mats ? '（' + ms.mats + '）' : ''}，不拆档卖；其余小件为单品价，不含施工。`;
 
   document.title = `${m.name} · 全车配置报价 | 圣佳 SolarGard 授权店`;
 }
