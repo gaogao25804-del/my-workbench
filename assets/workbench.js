@@ -22,7 +22,16 @@ const ICON_PATHS = {
   clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   inbox: '<path d="M3 12.5 5.5 5.5h13L21 12.5v6a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/><path d="M3 12.5h5l1.5 2.5h5l1.5-2.5h5"/>',
   pixel: '<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="3" y="15" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/>',
-  image: '<rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M3 16.5 8 12l4 3.5 3-2.5 6 5"/>'
+  image: '<rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M3 16.5 8 12l4 3.5 3-2.5 6 5"/>',
+  palette: '<path d="M12 21a9 9 0 1 1 9-9c0 2.2-1.8 3.5-3.8 3.5H15a2 2 0 0 0-1.6 3.2c.4.5.6 1 .6 1.3 0 .6-.9 1-2 1z"/><circle cx="7.6" cy="10.2" r=".9"/><circle cx="10.5" cy="7" r=".9"/><circle cx="14.5" cy="7" r=".9"/><circle cx="17.4" cy="10" r=".9"/>',
+  pen: '<path d="M15.7 3.3a2.2 2.2 0 0 1 3.1 3.1L7.4 17.8l-4.4 1.3 1.3-4.4z"/><path d="M13.5 5.5 18.5 10.5"/>',
+  eraser: '<path d="M9 20.5h11"/><path d="M4.5 15.8 12.7 7.6a1.8 1.8 0 0 1 2.6 0l3.6 3.6a1.8 1.8 0 0 1 0 2.6l-6.4 6.4H7l-2.5-2.5a1.8 1.8 0 0 1 0-2.6z"/><path d="M9.5 10.8 15.7 17"/>',
+  line: '<path d="M4 20 20 4"/>',
+  rect: '<rect x="4" y="6.5" width="16" height="11" rx="1.5"/>',
+  ellipse: '<ellipse cx="12" cy="12" rx="8.5" ry="6"/>',
+  undo: '<path d="M9 7 4 12l5 5"/><path d="M4 12h9a5 5 0 0 1 0 10h-3"/>',
+  redo: '<path d="M15 7l5 5-5 5"/><path d="M20 12h-9a5 5 0 0 0 0 10h3"/>',
+  trash: '<path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6.5 7l1 12.5h9l1-12.5"/>'
 };
 
 function ic(name, cls) {
@@ -47,7 +56,8 @@ const PAGES = {
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 支持筛选与分页', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
   wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' },
-  pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' }
+  pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
+  draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' }
 };
 
 const PAGE_SIZE = { wenan: 10, task: 20 };
@@ -1769,12 +1779,333 @@ function mountPixel() {
   if (p.src) pxRefresh();
 }
 
+/* ============================================================
+   画板 · 画笔 / 橡皮 / 直线 / 矩形 / 椭圆，导出 PNG 或 JPG
+   ============================================================ */
+
+const DRAW_TOOLS = [
+  { k: 'pen', n: '画笔' },
+  { k: 'eraser', n: '橡皮' },
+  { k: 'line', n: '直线' },
+  { k: 'rect', n: '矩形' },
+  { k: 'ellipse', n: '椭圆' }
+];
+
+const DRAW_PALETTE = ['#1f2024', '#ff6a2f', '#e5484d', '#f2b74a', '#22a06b', '#3b82f6', '#8b5cf6', '#8a7f72'];
+
+/* 笔画点全部用 0~1 的归一化坐标，窗口缩放后仍能按原比例重绘 */
+const DRAW = {
+  tool: 'pen', color: '#1f2024', size: 3,
+  strokes: [], redo: [], live: null
+};
+
+let drawRO = null;
+let drawRaf = 0;
+
+function renderDrawPage() {
+  const tools = DRAW_TOOLS.map(function (t) {
+    return '<button class="dr-tool' + (DRAW.tool === t.k ? ' on' : '') + '" data-drawtool="' + t.k + '" ' +
+      'title="' + t.n + '" aria-label="' + t.n + '">' + ic(t.k, 'ico-14') + '</button>';
+  }).join('');
+
+  const colors = DRAW_PALETTE.map(function (c) {
+    return '<button class="dr-color' + (DRAW.color.toLowerCase() === c ? ' on' : '') + '" data-drawcolor="' + c + '" ' +
+      'style="background:' + c + '" aria-label="颜色 ' + c + '"></button>';
+  }).join('');
+
+  return '<div class="dr-wrap">' +
+    '<div class="dr-top">' +
+      '<div class="dr-tools">' + tools + '</div>' +
+      '<div class="dr-colors">' + colors +
+        '<input type="color" class="dr-color-custom" id="drawColorInput" value="' + esc(DRAW.color) + '" title="自选颜色" aria-label="自选颜色">' +
+      '</div>' +
+      '<div class="dr-size">' +
+        '<label for="drawSize">笔粗细</label>' +
+        '<input type="range" id="drawSize" min="1" max="24" step="1" value="' + DRAW.size + '" data-drawsize>' +
+        '<b data-drawsize-val>' + DRAW.size + '</b>' +
+      '</div>' +
+      '<div class="dr-ops">' +
+        '<button class="btn btn-sm" data-drawact="undo" title="撤销"' + (DRAW.strokes.length ? '' : ' disabled') + '>' + ic('undo', 'ico-14') + '</button>' +
+        '<button class="btn btn-sm" data-drawact="redo" title="重做"' + (DRAW.redo.length ? '' : ' disabled') + '>' + ic('redo', 'ico-14') + '</button>' +
+        '<button class="btn btn-sm btn-ghost" data-drawact="clear" title="清空画布"' + (DRAW.strokes.length ? '' : ' disabled') + '>' + ic('trash', 'ico-14') + '</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dr-stage' + (DRAW.strokes.length ? '' : ' is-empty') + '">' +
+      '<canvas id="drawCanvas"></canvas>' +
+      '<div class="dr-empty">' +
+        '<div class="dr-empty-ico">' + ic('palette') + '</div>' +
+        '<strong>在这儿随手画</strong>' +
+        '<span>按住鼠标或手指拖动即可 · 支持撤回与重画</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dr-bottom">' +
+      '<div class="dr-stat">笔画 <b data-draw-count>' + DRAW.strokes.length + '</b> · 画布 <b data-draw-size>—</b></div>' +
+      '<div class="dr-export">' +
+        '<button class="dr-save" data-drawact="png"' + (DRAW.strokes.length ? '' : ' disabled') + '>' + ic('download', 'ico-14') + '<span>保存 PNG</span></button>' +
+        '<button class="btn" data-drawact="jpg"' + (DRAW.strokes.length ? '' : ' disabled') + '><span>保存 JPG</span></button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dr-tip">PNG 背景透明，叠在视频或别的画面上直接能用；JPG 自动填白底，发给别人不会出现黑底。画布跟随窗口自适应，导出为高倍清晰度。</div>' +
+  '</div>';
+}
+
+function drawPoint(e, canvas) {
+  const r = canvas.getBoundingClientRect();
+  return {
+    x: (e.clientX - r.left) / (r.width || 1),
+    y: (e.clientY - r.top) / (r.height || 1)
+  };
+}
+
+function drawStroke(ctx, s, w, h) {
+  const pts = s.points.map(function (p) { return { x: p.x * w, y: p.y * h }; });
+  if (!pts.length) return;
+
+  ctx.save();
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = s.size;
+
+  if (s.tool === 'eraser') {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.strokeStyle = '#000';
+    ctx.fillStyle = '#000';
+  } else {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = s.color;
+    ctx.fillStyle = s.color;
+  }
+
+  if (s.tool === 'pen' || s.tool === 'eraser') {
+    if (pts.length === 1) {
+      ctx.beginPath();
+      ctx.arc(pts[0].x, pts[0].y, Math.max(1, s.size / 2), 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      ctx.stroke();
+    }
+  } else if (pts.length > 1) {
+    const a = pts[0], b = pts[pts.length - 1];
+    if (s.tool === 'line') {
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    } else if (s.tool === 'rect') {
+      ctx.strokeRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y));
+    } else if (s.tool === 'ellipse') {
+      ctx.beginPath();
+      ctx.ellipse((a.x + b.x) / 2, (a.y + b.y) / 2, Math.abs(b.x - a.x) / 2, Math.abs(b.y - a.y) / 2, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+function drawPaint() {
+  const canvas = document.getElementById('drawCanvas');
+  if (!canvas) return;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w || !h) return;
+
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const bw = Math.round(w * dpr), bh = Math.round(h * dpr);
+  if (canvas.width !== bw || canvas.height !== bh) {
+    canvas.width = bw;
+    canvas.height = bh;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, w, h);
+  DRAW.strokes.forEach(function (s) { drawStroke(ctx, s, w, h); });
+  if (DRAW.live) drawStroke(ctx, DRAW.live, w, h);
+  drawSync();
+}
+
+function drawRequestPaint() {
+  if (drawRaf) return;
+  drawRaf = window.requestAnimationFrame(function () {
+    drawRaf = 0;
+    drawPaint();
+  });
+}
+
+function drawSync() {
+  const n = DRAW.strokes.length;
+  const stage = document.querySelector('.dr-stage');
+  if (stage) stage.classList.toggle('is-empty', n === 0 && !DRAW.live);
+  const count = document.querySelector('[data-draw-count]');
+  if (count) count.textContent = n;
+  const canvas = document.getElementById('drawCanvas');
+  const size = document.querySelector('[data-draw-size]');
+  if (size && canvas) size.textContent = canvas.clientWidth + ' × ' + canvas.clientHeight;
+  document.querySelectorAll('[data-drawact="undo"]').forEach(function (b) { b.disabled = !n; });
+  document.querySelectorAll('[data-drawact="redo"]').forEach(function (b) { b.disabled = !DRAW.redo.length; });
+  document.querySelectorAll('[data-drawact="clear"]').forEach(function (b) { b.disabled = !n; });
+  document.querySelectorAll('[data-drawact="png"],[data-drawact="jpg"]').forEach(function (b) { b.disabled = !n; });
+}
+
+function drawUndo() {
+  if (!DRAW.strokes.length) return;
+  DRAW.redo.push(DRAW.strokes.pop());
+  drawPaint();
+}
+
+function drawRedo() {
+  if (!DRAW.redo.length) return;
+  DRAW.strokes.push(DRAW.redo.pop());
+  drawPaint();
+}
+
+function drawClear() {
+  if (!DRAW.strokes.length) return;
+  DRAW.strokes.length = 0;
+  DRAW.redo.length = 0;
+  DRAW.live = null;
+  drawPaint();
+  toast('画布已清空', 'ok');
+}
+
+function drawExport(kind) {
+  const canvas = document.getElementById('drawCanvas');
+  if (!canvas || !DRAW.strokes.length) { toast('先画几笔再保存', 'err'); return; }
+
+  const out = document.createElement('canvas');
+  out.width = canvas.width;
+  out.height = canvas.height;
+  const ctx = out.getContext('2d');
+  if (kind === 'jpg') {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, out.width, out.height);
+  }
+  ctx.drawImage(canvas, 0, 0);
+
+  const d = new Date();
+  const stamp = fmtDate(d).replace(/-/g, '') + '-' + pad2(d.getHours()) + pad2(d.getMinutes()) + pad2(d.getSeconds());
+  const a = document.createElement('a');
+  a.download = '画板-' + stamp + (kind === 'jpg' ? '.jpg' : '.png');
+  a.href = out.toDataURL(kind === 'jpg' ? 'image/jpeg' : 'image/png', kind === 'jpg' ? 0.92 : undefined);
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  toast('已保存 ' + a.download, 'ok');
+}
+
+function mountDraw() {
+  const canvas = document.getElementById('drawCanvas');
+  if (!canvas) return;
+
+  document.querySelectorAll('[data-drawtool]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      DRAW.tool = b.dataset.drawtool;
+      document.querySelectorAll('[data-drawtool]').forEach(function (x) { x.classList.toggle('on', x === b); });
+      canvas.classList.toggle('is-eraser', DRAW.tool === 'eraser');
+    });
+  });
+
+  document.querySelectorAll('[data-drawcolor]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      DRAW.color = b.dataset.drawcolor;
+      document.querySelectorAll('[data-drawcolor]').forEach(function (x) { x.classList.toggle('on', x === b); });
+      const ci = document.getElementById('drawColorInput');
+      if (ci) ci.value = DRAW.color;
+      // 选了颜色通常是要画：自动切回画笔
+      if (DRAW.tool === 'eraser') {
+        DRAW.tool = 'pen';
+        document.querySelectorAll('[data-drawtool]').forEach(function (x) { x.classList.toggle('on', x.dataset.drawtool === 'pen'); });
+        canvas.classList.remove('is-eraser');
+      }
+    });
+  });
+
+  const ci = document.getElementById('drawColorInput');
+  if (ci) ci.addEventListener('input', function () {
+    DRAW.color = ci.value;
+    document.querySelectorAll('[data-drawcolor]').forEach(function (x) { x.classList.remove('on'); });
+  });
+
+  const size = document.querySelector('[data-drawsize]');
+  if (size) size.addEventListener('input', function () {
+    DRAW.size = Number(size.value);
+    const label = document.querySelector('[data-drawsize-val]');
+    if (label) label.textContent = size.value;
+  });
+
+  document.querySelectorAll('[data-drawact]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      const a = b.dataset.drawact;
+      if (a === 'undo') drawUndo();
+      else if (a === 'redo') drawRedo();
+      else if (a === 'clear') drawClear();
+      else drawExport(a);
+    });
+  });
+
+  if (DRAW.tool === 'eraser') canvas.classList.add('is-eraser');
+
+  canvas.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    e.preventDefault();
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+    DRAW.live = {
+      tool: DRAW.tool, color: DRAW.color, size: DRAW.size,
+      points: [drawPoint(e, canvas)]
+    };
+    drawPaint();
+  });
+
+  canvas.addEventListener('pointermove', function (e) {
+    const live = DRAW.live;
+    if (!live) return;
+    e.preventDefault();
+    const p = drawPoint(e, canvas);
+    if (live.tool === 'pen' || live.tool === 'eraser') {
+      const last = live.points[live.points.length - 1];
+      if (Math.abs(p.x - last.x) + Math.abs(p.y - last.y) < 0.002) return;
+      live.points.push(p);
+    } else {
+      live.points = [live.points[0], p];
+    }
+    drawRequestPaint();
+  });
+
+  function endStroke() {
+    const live = DRAW.live;
+    if (!live) return;
+    DRAW.live = null;
+    const isBrush = live.tool === 'pen' || live.tool === 'eraser';
+    const enough = isBrush ? live.points.length > 0 : live.points.length > 1;
+    if (enough) {
+      DRAW.strokes.push(live);
+      DRAW.redo.length = 0;
+    }
+    drawPaint();
+  }
+  canvas.addEventListener('pointerup', endStroke);
+  canvas.addEventListener('pointercancel', endStroke);
+  canvas.addEventListener('pointerleave', function (e) {
+    // 鼠标没按住就离开，不需要结束笔画；按住拖出画布则让它继续
+    if (e.pointerType === 'mouse' && e.buttons === 0) endStroke();
+  });
+
+  drawPaint();
+  if (drawRO) drawRO.disconnect();
+  if (window.ResizeObserver) {
+    drawRO = new ResizeObserver(function () { drawPaint(); });
+    drawRO.observe(canvas);
+  }
+}
+
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 const SECTIONS = [
   { key: 'tasks', no: '01', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', no: '02', title: '图书馆', desc: '藏书、书摘与思考' },
   { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' },
-  { key: 'pixel', no: '04', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' }
+  { key: 'pixel', no: '04', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
+  { key: 'draw', no: '05', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
 ];
 
 function secHead(s) {
@@ -1802,6 +2133,7 @@ function renderView(keepScroll) {
     if (s.key === 'tasks') body = renderTasksPage();
     else if (s.key === 'library') body = renderLibraryPage();
     else if (s.key === 'wenan') body = renderWenanPage();
+    else if (s.key === 'draw') body = renderDrawPage();
     else body = renderPixelPage();
     html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
   });
@@ -1825,9 +2157,10 @@ function renderView(keepScroll) {
     }
   }
 
-  // 首页跑道动画 + 像素工坊画布，都在重建 DOM 后重新挂载
+  // 首页跑道动画 + 像素工坊画布 + 画板，都在重建 DOM 后重新挂载
   mountRunway();
   mountPixel();
+  mountDraw();
 
   // 懒加载：图书馆数据按需请求
   if (st.load.library === 'idle') loadLibrary();
