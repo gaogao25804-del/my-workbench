@@ -1,0 +1,6 @@
+{
+  "_readme": "关键词 -> 公式编号的映射。rules 里 priority 大的先匹配，命中第一条就停；一条都不中就输出 \"?\"。keywords 命中任意一个即算命中，match 设为 all 则要求全部命中。规则初稿由 WorkBuddy 提供，此处只放结构。",
+  "version": 1,
+  "default": "?",
+  "rules": []
+}
