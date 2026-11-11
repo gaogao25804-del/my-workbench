@@ -31,7 +31,8 @@ const ICON_PATHS = {
   ellipse: '<ellipse cx="12" cy="12" rx="8.5" ry="6"/>',
   undo: '<path d="M9 7 4 12l5 5"/><path d="M4 12h9a5 5 0 0 1 0 10h-3"/>',
   redo: '<path d="M15 7l5 5-5 5"/><path d="M20 12h-9a5 5 0 0 0 0 10h3"/>',
-  trash: '<path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6.5 7l1 12.5h9l1-12.5"/>'
+  trash: '<path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6.5 7l1 12.5h9l1-12.5"/>',
+  mic: '<rect x="9" y="2.8" width="6" height="10.4" rx="3"/><path d="M5.6 11.2a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.6V21"/><path d="M8.6 21h6.8"/>'
 };
 
 function ic(name, cls) {
@@ -56,6 +57,7 @@ const PAGES = {
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 支持筛选与分页', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
   wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' },
+  koubo:   { title: '口播工坊',   desc: '选题 · 草稿 · 定稿 · 三段流水线' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' }
 };
@@ -264,6 +266,7 @@ function renderHome() {
         '<p class="rw-sub">任务是飞书同步来的，藏书和口播文案留在本机，<br>打开这一页，今天做什么、还剩什么，一眼看到底。</p>' +
         '<div class="rw-actions">' +
           '<button class="rw-btn primary" data-go="tasks">看看今天 <span>→</span></button>' +
+          '<button class="rw-btn" data-go="koubo">写今天的口播</button>' +
           '<button class="rw-btn" data-go="library">翻一翻藏书</button>' +
         '</div>' +
         '<div class="rw-panel">' +
@@ -975,6 +978,51 @@ function wenanBook(d) {
     '</div>' +
     '<div class="book-tip"><strong>' + esc(d.name) + '</strong><span>' + esc(d.date) + ' · ' + esc(d.size) + '</span></div>' +
   '</div>';
+}
+
+/* ---------------- 口播工坊（内容留空，等数据接入后再填） ---------------- */
+const KB_LANES = [
+  { key: 'idea',  name: '选题池', en: 'IDEAS',  icon: 'inbox', empty: '还没有选题', tip: '想到什么先丢这儿，拍之前再挑' },
+  { key: 'draft', name: '草稿',   en: 'DRAFT',  icon: 'pen',   empty: '还没有草稿', tip: '念得顺了才算过关' },
+  { key: 'final', name: '定稿',   en: 'FINAL',  icon: 'check', empty: '还没有定稿', tip: '定稿的稿子，直接拿去向镜头' }
+];
+
+const KB_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+function renderKouboPage() {
+  const d = new Date();
+
+  const lanes = KB_LANES.map(function (l) {
+    return '<div class="kb-col" data-kb-lane="' + l.key + '">' +
+      '<div class="kb-col-head">' +
+        '<i class="kb-dot"></i>' +
+        '<span class="kb-col-name">' + esc(l.name) + '</span>' +
+        '<span class="kb-col-en">' + esc(l.en) + '</span>' +
+        '<span class="kb-col-count">0</span>' +
+      '</div>' +
+      '<div class="kb-empty">' +
+        '<span class="kb-empty-ico">' + ic(l.icon) + '</span>' +
+        '<b>' + esc(l.empty) + '</b>' +
+        '<span>' + esc(l.tip) + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  return '' +
+    '<div class="kb-strip">' +
+      '<div class="kb-strip-main">' +
+        '<div class="kb-kicker"><b>TODAY</b> · 口播</div>' +
+        '<div class="kb-date">' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日<em>' + KB_WEEK[d.getDay()] + '</em></div>' +
+      '</div>' +
+      '<div class="kb-slots">' +
+        '<div class="kb-slot is-live"><span>发布</span><b>19:00</b></div>' +
+        '<div class="kb-slot"><span>待写</span><b>—</b></div>' +
+        '<div class="kb-slot"><span>待录</span><b>—</b></div>' +
+        '<div class="kb-slot"><span>已定稿</span><b>—</b></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="kb-board">' + lanes + '</div>' +
+    '<div class="kb-note"><i></i>区块已就位 · 内容先留空，等数据接进来再填</div>';
 }
 
 /* ---------------- 像素工坊（图片 → 像素风 · 透明背景导出） ---------------- */
@@ -2104,8 +2152,9 @@ const SECTIONS = [
   { key: 'tasks', no: '01', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', no: '02', title: '图书馆', desc: '藏书、书摘与思考' },
   { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' },
-  { key: 'pixel', no: '04', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
-  { key: 'draw', no: '05', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
+  { key: 'koubo', no: '04', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
+  { key: 'pixel', no: '05', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
+  { key: 'draw', no: '06', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
 ];
 
 function secHead(s) {
@@ -2133,8 +2182,10 @@ function renderView(keepScroll) {
     if (s.key === 'tasks') body = renderTasksPage();
     else if (s.key === 'library') body = renderLibraryPage();
     else if (s.key === 'wenan') body = renderWenanPage();
+    else if (s.key === 'koubo') body = renderKouboPage();
+    else if (s.key === 'pixel') body = renderPixelPage();
     else if (s.key === 'draw') body = renderDrawPage();
-    else body = renderPixelPage();
+    else body = '';
     html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
   });
   rwStop();
