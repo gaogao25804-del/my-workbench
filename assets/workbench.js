@@ -69,8 +69,9 @@ const st = {
   tab: 'home',
   feishu: null,
   library: null,
-  load: { feishu: 'idle', library: 'idle' },
-  err: { feishu: '', library: '' },
+  videos: null,
+  load: { feishu: 'idle', library: 'idle', videos: 'idle' },
+  err: { feishu: '', library: '', videos: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
   wenan: { q: '', cat: 'all', page: 1 },
@@ -177,6 +178,22 @@ async function loadLibrary() {
   } catch (e) {
     st.load.library = 'error';
     st.err.library = e.message || '加载失败';
+  }
+  updateChrome();
+  renderView(true);
+}
+
+async function loadVideos() {
+  if (st.load.videos === 'loading' || st.load.videos === 'ready') return;
+  st.load.videos = 'loading';
+  st.err.videos = '';
+  renderView(true);
+  try {
+    st.videos = await fetchJSON('videos-data.json');
+    st.load.videos = 'ready';
+  } catch (e) {
+    st.load.videos = 'error';
+    st.err.videos = e.message || '加载失败';
   }
   updateChrome();
   renderView(true);
@@ -2213,8 +2230,9 @@ function renderView(keepScroll) {
   mountPixel();
   mountDraw();
 
-  // 懒加载：图书馆数据按需请求
+  // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
+  if (st.load.videos === 'idle') loadVideos();
 
   // 重排后按真实滚动位置校正侧栏高亮
   syncActiveSection();
