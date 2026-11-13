@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-13 10:43",
+ "updated": "2026-11-13 10:47",
  "stats": {
   "抖音": 50,
-  "快手": 49,
+  "快手": 50,
   "头条": 50,
   "B站": 50,
   "百度": 51,
@@ -63,54 +63,6 @@
    "hooks": [],
    "hot": "",
    "url": "https://9to5mac.com/2026/11/12/30-of-iphone-duo-buyers-may-have-returned-it-but-i-dont-think-apple-should-worry/"
-  },
-  {
-   "title": "iPhone Duo one week later: The future, or not for me?",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 5,
-   "why": [
-    "+5 iphone duo"
-   ],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/11/iphone-duo-one-week-later-the-future-or-not-for-me/"
-  },
-  {
-   "title": "If you bought an iPhone Duo, have you kept or returned it? [Poll]",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 5,
-   "why": [
-    "+5 iphone duo"
-   ],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/11/if-you-bought-an-iphone-duo-have-you-kept-or-returned-it-poll/"
-  },
-  {
-   "title": "Here’s how Webex adapts meetings and multitasking for iPhone Duo",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 5,
-   "why": [
-    "+5 iphone duo"
-   ],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/09/heres-how-webex-adapts-meetings-and-multitasking-for-iphone-duo/"
-  },
-  {
-   "title": "Apple Continues to Move Up iPhone Duo Delivery Dates",
-   "source": "MacRumors",
-   "kind": "新品",
-   "score": 5,
-   "why": [
-    "+5 iphone duo"
-   ],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.macrumors.com/2026/11/12/iphone-duo-delivery-dates-continue-to-move-up/"
   },
   {
    "title": "苹果首款智能家庭中枢 HomeView 及新款 Apple TV 4K 上市，首批订单已送至澳新客户手中",
@@ -286,38 +238,70 @@
    "hooks": [],
    "hot": "",
    "url": "https://9to5mac.com/2026/11/11/iphone-is-the-winner-of-new-battery-test-topping-all-androids/"
+  },
+  {
+   "title": "Apple to investigate accident that killed three workers at iPhone parts factory in India",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/10/apple-to-investigate-accident-that-killed-three-workers-at-iphone-parts-factory-in-india/"
+  },
+  {
+   "title": "iOS 27.2 adds new features in six iPhone apps, details here",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/10/ios-27-2-adds-new-features-in-six-iphone-apps-details-here/"
+  },
+  {
+   "title": "New Apple TV 4K remote’s best feature requires a newer iPhone model",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/10/new-apple-tv-4k-remotes-best-feature-requires-a-newer-iphone-model/"
+  },
+  {
+   "title": "iPadOS 27.3 adds new iPad setting I instantly turned on",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/10/ipados-27-3-adds-new-ipad-setting-i-instantly-turned-on/"
   }
  ],
  "meme": [
   "课本里的逍遥游有画面了",
-  "亚太之问中国作答",
-  "库里腹斜肌撕裂 预计缺席4周",
   "烟火美食夯吃挑战开赛了",
   "淡人友好冬日旅行",
   "R星入驻抖音",
   "时间从来证明不了什么",
-  "国内金饰价跌穿1200元",
   "“商家扬言取消外卖”系套路",
   "你爱的是花还是花为你开",
   "我已经准备好回家过年了",
+  "你还是逃不过覆面系",
   "天赐抖音直播首秀",
   "告别信开机",
-  "你还是逃不过覆面系",
   "可以给我买麻辣烫糖葫芦吗",
   "首个AI漫剧晚会阵容官宣",
   "幸福迢迢如流水",
   "今天是太阳雨假表哥真表嫂",
-  "曹卫东警告菲律宾勿挑衅滋事",
-  "自请分配去老君山看雪",
-  "铁公鸡来南太行也得破费",
-  "多喜一家人定档11月16日",
-  "好像在看赵丽颖朋友圈",
-  "跟着后会友期开启进藏之旅"
+  "铁公鸡来南太行也得破费"
  ],
  "resonance": [],
  "counts": {
-  "picks": 39,
-  "shootable": 8,
-  "meme": 24
+  "picks": 32,
+  "shootable": 4,
+  "meme": 16
  }
 }
