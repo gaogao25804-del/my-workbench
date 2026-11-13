@@ -48,6 +48,7 @@ const PAGES = {
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 支持筛选与分页', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
   koubo:   { title: '口播工坊',   desc: '选题 · 草稿 · 定稿 · 三段流水线' },
+  wenan:   { title: '成品文案',   desc: '完整成片 · 分段 + 画面 + 口播' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
   report:  { title: '战报',       desc: '作品数据回流 · 过线率与公式热力表' },
@@ -66,8 +67,9 @@ const st = {
   radar: null,
   wechat: null,
   drafts: null,
-  load: { feishu: 'idle', library: 'idle', videos: 'idle', radar: 'idle', drafts: 'idle' },
-  err: { feishu: '', library: '', videos: '', radar: '', drafts: '' },
+  wenan: null,
+  load: { feishu: 'idle', library: 'idle', videos: 'idle', radar: 'idle', drafts: 'idle', wenan: 'idle' },
+  err: { feishu: '', library: '', videos: '', radar: '', drafts: '', wenan: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
   pixel: {
@@ -291,6 +293,7 @@ function renderHome() {
   const cards = [
     { go: 'radar', icon: 'bolt', title: '今日雷达', desc: '热点候选 · 每天 10:20' },
     { go: 'koubo', icon: 'mic', title: '口播工坊', desc: '选题 · 草稿 · 念稿' },
+    { go: 'wenan', icon: 'file', title: '成品文案', desc: '完整成片 · 照骨架抄' },
     { go: 'report', icon: 'chart', title: '战报', desc: '播放数据 · 过线率' },
     { go: 'tasks', icon: 'calendar', title: '任务与日历', desc: '飞书任务月历' },
     { go: 'library', icon: 'book', title: '图书馆', desc: '藏书与书摘' },
@@ -902,6 +905,115 @@ function bookVar(title) {
   const s = String(title || '');
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973;
   return h % 4;
+}
+
+/* ---------------- 成品文案库（读 content/library/index.json） ----------------
+   存的不是草稿，是「施工图」：分几段、每段几秒、画面拍什么、嘴里说什么、配套怎么设。
+   新稿照这个骨架抄，比抄句子有用。 */
+const WN = { open: '' };
+
+function wnLineHtml(label, text, cls) {
+  return '<div class="wn-line ' + (cls || '') + '"><b>' + esc(label) + '</b><span>' + esc(text) + '</span></div>';
+}
+
+function wnStepHtml(s) {
+  return '<li class="wn-step">' +
+    '<div class="wn-step-h">' +
+      '<span class="wn-time">' + esc(s.t || '') + '</span>' +
+      '<span class="wn-role">' + esc(s.role || '') + '</span>' +
+    '</div>' +
+    (s.visual ? wnLineHtml('画面', s.visual, 'wn-visual') : '') +
+    (s.vo ? wnLineHtml('口播', s.vo, 'wn-vo') : '') +
+  '</li>';
+}
+
+function wnItemHtml(it) {
+  const id = String(it.id || '');
+  const on = WN.open === id;
+  const segs = it.segments || [];
+  const extra = it.extra || [];
+
+  let meta = '';
+  if (it.kind) meta += '<span class="wn-tag">' + esc(it.kind) + '</span>';
+  if (it.duration) meta += '<span>' + esc(it.duration) + '</span>';
+  if (segs.length) meta += '<span>' + segs.length + ' 段</span>';
+  if (it.date) meta += '<span>' + esc(it.date) + '</span>';
+  if (it.source) meta += '<span>' + esc(it.source) + '</span>';
+
+  return '<article class="wn-item' + (on ? ' is-open' : '') + '">' +
+    '<button class="wn-head" type="button" data-wn-toggle="' + esc(id) + '" aria-expanded="' + (on ? 'true' : 'false') + '">' +
+      '<span class="wn-h-main">' +
+        '<span class="wn-title">' + esc(it.title || '未命名') + '</span>' +
+        '<span class="wn-meta">' + meta + '</span>' +
+      '</span>' +
+      '<span class="wn-cue" aria-hidden="true"></span>' +
+    '</button>' +
+    '<div class="wn-body">' +
+      (it.note ? '<div class="wn-note"><b>可抄的</b><span>' + esc(it.note) + '</span></div>' : '') +
+      (segs.length ? '<ol class="wn-steps">' + segs.map(wnStepHtml).join('') + '</ol>' : '') +
+      (extra.length ? '<div class="wn-extra">' + extra.map(function (e) {
+        return '<div class="wn-kv"><b>' + esc(e.k || '') + '</b><span>' + esc(e.v || '') + '</span></div>';
+      }).join('') + '</div>' : '') +
+    '</div>' +
+  '</article>';
+}
+
+function renderWenanPage() {
+  if (st.load.wenan === 'error') {
+    return stateHtml('error', '成品文案读不到', st.err.wenan, '重试', 'data-wn-retry="1"');
+  }
+  const items = (st.wenan && st.wenan.items) || [];
+  const lead = '<div class="wn-lead">' +
+    '<b>' + (st.load.wenan === 'ready' ? items.length + ' 条' : '—') + '</b>' +
+    '<span>每条都是完整成片：分几段、每段几秒、画面拍什么、嘴里说什么、配套怎么设。写新稿照这个骨架来，别抄句子。</span>' +
+  '</div>';
+  if (st.load.wenan !== 'ready') return lead + stateHtml('loading', '正在取成品文案…');
+  if (!items.length) return lead + '<div class="wn-empty">还没有存进来的成品文案</div>';
+  return lead + '<div class="wn-list">' + items.map(wnItemHtml).join('') + '</div>';
+}
+
+function mountWenan() {
+  const nc = document.getElementById('navWenanCount');
+  if (nc) {
+    const n = (st.wenan && st.wenan.items) ? st.wenan.items.length : 0;
+    nc.textContent = st.load.wenan === 'ready' ? String(n) : '—';
+  }
+  const sec = document.getElementById('sec-wenan');
+  if (!sec) return;
+
+  sec.querySelectorAll('[data-wn-toggle]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      const id = el.getAttribute('data-wn-toggle');
+      const item = el.closest('.wn-item');
+      const wasOpen = (WN.open === id);
+      WN.open = wasOpen ? '' : id;
+      if (item) item.classList.toggle('is-open', !wasOpen);
+      el.setAttribute('aria-expanded', wasOpen ? 'false' : 'true');
+    });
+  });
+
+  const rt = sec.querySelector('[data-wn-retry]');
+  if (rt) rt.addEventListener('click', function () {
+    st.load.wenan = 'idle';
+    st.err.wenan = '';
+    loadWenan();
+  });
+}
+
+async function loadWenan() {
+  if (st.load.wenan === 'loading' || st.load.wenan === 'ready') return;
+  st.load.wenan = 'loading';
+  st.err.wenan = '';
+  renderView(true);
+  try {
+    st.wenan = await fetchJSON('content/library/index.json');
+    st.load.wenan = 'ready';
+  } catch (e) {
+    st.load.wenan = 'error';
+    st.err.wenan = e.message || '加载失败';
+  }
+  updateChrome();
+  renderView(true);
 }
 
 /* ---------------- 口播工坊（读 content/drafts/index.json） ---------------- */
@@ -2655,6 +2767,7 @@ function mountDraw() {
 const SECTIONS = [
   { key: 'radar', cat: 'create', title: '今日雷达', desc: '全网热点 · 每天 10:20 自动抓一遍' },
   { key: 'koubo', cat: 'create', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
+  { key: 'wenan', cat: 'create', title: '成品文案', desc: '存完整成片 · 分几段、每段几秒、画面拍什么' },
   { key: 'report', cat: 'create', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
@@ -2696,6 +2809,7 @@ function renderView(keepScroll) {
     if (s.key === 'tasks') return renderTasksPage();
     if (s.key === 'library') return renderLibraryPage();
     if (s.key === 'koubo') return renderKouboPage();
+    if (s.key === 'wenan') return renderWenanPage();
     if (s.key === 'pixel') return renderPixelPage();
     if (s.key === 'draw') return renderDrawPage();
     if (s.key === 'report') return renderReportPage();
@@ -2739,12 +2853,14 @@ function renderView(keepScroll) {
   mountReport();
   mountRadar();
   mountKoubo();
+  mountWenan();
 
   // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
   if (st.load.videos === 'idle') loadVideos();
   if (st.load.radar === 'idle') loadRadar();
   if (st.load.drafts === 'idle') loadDrafts();
+  if (st.load.wenan === 'idle') loadWenan();
 
   // 重排后按真实滚动位置校正侧栏高亮
   syncActiveSection();
@@ -2937,6 +3053,12 @@ function syncActiveSection() {
     const el = document.getElementById('sec-' + s.key);
     if (el && el.getBoundingClientRect().top + window.scrollY <= probe) cur = s.key;
   });
+  // 页面只有一张卡片、撑不满一屏时滚不动，probe 落不到区块上会把 tab 判成 home，
+  // 下一次重渲染就跳回首页。页面上明明有区块，就以那个区块为准。
+  if (cur === 'home') {
+    const only = document.querySelector('#view .page-sec');
+    if (only && only.id) cur = only.id.replace('sec-', '');
+  }
   if (cur !== st.tab) { st.tab = cur; updateChrome(); }
 }
 
