@@ -1106,9 +1106,12 @@ function kbDocs() {
   const rem = (st.drafts && st.drafts.drafts) ? st.drafts.drafts : [];
   rem.forEach(function (r) {
     if (!r.file || files[r.file]) return;
+    // md 已经拉下来的话，正文直接给编辑器，别再显示「正在取原稿」
+    const md = KB.md[r.file];
+    const p = md != null ? kbMdParse(md) : null;
     out.push({
       id: 'r:' + r.file, file: r.file, local: false,
-      title: r.title || '', body: null, final: false,
+      title: r.title || (p ? p.title : ''), body: p ? p.body : null, final: false,
       date: r.date || '', src: '我放进来的', publish_at: r.publish_at || ''
     });
   });
@@ -1191,7 +1194,7 @@ function kbEditorHtml(d) {
       ? '<div class="kb-ed-wait">正在取原稿…</div>'
       : '<textarea class="kb-ed-b" data-kb-field="body" spellcheck="false" placeholder="直接往这儿写。一整段别分，像说话那样。">' + esc(d.body || '') + '</textarea>') +
     '<div class="kb-ed-bar">' +
-      '<span class="kb-ed-num">' + (n ? n + ' 字 · 约 ' + kbDurText(n) : '空') + '</span>' +
+      '<span class="kb-ed-num' + (n > 700 ? ' is-over' : '') + '">' + (n ? n + ' 字 · 约 ' + kbDurText(n) : '空') + '</span>' +
       '<span class="kb-ed-hint">目标 520–700 字 · 1 分 20–1 分 40 · 一整段不分行</span>' +
       '<span class="kb-ed-save">' + (KB.saved ? '已存本地 ' + KB.saved : '还没动过') + '</span>' +
     '</div>' +
@@ -1262,6 +1265,7 @@ function kbSyncMeta() {
   if (num && d) {
     const n = kbWords(d.body);
     num.textContent = n ? n + ' 字 · 约 ' + kbDurText(n) : '空';
+    num.classList.toggle('is-over', n > 700);
   }
   if (save) save.textContent = KB.saved ? '已存本地 ' + KB.saved : '还没动过';
 }
