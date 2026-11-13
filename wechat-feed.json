@@ -1,27 +1,11 @@
 {
- "updated": "2026-11-13 13:37",
+ "updated": "2026-11-13 13:39",
  "source": "搜狗微信搜索",
  "counts": {
   "抓取": 68,
-  "入选": 15
+  "入选": 6
  },
  "picks": [
-  {
-   "title": "华为第二款阔屏手机来了!配置给力,还比iPhone Fold便宜得多!",
-   "summary": "先是发布了全球首款三折叠屏手机,之后又在去年上半年发布了首款阔折叠屏手机,之后又在9月带来了首款平板手机,这些在市场上...",
-   "account": "机智玩机机",
-   "date": "02-03 00:44",
-   "score": 12,
-   "why": [
-    "折叠屏",
-    "阔屏",
-    "便宜",
-    "iPhone",
-    "华为"
-   ],
-   "kw": "阔屏手机",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShs_pNQL01xCoqGKrH4-F6GVqXa8Fplpd9QhM1abN-7hTckCb0QRG7eXebM_-G_YLKJQeY0kLCgjhTS_IVkFtGNvNt1ohL81uwu1ZlQ3aHnv8PD_71LPggVFwBoWGsAtERzRwflCsuVcdElJD2qYHlO3etedSdlQ8XN0we0lmcbA25Vc7qa2LCrQENXX5POkzwF4KiB5k-anJ535pjGOOjYg..&type=2&query=%E9%98%94%E5%B1%8F%E6%89%8B%E6%9C%BA&token=65E8B99CAFD72EED9593F5B42835460696FD30C56AF6A0C4"
-  },
   {
    "title": "iPhone Duo 上市三周,调查显示 30%买家已退货",
    "summary": "苹果的首款折叠屏 iPhone Duo 现在已经上市 3 周了.但你现在去官网看的话,依然要等到明年 1 月 23 号才会到货.想现在买到现货...",
@@ -35,22 +19,7 @@
     "iPhone"
    ],
    "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShcIPaACM0aV0qGKrH4-F6GVqXa8Fplpd9qGALo9THDhbxVm4vkHZ0W6vxW-pT7bR2HXZtekvXwZXGSGbXj-97aGyCHpNAXwdCzkneDw1dWXDizRRPxcnSxxIJ5oYh2m2ZAovthfrc-XH0ofPtrgZsit3FEElMUG19J8MuflTc82KS_jCj3JBQhpoM3cPveBmbNQJCuNWSprqE8RsmObDbtQ..&type=2&query=iPhone Duo&token=65E8D2ECFE867CB8C4C2A4E27A0BFE04C4DDEEAB6AF6A0C7"
-  },
-  {
-   "title": "摩托罗拉正在评估阔屏手机,并且是 7 英寸巨屏,不知道是阔屏直板机 还是类似华为Pura X的阔折叠屏,但都挺让人期待的",
-   "summary": "#科技爱好者必看 #科技新品爆料 #摩#手机屏幕技术 托罗拉新机 #阔屏手机评测 #科技数码爱好者 #华为PuraX对比 #阔屏手机评测 #摩...",
-   "account": "乐萌小新",
-   "date": "02-15 19:07",
-   "score": 10,
-   "why": [
-    "折叠屏",
-    "阔屏",
-    "对比",
-    "华为"
-   ],
-   "kw": "阔屏手机",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShs_pNQL01xCoqGKrH4-F6GVqXa8Fplpd9I_FJALrD9L-h-uNHOiY0gruD_qtoi9_EPUHoKhrwkmd2PfXqg0BDUJJaOrqtSzTtNeNd_iYMQ-tyvHbu19F3wOsbqsPXIHxdYu5xty6ABmznlZ8Md4yPHswkSll89Vb7sb93X99UocMjEo2D4WC6HVzKAsnCV4SXTrTMF2nP__Xm0CtGSSkZQQ..&type=2&query=%E9%98%94%E5%B1%8F%E6%89%8B%E6%9C%BA&token=65E8B99CAFD72EED9593F5B42835460696FD30C56AF6A0C4"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh9w8oPaHYvVwqGKrH4-F6GVqXa8Fplpd9qGALo9THDhbxVm4vkHZ0W6vxW-pT7bR2HXZtekvXwZXGSGbXj-97aGyCHpNAXwdCzkneDw1dWXDizRRPxcnSx1nRFz57v3v5a4aQbJB78SaMNf9_cZyUliD92QKLlyeqKuwr30uYNco_qa4bC9m3k4yt4pgL1-94NkCV1BGIpBl535pjGOOjYg..&type=2&query=iPhone Duo&token=65ECE610A7DC26E69E9BFEBC583A23FE9E136A5E6AF6A13A"
   },
   {
    "title": "华为mate XT 2 把心电筛查装进手机里",
@@ -64,7 +33,7 @@
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh13gJeiKg6zIqGKrH4-F6GVqXa8Fplpd9N7WicfHpvlk05FSBwpuMHbBwPGNFJNDZOXYzGP1NTuKsj54IMNUlEXCg5Z-mWfVe-q42f6TWflLjnAY_kkgXUbENHP3eiIn_tUybUhZOJeKe7UT39fo0IHbvg1eICcGoJoOdNlBwBrlYW4sBQmWc65xKkqu-MwxplO4q3I69-4_2CsG6-xMgzQ..&type=2&query=Mate XT&token=65E92DABA8D12AE89394F2B22DF2BEB39375592B6AF6A0D1"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShDt4aVJXdFScqGKrH4-F6GVqXa8Fplpd9N7WicfHpvlk05FSBwpuMHbBwPGNFJNDZOXYzGP1NTuKsj54IMNUlEXCg5Z-mWfVe-q42f6TWflLjnAY_kkgXUT59iwbszuwqFZN0WPCLM9ju3sV23YOcm8k9aGrlacFEHV7Rs64wDbX2SO4HN_cjVFFGqzEXxSJy2faIBdHxVG_6zvkPgoArRQ..&type=2&query=Mate XT&token=65ED2EEFE09862A2D9DCBAFB1CF6EE51DAE6E73C6AF6A143"
   },
   {
    "title": "国内折叠屏手机出货暴跌超30%",
@@ -78,50 +47,7 @@
     "有数据"
    ],
    "kw": "折叠屏 屏幕",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShGpcYYLxHqyMqGKrH4-F6GVqXa8Fplpd9YiAhwIkVWSjl-rCA-dqqtAEMruV80HsIJv_Dwmip64mvDEtKe28v1dOVlaxrhvCnPJ3fZcQ6VBZmHZfGeGymZS56Cy1QFAN3RGa0FDEFLl26cP9DbPIuvAwiN4rZqyRSZXsscsdlEpGN0y4AiOeWTvPtXLSTZD3ne-HBX8W72s_wdVqCwyPdzA..&type=2&query=%E6%8A%98%E5%8F%A0%E5%B1%8F %E5%B1%8F%E5%B9%95&token=65E89EBD215EA3671C1D7C3AA263FC7C1CBC5A0F6AF6A0C1"
-  },
-  {
-   "title": "在官方贴膜贴坏屏幕,手机变“维修机” 用户:专业人士尚且失手,华为折叠屏太娇贵",
-   "summary": "(0532-80889431)反映,3月6日她去华为授权服务中心为自己的折叠屏手机贴膜,不料手机屏幕被门店的工作人员损坏.门店方面提...",
-   "account": "青岛信网",
-   "date": "03-20 14:40",
-   "score": 8,
-   "why": [
-    "折叠屏",
-    "贴膜",
-    "华为"
-   ],
-   "kw": "折叠屏 屏幕",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShGpcYYLxHqyMqGKrH4-F6GVqXa8Fplpd9rOpLTlVpTzU1UKuhuCJJ2HqUSCGJt7_KpSymA9v9xgXI4hBgFWeW0txTPbO71gszohbReVkMKfqEDZ9Rgkx0p3Qq95g5ln__DfL6FxTgPlIf1hcRkYUrNcJ7I2SaBaxS_2fVJ1mZYgGZtd1Kbul1OqmbTJ1UvC2QqEShLRntua_yPfCoem7FzA..&type=2&query=%E6%8A%98%E5%8F%A0%E5%B1%8F %E5%B1%8F%E5%B9%95&token=65E89EBD215EA3671C1D7C3AA263FC7C1CBC5A0F6AF6A0C1"
-  },
-  {
-   "title": "华为突然立项「阔屏直板机」!16:9黄金比例回归,直板机皇Q4见",
-   "summary": "直板形态的阔屏手机意味着更低的购买门槛和更好的耐用性.相比于售价普遍偏高的折叠屏,直板机无疑能覆盖更广泛的用户群体....",
-   "account": "百科推荐官",
-   "date": "02-26 09:30",
-   "score": 8,
-   "why": [
-    "折叠屏",
-    "阔屏",
-    "华为"
-   ],
-   "kw": "阔屏手机",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShs_pNQL01xCoqGKrH4-F6GVqXa8Fplpd95xlT8xv6Lx2ToNSFhiF0ZbhcHYrMbpFPN6kg72fOiNABYbUtrorMucE0SsTFWDDxINYuGR_rXzU-wrdlokTMhfag4WS8aMRAWlNuHvlzRxccTWPIeZP7yARtPF14jYsMHqCyRc_MfxTOeFo-gQaSMnKVCX2CnWfIhZXyxqDotn7s46dn8Efgxg..&type=2&query=%E9%98%94%E5%B1%8F%E6%89%8B%E6%9C%BA&token=65E8B99CAFD72EED9593F5B42835460696FD30C56AF6A0C4"
-  },
-  {
-   "title": "LG G8X 双屏手机评测:带屏幕的手机壳比三星、华为折叠屏好吗?",
-   "summary": "LG的理念是,与其设计可折叠屏的产品,不如用更好的方法来增加智能手机的灵活性,比如设计内置辅助屏幕的手机壳.介绍作为一...",
-   "account": "杰克游戏解说",
-   "date": "11-04 14:35",
-   "score": 8,
-   "why": [
-    "折叠屏",
-    "壳",
-    "华为",
-    "三星"
-   ],
-   "kw": "手机壳 折叠",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh1B6olVn66UEqGKrH4-F6GVqXa8Fplpd9qWYq7MttGbWpTCEePvLB8STv4BJpjCO5u9D-U1RTvTQNMCp33_lAZeMbpFL7jkaTXsr_pLwW8S4W-kMQfexlHgvuuWuiep_7eNWkGNU9-rLOmSEdKAwHE5NPMnNRPT5ukDJ1uYof2JeZDjNfzMP0_waxwN6xE67FfM0UQAQ1iqIGX_iHL9MadA..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=65E95126F58D77B4CFC8AEEE71570C56CF6EF9F86AF6A0D4"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShzs3v2kGSHVMqGKrH4-F6GVqXa8Fplpd9YiAhwIkVWSjl-rCA-dqqtAEMruV80HsIJv_Dwmip64mvDEtKe28v1dOVlaxrhvCnPJ3fZcQ6VBZmHZfGeGymZRcxfvY1J1c-BL1Jb2kLQMwpszS7mz--GHY3poSHW_0mlua0Dkm-dtSHuRIRx6eXLbpO3deLQCSlCmjnQzoeIe85eBgmN3LoYQ..&type=2&query=%E6%8A%98%E5%8F%A0%E5%B1%8F %E5%B1%8F%E5%B9%95&token=65ECB2644235C00C787E1859BD3DD508789CAFE96AF6A134"
   },
   {
    "title": "华为Mate XT渠道价差引热议,三折叠降价七千多值得买吗",
@@ -135,7 +61,7 @@
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh13gJeiKg6zIqGKrH4-F6GVqXa8Fplpd9kuqDnVBlT_XIsbafZnMRU3r0uTAxH0vVUZxcx1rX4Jrcqtv9ZhekvbwTqjr8Pjq-cKXeKp2oLMowjnGON8rOZfdSWxNphzfFnFPri_OZbS5oAgbluFBP6tFJa_D4G7_OSPwopNAkU7--pI5AIRgm9o5EbCArMnSgaHYQ1d2Cc-t5Nu7CnoSqqg..&type=2&query=Mate XT&token=65E92DABA8D12AE89394F2B22DF2BEB39375592B6AF6A0D1"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShDt4aVJXdFScqGKrH4-F6GVqXa8Fplpd9kuqDnVBlT_XIsbafZnMRU3r0uTAxH0vVUZxcx1rX4Jrcqtv9ZhekvbwTqjr8Pjq-cKXeKp2oLMowjnGON8rOZZtZY58s2GkEMaVudmRrPc1qe34PnS0ci5vbgOMxJ_T4ztRcXbWXnUFQ8X49F2qJbgQVahC_enf6MxxH5866uQEY-UZGbO56rA..&type=2&query=Mate XT&token=65ED2EEFE09862A2D9DCBAFB1CF6EE51DAE6E73C6AF6A143"
   },
   {
    "title": "折叠屏最难的半年里,华为用一台＂不折叠＂的手机,50天卖了100万台",
@@ -149,49 +75,7 @@
     "华为"
    ],
    "kw": "折叠屏 屏幕",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShGpcYYLxHqyMqGKrH4-F6GVqXa8Fplpd9Oaj3ehwdYHxceNVY1w5OomsCksRYeGVM8mEnZIhypc3O2Uv46cjkQf97YpwJwDzydsa4AGeIPJJlmEIzYUuQQlYWWv-pnIzqR4keqlXmbHPhCISBKhSg9eYIyRLVNPX05K8KyZcJvzPT4DukSanyHDHNspGDgqq233LiqfU4i6jYl_Q5RRZQjg..&type=2&query=%E6%8A%98%E5%8F%A0%E5%B1%8F %E5%B1%8F%E5%B9%95&token=65E89EBD215EA3671C1D7C3AA263FC7C1CBC5A0F6AF6A0C1"
-  },
-  {
-   "title": "最低只需19元,这9款折叠屏手机壳,适配华为、荣耀多款机型!",
-   "summary": "咱就是说折叠屏手机那么贵,摔坏咋整?手机壳必须安排上!今天就给大家评测几款华为、荣耀折叠屏手机壳看看谁才是“护机小能手...",
-   "account": "乐乐讲数码",
-   "date": "03-26 11:20",
-   "score": 7,
-   "why": [
-    "折叠屏",
-    "壳",
-    "华为"
-   ],
-   "kw": "手机壳 折叠",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh1B6olVn66UEqGKrH4-F6GVqXa8Fplpd9Kp_WOLOoAIK-03G4xJgkTpMCX9Kp2BdAIja7_VZcEu1jwYTd8ddmLALeEADv3kvB1XSE_kNTZz569XI-Nwsh7wLIBa31rTMsedyRpZxKIxFZNp1uwNxwFEfs3SVmM3sopX1hJgtQAwBwLJ5SWfZ-nbPIQu8DGmdT_DOglJf4GpBOJBjQH7pCxQ..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=65E95126F58D77B4CFC8AEEE71570C56CF6EF9F86AF6A0D4"
-  },
-  {
-   "title": "折叠屏手机壳,优势互补,招募首批合伙人!",
-   "summary": "iPhone+安卓,折叠屏手机壳!招募首批合伙人产品介绍我们的产品,是通过专用合页结构,将两部手机背靠背连接,让iPhone与...",
-   "account": "杨宇翰",
-   "date": "03-13 17:57",
-   "score": 7,
-   "why": [
-    "折叠屏",
-    "壳",
-    "iPhone"
-   ],
-   "kw": "手机壳 折叠",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh1B6olVn66UEqGKrH4-F6GVqXa8Fplpd9UVEeKCgY78w67yLNAWHpp6jq-a2SEYBXRJj0Zn9NNapoaWOEC3mq7VFZPe3RXzeItn4rdWtcjegg-rA-mVars2pW2hPAhTwpWw0SlFrlzeN4zEVdXWalrW73Fli6vnFRlVMpb1ZMTIAoCZ4R2-16JnubGkYYkTZNZeayHnrupXMHpHkoPMgL3A..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=65E95126F58D77B4CFC8AEEE71570C56CF6EF9F86AF6A0D4"
-  },
-  {
-   "title": "5G折叠手机来了!手机壳膜厂家连夜开会...",
-   "summary": "害得我们手机壳工厂连夜开会讨论……才子:华为真的给国人长脸.红K时空:开启一个新时代!慕尼黑刺客:这个折叠太酷了,不过...",
-   "account": "赣青团学",
-   "date": "02-28 10:48",
-   "score": 7,
-   "why": [
-    "折叠屏",
-    "壳",
-    "华为"
-   ],
-   "kw": "手机壳 折叠",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh1B6olVn66UEqGKrH4-F6GVqXa8Fplpd9R-fabjDNAVc0T_78utLbslhwmVpPQp74a68R6OIQNTLOL7DT-9CTCwuG1lsaNpLCnPQE-NB2H54hKeTDLc4YrzQZJxj6B98uS4hwJ9-G73Khx-lJQkc_RpOtlObxg0qMjOvL-rvVF2Ms3U9SDc0ZQ6WIknZ-MdcXjgpbdoWKzrOrCDCayYmfpA..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=65E95126F58D77B4CFC8AEEE71570C56CF6EF9F86AF6A0D4"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShzs3v2kGSHVMqGKrH4-F6GVqXa8Fplpd9Oaj3ehwdYHxceNVY1w5OomsCksRYeGVM8mEnZIhypc3O2Uv46cjkQf97YpwJwDzydsa4AGeIPJJlmEIzYUuQQt2oR_AXvFTQ8ZMoNTZaLMqJwMMCB6WlEoVTSI8Xf19gF4H1ZvBrqTxRJtnbdDPfhkbeFRmjxGTPez_499cpzEgO8fIRwtipOg..&type=2&query=%E6%8A%98%E5%8F%A0%E5%B1%8F %E5%B1%8F%E5%B9%95&token=65ECB2644235C00C787E1859BD3DD508789CAFE96AF6A134"
   },
   {
    "title": "Mate XT 一周年:从抢不到到随时买",
@@ -205,20 +89,7 @@
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYSh13gJeiKg6zIqGKrH4-F6GVqXa8Fplpd9sEbNXgMEIsrdsRx2O2rsuL3n0JGtr661P9Yl_Clzr0niBT9OrRHNjpsDzNdG8Mm4bv1CHqnYhK79ZVtXzAGGQPxjwSbkLngsWaOs-ouwMLcOCMtUdOpACjm8bEpFcCLNiMcd1WIjlwd0HVWfAZNe5kYZ6fNoN7kbLDxSXyUOXOGfxjh3za6jWA..&type=2&query=Mate XT&token=65E92DABA8D12AE89394F2B22DF2BEB39375592B6AF6A0D1"
-  },
-  {
-   "title": "今天,你的手机贴膜了吗?",
-   "summary": "今天小编来为大家讲讲那些年手机贴膜的真相与谎言.水凝膜?钢化膜?就市面上的手机膜来说,无非就两个大类:一是以水凝膜为代...",
-   "account": "中国联通",
-   "date": "01-21 07:27",
-   "score": 6,
-   "why": [
-    "贴膜",
-    "膜"
-   ],
-   "kw": "手机贴膜",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShUUBkkcaAtGEqGKrH4-F6GVqXa8Fplpd9fI4BL5Hm8wF4YHYRVuf0khJQm82qYOGpf8ZO1SuVUhDvndlyLk8gXn_eKpKS2lo52358NdDmWuXfZEm14Rhd5B2VnpbicLhn3_tPEUc9dhIGisFpQHzcsAeCLN6hc0mIVVtuWB-u-BZJp17_csPHL3Y9SHDC9JwABu11x8vtSj2rCDCayYmfpA..&type=2&query=%E6%89%8B%E6%9C%BA%E8%B4%B4%E8%86%9C&token=65E90F4B473FC6067D7B1D5FC151031D7EC521FE6AF6A0CE"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS_rCU17ysYShDt4aVJXdFScqGKrH4-F6GVqXa8Fplpd9sEbNXgMEIsrdsRx2O2rsuL3n0JGtr661P9Yl_Clzr0niBT9OrRHNjpsDzNdG8Mm4bv1CHqnYhK79ZVtXzAGGQB7TWC3VojT6RtjpKXKRT8LQSXVB1Z-J2h8Cnn3LR1JDb61wVcIUpLP-tF5SnY0A-Qk8wmZ2WCLogxGL5eN3g5B5Nu7CnoSqqg..&type=2&query=Mate XT&token=65ED2EEFE09862A2D9DCBAFB1CF6EE51DAE6E73C6AF6A143"
   }
  ]
 }
