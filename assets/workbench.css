@@ -4671,5 +4671,18 @@ body::before{
 .rp-mx-c i{ color:#8a4a24; }
 .rp-mx-c.is-empty{ color:var(--ink-3); font-weight:400; }
 
+/* 今日雷达：每条候选都能点开原贴 */
+.rd-row{ text-decoration:none; color:inherit; }
+.rd-link{ cursor:pointer; transition:background .14s, box-shadow .14s; }
+.rd-link:hover{ background:rgba(255,106,47,.09); }
+.rd-link:hover .rd-title{ color:var(--accent-deep); }
+.rd-link:focus-visible{ outline:2px solid rgba(255,106,47,.55); outline-offset:-2px; }
+.rd-out{
+  font-style:normal; margin-left:6px;
+  font-size:10px; color:var(--accent-deep); opacity:.7;
+}
+.rd-link:hover .rd-out{ opacity:1; }
+
+
 
 

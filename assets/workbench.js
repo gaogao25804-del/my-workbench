@@ -1265,15 +1265,17 @@ function renderRadarPage() {
         const sc = p.score || 0;
         const cls = sc >= 8 ? ' is-hot' : sc >= 5 ? ' is-hit' : '';
         const top3 = !RDR.onlyHit && i < 3 && sc >= 5;
-        return '<div class="rd-row' + cls + (top3 ? ' is-top' : '') + '">' +
-          '<span class="rd-score">' + (sc > 0 ? sc : '—') + '</span>' +
+        const url = /^https?:\/\//i.test(p.url || '') ? p.url : '';
+        const inner = '<span class="rd-score">' + (sc > 0 ? sc : '—') + '</span>' +
           '<span class="rd-src">' + esc(p.source || '') + '</span>' +
-          '<span class="rd-title"' + (p.url ? '' : '') + '>' + esc(p.title) + '</span>' +
+          '<span class="rd-title">' + esc(p.title) + (url ? '<i class="rd-out">↗</i>' : '') + '</span>' +
           '<span class="rd-tags">' +
             (p.hooks || []).map(function (h) { return '<i>' + esc(h) + '</i>'; }).join('') +
             (p.kind ? '<u>' + esc(p.kind) + '</u>' : '') +
-          '</span>' +
-        '</div>';
+          '</span>';
+        if (!url) return '<div class="rd-row' + cls + (top3 ? ' is-top' : '') + '">' + inner + '</div>';
+        return '<a class="rd-row rd-link' + cls + (top3 ? ' is-top' : '') + '" href="' + esc(url) +
+          '" target="_blank" rel="noopener noreferrer" title="打开原文：' + esc(p.title) + '">' + inner + '</a>';
       }).join('') +
     '</div>' +
     (list.length > RDR_MAX
