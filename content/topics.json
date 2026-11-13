@@ -1,0 +1,108 @@
+{
+  "updated_at": "2026-11-13",
+  "topics": [
+    {
+      "id": "t001",
+      "title": "荣耀 700 系列今天发布，三款怎么选",
+      "brand": "荣耀",
+      "event_date": "2026-11-13",
+      "status": "hot",
+      "score": 83,
+      "scores": { "rel": 4, "fresh": 5, "shoot": 4, "dispute": 4, "crowd": 2 },
+      "angle": "拍给还在纠结 700S 和 700 Pro 的人，直接给结论不要念参数",
+      "facts": [
+        "荣耀 700 系列发布会定档 2026 年 11 月 13 日",
+        "本次推出三款：荣耀 700S、荣耀 700、荣耀 700 Pro",
+        "官方宣传点为全系标配某项配置（具体以发布会现场为准）"
+      ],
+      "sources": [
+        "http://mobile.zol.com.cn/more/3_506_1_2.shtml"
+      ],
+      "picked": false,
+      "notes": "时效最高，今天发"
+    },
+    {
+      "id": "t002",
+      "title": "华为星芒 OSTA 首款机 11/20 发布，阔直板到底是不是伪需求",
+      "brand": "华为",
+      "event_date": "2026-11-20",
+      "status": "hot",
+      "score": 83,
+      "scores": { "rel": 4, "fresh": 5, "shoot": 3, "dispute": 5, "crowd": 2 },
+      "angle": "阔直板好不好用 + 这种比例壳膜怎么配，正好接你的配件主线",
+      "facts": [
+        "华为 2026 年 11 月 11 日官宣全新子品牌「星芒 OSTA」",
+        "首款旗舰定名 OSTA O1 Pro，11 月 20 日 14:30 发布",
+        "余承东已亲自上手，确认采用宽屏比例、三色可选",
+        "11 月 12 日发布首支预热视频，品牌口号「Come As You Are，自有光芒」"
+      ],
+      "sources": [
+        "http://news.pconline.com.cn/news/mobile/",
+        "https://ipad.pconline.com.cn/lists/160_1_000037909.html"
+      ],
+      "picked": false,
+      "notes": "提前 7 天预热，可以做「阔直板适配」系列"
+    },
+    {
+      "id": "t003",
+      "title": "小米 18 标准版开启盲订，6.4 小直屏回来了",
+      "brand": "小米",
+      "event_date": "2026-12-01",
+      "status": "hot",
+      "score": 71,
+      "scores": { "rel": 4, "fresh": 4, "shoot": 3, "dispute": 3, "crowd": 2 },
+      "angle": "小直屏用户的久等，顺便带一句壳膜适配感受",
+      "facts": [
+        "线下经销商已开启小米 18 标准版盲订，可优先拿货、挑配色配置",
+        "预计 12 月登场，Pro 版本已于 9 月发布",
+        "搭载 2nm 工艺的第六代骁龙 8 至尊版",
+        "6.4 英寸小直屏"
+      ],
+      "sources": [
+        "https://m.weibo.cn/detail/5364719901999814"
+      ],
+      "picked": false,
+      "notes": "适合做「等不等」决策向内容"
+    },
+    {
+      "id": "t004",
+      "title": "百元手机壳凭「体验感」卖爆，凭什么",
+      "brand": "行业",
+      "event_date": "",
+      "status": "evergreen",
+      "score": 67,
+      "scores": { "rel": 5, "fresh": 1, "shoot": 5, "dispute": 2, "crowd": 1 },
+      "angle": "用你手上的壳直接对比，讲清贵在哪、便宜差在哪",
+      "facts": [
+        "2021 至 2024 年，我国高价手机保护壳市场整体保持高速扩张，年均增长达数十亿元",
+        "手机壳正从实用品转向时尚单品，成为释放年轻群体消费潜力的载体",
+        "百元价位是这轮增长的核心区间"
+      ],
+      "sources": [
+        "http://dzb.xfrb.com.cn/UploadFiles/file/20260126/202601260901095577.pdf"
+      ],
+      "picked": false,
+      "notes": "完全对口，随时能拍，适合填空窗"
+    },
+    {
+      "id": "t005",
+      "title": "联发科联手 NVIDIA 造芯，PC 本地跑 AI 智能体",
+      "brand": "联发科 / NVIDIA",
+      "event_date": "2026-11-10",
+      "status": "hot",
+      "score": 49,
+      "scores": { "rel": 2, "fresh": 3, "shoot": 2, "dispute": 2, "crowd": 1 },
+      "angle": "跟手机号关联弱，只有讲成「这对我买电脑有什么影响」才值得拍",
+      "facts": [
+        "2026 年 11 月，联发科携手 NVIDIA 发布 RTX Spark 超级芯片",
+        "融合 Blackwell RTX GPU 与 Grace CPU，支持 128GB 统一内存",
+        "首批集成华硕、戴尔、惠普等六大品牌 Windows 11 PC"
+      ],
+      "sources": [
+        "https://www.pconline.com.cn/author/author2760.html"
+      ],
+      "picked": false,
+      "notes": "备选，优先级低"
+    }
+  ]
+}
