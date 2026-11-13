@@ -104,14 +104,27 @@ score = round(total / 150 * 100)
 - 参数要翻译成人话，不说「搭载 2nm 制程」，说「这颗芯片今年只有两台手机用上」
 - 目标 **80–100 秒、520–700 字**，正文一整段（老板反复退回过，这条不许改回 220–260 字那套）
 
-## 五、战报回流
+## 五、战报（每月视频数据统计）
 
-`videos-data.json`（**仓库根目录**，`main` 和 `gh-pages` 都有）里 1056 条作品的标题和播放数据，是判断「什么选题真跑得动」的唯一依据。线上地址 `https://gaogao25804-del.github.io/my-workbench/videos-data.json`，实测 200 / 407KB。
+老板 2026-11-13 的活：「战报那个没有任何意义，全删掉，把每个月的数据填进去，格式照抄我的表格」。
+旧的合格率 / 公式热力表那一版**整块删掉了**，别再恢复。
 
-- 合格口径：`play >= 35000` 且 `(like + comment + share) > 0`
-- 当前合格率：大号 73.8%（992 条），小号 53.1%（64 条）
-- 每次老板导新数据，Trae 重跑脚本更新，线上战报自动反映
-- **核对文件在不在，别用 `raw.githubusercontent.com`**：本机 DNS 解析不了这个域名，报的是连接失败，不是 404。用 `api.github.com/repos/gaogao25804-del/my-workbench`（公开仓库，200）或直接访问上面的线上地址。
+**数据只有一个文件**：`content/report/index.json`，由 `tools/build-report.py` 从「X月视频数据统计.xlsx」生成。
+
+```bash
+py -3 tools/build-report.py                                    # 用桌面上的 9月/10月 两个表
+py -3 tools/build-report.py "C:/path/11月视频数据统计.xlsx"      # 新月份单独加
+```
+
+- 页面结构照表格的 sheet 顺序：**① 整体大盘 → ② 引流 vs 内容 → ③ 全部明细 → ④ TOP10 → ⑤ 总结**
+- 指标口径跟表格一致：只统计「审核状态 = 公开」；汇总表里已经算好的数值**原样照抄**，
+  哪一格空着（比如 10 月汇总还没填）才自己按明细补算，补算结果要能对上「总结」里那句官方数字
+- 明细一条不删，列跟 Excel 一样多，表格里横向滚
+- 代码归属：`assets/workbench.js` 的 `renderReportPage` 与 `rrp*` 函数、css 里 `rrp-*` 段、
+  `index.html` 的 `data-nav="report"` 与 `navReportCount`。Trae 要动先问老板
+
+`videos-data.json`（1056 条作品台账）文件保留，但**战报页不再读它**，页面侧已经不引用了。
+那不是这一版的东西，别往 `renderReportPage` 里加回排行榜、过线率、热力表。
 
 ## 六、部署（两边权限相同，各发各的）
 
@@ -151,7 +164,7 @@ py -3 tools/publish.py <你改过的文件...> -m "一句话说明"
 | 创作线 | 今日雷达 | 已上线，`radar-data.json` 每天 10:20 抓取 |
 | 创作线 | 口播工坊 | 骨架已上线，待接 `topics.json` |
 | 创作线 | 成品文案 | 已上线，`content/library/index.json`，存完整成片的施工图 |
-| 创作线 | 战报 | 已上线，`videos-data.json` 1056 条 |
+| 创作线 | 战报 | 已上线，`content/report/index.json`（9 月 / 10 月，照老板的 Excel） |
 | 工具箱 | 任务与日历 | 已上线，993 条飞书任务 |
 | 工具箱 | 图书馆 | 已上线，63 本书 |
 | 工具箱 | 像素工坊 | 已上线 |
