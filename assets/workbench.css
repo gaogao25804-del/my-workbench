@@ -4951,6 +4951,7 @@ body{
 .sw-btn .sw-v{
   font-size:9.5px; line-height:1.35; letter-spacing:.02em;
   color:var(--ink-3);
+  white-space:nowrap;
 }
 .sw-btn:hover{ background:rgba(255,255,255,.05); }
 .sw-btn.active{
