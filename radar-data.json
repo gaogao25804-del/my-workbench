@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13 10:47",
+ "updated": "2026-11-13 10:48",
  "stats": {
   "抖音": 50,
   "快手": 50,
@@ -101,21 +101,6 @@
    "hooks": [],
    "hot": "",
    "url": "https://www.ifanr.com/1689097?utm_source=rss&utm_medium=rss&utm_campaign="
-  },
-  {
-   "title": "iPhone18ProMax销量为何登顶",
-   "source": "B站",
-   "kind": "热榜",
-   "score": 2,
-   "why": [
-    "+2 销量"
-   ],
-   "hooks": [
-    "量",
-    "反差"
-   ],
-   "hot": "",
-   "url": ""
   },
   {
    "title": "华为鸿蒙电脑更新 7.0.0.115 SP11 版本，小艺 Work 支持文档处理、PPT 制作等",
@@ -278,6 +263,16 @@
    "hooks": [],
    "hot": "",
    "url": "https://9to5mac.com/2026/11/10/ipados-27-3-adds-new-ipad-setting-i-instantly-turned-on/"
+  },
+  {
+   "title": "iOS 27.3: Three new iPhone features coming soon",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/09/ios-27-3-three-new-iphone-features-coming-soon/"
   }
  ],
  "meme": [
@@ -300,7 +295,7 @@
  ],
  "resonance": [],
  "counts": {
-  "picks": 32,
+  "picks": 31,
   "shootable": 4,
   "meme": 16
  }
