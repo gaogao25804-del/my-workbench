@@ -1,33 +1,28 @@
-# 工作台内容协作协议
+# 工作台协作边界
 
-> 这份文档是 Trae 和 WorkBuddy 之间的接口约定。两个 agent 不共享对话上下文，**只靠仓库里的文件传话**。任何一方改接口，必须先改这份文档。
+> 两个 agent 各管一摊：不互相评审、不互相留言、不互相等待。文件归属写死在下面，越界就算错。
 
-## 一、角色
+## 一、各管各的
 
-| 角色 | 负责 | 不负责 |
+| 角色 | 只负责 | 不碰 |
 |---|---|---|
-| **WorkBuddy** | **全部文案**：选题判断、逐字稿、评审、定稿、`content/` 整个目录、口播工坊区块、文案上线 | 不改工作台其它区块的样式与交互 |
-| **Trae** | 工作台其它区块（任务日历、图书馆、像素工坊、画板、战报渲染、雷达渲染）、`sync-*.js` 同步脚本 | **不写任何文案**、不碰 `content/`、不改口播工坊代码 |
-| **你（老板）** | 拍板选题、拍摄发布 | — |
+| **WorkBuddy** | `content/` 下的口播稿与笔记（`drafts/`、`notes/`）；自己发布上线 | 站点代码、数据文件、`topics.json` |
+| **Trae** | 站点本身：`index.html`、`assets/`、`tools/`；数据文件：`topics.json`、`videos-data.json`、`feishu-data.json`、`library-data.json`、`radar-data.json` | 任何文案稿子 |
+| **你（老板）** | 挑选题、定稿、拍摄发布、导数据 | — |
 
-**文案线归 WorkBuddy 一个人**（2026-11-13 老板拍板）：从选题判断到定稿到上线，全程一个人做完，
-不经过 Trae、不等 Trae 确认、不需要老板转达。Trae 不参与任何一篇文案的写作、评审、修订。
+**文案一律由 WorkBuddy 写。Trae 不写稿、不评稿、不改稿**，工作台只负责把内容展示出来。
 
-**两人平级**：都有 `main` + `gh-pages` 的发布权，发布方式见第六节。
-
-## 二、接口文件
+## 二、文件归属
 
 ```
-content/
-  topics.json          选题池        Trae 写 → WorkBuddy 读
-  drafts/
-    2026-11-13-荣耀700.md   口播稿   WorkBuddy 写 → 老板读
-  protocol.md          本文件        双方只读
-videos-data.json       已发作品数据   Trae 写 → WorkBuddy 读
+content/drafts/  content/notes/   WorkBuddy 的地盘
+content/topics.json               Trae 写（雷达打分结果）→ WorkBuddy 只读
+index.html  assets/               Trae 的地盘
+videos-data.json  feishu-data.json  library-data.json  radar-data.json   Trae 的地盘
+tools/                            Trae 的地盘（publish.py 是两边共用的发布器）
 ```
 
-铁律：**谁写的文件谁改**。WorkBuddy 不要改 `topics.json` 和 `videos-data.json`，Trae 不要改 `drafts/`。
-要配合直接走第八节的总线，不经过老板转发。
+铁律：**只改自己地盘的文件**。跨界的活由老板决定派给谁。
 
 ## 三、topics.json 结构
 
@@ -115,13 +110,15 @@ score = round(total / 150 * 100)
 
 - 合格口径：`play >= 35000` 且 `(like + comment + share) > 0`
 - 当前合格率：大号 73.8%（992 条），小号 53.1%（64 条）
-- 每次老板导新数据，Trae 重跑脚本更新，WorkBuddy 的「战报」自动反映
+- 每次老板导新数据，Trae 重跑脚本更新，线上战报自动反映
 - **核对文件在不在，别用 `raw.githubusercontent.com`**：本机 DNS 解析不了这个域名，报的是连接失败，不是 404。用 `api.github.com/repos/gaogao25804-del/my-workbench`（公开仓库，200）或直接访问上面的线上地址。
 
-## 六、部署（同级：Trae 和 WorkBuddy 都有发布权）
+## 六、部署（两边权限相同，各发各的）
 
 线上 <https://gaogao25804-del.github.io/my-workbench/>，GitHub Pages **从 `gh-pages` 分支发布**。
 `main` 是源码分支，`gh-pages` 是线上分支。**两个都要写，只写 `main` 线上不会变。**
+
+权限已核实（2026-11-13）：本机这份 GitHub 凭据对该仓库是 **admin**（`admin` / `maintain` / `push` 全开），`main` 和 `gh-pages` 都能直接推，没有分支保护。WorkBuddy 用的是同一份凭据，**不需要 Trae 代发，也不需要任何人审批**。
 
 发布统一走仓库自带的脚本，不要自己拼 API 调用：
 
@@ -145,8 +142,6 @@ py -3 tools/publish.py <你改过的文件...> -m "一句话说明"
 - token 不用手配：同机运行时脚本从 git 凭据里自动读；异地运行才需要设环境变量 `GITHUB_TOKEN`
 - **例外（已批准）**：无人值守的定时任务（`选题雷达/radar_run.py`，每天 10:20）可以自己拼 API 直推，只点 `radar-data.json` 一个文件、`main` + `gh-pages` 都推。定时任务不需要改成调 `publish.py`，保持现状。
 
-权限同级，但**文件归属不变**（见第二节）：谁写的文件谁改。要配合直接走第八节的总线，由老板转达是下下策。
-
 ## 七、当前站点结构
 
 侧栏分两个大类，一次只显示一组。编号在每个大类内部重新排。
@@ -163,37 +158,8 @@ py -3 tools/publish.py <你改过的文件...> -m "一句话说明"
 
 已下线：文案库（整块删除，别再往 `assets/` 里加相关代码）。
 
-## 八、直连总线（Trae ↔ WorkBuddy）
+## 八、不做的事
 
-两边不经过老板，直接往同一个本地信箱写。消息存在仓库根 `.bus/messages.json`，**不进 git、不上线**。
-前提：两个 agent 跑在同一条磁盘上（同一个仓库目录）。
-
-```bash
-py -3 tools/bus.py inbox --as trae        # 收自己的未读（另一侧换成 --as workbuddy）
-py -3 tools/bus.py say --as trae --to workbuddy "正文"
-py -3 tools/bus.py log                    # 看最近全部
-py -3 tools/bus.py serve                  # 本地网页 http://127.0.0.1:8788
-```
-
-规矩：
-
-- **开工第一件事 `inbox`**，收工前把该说的 `say` 出去。看完自动标记已读，不会重复提醒。
-- 一条消息只说一件事，带上文件名和行号。不写「你看一下那个」。
-- 需要对方动手才发，纯通知不发。不复述背景 300 字。
-- 老板随时可以 `serve` 打开网页看全部往来，也能自己插一句（发件人选「老板」）。
-
-## 九、文案线边界（2026-11-13 老板拍板，优先于本文件其它条款）
-
-老板原话：文案 WorkBuddy 一个人写，Trae 只搞工作台，WorkBuddy 写完必须能自己上线。
-
-1. **文案一个人写。** 选题→逐字稿→自检→定稿→上线，WorkBuddy 全包。
-   原「两边各写一版再交叉评审」的流水线（`writer.py`、`.bus/jobs.json`）**停用**，
-   它解决的是没人拍板的问题，现在拍板了，多这一层只会更慢。
-2. **Trae 不写文案、不改 `content/`。** 需要文案相关改动，走第八节总线说一声，由 WorkBuddy 改。
-3. **口播工坊区块的代码归 WorkBuddy**（`kb*` 函数、`renderKouboPage`、`mountKoubo`、`loadDrafts`、
-   `index.html` 里 `navKouboCount` 那一行、`workbench.css` 里 `kb-*` 相关段落）。
-   同一文件里其它区块仍归 Trae，改之前先拉线上最新版本，只动自己那几段，别整段重写。
-4. **文案发布不依赖任何人。** WorkBuddy 用 `tools/publish.py` 自己推 `main` + `gh-pages`，
-   推完自己等 30~60 秒核对线上，不设「等对方合并」这一步。
-5. 数据接口不变：`content/drafts/index.json` 是口播工坊的唯一数据源，字段见
-   `content/notes/2026-11-13-workbuddy.md`。
+- 不互评、不互改、不互相留言、不等对方审阅
+- 不让老板在中间转述内容；谁要动对方的文件，先问老板
+- 不做任何「双 agent 流水线」「交叉评审」「共享信箱」之类的机制
