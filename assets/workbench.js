@@ -33,6 +33,7 @@ const ICON_PATHS = {
   redo: '<path d="M15 7l5 5-5 5"/><path d="M20 12h-9a5 5 0 0 0 0 10h3"/>',
   trash: '<path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6.5 7l1 12.5h9l1-12.5"/>',
   mic: '<rect x="9" y="2.8" width="6" height="10.4" rx="3"/><path d="M5.6 11.2a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.6V21"/><path d="M8.6 21h6.8"/>',
+  bolt: '<path d="M13.2 2.6 5.4 13.4h5.2L10.2 21.4 18.6 10.2h-5.4z"/>',
   chart: '<path d="M4 20.2h16"/><rect x="5.4" y="11" width="3.4" height="6.2" rx="1"/><rect x="10.3" y="6.6" width="3.4" height="10.6" rx="1"/><rect x="15.2" y="13.4" width="3.4" height="3.8" rx="1"/>'
 };
 
@@ -72,8 +73,9 @@ const st = {
   feishu: null,
   library: null,
   videos: null,
-  load: { feishu: 'idle', library: 'idle', videos: 'idle' },
-  err: { feishu: '', library: '', videos: '' },
+  radar: null,
+  load: { feishu: 'idle', library: 'idle', videos: 'idle', radar: 'idle' },
+  err: { feishu: '', library: '', videos: '', radar: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
   wenan: { q: '', cat: 'all', page: 1 },
@@ -196,6 +198,22 @@ async function loadVideos() {
   } catch (e) {
     st.load.videos = 'error';
     st.err.videos = e.message || '加载失败';
+  }
+  updateChrome();
+  renderView(true);
+}
+
+async function loadRadar() {
+  if (st.load.radar === 'loading' || st.load.radar === 'ready') return;
+  st.load.radar = 'loading';
+  st.err.radar = '';
+  renderView(true);
+  try {
+    st.radar = await fetchJSON('radar-data.json');
+    st.load.radar = 'ready';
+  } catch (e) {
+    st.load.radar = 'error';
+    st.err.radar = e.message || '加载失败';
   }
   updateChrome();
   renderView(true);
@@ -1253,6 +1271,120 @@ function renderReportPage() {
 }
 
 // 战报筛选：重建 DOM 后重新挂监听
+/* ---------------- 今日雷达（全网热点 · 每天 10:20 自动更新） ---------------- */
+
+const RDR = { onlyHit: false };
+const RDR_MAX = 18;
+
+function rdrShortTime(t) {
+  return (t || '').replace(/^\d{4}-/, '') || '—';
+}
+
+function renderRadarPage() {
+  if (st.load.radar === 'error') {
+    return '<div class="card rd-card">' +
+      stateHtml('error', '雷达数据读不到',
+        (st.err.radar || 'radar-data.json 没加载成功') + ' · 跑一次 选题雷达/radar_run.py 就会生成') +
+      '</div>';
+  }
+  if (!st.radar || st.load.radar !== 'ready') {
+    return '<div class="card rd-card">' + stateHtml('loading', '正在读今日热点') + '</div>';
+  }
+
+  const d = st.radar;
+  const picks = (d.picks || []).slice();
+  if (!picks.length) {
+    return '<div class="card rd-card">' +
+      stateHtml('empty', '今天还没抓到东西', '检查电脑有没有联网，再跑一次 radar_run.py') +
+      '</div>';
+  }
+
+  const hit = picks.filter(function (p) { return (p.score || 0) >= 5; });
+  const list = RDR.onlyHit ? hit : picks;
+  const shown = list.slice(0, RDR_MAX);
+  const stats = d.stats || {};
+  const platforms = Object.keys(stats).filter(function (k) { return stats[k] > 0; });
+  let totalSrc = 0;
+  platforms.forEach(function (k) { totalSrc += stats[k]; });
+
+  // 顶部条
+  let html = '<div class="card rd-card rd-strip-card"><div class="rd-strip">' +
+    '<div class="rd-strip-l">' +
+      '<div class="rd-kicker"><b>今日雷达</b> 每天 10:20 自动更新</div>' +
+      '<div class="rd-time">' + esc(rdrShortTime(d.updated)) +
+        '<em>' + platforms.length + ' 个平台 · 扫了 ' + totalSrc + ' 条热榜</em></div>' +
+    '</div>' +
+    '<div class="rd-slots">' +
+      '<div class="rd-slot"><span>候选</span><b>' + picks.length + '</b></div>' +
+      '<div class="rd-slot is-live"><span>能拍</span><b>' + hit.length + '</b></div>' +
+      '<div class="rd-slot"><span>热梗</span><b>' + (d.meme || []).length + '</b></div>' +
+    '</div>' +
+  '</div></div>';
+
+  // 候选池
+  html += '<div class="card rd-card">' +
+    '<div class="rd-card-head">' +
+      '<div class="rd-card-title">候选池<em>分数 = 能不能开机拍 · 你手上四台机器命中直接加 5 分</em></div>' +
+      '<div class="rd-chips">' +
+        '<span class="chip' + (RDR.onlyHit ? '' : ' active') + '" data-rdr-hit="0">全部 ' + picks.length + '</span>' +
+        '<span class="chip' + (RDR.onlyHit ? ' active' : '') + '" data-rdr-hit="1">只看能拍 ' + hit.length + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="rd-list">' +
+      shown.map(function (p, i) {
+        const sc = p.score || 0;
+        const cls = sc >= 8 ? ' is-hot' : sc >= 5 ? ' is-hit' : '';
+        const top3 = !RDR.onlyHit && i < 3 && sc >= 5;
+        return '<div class="rd-row' + cls + (top3 ? ' is-top' : '') + '">' +
+          '<span class="rd-score">' + (sc > 0 ? sc : '—') + '</span>' +
+          '<span class="rd-src">' + esc(p.source || '') + '</span>' +
+          '<span class="rd-title"' + (p.url ? '' : '') + '>' + esc(p.title) + '</span>' +
+          '<span class="rd-tags">' +
+            (p.hooks || []).map(function (h) { return '<i>' + esc(h) + '</i>'; }).join('') +
+            (p.kind ? '<u>' + esc(p.kind) + '</u>' : '') +
+          '</span>' +
+        '</div>';
+      }).join('') +
+    '</div>' +
+    (list.length > RDR_MAX
+      ? '<div class="rd-note">共 ' + list.length + ' 条，只显示前 ' + RDR_MAX + ' 条</div>'
+      : '<div class="rd-note"><i></i>分数只是「值不值得开机」，最后拍哪条你自己定</div>') +
+  '</div>';
+
+  // 热梗
+  if ((d.meme || []).length) {
+    html += '<div class="card rd-card">' +
+      '<div class="rd-card-head"><div class="rd-card-title">热梗<em>口播里自然带一句就行，别硬念，念出来像广告</em></div></div>' +
+      '<div class="rd-meme">' +
+        d.meme.map(function (m) { return '<span>' + esc(m) + '</span>'; }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  return html;
+}
+
+// 雷达筛选：重建 DOM 后重新挂监听
+function mountRadar() {
+  const nc = document.getElementById('navRadarCount');
+  if (nc) {
+    const n = st.radar && st.radar.picks
+      ? st.radar.picks.filter(function (p) { return (p.score || 0) >= 5; }).length : 0;
+    nc.textContent = st.load.radar === 'ready' ? String(n) : '—';
+  }
+
+  const sec = document.getElementById('sec-radar');
+  if (!sec) return;
+  sec.querySelectorAll('[data-rdr-hit]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      const v = el.getAttribute('data-rdr-hit') === '1';
+      if (v === RDR.onlyHit) return;
+      RDR.onlyHit = v;
+      renderView(true);
+    });
+  });
+}
+
 function mountReport() {
   // 侧栏条目数：跟随快照里实际条数
   const nc = document.getElementById('navReportCount');
@@ -2406,7 +2538,8 @@ const SECTIONS = [
   { key: 'koubo', no: '04', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
   { key: 'pixel', no: '05', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
   { key: 'draw', no: '06', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' },
-  { key: 'report', no: '07', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' }
+  { key: 'report', no: '07', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' },
+  { key: 'radar', no: '08', title: '今日雷达', desc: '全网热点 · 每天 10:20 自动抓一遍' }
 ];
 
 function secHead(s) {
@@ -2438,6 +2571,7 @@ function renderView(keepScroll) {
     else if (s.key === 'pixel') body = renderPixelPage();
     else if (s.key === 'draw') body = renderDrawPage();
     else if (s.key === 'report') body = renderReportPage();
+    else if (s.key === 'radar') body = renderRadarPage();
     else body = '';
     html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
   });
@@ -2466,10 +2600,12 @@ function renderView(keepScroll) {
   mountPixel();
   mountDraw();
   mountReport();
+  mountRadar();
 
   // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
   if (st.load.videos === 'idle') loadVideos();
+  if (st.load.radar === 'idle') loadRadar();
 
   // 重排后按真实滚动位置校正侧栏高亮
   syncActiveSection();
