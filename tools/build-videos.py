@@ -138,17 +138,37 @@ def split_time(v):
     return date, ('%02d:%s' % (int(hh), mm)) if hh is not None else ''
 
 
-def load_rules(path):
+HASHTAG_RE = re.compile(r'#\S+')
+
+
+def clean_title(title):
+    """剥掉 #标签 再匹配。不剥的话几乎每条都带 #手机壳 #手机贴膜，F9 会吃掉全表。"""
+    return HASHTAG_RE.sub('', title or '').strip()
+
+
+def load_config(path):
+    empty = ([], {'order': [], 'default': '', 'traffic': [], 'commerce': []})
     if not path or not os.path.exists(path):
-        return []
+        return empty
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     rules = data.get('rules') or []
-    return sorted(enumerate(rules), key=lambda p: (-int(p[1].get('priority', 0)), p[0]))
+    rules = sorted(enumerate(rules), key=lambda p: (-int(p[1].get('priority', 0)), p[0]))
+    return rules, (data.get('type_rules') or {})
+
+
+def detect_type(text, cfg):
+    """按 type_rules.order 的顺序判：先 traffic 再 commerce，都不中就是 default(content)。"""
+    low = text.lower()
+    for name in (cfg.get('order') or ['traffic', 'commerce']):
+        for kw in (cfg.get(name) or []):
+            if str(kw).lower() in low:
+                return name
+    return cfg.get('default') or 'content'
 
 
 def tag(title, rules):
-    text = (title or '').lower()
+    text = clean_title(title).lower()
     for _, rule in rules:
         formula = rule.get('formula')
         if not formula:
@@ -177,7 +197,7 @@ def build(xlsx_path, rules_path, account='main'):
     if 'title' not in idx or 'published_at' not in idx:
         raise SystemExit('表头没对上，实际：' + ' / '.join(header))
 
-    rules = load_rules(rules_path)
+    rules, type_cfg = load_config(rules_path)
     videos = []
     skipped = 0
     for r in rows[1:]:
@@ -193,15 +213,18 @@ def build(xlsx_path, rules_path, account='main'):
         if not date:
             skipped += 1
             continue
+        vtype = cell('type').strip() or detect_type(clean_title(title), type_cfg)
+        # 只有 content 走公式规则；引流、带货类公式直接留 "?"，避免冲淡公式统计
+        formula = tag(title, rules) if vtype == 'content' else '?'
         item = {
             'id': '',
             'account': account,
             'date': date,
             'time': time,
             'title': title,
-            'type': cell('type').strip(),
-            'formula': tag(title, rules),
-            'tagged_by': 'rule' if tag(title, rules) != '?' else '',
+            'type': vtype,
+            'formula': formula,
+            'tagged_by': 'rule' if formula != '?' else '',
             'play': to_int(cell('play')),
             'like': to_int(cell('like')),
             'comment': to_int(cell('comment')),
@@ -258,8 +281,18 @@ def main():
         print('  [%s] %d 条，合格 %d 条（%.1f%%）'
               % (acc, len(sub), ok, (ok / len(sub) * 100) if sub else 0))
     unknowable = sum(1 for v in videos if v['formula'] == '?')
-    print('合计 %d 条（本次跳过空行 %d）| 规则 %d 条 | 待归类 %d 条'
-          % (len(videos), skipped, rule_count, unknowable))
+    print('合计 %d 条（本次跳过空行 %d）| 规则 %d 条'
+          % (len(videos), skipped, rule_count))
+    types = {}
+    for v in videos:
+        types[v['type']] = types.get(v['type'], 0) + 1
+    print('类型分布：' + '，'.join('%s %d' % (k, n) for k, n in sorted(types.items(), key=lambda x: -x[1])))
+    content = [v for v in videos if v['type'] == 'content']
+    tagged = [v for v in content if v['formula'] != '?']
+    print('内容型 %d 条，命中公式 %d 条（%.1f%%），待归类 %d 条'
+          % (len(content), len(tagged), (len(tagged) / len(content) * 100) if content else 0,
+             len(content) - len(tagged)))
+    print('全文待归类 %d 条（含引流/带货，按规则一律不标）' % unknowable)
     print('写出 %s' % args.out)
 
 
