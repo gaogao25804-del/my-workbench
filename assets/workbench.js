@@ -288,89 +288,22 @@ function stateHtml(type, title, desc, actionLabel, actionAttr) {
 
 /* ---------------- 主页 ---------------- */
 function renderHome() {
-  const info = feishuInfo();
-  const ready = st.load.feishu === 'ready';
-
-  const recent = info.tasks.slice()
-    .filter(function (t) { return t.completed_at; })
-    .sort(function (a, b) { return String(b.completed_at).localeCompare(String(a.completed_at)); })
-    .slice(0, 6);
-
-  const quick = [
-    { go: 'tasks', icon: 'calendar', no: '01', cls: 'c1', title: '任务与日历', desc: '月历视图 · 按日期查看任务' },
-    { go: 'library', icon: 'book', no: '02', cls: 'c2', title: '图书馆', desc: '搜索书名 · 阅读书摘与思考' },
-    { go: 'pixel', icon: 'pixel', no: '03', cls: 'c4', title: '像素工坊', desc: '图片转像素 · 去背导出透明 PNG' }
+  const cards = [
+    { go: 'radar', icon: 'bolt', title: '今日雷达', desc: '热点候选 · 每天 10:20' },
+    { go: 'koubo', icon: 'mic', title: '口播工坊', desc: '选题 · 草稿 · 念稿' },
+    { go: 'report', icon: 'chart', title: '战报', desc: '播放数据 · 过线率' },
+    { go: 'tasks', icon: 'calendar', title: '任务与日历', desc: '飞书任务月历' },
+    { go: 'library', icon: 'book', title: '图书馆', desc: '藏书与书摘' },
+    { go: 'pixel', icon: 'pixel', title: '像素工坊', desc: '图片转像素' },
+    { go: 'draw', icon: 'pen', title: '画板', desc: '随手画 · 导出图片' }
   ];
-
-  const rs = rwStats();
-  RW.stats = rs;
-
-  return '' +
-    '<section class="rw-hero" id="rwHero">' +
-      '<canvas class="rw-canvas" id="rwCanvas" aria-hidden="true"></canvas>' +
-      '<div class="rw-vignette"></div>' +
-      '<div class="rw-inner">' +
-        '<div class="rw-kicker"><i></i>PERSONAL WORKBENCH<em>EST 2026</em><span>LOCAL FIRST</span></div>' +
-        '<h1 class="rw-title">把每天该做的事<br><span>排成一条跑道。</span></h1>' +
-        '<p class="rw-sub">任务是飞书同步来的，藏书和口播文案留在本机，<br>打开这一页，今天做什么、还剩什么，一眼看到底。</p>' +
-        '<div class="rw-actions">' +
-          '<button class="rw-btn primary" data-go="tasks">看看今天 <span>→</span></button>' +
-          '<button class="rw-btn" data-go="koubo">写今天的口播</button>' +
-          '<button class="rw-btn" data-go="library">翻一翻藏书</button>' +
-        '</div>' +
-        '<div class="rw-panel">' +
-          '<div class="rw-panel-main">' +
-            '<div class="rw-label">累计完成</div>' +
-            '<div class="rw-big"><b id="rwTotal">' + (ready ? rs.total : '—') + '</b><i>项</i></div>' +
-            '<div class="rw-end"><b id="rwDays">' + (ready ? rs.days : '—') + '</b> 天有记录 · 最近一次 <b id="rwLast">' + (ready ? rwMonthDay(rs.last) : '—') + '</b></div>' +
-          '</div>' +
-          '<div class="rw-panel-side">' +
-            '<div class="rw-kv"><span>最近 7 天</span><b id="rwLast7">' + (ready ? rs.last7 + ' 项' : '—') + '</b></div>' +
-            '<div class="rw-kv"><span>今日目标</span><b id="rwGoal">10 项</b></div>' +
-            '<input class="rw-range" id="rwGoalRange" type="range" min="3" max="20" step="1" value="10" aria-label="今日目标">' +
-            '<div class="rw-hint">拖动滑杆 · 目标越高，数字火苗越旺</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</section>' +
-    '<div class="fx-section-head">' +
-      '<div><div class="fx-eyebrow">EXPLORE · 3 SPACES</div>' +
-      '<div class="fx-sec-title">工作区入口 <em>— explore</em></div></div>' +
-      '<span class="fx-view">SCROLL ↓</span>' +
-    '</div>' +
-    '<div class="fx-cards">' +
-      quick.map(function (q) {
-        return '<div class="fx-card ' + q.cls + '" data-go="' + q.go + '">' +
-          '<div class="fx-card-art">' +
-            '<div class="fx-card-ico">' + ic(q.icon) + '</div>' +
-            '<span class="fx-card-no">' + q.no + '</span>' +
-            '<i class="fx-card-spark"></i>' +
-          '</div>' +
-          '<div class="fx-card-foot">' +
-            '<div class="fx-card-txt"><b>' + esc(q.title) + '</b><span>' + esc(q.desc) + '</span></div>' +
-            '<span class="fx-card-go">↗</span>' +
-          '</div>' +
-        '</div>';
-      }).join('') +
-    '</div>' +
-    '<div class="fx-section-head">' +
-      '<div><div class="fx-eyebrow">RECENT · ' + (ready ? recent.length : '·') + '</div>' +
-      '<div class="fx-sec-title">最近完成 <em>— timeline</em></div></div>' +
-      '<button class="fx-view link" data-go="tasks">全部任务 →</button>' +
-    '</div>' +
-    '<div class="card fx-recent">' +
-      (st.load.feishu === 'loading' ? stateHtml('loading', '正在读取任务数据')
-        : st.load.feishu === 'error' ? stateHtml('error', '飞书数据加载失败', st.err.feishu, '重试', 'data-action="retry-feishu"')
-        : recent.length
-          ? '<div class="row-list">' + recent.map(function (t) {
-              return '<div class="list-row" data-go="tasks">' +
-                '<div class="row-ico">' + ic('check') + '</div>' +
-                '<div class="row-main"><div class="row-title">' + esc(t.summary || '—') + '</div>' +
-                '<div class="row-sub"><span>' + esc(t.category || '其他') + '</span><span>' + esc(fmtDateTime(t.completed_at)) + '</span></div></div>' +
-                '</div>';
-            }).join('') + '</div>'
-          : stateHtml('empty', '暂无已完成任务')) +
-    '</div>';
+  return '<div class="hm-grid">' + cards.map(function (c) {
+    return '<button class="hm-card" type="button" data-go="' + c.go + '">' +
+      '<span class="hm-ico">' + ic(c.icon) + '</span>' +
+      '<span class="hm-txt"><b>' + esc(c.title) + '</b><span>' + esc(c.desc) + '</span></span>' +
+      '<span class="hm-go">\u2197</span>' +
+    '</button>';
+  }).join('') + '</div>';
 }
 
 /* ---------------- 首页 Runway Hero（Hero 30 风格复刻） ----------------
@@ -2758,27 +2691,27 @@ function renderView(keepScroll) {
   const y = window.scrollY;
 
   const list = SECTIONS.filter(function (s) { return s.cat === st.group; });
-  const cat = CATS[st.group] || CATS.create;
 
-  let html = renderHome() +
-    '<div class="cat-band">' +
-      '<div class="cat-band-k">CATEGORY</div>' +
-      '<div class="cat-band-b"><b>' + esc(cat.name) + '</b><span>' + esc(cat.desc) + '</span></div>' +
-      '<div class="cat-band-tag">' + list.length + ' 个区块</div>' +
-    '</div>';
-  list.forEach(function (s, i) {
-    let body = '';
-    if (s.key === 'tasks') body = renderTasksPage();
-    else if (s.key === 'library') body = renderLibraryPage();
-    else if (s.key === 'koubo') body = renderKouboPage();
-    else if (s.key === 'pixel') body = renderPixelPage();
-    else if (s.key === 'draw') body = renderDrawPage();
-    else if (s.key === 'report') body = renderReportPage();
-    else if (s.key === 'radar') body = renderRadarPage();
-    else body = '';
-    html += '<section class="page-sec" id="sec-' + s.key + '">' +
-      secHead({ no: pad2(i + 1), title: s.title, desc: s.desc }) + body + '</section>';
-  });
+  const bodyOf = function (s) {
+    if (s.key === 'tasks') return renderTasksPage();
+    if (s.key === 'library') return renderLibraryPage();
+    if (s.key === 'koubo') return renderKouboPage();
+    if (s.key === 'pixel') return renderPixelPage();
+    if (s.key === 'draw') return renderDrawPage();
+    if (s.key === 'report') return renderReportPage();
+    if (s.key === 'radar') return renderRadarPage();
+    return '';
+  };
+
+  let html;
+  if (st.tab === 'home') {
+    html = renderHome();
+  } else {
+    const s = secOf(st.tab) || list[0];
+    html = '<section class="page-sec" id="sec-' + s.key + '">' +
+      secHead({ no: '01', title: s.title, desc: s.desc }) + bodyOf(s) + '</section>';
+  }
+
   rwStop();
   view.innerHTML = html;
 
@@ -2967,7 +2900,8 @@ function switchTab(key) {
     try { history.replaceState(null, '', '#' + key); } catch (e) { location.hash = key; }
   }
   navGuard = { key: key, at: Date.now() };
-  if (changed) renderView(true);
+  renderView(false);
+  window.scrollTo(0, 0);
   updateChrome();
   scrollToSection(key);
   closeSidebar();
