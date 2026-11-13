@@ -42,23 +42,11 @@ function ic(name, cls) {
     'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + (ICON_PATHS[name] || '') + '</svg>';
 }
 
-/* ---------------- 静态清单 ---------------- */
-const WENAN = [
-  { name: "一条视频五步做完（极简版）", date: "2026-11-01", size: "581KB", path: "文案/一条视频五步做完_极简版.docx", cat: "流程", tag: "拍摄/剪辑" },
-  { name: "账号流程标准", date: "2026-11-01", size: "3.5MB", path: "文案/账号流程标准.docx", cat: "流程", tag: "账号/标准" },
-  { name: "代买手机全流程", date: "2026-11-01", size: "11KB", path: "文案/代买手机全流程.docx", cat: "流程", tag: "代买/流程" },
-  { name: "千川引流视频创作规则参考（3C 数码类）", date: "2026-11-01", size: "9KB", path: "文案/千川引流视频创作规则参考（3C数码类）.docx", cat: "规则", tag: "千川/3C数码" },
-  { name: "郝金彪室内室外美颜参数", date: "2026-11-01", size: "4.1MB", path: "文案/郝金彪室内室外美颜参数.docx", cat: "参数", tag: "美颜/参数" },
-  { name: "6G哥专用的表格", date: "2026-11-01", size: "767KB", path: "文案/6G哥专用的表格.xlsx", cat: "表格", tag: "表格/模板" },
-  { name: "9月视频数据统计", date: "2026-11-01", size: "35KB", path: "文案/9月视频数据统计.xlsx", cat: "数据", tag: "数据/月度" }
-];
-
 /* ---------------- 页面配置 ---------------- */
 const PAGES = {
   home:    { title: '主页',       desc: '工作台概览 · 数据来自飞书本地快照' },
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 支持筛选与分页', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
-  wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' },
   koubo:   { title: '口播工坊',   desc: '选题 · 草稿 · 定稿 · 三段流水线' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
@@ -66,7 +54,7 @@ const PAGES = {
   radar:   { title: '今日雷达',   desc: '全网热点 · 每天自动抓一遍' }
 };
 
-const PAGE_SIZE = { wenan: 10, task: 20 };
+const PAGE_SIZE = { task: 20 };
 
 /* ---------------- 全局状态 ---------------- */
 const st = {
@@ -80,7 +68,6 @@ const st = {
   err: { feishu: '', library: '', videos: '', radar: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
-  wenan: { q: '', cat: 'all', page: 1 },
   pixel: {
     src: '', name: '', img: null, out: null,
     size: 160, colors: 28, punch: 42, dither: 'none', outline: true, tol: 30, knock: true, scale: 4, preset: '',
@@ -288,8 +275,7 @@ function renderHome() {
   const quick = [
     { go: 'tasks', icon: 'calendar', no: '01', cls: 'c1', title: '任务与日历', desc: '月历视图 · 按日期查看任务' },
     { go: 'library', icon: 'book', no: '02', cls: 'c2', title: '图书馆', desc: '搜索书名 · 阅读书摘与思考' },
-    { go: 'wenan', icon: 'file', no: '03', cls: 'c3', title: '文案库', desc: '脚本在线阅读 · 复制与下载' },
-    { go: 'pixel', icon: 'pixel', no: '04', cls: 'c4', title: '像素工坊', desc: '图片转像素 · 去背导出透明 PNG' }
+    { go: 'pixel', icon: 'pixel', no: '03', cls: 'c4', title: '像素工坊', desc: '图片转像素 · 去背导出透明 PNG' }
   ];
 
   const rs = rwStats();
@@ -324,7 +310,7 @@ function renderHome() {
       '</div>' +
     '</section>' +
     '<div class="fx-section-head">' +
-      '<div><div class="fx-eyebrow">EXPLORE · 4 SPACES</div>' +
+      '<div><div class="fx-eyebrow">EXPLORE · 3 SPACES</div>' +
       '<div class="fx-sec-title">工作区入口 <em>— explore</em></div></div>' +
       '<span class="fx-view">SCROLL ↓</span>' +
     '</div>' +
@@ -959,64 +945,6 @@ function bookVar(title) {
   const s = String(title || '');
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973;
   return h % 4;
-}
-
-/* ---------------- 文案库 ---------------- */
-function renderWenanPage() {
-  const q = st.wenan.q.toLowerCase();
-  const cats = ['all'].concat(Array.from(new Set(WENAN.map(function (d) { return d.cat; }))));
-  const list = WENAN.filter(function (d) {
-    if (st.wenan.cat !== 'all' && d.cat !== st.wenan.cat) return false;
-    if (!q) return true;
-    return ((d.name || '') + ' ' + (d.tag || '') + ' ' + d.cat).toLowerCase().indexOf(q) >= 0;
-  });
-
-  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE.wenan));
-  if (st.wenan.page > totalPages) st.wenan.page = 1;
-  const pageList = list.slice((st.wenan.page - 1) * PAGE_SIZE.wenan, st.wenan.page * PAGE_SIZE.wenan);
-
-  const toolbar = '<div class="toolbar">' +
-    '<div class="search-wrap"><span class="search-ico">' + ic('search') + '</span>' +
-    '<input class="input" id="wenanSearch" type="search" placeholder="搜索文案名称 / 标签" value="' + esc(st.wenan.q) + '"></div>' +
-    '<span class="toolbar-note">共 ' + WENAN.length + ' 份</span>' +
-    '</div>' +
-    '<div class="toolbar">' + cats.map(function (c) {
-      return '<button class="chip' + (st.wenan.cat === c ? ' active' : '') + '" data-wcat="' + esc(c) + '">' + (c === 'all' ? '全部' : esc(c)) + '</button>';
-    }).join('') + '</div>';
-
-  const rows = pageList.length
-    ? wenanShelves(pageList)
-    : stateHtml('empty', '没有匹配的文案', '换个关键词或分类', '清空筛选', 'data-action="clear-wenan"');
-
-  return toolbar + '<div class="card shelf-card">' + rows + pagerHtml('wenan', st.wenan.page, PAGE_SIZE.wenan, list.length) + '</div>';
-}
-
-/* 文案库：文档也立到书架上，用带大字的彩色书皮区分分类 */
-const WENAN_TONE = { '流程': 0, '规则': 1, '参数': 2, '表格': 3, '数据': 4 };
-
-function wenanShelves(list) {
-  const per = window.innerWidth <= 600 ? 3 : window.innerWidth <= 900 ? 3 : 4;
-  let out = '<div class="shelf-wrap">';
-  for (let i = 0; i < list.length; i += per) {
-    out += '<div class="shelf">' +
-      '<div class="shelf-books">' + list.slice(i, i + per).map(wenanBook).join('') + '</div>' +
-      '<div class="shelf-plank"></div>' +
-      '</div>';
-  }
-  return out + '</div>';
-}
-
-function wenanBook(d) {
-  const idx = WENAN.indexOf(d);
-  const tone = WENAN_TONE[d.cat] != null ? WENAN_TONE[d.cat] : 5;
-  return '<div class="wb-item kv' + bookVar(d.name) + '" data-wenan="' + idx + '" tabindex="0" role="button" aria-label="' + esc(d.name) + '">' +
-    '<div class="wb-cover wb-t' + tone + '">' +
-      '<span class="wb-cat">' + esc(d.cat) + '</span>' +
-      '<span class="wb-title">' + esc(d.name) + '</span>' +
-      '<span class="wb-foot"><i>' + esc(d.tag) + '</i><b>' + esc(d.size) + '</b></span>' +
-    '</div>' +
-    '<div class="book-tip"><strong>' + esc(d.name) + '</strong><span>' + esc(d.date) + ' · ' + esc(d.size) + '</span></div>' +
-  '</div>';
 }
 
 /* ---------------- 口播工坊（内容留空，等数据接入后再填） ---------------- */
@@ -2536,7 +2464,6 @@ function mountDraw() {
 /* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
   { key: 'radar', cat: 'create', title: '今日雷达', desc: '全网热点 · 每天 10:20 自动抓一遍' },
-  { key: 'wenan', cat: 'create', title: '文案库', desc: '口播脚本与流程文档' },
   { key: 'koubo', cat: 'create', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
   { key: 'report', cat: 'create', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
@@ -2546,7 +2473,7 @@ const SECTIONS = [
 ];
 
 const CATS = {
-  create: { name: '创作线', desc: '找选题 · 出文案 · 拍口播 · 看战报' },
+  create: { name: '创作线', desc: '找选题 · 拍口播 · 看战报' },
   tool:   { name: '工具箱', desc: '日历 · 图书馆 · 像素 · 画板' }
 };
 
@@ -2586,7 +2513,6 @@ function renderView(keepScroll) {
     let body = '';
     if (s.key === 'tasks') body = renderTasksPage();
     else if (s.key === 'library') body = renderLibraryPage();
-    else if (s.key === 'wenan') body = renderWenanPage();
     else if (s.key === 'koubo') body = renderKouboPage();
     else if (s.key === 'pixel') body = renderPixelPage();
     else if (s.key === 'draw') body = renderDrawPage();
@@ -2738,226 +2664,6 @@ function openBook(id, from) {
   });
 }
 
-let mammothPromise = null;
-function ensureMammoth() {
-  if (window.mammoth) return Promise.resolve();
-  if (mammothPromise) return mammothPromise;
-  mammothPromise = new Promise(function (resolve, reject) {
-    // 优先本地文件，失败再回退 CDN
-    const urls = [
-      'assets/vendor/mammoth.browser.min.js',
-      'https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js'
-    ];
-    let i = 0;
-    function next() {
-      if (window.mammoth) { resolve(); return; }
-      if (i >= urls.length) { reject(new Error('文档解析组件加载失败，请检查网络')); return; }
-      const s = document.createElement('script');
-      s.src = urls[i++];
-      s.onload = function () { if (window.mammoth) resolve(); else next(); };
-      s.onerror = function () { next(); };
-      document.head.appendChild(s);
-    }
-    next();
-    setTimeout(function () { if (!window.mammoth) reject(new Error('文档解析组件加载超时')); }, 15000);
-  });
-  return mammothPromise;
-}
-
-/* ---------- 表格在线预览 ---------- */
-const SHEET_PAGE_ROWS = 300;
-const SHEET_MAX_COLS = 40;
-let sheetView = null;
-let xlsxPromise = null;
-
-function ensureXLSX() {
-  if (window.XLSX) return Promise.resolve();
-  if (xlsxPromise) return xlsxPromise;
-  xlsxPromise = new Promise(function (resolve, reject) {
-    // 优先本地文件，失败再回退 CDN
-    const urls = [
-      'assets/vendor/xlsx.full.min.js',
-      'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'
-    ];
-    let i = 0;
-    function next() {
-      if (window.XLSX) { resolve(); return; }
-      if (i >= urls.length) { reject(new Error('表格解析组件加载失败，请检查网络')); return; }
-      const s = document.createElement('script');
-      s.src = urls[i++];
-      s.onload = function () { if (window.XLSX) resolve(); else next(); };
-      s.onerror = function () { next(); };
-      document.head.appendChild(s);
-    }
-    next();
-    setTimeout(function () { if (!window.XLSX) reject(new Error('表格解析组件加载超时')); }, 20000);
-  });
-  return xlsxPromise;
-}
-
-function openSheet(d, dlBtn, from) {
-  sheetView = null;
-  openModal({
-    title: d.name,
-    meta: [d.cat, d.date, d.size, d.tag],
-    tools: dlBtn,
-    wide: true,
-    from: from,
-    body: '<div class="state"><div class="spinner"></div>正在解析表格…</div>'
-  });
-
-  fetch(encodeURI(d.path))
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); })
-    .then(function (buf) {
-      return ensureXLSX().then(function () {
-        const wb = window.XLSX.read(new Uint8Array(buf), { type: 'array' });
-        if (!wb.SheetNames.length) throw new Error('工作簿中没有工作表');
-        sheetView = { wb: wb, name: wb.SheetNames[0], shown: SHEET_PAGE_ROWS };
-        renderSheet(wb.SheetNames[0]);
-      });
-    })
-    .catch(function (err) {
-      const body = document.getElementById('modalBody');
-      if (body) {
-        body.innerHTML = '<div class="state"><strong>无法在线读取表格</strong>' +
-          '<div>' + esc(err.message || '未知错误') + '</div>' +
-          '<div class="modal-note">若线上文件缺失会返回 404，可点击右上角「下载」获取原文件。</div></div>';
-      }
-    });
-}
-
-function renderSheet(name) {
-  if (!sheetView || !sheetView.wb) return;
-  const XLSX = window.XLSX;
-  const ws = sheetView.wb.Sheets[name];
-  const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '', blankrows: false });
-  const totalRows = aoa.length;
-  // 只统计真正有内容的列，避免把右侧空白但带格式的列也渲染出来
-  let totalCols = 0;
-  aoa.forEach(function (r) {
-    for (let i = (r || []).length - 1; i >= 0; i--) {
-      if (String(r[i] == null ? '' : r[i]).trim()) { if (i + 1 > totalCols) totalCols = i + 1; break; }
-    }
-  });
-  const cols = Math.min(totalCols, SHEET_MAX_COLS);
-  const shown = Math.min(sheetView.shown, totalRows);
-
-  const body = document.getElementById('modalBody');
-  if (!body) return;
-
-  // 列宽策略：能压到 100px 以上就铺满容器，否则按 100px 固定并横向滚动
-  const avail = Math.max(320, body.clientWidth - 52);
-  const minColW = 100;
-  const fits = cols * minColW <= avail;
-  const tableStyle = fits ? 'width:100%' : 'width:' + (cols * minColW) + 'px';
-  const colgroup = fits ? ''
-    : '<colgroup>' + Array.from({ length: cols }, function () { return '<col style="width:' + minColW + 'px">'; }).join('') + '</colgroup>';
-
-  const tabs = sheetView.wb.SheetNames.map(function (n) {
-    return '<button class="sheet-tab' + (n === name ? ' active' : '') + '" data-sheet="' + esc(n) + '">' + esc(n) + '</button>';
-  }).join('');
-
-  let html = '<div class="sheet-bar">' +
-      '<div class="sheet-tabs">' + tabs + '</div>' +
-      '<div class="sheet-info">' + totalRows + ' 行 × ' + cols + ' 列' +
-        (shown < totalRows ? ' · 已显示 ' + shown + ' 行' : '') +
-        (totalCols > cols ? ' · 仅显示前 ' + cols + ' 列' : '') +
-      '</div>' +
-    '</div>';
-
-  if (!totalRows) {
-    html += '<div class="state"><strong>该工作表为空</strong><div>可切换其他工作表或下载原文件查看。</div></div>';
-  } else {
-    html += '<div class="sheet-wrap"><table class="sheet-table" style="' + tableStyle + '">' + colgroup;
-    for (let r = 0; r < shown; r++) {
-      const row = aoa[r] || [];
-      html += '<tr' + (r === 0 ? ' class="sheet-head"' : '') + '>';
-      for (let c = 0; c < cols; c++) {
-        const v = row[c] == null ? '' : String(row[c]);
-        html += '<td>' + esc(v) + '</td>';
-      }
-      html += '</tr>';
-    }
-    html += '</table></div>';
-    if (shown < totalRows) {
-      html += '<div class="sheet-more"><button class="btn btn-sm" data-sheet-more>显示更多（剩余 ' + (totalRows - shown) + ' 行）</button></div>';
-    }
-  }
-
-  html += '<div class="modal-note">表格按原值渲染，合并单元格、字体颜色与图片不保留；行列过多时会分批显示，完整内容请用右上角「下载」在 Excel / WPS 中打开。</div>';
-
-  body.innerHTML = html;
-  body.scrollTop = 0;
-
-  body.querySelectorAll('[data-sheet]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      const n = btn.getAttribute('data-sheet');
-      if (n === sheetView.name) return;
-      sheetView.name = n;
-      sheetView.shown = SHEET_PAGE_ROWS;
-      renderSheet(n);
-    });
-  });
-  const more = body.querySelector('[data-sheet-more]');
-  if (more) {
-    more.addEventListener('click', function () {
-      sheetView.shown += SHEET_PAGE_ROWS;
-      renderSheet(sheetView.name);
-    });
-  }
-}
-
-function openWenan(idx, from) {
-  const d = WENAN[idx];
-  if (!d) return;
-
-  const isSheet = /\.(xlsx|xls)$/i.test(d.path);
-  const dlBtn = '<a class="btn btn-sm" href="' + encodeURI(d.path) + '" download>' + ic('download', 'ico-14') + '<span>下载</span></a>';
-
-  if (isSheet) {
-    openSheet(d, dlBtn, from);
-    return;
-  }
-
-  openModal({
-    title: d.name,
-    meta: [d.cat, d.date, d.size, d.tag],
-    tools: '<button class="btn btn-sm" data-copy>' + ic('copy', 'ico-14') + '<span>复制</span></button>' + dlBtn,
-    from: from,
-    body: '<div class="state"><div class="spinner"></div>正在读取文档…</div>'
-  });
-
-  let plainText = '';
-  fetch(encodeURI(d.path))
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); })
-    .then(function (buf) { return ensureMammoth().then(function () { return buf; }); })
-    .then(function (buf) { return window.mammoth.convertToHtml({ arrayBuffer: buf }); })
-    .then(function (res) {
-      plainText = (res.value || '').replace(/<[^>]+>/g, '').replace(/\n{3,}/g, '\n\n').trim();
-      const body = document.getElementById('modalBody');
-      if (body) {
-        body.innerHTML = res.value
-          ? '<div class="doc-sec doc-flow">' + res.value + '</div>'
-          : '<div class="state">文档内容为空</div>';
-      }
-    })
-    .catch(function (err) {
-      const body = document.getElementById('modalBody');
-      if (body) {
-        body.innerHTML = '<div class="state"><strong>无法在线读取文档</strong>' +
-          '<div>' + esc(err.message || '未知错误') + '</div>' +
-          '<div class="modal-note">线上版需要文档文件已随站点部署；若文件缺失会返回 404。可点击右上角「下载」获取原文件。</div></div>';
-      }
-    });
-
-  const copyBtn = document.querySelector('[data-copy]');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', function () {
-      if (!plainText) { toast('文档尚未读取完成', 'err'); return; }
-      copyText(plainText);
-    });
-  }
-}
 
 function copyText(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -3057,7 +2763,7 @@ function onViewClick(e) {
     const scope = pg.dataset.pageScope;
     const page = Number(pg.dataset.page);
     if (scope === 'task') { if (page >= 1) { st.cal.page = page; } }
-    else if (['lib', 'wenan'].indexOf(scope) >= 0) { st[scope].page = page; }
+    else if (['lib'].indexOf(scope) >= 0) { st[scope].page = page; }
     renderView(true);
     return;
   }
@@ -3100,10 +2806,6 @@ function onViewClick(e) {
   const tc = t.closest('[data-task-cat]');
   if (tc) { st.cal.taskCat = tc.dataset.taskCat; st.cal.page = 1; renderView(true); return; }
 
-  // 文案分类
-  const wc = t.closest('[data-wcat]');
-  if (wc) { st.wenan.cat = wc.dataset.wcat; st.wenan.page = 1; renderView(true); return; }
-
   // 动作按钮
   const act = t.closest('[data-action]');
   if (act) {
@@ -3114,7 +2816,6 @@ function onViewClick(e) {
     if (a === 'clear-lib') { st.lib.q = ''; st.lib.page = 1; renderView(true); return; }
     if (a === 'lib-random') { st.lib.focus = Math.floor(Math.random() * 997); renderView(true); return; }
     if (a === 'cat-more') { st.cal.catOpen = !st.cal.catOpen; renderView(true); return; }
-    if (a === 'clear-wenan') { st.wenan.q = ''; st.wenan.cat = 'all'; st.wenan.page = 1; renderView(true); return; }
   }
 
   // 书摘轮换
@@ -3124,8 +2825,6 @@ function onViewClick(e) {
   // 详情入口
   const bk = t.closest('.lib-cover');
   if (bk) { openBook(bk.dataset.book, bk); return; }
-  const wd = t.closest('[data-wenan]');
-  if (wd) { openWenan(Number(wd.dataset.wenan), wd); return; }
 
   // 跳转
   const go = t.closest('[data-go]');
@@ -3135,7 +2834,7 @@ function onViewClick(e) {
 let searchTimer = null;
 function onViewInput(e) {
   const el = e.target;
-  const map = { libSearch: 'lib', wenanSearch: 'wenan' };
+  const map = { libSearch: 'lib' };
   const scope = map[el.id];
   if (!scope) return;
   clearTimeout(searchTimer);
