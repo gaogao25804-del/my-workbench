@@ -1003,9 +1003,11 @@ function kbBody(md) {
   const c = t.search(/^##\s*(正文|稿)/m);
   const start = a >= 0 ? a : c;
   if (start >= 0) {
-    // 从起点往后切，遇到下一个二级标题就停，别把标题备选和素材一起念出来
-    const rest = t.slice(start + 3);
-    const m = rest.search(/^##\s*(标题|素材|备注|封面|文案备选|交叉评审|评审)/m);
+    // 先跳到标题行末尾，别把「## 正文（直接念，一整段）」这行念出来
+    const le = t.indexOf('\n', start);
+    const rest = t.slice(le >= 0 ? le + 1 : start + 3);
+    // 遇到下一个二级标题或分隔线就停
+    const m = rest.search(/^(##\s|---\s*$)/m);
     t = m >= 0 ? rest.slice(0, m) : rest;
   } else {
     t = t.replace(/^---[\s\S]*?\n---\n/, '');
