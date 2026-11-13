@@ -32,7 +32,8 @@ const ICON_PATHS = {
   undo: '<path d="M9 7 4 12l5 5"/><path d="M4 12h9a5 5 0 0 1 0 10h-3"/>',
   redo: '<path d="M15 7l5 5-5 5"/><path d="M20 12h-9a5 5 0 0 0 0 10h3"/>',
   trash: '<path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6.5 7l1 12.5h9l1-12.5"/>',
-  mic: '<rect x="9" y="2.8" width="6" height="10.4" rx="3"/><path d="M5.6 11.2a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.6V21"/><path d="M8.6 21h6.8"/>'
+  mic: '<rect x="9" y="2.8" width="6" height="10.4" rx="3"/><path d="M5.6 11.2a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.6V21"/><path d="M8.6 21h6.8"/>',
+  chart: '<path d="M4 20.2h16"/><rect x="5.4" y="11" width="3.4" height="6.2" rx="1"/><rect x="10.3" y="6.6" width="3.4" height="10.6" rx="1"/><rect x="15.2" y="13.4" width="3.4" height="3.8" rx="1"/>'
 };
 
 function ic(name, cls) {
@@ -59,7 +60,8 @@ const PAGES = {
   wenan:   { title: '文案库',     desc: '口播脚本 · 在线阅读与复制下载' },
   koubo:   { title: '口播工坊',   desc: '选题 · 草稿 · 定稿 · 三段流水线' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
-  draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' }
+  draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
+  report:  { title: '战报',       desc: '作品数据回流 · 过线率与公式热力表' }
 };
 
 const PAGE_SIZE = { wenan: 10, task: 20 };
@@ -1040,6 +1042,238 @@ function renderKouboPage() {
     '</div>' +
     '<div class="kb-board">' + lanes + '</div>' +
     '<div class="kb-note"><i></i>区块已就位 · 内容先留空，等数据接进来再填</div>';
+}
+
+/* ---------------- 战报（作品台账 · 只读快照） ---------------- */
+const RPT_PASS_PLAY = 35000;   // 过线门槛：3.5 万播放
+const RPT_MAX_MONTHS = 6;      // 热力表最多看 6 个月
+const RPT_MAX_ROWS = 40;       // 条目录最多列 40 条
+const RPT = { type: 'all', passOnly: false };
+
+const RPT_TYPES = [
+  { key: 'all', name: '全部' },
+  { key: 'content', name: '内容' },
+  { key: 'traffic', name: '引流' },
+  { key: 'product', name: '产品' },
+  { key: 'commerce', name: '带货' }
+];
+
+const RPT_FORMULA = {
+  F1: '跨品牌错位', F2: '提前爆料', F3: '站队抬杠', F4: '颜色纠结',
+  F5: '抢机拿下', F6: '代买报价', F7: '客户故事', F8: '教程干货',
+  F9: '单品三件套', F10: '反共识劝退', F11: '行业吐槽', F12: '委托寄机',
+  F13: '老机型服务', F14: '参数科普', F15: '一堆挨个试', F16: '公益纪录'
+};
+
+function rptNum(n) { const v = Number(n); return isFinite(v) ? v : 0; }
+function rptInter(v) { return rptNum(v.like) + rptNum(v.comment) + rptNum(v.share); }
+// 合格 = 播放过 3.5 万 且 有点赞/评论/分享里任意一种互动
+function rptPass(v) { return rptNum(v.play) >= RPT_PASS_PLAY && rptInter(v) > 0; }
+function rptMonth(v) { return String(v.date || '').slice(0, 7); }
+function rptWan(n) {
+  if (n >= 100000000) return (n / 100000000).toFixed(1) + '亿';
+  if (n >= 10000) return (n / 10000).toFixed(n >= 100000 ? 0 : 1) + '万';
+  return String(Math.round(n));
+}
+function rptPct(a, b) { return b ? Math.round(a / b * 100) : 0; }
+function rptFName(k) { return RPT_FORMULA[k] || '待归类'; }
+function rptTypeName(k) {
+  for (let i = 0; i < RPT_TYPES.length; i++) if (RPT_TYPES[i].key === k) return RPT_TYPES[i].name;
+  return '内容';
+}
+
+// 条目录标题：说明当前筛选与实际显示条数
+function rptDirHint(all, shown) {
+  const on = RPT.type !== 'all' || RPT.passOnly;
+  if (on) return '<em>筛出 ' + shown.length + ' 条 · 共 ' + all.length + ' 条</em>';
+  if (all.length > RPT_MAX_ROWS) return '<em>共 ' + all.length + ' 条 · 只显示最近 ' + RPT_MAX_ROWS + ' 条</em>';
+  return '<em>共 ' + all.length + ' 条</em>';
+}
+
+function renderReportPage() {
+  if (st.load.videos === 'error') {
+    return '<div class="card rp-card">' +
+      stateHtml('error', '作品数据读不到', (st.err.videos || 'videos-data.json 没加载成功') + ' · 确认文件在仓库根目录后刷新页面') +
+      '</div>';
+  }
+
+  if (!st.videos || st.load.videos !== 'ready') {
+    return '<div class="card rp-card">' + stateHtml('loading', '正在读取作品数据') + '</div>';
+  }
+
+  const list = (st.videos.videos || []).filter(function (v) { return v && v.date; });
+
+  // 空数据：还没接过 Excel，直接告诉他缺什么
+  if (!list.length) {
+    return '<div class="card rp-card">' +
+      '<div class="rp-empty">' +
+        '<span class="rp-empty-ico">' + ic('chart') + '</span>' +
+        '<b>还没有作品数据</b>' +
+        '<span>这块要等 <em>videos-data.json</em> 里有内容才会长出来。把抖音后台导出的作品表转成这个文件放到仓库根目录，条目录、过线率、公式热力表就都有了。</span>' +
+        '<div class="rp-fields"><i>date</i><i>time</i><i>title</i><i>type</i><i>formula</i><i>play</i><i>like</i><i>comment</i><i>share</i><i>follow</i></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  const months = [];
+  list.forEach(function (v) { const m = rptMonth(v); if (m && months.indexOf(m) < 0) months.push(m); });
+  months.sort();
+  const cols = months.slice(-RPT_MAX_MONTHS);
+  const last = cols[cols.length - 1] || '';
+
+  const cur = list.filter(function (v) { return rptMonth(v) === last; });
+  const curPass = cur.filter(rptPass).length;
+  const curAvg = cur.length ? Math.round(cur.reduce(function (s, v) { return s + rptNum(v.play); }, 0) / cur.length) : 0;
+  const unknown = list.filter(function (v) { return !RPT_FORMULA[v.formula]; }).length;
+
+  const strip = '<div class="rp-strip">' +
+      '<div class="rp-hero">' +
+        '<div class="rp-kicker"><b>REPORT</b> · 战报</div>' +
+        '<div class="rp-big"><b>' + rptPct(curPass, cur.length) + '</b><i>%</i></div>' +
+        '<div class="rp-hero-sub">' + (last ? last.replace('-', ' 年 ') + ' 月' : '—') + '合格率 · ' + curPass + '/' + cur.length + ' 条过线</div>' +
+      '</div>' +
+      '<div class="rp-slots">' +
+        '<div class="rp-slot"><span>本月条数</span><b>' + cur.length + '</b></div>' +
+        '<div class="rp-slot"><span>过线</span><b class="is-ok">' + curPass + '</b></div>' +
+        '<div class="rp-slot"><span>平均播放</span><b>' + rptWan(curAvg) + '</b></div>' +
+        '<div class="rp-slot"><span>待归类</span><b' + (unknown ? ' class="is-warn"' : '') + '>' + unknown + '</b></div>' +
+      '</div>' +
+    '</div>';
+
+  // 公式 × 月份 热力表
+  const keys = [];
+  Object.keys(RPT_FORMULA).forEach(function (k) {
+    if (list.some(function (v) { return v.formula === k; })) keys.push(k);
+  });
+  keys.sort(function (a, b) { return Number(a.slice(1)) - Number(b.slice(1)); });
+
+  function cellsOf(key, month) {
+    return list.filter(function (v) {
+      const f = RPT_FORMULA[v.formula] ? v.formula : '?';
+      return f === key && rptMonth(v) === month;
+    });
+  }
+
+  let mx = '<div class="rp-matrix" style="--rp-cols:' + cols.length + '">' +
+    '<div class="rp-mx-row rp-mx-head"><span class="rp-mx-name">公式</span>' +
+      cols.map(function (m) { return '<span class="rp-mx-m">' + m.slice(5) + ' 月</span>'; }).join('') +
+    '</div>';
+
+  keys.forEach(function (k) {
+    const all = list.filter(function (v) { return (RPT_FORMULA[v.formula] ? v.formula : '?') === k; });
+    const allPass = all.filter(rptPass).length;
+    mx += '<div class="rp-mx-row"><span class="rp-mx-name"><b>' + esc(k) + '</b>' + esc(rptFName(k)) +
+      '<i>' + all.length + ' 条</i></span>' +
+      cols.map(function (m) {
+        const arr = cellsOf(k, m);
+        if (!arr.length) return '<span class="rp-mx-c is-empty">·</span>';
+        const ok = arr.filter(rptPass).length;
+        const rate = rptPct(ok, arr.length);
+        const a = (rate === 0 ? 0.05 : 0.12 + rate / 100 * 0.5).toFixed(2);
+        return '<span class="rp-mx-c" style="background:rgba(255,106,47,' + a + ')" title="' +
+          esc(rptFName(k) + ' · ' + m + ' · ' + ok + '/' + arr.length + ' 条过线') + '">' +
+          rate + '<i>%</i></span>';
+      }).join('') + '</div>';
+  });
+
+  mx += '<div class="rp-mx-row rp-mx-total"><span class="rp-mx-name"><b>合计</b>全部公式</span>' +
+    cols.map(function (m) {
+      const arr = list.filter(function (v) { return rptMonth(v) === m; });
+      const ok = arr.filter(rptPass).length;
+      return '<span class="rp-mx-c">' + rptPct(ok, arr.length) + '<i>%</i></span>';
+    }).join('') + '</div></div>';
+
+  // 本月结论：直接给出最稳和最差的两个公式，省得自己扫表格
+  const rank = keys.map(function (k) {
+    const arr = cellsOf(k, last);
+    return { k: k, n: arr.length, rate: rptPct(arr.filter(rptPass).length, arr.length) };
+  }).filter(function (r) { return r.n >= 2; })
+    .sort(function (a, b) { return b.rate - a.rate || b.n - a.n; });
+
+  const best = rank[0];
+  const worst = rank.length > 1 ? rank[rank.length - 1] : null;
+  const summary = (best && best.rate > (worst ? worst.rate : -1))
+    ? '<div class="rp-summary">本月最稳：<b>' + esc(best.k) + ' ' + esc(rptFName(best.k)) + '</b> ' +
+        best.rate + '%（' + best.n + ' 条）' +
+        (worst && worst.rate < best.rate
+          ? '　·　最差：<b>' + esc(worst.k) + ' ' + esc(rptFName(worst.k)) + '</b> ' + worst.rate + '%（' + worst.n + ' 条）'
+          : '') +
+      '</div>'
+    : '';
+
+  const matrixCard = '<div class="card rp-card">' +
+    '<div class="rp-card-head"><div class="rp-card-title">哪种开头能过线<em>公式 × 月份 · 格子里是该月过线率</em></div>' +
+    (keys.length ? '<div class="rp-legend"><i></i>颜色越亮过线越多</div>' : '') + '</div>' +
+    (keys.length
+      ? mx + summary
+      : '<div class="rp-mx-blank">这一版还没有作品打上公式标签。<br>等转换脚本按关键词规则跑一遍，F1–F16 的过线率就会排在这里。</div>') +
+    '</div>';
+
+  // 条目录（可筛）
+  const filtered = list.filter(function (v) {
+    if (RPT.type !== 'all' && (v.type || 'content') !== RPT.type) return false;
+    if (RPT.passOnly && !rptPass(v)) return false;
+    return true;
+  }).sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+
+  const chips = RPT_TYPES.map(function (t) {
+    return '<button class="chip' + (RPT.type === t.key ? ' active' : '') + '" data-rpt-type="' + t.key + '">' + t.name + '</button>';
+  }).join('') +
+    '<button class="chip' + (RPT.passOnly ? ' active' : '') + '" data-rpt-pass="1">只看过线</button>';
+
+  const rows = filtered.slice(0, RPT_MAX_ROWS).map(function (v) {
+    const ok = rptPass(v);
+    return '<div class="rp-tr' + (ok ? ' is-ok' : '') + '">' +
+      '<span class="rp-td-date">' + esc(String(v.date).slice(5).replace('-', '/')) + '</span>' +
+      '<span class="rp-td-title">' + esc(v.title || '（无标题）') +
+        '<i>' + esc(v.time || '') + (v.time ? ' · ' : '') + esc(rptTypeName(v.type || 'content')) + '</i></span>' +
+      '<span class="rp-td-f"><b>' + esc(v.formula || '?') + '</b>' + esc(rptFName(v.formula)) + '</span>' +
+      '<span class="rp-td-num">' + rptWan(rptNum(v.play)) + '</span>' +
+      '<span class="rp-td-num rp-td-inter">' + rptWan(rptInter(v)) + '</span>' +
+      '<span class="rp-td-flag">' + (ok ? '过线' : '—') + '</span>' +
+    '</div>';
+  }).join('');
+
+  const dirCard = '<div class="card rp-card">' +
+    '<div class="rp-card-head">' +
+      '<div class="rp-card-title">条目录' + rptDirHint(list, filtered) + '</div>' +
+      '<div class="rp-chips">' + chips + '</div>' +
+    '</div>' +
+    '<div class="rp-table"><div class="rp-tr rp-th">' +
+      '<span class="rp-td-date">日期</span><span class="rp-td-title">标题</span>' +
+      '<span class="rp-td-f">公式</span><span class="rp-td-num">播放</span>' +
+      '<span class="rp-td-num rp-td-inter">互动</span><span class="rp-td-flag">判定</span></div>' +
+      (filtered.length ? rows : stateHtml('empty', '这个筛选下没有条目', '换个类型或关掉「只看过线」')) +
+    '</div>' +
+    '<div class="rp-note"><i></i>合格口径：播放 ≥ ' + rptWan(RPT_PASS_PLAY) + ' 且有点赞/评论/分享 · 数据快照 ' +
+      esc(st.videos.updated_at || '—') + '</div>' +
+  '</div>';
+
+  return strip + matrixCard + dirCard;
+}
+
+// 战报筛选：重建 DOM 后重新挂监听
+function mountReport() {
+  // 侧栏条目数：跟随快照里实际条数
+  const nc = document.getElementById('navReportCount');
+  if (nc) {
+    const n = (st.videos && st.videos.videos) ? st.videos.videos.length : 0;
+    nc.textContent = st.load.videos === 'ready' ? String(n) : '—';
+  }
+
+  const sec = document.getElementById('sec-report');
+  if (!sec) return;
+  sec.querySelectorAll('[data-rpt-type]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      RPT.type = el.dataset.rptType;
+      renderView(true);
+    });
+  });
+  const p = sec.querySelector('[data-rpt-pass]');
+  if (p) p.addEventListener('click', function () {
+    RPT.passOnly = !RPT.passOnly;
+    renderView(true);
+  });
 }
 
 /* ---------------- 像素工坊（图片 → 像素风 · 透明背景导出） ---------------- */
@@ -2171,7 +2405,8 @@ const SECTIONS = [
   { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' },
   { key: 'koubo', no: '04', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
   { key: 'pixel', no: '05', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
-  { key: 'draw', no: '06', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
+  { key: 'draw', no: '06', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' },
+  { key: 'report', no: '07', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' }
 ];
 
 function secHead(s) {
@@ -2202,6 +2437,7 @@ function renderView(keepScroll) {
     else if (s.key === 'koubo') body = renderKouboPage();
     else if (s.key === 'pixel') body = renderPixelPage();
     else if (s.key === 'draw') body = renderDrawPage();
+    else if (s.key === 'report') body = renderReportPage();
     else body = '';
     html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
   });
@@ -2229,6 +2465,7 @@ function renderView(keepScroll) {
   mountRunway();
   mountPixel();
   mountDraw();
+  mountReport();
 
   // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
