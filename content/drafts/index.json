@@ -1,16 +1,16 @@
 {
  "updated_at": "2026-11-13",
- "_note": "WorkBuddy 维护。这里只登记【老板已验收、可以拍】的稿子。未验收的稿子在本地 文案/待审/，不进这里、不上线。status: final 落定稿泳道。",
+ "_note": "WorkBuddy 维护。这里只是素材：放进来的稿子一律算「草稿」，谁都不许写 final——定稿只能老板在页面上自己点。真正验收过的稿子在 文案/已验收/。",
  "drafts": [
   {
    "file": "content/drafts/2026-11-13-iPhoneDuo三成退货.md",
    "date": "2026-11-13",
-   "title": "iPhone Duo 三成买家退货（终稿）",
+   "title": "iPhone Duo 三成买家退货",
    "topic_id": "J1",
    "hook": "三成人白用半个月就退，退的不是坏机器",
    "words": 586,
    "duration_sec": 110,
-   "status": "final",
+   "status": "draft",
    "publish_at": "19:00",
    "device": "iPhoneduo"
   }

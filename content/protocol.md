@@ -161,8 +161,8 @@ py -3 tools/publish.py <你改过的文件...> -m "一句话说明"
 
 | 大类 | 区块 | 状态 |
 |---|---|---|
-| 创作线 | 今日雷达 | 已上线，`radar-data.json` 每天 10:20 抓取 |
-| 创作线 | 口播工坊 | 骨架已上线，待接 `topics.json` |
+| 创作线 | 今日雷达 | 已上线，`radar-data.json`（今天）+ `content/radar/` 一天一份存档 |
+| 创作线 | 口播工坊 | 已上线，老板直接写、自己定稿（改的是浏览器本地，见第十节） |
 | 创作线 | 成品文案 | 已上线，`content/library/index.json`，存完整成片的施工图 |
 | 创作线 | 战报 | 已上线，`content/report/index.json`（9 月 / 10 月，照老板的 Excel） |
 | 工具箱 | 任务与日历 | 已上线，993 条飞书任务 |
@@ -214,3 +214,36 @@ py -3 tools/publish.py <你改过的文件...> -m "一句话说明"
 - 代码归 WorkBuddy：`assets/` 里 `wn-*` 那段 css/js、`index.html` 的 `data-nav="wenan"` 与 `navWenanCount`。
   **Trae 不要删、不要重命名这一块**，要动先问老板
 - 加新条目只要往 `items` 里追加一个对象，不用碰代码
+
+## 十、口播工坊与雷达存档（2026-11-13 改版）
+
+老板当天的三条要求：选题池挪进雷达、候选池按天存一份、口播工坊要能自己写、定稿必须他点。
+以下三条是硬规矩。
+
+### 1. 定稿只能老板点
+
+`content/drafts/index.json` 里 **`status` 永远写 `draft`**，谁写 `final` 谁违规。
+页面上只有老板按了「标为定稿」才进定稿泳道，那一下只存在他浏览器里，不回写仓库。
+稿子合格与否由老板判，我们不自评、不代判——上一条 11-13 的稿子就是被我写成 final 塞进去的，
+老板原话：「你写的那个定稿在我这都没合格呢」。
+
+### 2. 口播工坊是编辑器，不落仓库
+
+- 数据两层：仓库 `content/drafts/index.json`（我们放进去的素材，只读）+ 浏览器 `localStorage`
+  键 `wb.kb.docs.v2`（老板自己写的、自己改的）
+- 改一个字就自动存本地，换设备要挪稿子只能点「复制全文」
+- 远端那篇一改就落成本地副本（保留 `file` 字段），仓库里的原文件不动
+- 代码归属：`assets/workbench.js` 里 `kb*` 开头的新函数（`renderKouboPage` / `mountKoubo` /
+  `kbDocs` / `kbStartFrom`…）与 css 里 `08 · 口播工坊改版` 那一段，归 WorkBuddy
+
+### 3. 雷达一天存一份
+
+- `content/radar/YYYY-MM-DD.json`：当天的候选（雷达 + 公众号合并、按分数排序）
+- `content/radar/index.json`：日期清单，`days[]` 按日期倒序，最多 120 天
+- 生成方式只有一个：`py -3 tools/archive-radar.py --config "<选题雷达>/radar-config.json"`，
+  定时任务 `运行雷达.bat` 跑完抓取和公众号之后作为第三步自动调它
+- 页面日期条只读 `index.json`，点哪天读哪天的文件；未来两天只显示「10:20 自动抓」
+- **别手工改 index.json**，重跑脚本会覆盖
+
+选题池已经不在口播工坊了：雷达候选行右边点「写」，直接开一条空稿跳进编辑器。
+代码归属：`rdc*` 开头的函数与 css 里 `09 · 每日雷达改版` 那一段，归 WorkBuddy。
