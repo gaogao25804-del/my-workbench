@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13 11:53",
+ "updated": "2026-11-13 13:46",
  "stats": {
   "抖音": 50,
   "快手": 50,
@@ -24,6 +24,21 @@
    ],
    "hot": "",
    "url": "https://www.ithome.com/1/026/522.htm"
+  },
+  {
+   "title": "华为 Mate X8 真机曝光：搭载 8 英寸京东方新屏 + 超平整折痕技术",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 7,
+   "why": [
+    "+5 mate x8",
+    "+2 折痕"
+   ],
+   "hooks": [
+    "爆料"
+   ],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/679.htm"
   },
   {
    "title": "18999 元起，三星与中国电信联合打造心系天下 W27 折叠屏手机开售",
@@ -65,6 +80,32 @@
    "url": "https://9to5mac.com/2026/11/12/30-of-iphone-duo-buyers-may-have-returned-it-but-i-dont-think-apple-should-worry/"
   },
   {
+   "title": "华为Mate X8真机疑曝光",
+   "source": "头条",
+   "kind": "热榜",
+   "score": 5,
+   "why": [
+    "+5 mate x8"
+   ],
+   "hooks": [
+    "爆料"
+   ],
+   "hot": "3591899",
+   "url": "https://so.toutiao.com/search?keyword=%E5%8D%8E%E4%B8%BAMate%20X8%E7%9C%9F%E6%9C%BA%E7%96%91%E6%9B%9D%E5%85%89"
+  },
+  {
+   "title": "荣耀李健官宣荣耀 700 系列发布会定档 11 月 23 日，鞠婧祎代言",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "why": [
+    "+3 发布"
+   ],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/674.htm"
+  },
+  {
    "title": "肯辛通 Expert Mouse Pro TB900 EQ 轨迹球鼠标国行上市，999 元",
    "source": "IT之家",
    "kind": "新品",
@@ -79,30 +120,16 @@
    "url": "https://www.ithome.com/1/026/629.htm"
   },
   {
-   "title": "苹果首款智能家庭中枢 HomeView 及新款 Apple TV 4K 上市，首批订单已送至澳新客户手中",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 3,
-   "why": [
-    "+3 上市"
-   ],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/476.htm"
-  },
-  {
-   "title": "三星144万亿韩元项目动工",
-   "source": "头条",
+   "title": "餐饮店员工店内抠脚玩手机被辞退",
+   "source": "百度",
    "kind": "热榜",
    "score": 3,
    "why": [
-    "+3 元"
+    "+3 退"
    ],
-   "hooks": [
-    "钱"
-   ],
-   "hot": "528087",
-   "url": "https://so.toutiao.com/search?keyword=%E4%B8%89%E6%98%9F144%E4%B8%87%E4%BA%BF%E9%9F%A9%E5%85%83%E9%A1%B9%E7%9B%AE%E5%8A%A8%E5%B7%A5"
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.baidu.com/s?wd=%E9%A4%90%E9%A5%AE%E5%BA%97%E5%91%98%E5%B7%A5%E5%BA%97%E5%86%85%E6%8A%A0%E8%84%9A%E7%8E%A9%E6%89%8B%E6%9C%BA%E8%A2%AB%E8%BE%9E%E9%80%80"
   },
   {
    "title": "折叠屏手机的转身｜明日后视镜",
@@ -130,6 +157,40 @@
    ],
    "hot": "",
    "url": "https://search.bilibili.com/all?keyword=iPhone%E9%94%80%E9%87%8F%E4%B8%BA%E4%BD%95%E8%83%BD%E9%80%86%E5%8A%BF%E9%A2%86%E8%B7%91"
+  },
+  {
+   "title": "漫威《蜘蛛侠：崭新之日》今日网播，登陆爱优腾、B站、华为视频等各大平台",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/680.htm"
+  },
+  {
+   "title": "苹果票房最高电影《F1: 狂飙飞车》后皮特再接 Apple TV 新片：把故事搬到纽约高空",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [
+    "反差"
+   ],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/672.htm"
+  },
+  {
+   "title": "消息称三星电子正谈判收购数据中心散热企业 Modine",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [
+    "爆料"
+   ],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/661.htm"
   },
   {
    "title": "主导苹果 M1 芯片的传奇架构师谈 AI 电力危机：用造 iPhone 芯片的“抠门”哲学建超算",
@@ -206,16 +267,6 @@
    "url": "https://www.ithome.com/1/026/526.htm"
   },
   {
-   "title": "小米新机入网：支持 67W 有线充，预计为 REDMI Note18 系列",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/488.htm"
-  },
-  {
    "title": "iPhone Siri AI 体验：距离真正的 AI Phone，苹果还有多远？| 附开通指南",
    "source": "爱范儿",
    "kind": "新品",
@@ -246,70 +297,43 @@
    "hooks": [],
    "hot": "",
    "url": "https://www.ifanr.com/1688852?utm_source=rss&utm_medium=rss&utm_campaign="
-  },
-  {
-   "title": "Deals: HomeView discount, M5 iPad Pro $300 off, Magic Keyboard, AirTag 2 all-time low, more",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/12/deals-homeview-m5-ipad-pro-magic-keyboard-airtag-2/"
-  },
-  {
-   "title": "Google’s new Android XR glasses work with iOS, Made for iPhone certified",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5google.com/2026/11/12/google-glasses-iphone-support/"
-  },
-  {
-   "title": "Apple adjusts iPhone and Apple Watch trade-in values, adds Samsung foldables",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/12/apple-adjusts-iphone-and-apple-watch-trade-in-values-adds-samsung-foldables/"
-  },
-  {
-   "title": "Binance warns iPhone crypto holders of security flaw researchers say remains unpatched",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/11/binance-warns-iphone-crypto-holders-of-security-flaw-researchers-say-remains-unpatched/"
   }
  ],
  "meme": [
   "课本里的逍遥游有画面了",
+  "手工敲虾到底有多好吃",
   "淡人友好冬日旅行",
   "R星入驻抖音",
   "时间从来证明不了什么",
   "破译“科学”流言密码",
   "欧国联意大利3:1胜法国",
-  "我已经准备好回家过年了",
+  "情呀爱呀手势舞",
   "你爱的是花还是花为你开",
-  "可以给我买麻辣烫糖葫芦吗",
-  "今天是太阳雨假表哥真表嫂",
-  "幸福迢迢如流水",
-  "马天宇的拥抱太戳人了",
+  "烂奇迹翻唱",
   "首个AI漫剧晚会阵容官宣",
-  "自请分配去老君山看雪",
+  "今天是太阳雨假表哥真表嫂",
   "你还是逃不过覆面系",
-  "烂奇迹翻唱"
+  "可以给我买麻辣烫糖葫芦吗",
+  "我军无人发烟车亮相演练场",
+  "停车楼飘移帅炸了"
  ],
- "resonance": [],
+ "resonance": [
+  {
+   "entity": "华为",
+   "platforms": [
+    "头条",
+    "快手"
+   ],
+   "score": 2,
+   "titles": [
+    "华为折叠电脑海外火出圈",
+    "华为Mate X8真机疑曝光"
+   ]
+  }
+ ],
  "counts": {
-  "picks": 37,
-  "shootable": 4,
+  "picks": 41,
+  "shootable": 6,
   "meme": 16
  }
 }
