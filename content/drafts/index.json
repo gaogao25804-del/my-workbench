@@ -1,16 +1,16 @@
 {
  "updated_at": "2026-11-13",
- "_note": "WorkBuddy 维护。口播工坊读这一个文件就能列出所有稿子，不用扫目录（浏览器列不了目录）。每写一篇稿，WorkBuddy 同时更新这里。字段跟 topics.json 对齐，topic_id 能对上就对上。",
+ "_note": "WorkBuddy 维护。口播工坊读这一个文件就能列出所有稿子，不用扫目录（浏览器列不了目录）。每写一篇稿，WorkBuddy 同时更新这里。字段跟 topics.json 对齐，topic_id 能对上就对上。status 决定落哪条泳道：draft 落草稿、final 落定稿。",
  "drafts": [
   {
    "file": "content/drafts/2026-11-13-iPhoneDuo三成退货.md",
    "date": "2026-11-13",
-   "title": "iPhone Duo 三成买家退货",
-   "topic_id": "",
-   "hook": "三成的人买了又退了",
-   "words": 695,
-   "duration_sec": 95,
-   "status": "draft",
+   "title": "iPhone Duo 三成买家退货（终稿）",
+   "topic_id": "J1",
+   "hook": "三成人白用半个月就退，退的不是坏机器",
+   "words": 586,
+   "duration_sec": 110,
+   "status": "final",
    "publish_at": "19:00",
    "device": "iPhoneduo"
   }
