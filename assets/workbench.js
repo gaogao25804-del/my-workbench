@@ -64,6 +64,7 @@ const st = {
   library: null,
   videos: null,
   radar: null,
+  wechat: null,
   drafts: null,
   load: { feishu: 'idle', library: 'idle', videos: 'idle', radar: 'idle', drafts: 'idle' },
   err: { feishu: '', library: '', videos: '', radar: '', drafts: '' },
@@ -220,6 +221,12 @@ async function loadDrafts() {
   } catch (e) {
     st.load.drafts = 'error';
     st.err.drafts = e.message || '加载失败';
+  }
+  // 公众号源：读不到不影响稿子列表
+  try {
+    st.wechat = await fetchJSON('wechat-feed.json');
+  } catch (e) {
+    st.wechat = null;
   }
   updateChrome();
   renderView(true);
@@ -1043,15 +1050,32 @@ function kbDocHtml(d) {
 
 /* 选题池：直接把今日雷达够分的候选搬进来，点标题看原文 */
 function kbIdeaHtml() {
-  const picks = (st.radar && st.radar.picks) ? st.radar.picks : [];
-  const use = picks.filter(function (p) { return (p.score || 0) >= 5; }).slice(0, 4);
+  // 两个源合一：全网热榜/媒体 + 公众号。公众号的 source 用号名，一眼能分清
+  const out = [];
+  const rp = (st.radar && st.radar.picks) ? st.radar.picks : [];
+  rp.filter(function (p) { return (p.score || 0) >= 5; }).forEach(function (p) {
+    out.push({ title: p.title, src: p.source || '', url: p.url || '', score: p.score || 0, from: '' });
+  });
+  const wp = (st.wechat && st.wechat.picks) ? st.wechat.picks : [];
+  wp.filter(function (p) { return (p.score || 0) >= 6; }).forEach(function (p) {
+    out.push({
+      title: p.title, src: p.account || '公众号', url: p.url || '',
+      score: p.score || 0, from: '公众号'
+    });
+  });
+  out.sort(function (a, b) {
+    if (b.score !== a.score) return b.score - a.score;
+    return (b.from ? 1 : 0) - (a.from ? 1 : 0);
+  });
+  const use = out.slice(0, 6);
+  if (!use.length) return '';
   return use.map(function (p) {
     const tag = p.url ? 'a' : 'div';
     const href = p.url ? ' href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer"' : '';
     return '<' + tag + ' class="kb-doc is-idea"' + href + '>' +
       '<div class="kb-doc-t">' + esc(p.title || '') + '</div>' +
       '<div class="kb-doc-m">' +
-        '<span>' + esc(p.source || '') + '</span>' +
+        '<span>' + (p.from ? '<u>' + esc(p.from) + '</u>' + esc(p.src) : esc(p.src)) + '</span>' +
         '<span class="is-go">' + (p.score || 0) + ' 分</span>' +
       '</div>' +
     '</' + tag + '>';
@@ -1117,8 +1141,10 @@ function renderKouboPage() {
 
   const nDraft = docs.filter(function (x) { return kbLane(x.status) === 'draft'; }).length;
   const nFinal = docs.filter(function (x) { return kbLane(x.status) === 'final'; }).length;
-  const nIdea = (st.radar && st.radar.picks)
-    ? st.radar.picks.filter(function (p) { return (p.score || 0) >= 5; }).length : 0;
+  const nIdea = ((st.radar && st.radar.picks)
+    ? st.radar.picks.filter(function (p) { return (p.score || 0) >= 5; }).length : 0) +
+    ((st.wechat && st.wechat.picks)
+    ? st.wechat.picks.filter(function (p) { return (p.score || 0) >= 6; }).length : 0);
 
   let note = '';
   if (st.load.drafts === 'error') {
