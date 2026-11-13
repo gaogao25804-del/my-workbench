@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-13 11:51",
+ "updated": "2026-11-13 11:53",
  "stats": {
   "抖音": 50,
-  "快手": 49,
+  "快手": 50,
   "头条": 50,
   "B站": 50,
   "百度": 51,
@@ -65,7 +65,7 @@
    "url": "https://9to5mac.com/2026/11/12/30-of-iphone-duo-buyers-may-have-returned-it-but-i-dont-think-apple-should-worry/"
   },
   {
-   "title": "2027 款岚图知音上市：新一代华为 896 线双光路激光雷达 + 乾崑智驾 ADS 5，售 19.79 万元",
+   "title": "肯辛通 Expert Mouse Pro TB900 EQ 轨迹球鼠标国行上市，999 元",
    "source": "IT之家",
    "kind": "新品",
    "score": 3,
@@ -76,7 +76,7 @@
     "钱"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/536.htm"
+   "url": "https://www.ithome.com/1/026/629.htm"
   },
   {
    "title": "苹果首款智能家庭中枢 HomeView 及新款 Apple TV 4K 上市，首批订单已送至澳新客户手中",
@@ -101,7 +101,7 @@
    "hooks": [
     "钱"
    ],
-   "hot": "2885474",
+   "hot": "528087",
    "url": "https://so.toutiao.com/search?keyword=%E4%B8%89%E6%98%9F144%E4%B8%87%E4%BA%BF%E9%9F%A9%E5%85%83%E9%A1%B9%E7%9B%AE%E5%8A%A8%E5%B7%A5"
   },
   {
@@ -216,16 +216,6 @@
    "url": "https://www.ithome.com/1/026/488.htm"
   },
   {
-   "title": "华为智能门锁 2 系列全新升级鸿蒙 7.0：新增回家抓拍、通话变声等",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/468.htm"
-  },
-  {
    "title": "iPhone Siri AI 体验：距离真正的 AI Phone，苹果还有多远？| 附开通指南",
    "source": "爱范儿",
    "kind": "新品",
@@ -286,6 +276,16 @@
    "hooks": [],
    "hot": "",
    "url": "https://9to5mac.com/2026/11/12/apple-adjusts-iphone-and-apple-watch-trade-in-values-adds-samsung-foldables/"
+  },
+  {
+   "title": "Binance warns iPhone crypto holders of security flaw researchers say remains unpatched",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/11/binance-warns-iphone-crypto-holders-of-security-flaw-researchers-say-remains-unpatched/"
   }
  ],
  "meme": [
@@ -300,15 +300,15 @@
   "可以给我买麻辣烫糖葫芦吗",
   "今天是太阳雨假表哥真表嫂",
   "幸福迢迢如流水",
-  "首个AI漫剧晚会阵容官宣",
   "马天宇的拥抱太戳人了",
+  "首个AI漫剧晚会阵容官宣",
   "自请分配去老君山看雪",
   "你还是逃不过覆面系",
   "烂奇迹翻唱"
  ],
  "resonance": [],
  "counts": {
-  "picks": 38,
+  "picks": 37,
   "shootable": 4,
   "meme": 16
  }
