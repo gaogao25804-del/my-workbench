@@ -1,6 +1,8 @@
 # 大体积本地视频不上传（GitHub Pages 站点上限 1GB）
 视频/
 node_modules/
+# agent 直连总线：只在本地，不进仓库不上线
+.bus/
 Thumbs.db
 .DS_Store
 desktop.ini
