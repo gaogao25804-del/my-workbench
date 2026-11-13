@@ -47,12 +47,12 @@ const PAGES = {
   home:    { title: '主页',       desc: '工作台概览 · 数据来自飞书本地快照' },
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 支持筛选与分页', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
-  koubo:   { title: '口播工坊',   desc: '选题 · 草稿 · 定稿 · 三段流水线' },
+  koubo:   { title: '口播工坊',   desc: '自己写 · 自己改 · 定稿得你自己点' },
   wenan:   { title: '成品文案',   desc: '完整成片 · 分段 + 画面 + 口播' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
   report:  { title: '战报',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
-  radar:   { title: '今日雷达',   desc: '全网热点 · 每天自动抓一遍' }
+  radar:   { title: '今日雷达',   desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' }
 };
 
 const PAGE_SIZE = { task: 20 };
@@ -65,6 +65,8 @@ const st = {
   library: null,
   report: null,
   radar: null,
+  radarDays: null,
+  dayCache: {},
   wechat: null,
   drafts: null,
   wenan: null,
@@ -208,6 +210,12 @@ async function loadRadar() {
     st.load.radar = 'error';
     st.err.radar = e.message || '加载失败';
   }
+  // 存档清单：读不到就只显示今天，不影响主流程
+  try {
+    st.radarDays = await fetchJSON('content/radar/index.json');
+  } catch (e) {
+    st.radarDays = null;
+  }
   updateChrome();
   renderView(true);
 }
@@ -291,8 +299,8 @@ function stateHtml(type, title, desc, actionLabel, actionAttr) {
 /* ---------------- 主页 ---------------- */
 function renderHome() {
   const cards = [
-    { go: 'radar', icon: 'bolt', title: '今日雷达', desc: '热点候选 · 每天 10:20' },
-    { go: 'koubo', icon: 'mic', title: '口播工坊', desc: '选题 · 草稿 · 念稿' },
+    { go: 'radar', icon: 'bolt', title: '今日雷达', desc: '每天 10:20 抓一遍 · 挑一条开稿' },
+    { go: 'koubo', icon: 'mic', title: '口播工坊', desc: '自己写 · 自己定稿' },
     { go: 'wenan', icon: 'file', title: '成品文案', desc: '完整成片 · 照骨架抄' },
     { go: 'report', icon: 'chart', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
     { go: 'tasks', icon: 'calendar', title: '任务与日历', desc: '飞书任务月历' },
@@ -1016,42 +1024,61 @@ async function loadWenan() {
   renderView(true);
 }
 
-/* ---------------- 口播工坊（读 content/drafts/index.json） ---------------- */
-const KB_LANES = [
-  { key: 'idea',  name: '选题池', en: 'IDEAS',  icon: 'inbox', empty: '今天还没挑', tip: '下面这几条是雷达够分的，挑一条说一声就出稿' },
-  { key: 'draft', name: '草稿',   en: 'DRAFT',  icon: 'pen',   empty: '还没有草稿', tip: '念得顺了才算过关' },
-  { key: 'final', name: '定稿',   en: 'FINAL',  icon: 'check', empty: '还没有定稿', tip: '定稿的稿子，直接拿去向镜头' }
-];
+/* ---------------- 口播工坊（自己写 · 自己定稿） ---------------- */
+/* 数据两层：
+   ① 仓库 content/drafts/index.json + 同名 md —— 我放进来的，只当素材
+   ② 浏览器 localStorage —— 老板自己写的、自己改的，敲一下就存
+   定稿只能老板点按钮，代码不替他判。我产的稿子默认全在「草稿」。
+   本地存储跟着这台设备的浏览器走，手机和电脑不互通，挪稿子用「复制全文」。 */
 
 const KB_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+const KB_STORE = 'wb.kb.docs.v2';
 
-/* 界面状态：open=正在念哪一篇，text=正文缓存，copy=刚点过复制 */
-const KB = { open: '', text: {}, copy: '', busy: '' };
+const KB = { open: '', lane: 'draft', md: {}, local: null, saved: '' };
 
-function kbLane(s) {
-  const v = String(s || '').toLowerCase();
-  if (v === 'final' || v === 'done' || v === 'published' || v === 'shot') return 'final';
-  if (v === 'idea' || v === 'topic') return 'idea';
-  return 'draft';
+function kbWords(txt) { return String(txt || '').replace(/\s/g, '').length; }
+
+function kbSec(n) { return Math.round((Number(n) || 0) / 5.5); }
+
+function kbDurText(n) {
+  const s = kbSec(n);
+  if (!s) return '0 秒';
+  const m = Math.floor(s / 60);
+  return (m ? m + ' 分 ' : '') + (s % 60) + ' 秒';
 }
 
-function kbFind(file) {
-  const docs = (st.drafts && st.drafts.drafts) || [];
-  for (let i = 0; i < docs.length; i++) if (docs[i].file === file) return docs[i];
-  return null;
+function kbLocal() {
+  if (KB.local) return KB.local;
+  KB.local = [];
+  try {
+    const raw = localStorage.getItem(KB_STORE);
+    const arr = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(arr)) {
+      KB.local = arr.filter(function (d) { return d && d.id; });
+      KB.local.forEach(function (d) { d.local = true; });
+    }
+  } catch (e) { KB.local = []; }
+  return KB.local;
 }
 
-/* 从 md 里抽出真正要念的部分：钩子 / 正文 / 结尾，去掉标题行和列表符号 */
+function kbPersist() {
+  try {
+    localStorage.setItem(KB_STORE, JSON.stringify(KB.local || []));
+    const d = new Date();
+    KB.saved = pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    return true;
+  } catch (e) { return false; }
+}
+
+/* 远端 md 拆成标题 + 正文。正文规矩跟以前一样：跳过 `## 正文` 这类标题行 */
 function kbBody(md) {
   let t = String(md || '').replace(/\r/g, '');
   const a = t.indexOf('## 钩子');
   const c = t.search(/^##\s*(正文|稿)/m);
   const start = a >= 0 ? a : c;
   if (start >= 0) {
-    // 先跳到标题行末尾，别把「## 正文（直接念，一整段）」这行念出来
     const le = t.indexOf('\n', start);
     const rest = t.slice(le >= 0 ? le + 1 : start + 3);
-    // 遇到下一个二级标题或分隔线就停
     const m = rest.search(/^(##\s|---\s*$)/m);
     t = m >= 0 ? rest.slice(0, m) : rest;
   } else {
@@ -1064,142 +1091,137 @@ function kbBody(md) {
     .trim();
 }
 
-function kbParas(txt) {
-  return txt.split(/\n{2,}/).map(function (p) {
-    return p.replace(/\n/g, '').trim();
-  }).filter(Boolean);
+function kbMdParse(md) {
+  const t = String(md || '').replace(/\r/g, '');
+  const m = t.match(/^#\s+(.+)$/m);
+  return { title: m ? m[1].trim() : '', body: kbBody(t) };
 }
 
-function kbWords(txt) { return String(txt || '').replace(/\s/g, '').length; }
-
-function kbDur(sec) {
-  const s = Number(sec) || 0;
-  if (!s) return '';
-  const m = Math.floor(s / 60);
-  return (m ? m + '分' : '') + (s % 60 ? (s % 60) + '秒' : '');
+/* 本地 + 仓库合成一份清单，同一篇按 file 去重（本地优先） */
+function kbDocs() {
+  const locals = kbLocal();
+  const out = locals.slice();
+  const files = {};
+  locals.forEach(function (d) { if (d.file) files[d.file] = 1; });
+  const rem = (st.drafts && st.drafts.drafts) ? st.drafts.drafts : [];
+  rem.forEach(function (r) {
+    if (!r.file || files[r.file]) return;
+    out.push({
+      id: 'r:' + r.file, file: r.file, local: false,
+      title: r.title || '', body: null, final: false,
+      date: r.date || '', src: '我放进来的', publish_at: r.publish_at || ''
+    });
+  });
+  out.sort(function (a, b) {
+    const da = String(a.date || ''), db = String(b.date || '');
+    if (da !== db) return db.localeCompare(da);
+    return (a.final ? 1 : 0) - (b.final ? 1 : 0);
+  });
+  return out;
 }
 
-function kbDocHtml(d) {
-  const f = String(d.file || '');
-  const w = Number(d.words) || 0;
-  const dur = kbDur(d.duration_sec);
-  return '<div class="kb-doc" data-kb-open="' + esc(f) + '" tabindex="0" role="button">' +
-    '<div class="kb-doc-t">' + esc(d.title || '未命名') + '</div>' +
-    (d.hook ? '<div class="kb-doc-h">' + esc(d.hook) + '</div>' : '') +
+function kbGet(id) {
+  const all = kbDocs();
+  for (let i = 0; i < all.length; i++) if (all[i].id === id) return all[i];
+  return null;
+}
+
+/* 要改仓库里那一篇了，先落成本地副本（留着 file，下次还能认出是同一篇） */
+function kbMaterialize(id) {
+  const all = kbDocs();
+  for (let i = 0; i < all.length; i++) {
+    const d = all[i];
+    if (d.id !== id) continue;
+    if (d.local) return d;
+    const md = KB.md[d.file];
+    const p = md != null ? kbMdParse(md) : { title: '', body: '' };
+    const copy = {
+      id: 'l:' + d.file, file: d.file, local: true,
+      title: d.title || p.title, body: p.body || '',
+      final: false, date: d.date || fmtDate(new Date()), src: d.src || ''
+    };
+    KB.local.unshift(copy);
+    KB.open = copy.id;
+    return copy;
+  }
+  return null;
+}
+
+function kbItemHtml(d) {
+  const n = kbWords(d.body);
+  return '<div class="kb-doc' + (KB.open === d.id ? ' is-on' : '') + '" data-kb-open="' + esc(d.id) + '" tabindex="0" role="button">' +
+    '<div class="kb-doc-t">' + esc(d.title || '没写标题') + '</div>' +
     '<div class="kb-doc-m">' +
-      '<span>' + esc(fmtMD(d.date) || '') + '</span>' +
-      (w ? '<span>' + w + ' 字</span>' : '') +
-      (dur ? '<span>' + esc(dur) + '</span>' : '') +
-      (d.publish_at ? '<span class="is-go">' + esc(d.publish_at) + ' 发</span>' : '') +
+      '<span>' + (esc(fmtMD(d.date)) || '—') + '</span>' +
+      (n ? '<span>' + n + ' 字</span>' : '') +
+      (n ? '<span>' + kbDurText(n) + '</span>' : '') +
+      (d.final ? '<span class="is-go">定稿</span>' : '<span class="is-dim">草稿</span>') +
     '</div>' +
   '</div>';
 }
 
-/* 选题池：直接把今日雷达够分的候选搬进来，点标题看原文 */
-function kbIdeaHtml() {
-  // 两个源合一：全网热榜/媒体 + 公众号。公众号的 source 用号名，一眼能分清
-  const out = [];
-  const rp = (st.radar && st.radar.picks) ? st.radar.picks : [];
-  rp.filter(function (p) { return (p.score || 0) >= 5; }).forEach(function (p) {
-    out.push({ title: p.title, src: p.source || '', url: p.url || '', score: p.score || 0, from: '' });
-  });
-  const wp = (st.wechat && st.wechat.picks) ? st.wechat.picks : [];
-  wp.filter(function (p) { return (p.score || 0) >= 6; }).forEach(function (p) {
-    out.push({
-      title: p.title, src: p.account || '公众号', url: p.url || '',
-      score: p.score || 0, from: '公众号'
-    });
-  });
-  out.sort(function (a, b) {
-    if (b.score !== a.score) return b.score - a.score;
-    return (b.from ? 1 : 0) - (a.from ? 1 : 0);
-  });
-  const use = out.slice(0, 6);
-  if (!use.length) return '';
-  return use.map(function (p) {
-    const tag = p.url ? 'a' : 'div';
-    const href = p.url ? ' href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer"' : '';
-    return '<' + tag + ' class="kb-doc is-idea"' + href + '>' +
-      '<div class="kb-doc-t">' + esc(p.title || '') + '</div>' +
-      '<div class="kb-doc-m">' +
-        '<span>' + (p.from ? '<u>' + esc(p.from) + '</u>' + esc(p.src) : esc(p.src)) + '</span>' +
-        '<span class="is-go">' + (p.score || 0) + ' 分</span>' +
-      '</div>' +
-    '</' + tag + '>';
-  }).join('');
-}
-
-function kbReadHtml() {
-  if (!KB.open) return '';
-  const d = kbFind(KB.open);
-  const txt = KB.text[KB.open];
-  let body;
-  if (txt == null) {
-    body = '<div class="kb-read-wait">正在取正文…</div>';
-  } else {
-    const ps = kbParas(kbBody(txt));
-    body = ps.length
-      ? ps.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('')
-      : '<div class="kb-read-wait">这篇里没找到正文，点下面的仓库链接看原文</div>';
+function kbEditorHtml(d) {
+  if (!d) {
+    return '<div class="kb-ed is-empty">' +
+      '<span class="kb-empty-ico">' + ic('pen') + '</span>' +
+      '<b>点左边一条开始改</b>' +
+      '<span>或者点「+ 新建」，从零写一条。改一个字就自动存，定稿得你自己点。</span>' +
+    '</div>';
   }
-  return '<div class="kb-read">' +
-    '<div class="kb-read-bar">' +
-      '<div class="kb-read-k">念稿</div>' +
-      '<div class="kb-read-t">' + esc(d ? d.title : '') + '</div>' +
-      '<button type="button" class="kb-read-btn" data-kb-copy="1">' + (KB.copy ? '已复制' : '复制全文') + '</button>' +
-      '<button type="button" class="kb-read-btn is-x" data-kb-close="1">关闭</button>' +
+  const n = kbWords(d.body);
+  const wait = d.body == null;
+  const src = d.src || '';
+  const link = /^https?:\/\//i.test(d.url || '')
+    ? ' <a class="kb-ed-link" href="' + esc(d.url) + '" target="_blank" rel="noopener noreferrer">原文 ↗</a>' : '';
+  return '<div class="kb-ed">' +
+    '<div class="kb-ed-head">' +
+      '<input class="kb-ed-t" data-kb-field="title" value="' + esc(d.title || '') + '" placeholder="标题，自己看得懂就行" spellcheck="false">' +
+      '<div class="kb-ed-act">' +
+        (d.final
+          ? '<button type="button" class="kb-btn" data-kb-unfinal="1">退回草稿</button>'
+          : '<button type="button" class="kb-btn is-go" data-kb-final="1">标为定稿</button>') +
+        '<button type="button" class="kb-btn" data-kb-copy="1">复制全文</button>' +
+        (d.local ? '<button type="button" class="kb-btn is-x" data-kb-del="1">删掉</button>' : '') +
+      '</div>' +
     '</div>' +
-    '<div class="kb-read-body">' + body + '</div>' +
+    (src || link
+      ? '<div class="kb-ed-src">' + esc(src) + link + '</div>'
+      : '') +
+    (wait
+      ? '<div class="kb-ed-wait">正在取原稿…</div>'
+      : '<textarea class="kb-ed-b" data-kb-field="body" spellcheck="false" placeholder="直接往这儿写。一整段别分，像说话那样。">' + esc(d.body || '') + '</textarea>') +
+    '<div class="kb-ed-bar">' +
+      '<span class="kb-ed-num">' + (n ? n + ' 字 · 约 ' + kbDurText(n) : '空') + '</span>' +
+      '<span class="kb-ed-hint">目标 520–700 字 · 1 分 20–1 分 40 · 一整段不分行</span>' +
+      '<span class="kb-ed-save">' + (KB.saved ? '已存本地 ' + KB.saved : '还没动过') + '</span>' +
+    '</div>' +
   '</div>';
 }
 
 function renderKouboPage() {
   const d = new Date();
-  const docs = (st.drafts && st.drafts.drafts) || [];
+  const docs = kbDocs();
+  const nDraft = docs.filter(function (x) { return !x.final; }).length;
+  const nFinal = docs.filter(function (x) { return x.final; }).length;
 
-  const lanes = KB_LANES.map(function (l) {
-    let inner = '';
-    let n = 0;
-    if (l.key === 'idea') {
-      const idea = kbIdeaHtml();
-      if (idea) { inner = '<div class="kb-list">' + idea + '</div>'; n = idea.split('class="kb-doc is-idea"').length - 1; }
-    } else {
-      const mine = docs.filter(function (x) { return kbLane(x.status) === l.key; });
-      n = mine.length;
-      if (n) inner = '<div class="kb-list">' + mine.map(kbDocHtml).join('') + '</div>';
-    }
-    if (!inner) {
-      inner = '<div class="kb-empty">' +
-        '<span class="kb-empty-ico">' + ic(l.icon) + '</span>' +
-        '<b>' + esc(l.empty) + '</b>' +
-        '<span>' + esc(l.tip) + '</span>' +
+  const lane = KB.lane;
+  const mine = docs.filter(function (x) { return lane === 'final' ? x.final : !x.final; });
+  const cur = KB.open ? kbGet(KB.open) : null;
+  const inLane = cur && (lane === 'final' ? cur.final : !cur.final);
+
+  const list = mine.length
+    ? mine.map(kbItemHtml).join('')
+    : '<div class="kb-empty is-mini">' +
+        '<span class="kb-empty-ico">' + ic(lane === 'final' ? 'check' : 'pen') + '</span>' +
+        '<b>' + (lane === 'final' ? '还没有定稿' : '草稿是空的') + '</b>' +
+        '<span>' + (lane === 'final' ? '你自己点了「标为定稿」，才会进这里' : '点「+ 新建」，或者去雷达挑一条') + '</span>' +
       '</div>';
-    }
-    return '<div class="kb-col" data-kb-lane="' + l.key + '">' +
-      '<div class="kb-col-head">' +
-        '<i class="kb-dot"></i>' +
-        '<span class="kb-col-name">' + esc(l.name) + '</span>' +
-        '<span class="kb-col-en">' + esc(l.en) + '</span>' +
-        '<span class="kb-col-count">' + n + '</span>' +
-      '</div>' +
-      inner +
-    '</div>';
-  }).join('');
-
-  const nDraft = docs.filter(function (x) { return kbLane(x.status) === 'draft'; }).length;
-  const nFinal = docs.filter(function (x) { return kbLane(x.status) === 'final'; }).length;
-  const nIdea = ((st.radar && st.radar.picks)
-    ? st.radar.picks.filter(function (p) { return (p.score || 0) >= 5; }).length : 0) +
-    ((st.wechat && st.wechat.picks)
-    ? st.wechat.picks.filter(function (p) { return (p.score || 0) >= 6; }).length : 0);
 
   let note = '';
   if (st.load.drafts === 'error') {
-    note = '<div class="kb-note is-err"><i></i>稿子索引读不到（' + esc(st.err.drafts || '') + '），列表是空的</div>';
-  } else if (st.load.drafts === 'ready' && !docs.length) {
-    note = '<div class="kb-note"><i></i>索引是好的，就是还没有稿子。index.json 里加一条就出来</div>';
+    note = '<div class="kb-note is-err"><i></i>仓库里的稿子索引读不到（' + esc(st.err.drafts || '') + '），只显示这台设备上存的</div>';
   } else {
-    note = '<div class="kb-note"><i></i>点任意一篇就能看全文，复制了直接念</div>';
+    note = '<div class="kb-note"><i></i>改动只存在这台设备的浏览器里 · 换设备要挪稿子，点「复制全文」</div>';
   }
 
   return '' +
@@ -1210,88 +1232,172 @@ function renderKouboPage() {
       '</div>' +
       '<div class="kb-slots">' +
         '<div class="kb-slot is-live"><span>发布</span><b>19:00</b></div>' +
-        '<div class="kb-slot"><span>能挑</span><b>' + (st.radar ? nIdea : '—') + '</b></div>' +
-        '<div class="kb-slot"><span>待念</span><b>' + (st.load.drafts === 'ready' ? nDraft : '—') + '</b></div>' +
-        '<div class="kb-slot"><span>已定稿</span><b>' + (st.load.drafts === 'ready' ? nFinal : '—') + '</b></div>' +
+        '<div class="kb-slot"><span>草稿</span><b>' + nDraft + '</b></div>' +
+        '<div class="kb-slot"><span>定稿</span><b>' + nFinal + '</b></div>' +
       '</div>' +
     '</div>' +
-    '<div class="kb-board">' + lanes + '</div>' +
-    note +
-    kbReadHtml();
+    '<div class="kb-shell">' +
+      '<aside class="kb-rail">' +
+        '<div class="kb-rail-head">' +
+          '<div class="kb-tabs">' +
+            '<button type="button" class="kb-tab' + (lane === 'draft' ? ' is-on' : '') + '" data-kb-lane="draft">草稿 <b>' + nDraft + '</b></button>' +
+            '<button type="button" class="kb-tab' + (lane === 'final' ? ' is-on' : '') + '" data-kb-lane="final">定稿 <b>' + nFinal + '</b></button>' +
+          '</div>' +
+          '<button type="button" class="kb-new" data-kb-new="1">+ 新建</button>' +
+        '</div>' +
+        '<div class="kb-list' + (mine.length ? '' : ' is-empty') + '">' + list + '</div>' +
+      '</aside>' +
+      kbEditorHtml(inLane ? cur : null) +
+    '</div>' +
+    note;
+}
+
+/* 只更新字数条，不动 DOM 结构，免得敲字时丢焦点 */
+function kbSyncMeta() {
+  const sec = document.getElementById('sec-koubo');
+  if (!sec) return;
+  const d = kbGet(KB.open);
+  const num = sec.querySelector('.kb-ed-num');
+  const save = sec.querySelector('.kb-ed-save');
+  if (num && d) {
+    const n = kbWords(d.body);
+    num.textContent = n ? n + ' 字 · 约 ' + kbDurText(n) : '空';
+  }
+  if (save) save.textContent = KB.saved ? '已存本地 ' + KB.saved : '还没动过';
 }
 
 function mountKoubo() {
   const nc = document.getElementById('navKouboCount');
   if (nc) {
-    const n = (st.drafts && st.drafts.drafts) ? st.drafts.drafts.length : 0;
-    nc.textContent = st.load.drafts === 'ready' ? String(n) : '—';
+    const n = kbDocs().filter(function (x) { return !x.final; }).length;
+    nc.textContent = st.load.drafts === 'ready' ? String(n) : String(n || 0);
   }
-
-  document.body.classList.toggle('kb-lock', !!KB.open);
 
   const sec = document.getElementById('sec-koubo');
   if (!sec) return;
 
-  sec.querySelectorAll('[data-kb-open]').forEach(function (el) {
-    const go = function () {
-      const f = el.getAttribute('data-kb-open');
-      if (!f) return;
-      KB.open = f;
-      KB.copy = '';
-      renderView(true);
-      if (KB.text[f] == null && KB.busy !== f) {
-        KB.busy = f;
-        fetch(encodeURI(f) + '?t=' + Date.now())
-          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-          .then(function (t) { KB.text[f] = t; KB.busy = ''; if (KB.open === f) renderView(true); })
-          .catch(function () { KB.text[f] = ''; KB.busy = ''; if (KB.open === f) renderView(true); });
-      }
-    };
-    el.addEventListener('click', go);
-    el.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
-    });
-  });
+  // 远端那一篇的正文，第一次打开时拉一次
+  const cur = KB.open ? kbGet(KB.open) : null;
+  if (cur && cur.file && cur.body == null && KB.md[cur.file] == null) {
+    const f = cur.file;
+    fetch(encodeURI(f) + '?t=' + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function (t) { KB.md[f] = t; if (KB.open) renderView(true); })
+      .catch(function () { KB.md[f] = ''; if (KB.open) renderView(true); });
+  }
 
-  const close = sec.querySelector('[data-kb-close]');
-  if (close) close.addEventListener('click', function () { KB.open = ''; renderView(true); });
+  sec.addEventListener('click', function (e) {
+    const t = e.target;
+    const openEl = t.closest('[data-kb-open]');
+    const laneEl = t.closest('[data-kb-lane]');
+    const isNew = t.closest('[data-kb-new]');
+    const isFinal = t.closest('[data-kb-final]');
+    const isUnfinal = t.closest('[data-kb-unfinal]');
+    const isCopy = t.closest('[data-kb-copy]');
+    const isDel = t.closest('[data-kb-del]');
 
-  const cp = sec.querySelector('[data-kb-copy]');
-  if (cp) cp.addEventListener('click', function () {
-    const txt = KB.text[KB.open];
-    if (txt == null) return;
-    const body = kbBody(txt);
-    const done = function () {
-      KB.copy = '1';
+    if (isNew) {
+      const d = {
+        id: 'n' + Date.now(), local: true, file: null,
+        title: '', body: '', final: false,
+        date: fmtDate(new Date()), src: '', url: ''
+      };
+      kbLocal().unshift(d);
+      kbPersist();
+      KB.open = d.id;
+      KB.lane = 'draft';
       renderView(true);
-      setTimeout(function () { KB.copy = ''; if (KB.open) renderView(true); }, 1600);
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(body).then(done, function () { kbFallbackCopy(body); done(); });
-    } else {
-      kbFallbackCopy(body);
-      done();
+      const inp = document.querySelector('#sec-koubo .kb-ed-t');
+      if (inp) inp.focus();
+      return;
+    }
+    if (laneEl) {
+      const k = laneEl.getAttribute('data-kb-lane');
+      if (k === KB.lane) return;
+      KB.lane = k;
+      KB.open = '';
+      renderView(true);
+      return;
+    }
+    if (openEl) {
+      const id = openEl.getAttribute('data-kb-open');
+      if (id === KB.open) return;
+      KB.open = id;
+      renderView(true);
+      return;
+    }
+    if (isFinal || isUnfinal) {
+      let d = kbGet(KB.open);
+      if (!d) return;
+      if (!d.local) d = kbMaterialize(KB.open);
+      if (!d) return;
+      d.final = !!isFinal;
+      kbPersist();
+      KB.lane = d.final ? 'final' : 'draft';
+      renderView(true);
+      toast(isFinal ? '进定稿了' : '退回草稿了', 'ok');
+      return;
+    }
+    if (isCopy) {
+      const d = kbGet(KB.open);
+      if (d && d.body) copyText(d.body);
+      return;
+    }
+    if (isDel) {
+      const d = kbGet(KB.open);
+      if (!d || !d.local) return;
+      if (!window.confirm('删掉「' + (d.title || '没写标题') + '」？删了就找不回来。')) return;
+      KB.local = kbLocal().filter(function (x) { return x.id !== d.id; });
+      kbPersist();
+      KB.open = '';
+      renderView(true);
+      toast('删了', 'ok');
+      return;
     }
   });
 
-  const sheet = sec.querySelector('.kb-read');
-  if (sheet) {
-    sheet.addEventListener('click', function (e) {
-      if (e.target === sheet) { KB.open = ''; renderView(true); }
+  sec.addEventListener('input', function (e) {
+    const f = e.target.getAttribute('data-kb-field');
+    if (!f) return;
+    let d = kbGet(KB.open);
+    if (!d) return;
+    if (!d.local) {
+      d = kbMaterialize(KB.open);
+      if (!d) return;
+    }
+    d[f] = e.target.value;
+    if (!d.date) d.date = fmtDate(new Date());
+    kbPersist();
+    kbSyncMeta();
+  });
+
+  // 标题改完，左边列表跟着变（点在标题上不重渲染，失焦才刷）
+  const tt = sec.querySelector('.kb-ed-t');
+  if (tt) {
+    tt.addEventListener('blur', function () {
+      const d = kbGet(KB.open);
+      if (d && d.local) renderView(true);
     });
   }
 }
 
-function kbFallbackCopy(t) {
-  const ta = document.createElement('textarea');
-  ta.value = t;
-  ta.style.cssText = 'position:fixed;left:-9999px;top:0';
-  document.body.appendChild(ta);
-  ta.select();
-  try { document.execCommand('copy'); } catch (e) {}
-  document.body.removeChild(ta);
+/* 雷达点「写这条」：开一个空稿，标题和出处先填上 */
+function kbStartFrom(idea) {
+  const d = {
+    id: 'n' + Date.now(), local: true, file: null,
+    title: String((idea && idea.title) || ''),
+    body: '', final: false,
+    date: fmtDate(new Date()),
+    src: (idea && idea.from ? idea.from + ' ' : '') + ((idea && idea.src) || ''),
+    url: (idea && idea.url) || ''
+  };
+  kbLocal().unshift(d);
+  kbPersist();
+  KB.open = d.id;
+  KB.lane = 'draft';
+  switchTab('koubo');
+  toast('开了个空稿，标题先填上了', 'ok');
 }
-
 /* ---------------- 战报（每月视频数据统计 · 照搬老板的 Excel） ---------------- */
 /* 数据：content/report/index.json（tools/build-report.py 从 xlsx 生成）
    页面顺序与表格 sheet 一致：整体大盘 → 引流vs内容 → 全部明细 → TOP10 → 总结 */
@@ -1510,13 +1616,119 @@ function renderReportPage() {
   return head + kvCard + cmpCard + detCard + topCard + noteCard;
 }
 
-/* ---------------- 今日雷达（全网热点 · 每天 10:20 自动更新） ---------------- */
+/* ---------------- 每日雷达（每天 10:20 抓一遍 · 一天存一份） ---------------- */
+/* 数据：radar-data.json（今天）+ wechat-feed.json（公众号）+ content/radar/YYYY-MM-DD.json（每天存档）
+   页面：日期条（前天→今天→后天）→ 候选池（默认只摆 8 条）→ 热梗 */
 
-const RDR = { onlyHit: false };
-const RDR_MAX = 18;
+const RDR = { onlyHit: false, day: '', more: false, view: [] };
+const RDR_MAX = 8;
+const RDR_OFFSETS = [-3, -2, -1, 0, 1, 2];
+
+function rdrToday() { return fmtDate(new Date()); }
 
 function rdrShortTime(t) {
-  return (t || '').replace(/^\d{4}-/, '') || '—';
+  return String(t || '').replace(/^\d{4}-/, '') || '—';
+}
+
+function rdrOffsetDate(off) {
+  const d = new Date();
+  d.setDate(d.getDate() + off);
+  return d;
+}
+
+/* 今天：雷达 + 公众号合成一份；同标题只留先出现的 */
+function rdrTodayList() {
+  const out = [];
+  const rp = (st.radar && st.radar.picks) ? st.radar.picks : [];
+  rp.forEach(function (p) {
+    out.push({
+      title: p.title, source: p.source || '', kind: p.kind || '',
+      score: p.score || 0, hooks: p.hooks || [], url: p.url || '', from: ''
+    });
+  });
+  const wp = (st.wechat && st.wechat.picks) ? st.wechat.picks : [];
+  wp.forEach(function (p) {
+    out.push({
+      title: p.title, source: p.account || '公众号', kind: '公众号',
+      score: p.score || 0, hooks: (p.why || []).slice(0, 2), url: p.url || '', from: '公众号'
+    });
+  });
+  const seen = {};
+  const uniq = [];
+  out.forEach(function (p) {
+    const k = String(p.title || '').slice(0, 18);
+    if (!k || seen[k]) return;
+    seen[k] = 1;
+    uniq.push(p);
+  });
+  uniq.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+  return uniq;
+}
+
+function rdrShoot(list) {
+  return list.filter(function (p) { return (p.score || 0) >= 5; }).length;
+}
+
+/* 日期条：昨天前天有存档就能点，明天后天只写「10:20 自动抓」 */
+function rdcStrip(curKey) {
+  const today = rdrToday();
+  const meta = {};
+  ((st.radarDays && st.radarDays.days) || []).forEach(function (x) {
+    if (x && x.date) meta[x.date] = x;
+  });
+  const todayList = rdrTodayList();
+  if (curKey === today && todayList.length) {
+    meta[today] = { date: today, picks: todayList.length, shootable: rdrShoot(todayList) };
+  }
+
+  return '<div class="rdc-strip">' + RDR_OFFSETS.map(function (off) {
+    const dt = rdrOffsetDate(off);
+    const key = fmtDate(dt);
+    const lbl = off === 0 ? '今天'
+      : off === -1 ? '昨天'
+      : off === -2 ? '前天'
+      : off === 1 ? '明天'
+      : off === 2 ? '后天'
+      : KB_WEEK[dt.getDay()];
+    const m = meta[key];
+    let cls = 'rdc-day';
+    let sub = '';
+    let click = false;
+    if (off > 0) {
+      cls += ' is-future';
+      sub = '10:20 自动抓';
+    } else if (m && m.picks) {
+      sub = m.picks + ' 条 · ' + (m.shootable || 0) + ' 能拍';
+      click = true;
+    } else {
+      cls += ' is-none';
+      sub = off === 0 ? '今天还没抓' : '没存档';
+    }
+    if (key === curKey) cls += ' is-on';
+    const inner = '<span class="rdc-lbl">' + esc(lbl) + '</span>' +
+      '<b>' + pad2(dt.getMonth() + 1) + '-' + pad2(dt.getDate()) + '</b>' +
+      '<i>' + esc(sub) + '</i>';
+    if (!click) return '<div class="' + cls + '">' + inner + '</div>';
+    return '<button type="button" class="' + cls + '" data-rdr-day="' + key + '">' + inner + '</button>';
+  }).join('') + '</div>';
+}
+
+function rdcRow(p, i) {
+  const sc = p.score || 0;
+  const url = /^https?:\/\//i.test(p.url || '') ? p.url : '';
+  const tags = (p.hooks || []).map(function (h) { return '<i>' + esc(h) + '</i>'; }).join('') +
+    (p.from ? '<u>' + esc(p.from) + '</u>' : (p.kind ? '<u>' + esc(p.kind) + '</u>' : ''));
+  const main = '<span class="rdc-sc' + (sc >= 8 ? ' is-hot' : sc >= 5 ? ' is-hit' : '') + '">' +
+      (sc > 0 ? sc : '—') + '</span>' +
+    '<span class="rdc-src">' + esc(p.source || '') + '</span>' +
+    '<span class="rdc-tt">' + esc(p.title || '') + (url ? '<i class="rd-out">↗</i>' : '') + '</span>' +
+    '<span class="rdc-tg">' + tags + '</span>';
+  const cell = url
+    ? '<a class="rdc-main" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer" title="打开原文">' + main + '</a>'
+    : '<div class="rdc-main">' + main + '</div>';
+  return '<div class="rdc-row">' + cell +
+    '<button type="button" class="rdc-w" data-rdr-write="' + i + '" title="拿这条开个稿">写</button>' +
+  '</div>';
 }
 
 function renderRadarPage() {
@@ -1527,77 +1739,76 @@ function renderRadarPage() {
       '</div>';
   }
   if (!st.radar || st.load.radar !== 'ready') {
-    return '<div class="card rd-card">' + stateHtml('loading', '正在读今日热点') + '</div>';
+    return '<div class="card rd-card">' + stateHtml('loading', '正在读今天抓到的') + '</div>';
   }
 
-  const d = st.radar;
-  const picks = (d.picks || []).slice();
-  if (!picks.length) {
-    return '<div class="card rd-card">' +
-      stateHtml('empty', '今天还没抓到东西', '检查电脑有没有联网，再跑一次 radar_run.py') +
-      '</div>';
+  const today = rdrToday();
+  const dayKey = RDR.day || today;
+  const isToday = dayKey === today;
+  const arch = isToday ? null : ((st.dayCache || {})[dayKey] || null);
+
+  if (!isToday && !arch) {
+    return '<div class="card rd-card"><div class="rdc-wrap">' +
+      rdcStrip(dayKey) +
+      '<div class="rdc-miss">这天的存档还没读上来，切回今天再点一次</div>' +
+    '</div></div>';
   }
 
-  const hit = picks.filter(function (p) { return (p.score || 0) >= 5; });
-  const list = RDR.onlyHit ? hit : picks;
-  const shown = list.slice(0, RDR_MAX);
-  const stats = d.stats || {};
+  const all = isToday ? rdrTodayList() : (arch.picks || []);
+  const data = isToday ? st.radar : arch;
+  const hit = rdrShoot(all);
+  const list = RDR.onlyHit ? all.filter(function (p) { return (p.score || 0) >= 5; }) : all;
+  const shown = RDR.more ? list : list.slice(0, RDR_MAX);
+  RDR.view = shown;
+
+  const d = parseDate(dayKey) || new Date();
+  const dayLbl = (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日';
+  const rel = isToday ? '今天' : (dayKey === fmtDate(rdrOffsetDate(-1)) ? '昨天' : '');
+  const stats = data.stats || {};
   const platforms = Object.keys(stats).filter(function (k) { return stats[k] > 0; });
   let totalSrc = 0;
   platforms.forEach(function (k) { totalSrc += stats[k]; });
 
-  // 顶部条
-  let html = '<div class="card rd-card rd-strip-card"><div class="rd-strip">' +
-    '<div class="rd-strip-l">' +
-      '<div class="rd-kicker"><b>今日雷达</b> 每天 10:20 自动更新</div>' +
-      '<div class="rd-time">' + esc(rdrShortTime(d.updated)) +
-        '<em>' + platforms.length + ' 个平台 · 扫了 ' + totalSrc + ' 条热榜</em></div>' +
-    '</div>' +
-    '<div class="rd-slots">' +
-      '<div class="rd-slot"><span>候选</span><b>' + picks.length + '</b></div>' +
-      '<div class="rd-slot is-live"><span>能拍</span><b>' + hit.length + '</b></div>' +
-      '<div class="rd-slot"><span>热梗</span><b>' + (d.meme || []).length + '</b></div>' +
-    '</div>' +
-  '</div></div>';
-
-  // 候选池
-  html += '<div class="card rd-card">' +
-    '<div class="rd-card-head">' +
-      '<div class="rd-card-title">候选池<em>分数 = 能不能开机拍 · 你手上四台机器命中直接加 5 分</em></div>' +
-      '<div class="rd-chips">' +
-        '<span class="chip' + (RDR.onlyHit ? '' : ' active') + '" data-rdr-hit="0">全部 ' + picks.length + '</span>' +
-        '<span class="chip' + (RDR.onlyHit ? ' active' : '') + '" data-rdr-hit="1">只看能拍 ' + hit.length + '</span>' +
+  let html = '<div class="card rd-card"><div class="rdc-wrap">' +
+    '<div class="rdc-top">' +
+      '<div>' +
+        '<div class="rd-kicker"><b>每日雷达</b> 每天 10:20 抓一遍 · 一天存一份</div>' +
+        '<div class="rdc-title">' + dayLbl + (rel ? '<em>' + rel + '</em>' : '') +
+          '<span class="rdc-meta">' + esc(rdrShortTime(data.updated || '')) +
+          (platforms.length ? ' · ' + platforms.length + ' 个平台 · 扫了 ' + totalSrc + ' 条热榜' : '') +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rd-slots">' +
+        '<div class="rd-slot"><span>候选</span><b>' + all.length + '</b></div>' +
+        '<div class="rd-slot is-live"><span>能拍</span><b>' + hit + '</b></div>' +
+        '<div class="rd-slot"><span>热梗</span><b>' + ((data.meme || []).length) + '</b></div>' +
       '</div>' +
     '</div>' +
-    '<div class="rd-list">' +
-      shown.map(function (p, i) {
-        const sc = p.score || 0;
-        const cls = sc >= 8 ? ' is-hot' : sc >= 5 ? ' is-hit' : '';
-        const top3 = !RDR.onlyHit && i < 3 && sc >= 5;
-        const url = /^https?:\/\//i.test(p.url || '') ? p.url : '';
-        const inner = '<span class="rd-score">' + (sc > 0 ? sc : '—') + '</span>' +
-          '<span class="rd-src">' + esc(p.source || '') + '</span>' +
-          '<span class="rd-title">' + esc(p.title) + (url ? '<i class="rd-out">↗</i>' : '') + '</span>' +
-          '<span class="rd-tags">' +
-            (p.hooks || []).map(function (h) { return '<i>' + esc(h) + '</i>'; }).join('') +
-            (p.kind ? '<u>' + esc(p.kind) + '</u>' : '') +
-          '</span>';
-        if (!url) return '<div class="rd-row' + cls + (top3 ? ' is-top' : '') + '">' + inner + '</div>';
-        return '<a class="rd-row rd-link' + cls + (top3 ? ' is-top' : '') + '" href="' + esc(url) +
-          '" target="_blank" rel="noopener noreferrer" title="打开原文：' + esc(p.title) + '">' + inner + '</a>';
-      }).join('') +
+    rdcStrip(dayKey) +
+  '</div></div>';
+
+  html += '<div class="card rd-card">' +
+    '<div class="rd-card-head">' +
+      '<div class="rd-card-title">候选池<em>点一行看原文 · 点「写」直接开稿</em></div>' +
+      '<div class="rd-chips">' +
+        '<span class="chip' + (RDR.onlyHit ? '' : ' active') + '" data-rdr-hit="0">全部 ' + all.length + '</span>' +
+        '<span class="chip' + (RDR.onlyHit ? ' active' : '') + '" data-rdr-hit="1">只看能拍 ' + hit + '</span>' +
+      '</div>' +
     '</div>' +
-    (list.length > RDR_MAX
-      ? '<div class="rd-note">共 ' + list.length + ' 条，只显示前 ' + RDR_MAX + ' 条</div>'
-      : '<div class="rd-note"><i></i>分数只是「值不值得开机」，最后拍哪条你自己定</div>') +
+    '<div class="rdc-list">' + shown.map(rdcRow).join('') + '</div>' +
+    (list.length > shown.length
+      ? '<button type="button" class="rdc-more" data-rdr-more="1">展开剩下的 ' + (list.length - shown.length) + ' 条</button>'
+      : (RDR.more && list.length > RDR_MAX
+          ? '<button type="button" class="rdc-more" data-rdr-more="1">收起来，只看前 ' + RDR_MAX + ' 条</button>'
+          : '<div class="rd-note"><i></i>分数只是「值不值得开机」，最后拍哪条你自己定</div>')) +
   '</div>';
 
-  // 热梗
-  if ((d.meme || []).length) {
+  if ((data.meme || []).length) {
     html += '<div class="card rd-card">' +
-      '<div class="rd-card-head"><div class="rd-card-title">热梗<em>口播里自然带一句就行，别硬念，念出来像广告</em></div></div>' +
+      '<div class="rd-card-head"><div class="rd-card-title">热梗<em>口播里自然带一句就行，别硬念</em></div></div>' +
       '<div class="rd-meme">' +
-        d.meme.map(function (m) { return '<span>' + esc(m) + '</span>'; }).join('') +
+        data.meme.slice(0, 12).map(function (m) { return '<span>' + esc(m) + '</span>'; }).join('') +
       '</div>' +
     '</div>';
   }
@@ -1605,12 +1816,29 @@ function renderRadarPage() {
   return html;
 }
 
+function rdrLoadDay(date) {
+  if (date === rdrToday()) {
+    RDR.day = '';
+    renderView(true);
+    return;
+  }
+  const cache = st.dayCache || (st.dayCache = {});
+  if (cache[date]) {
+    RDR.day = date;
+    renderView(true);
+    return;
+  }
+  fetch('content/radar/' + date + '.json?t=' + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (j) { cache[date] = j; RDR.day = date; renderView(true); })
+    .catch(function () { toast('这天没存下数据', 'err'); });
+}
+
 // 雷达筛选：重建 DOM 后重新挂监听
 function mountRadar() {
   const nc = document.getElementById('navRadarCount');
   if (nc) {
-    const n = st.radar && st.radar.picks
-      ? st.radar.picks.filter(function (p) { return (p.score || 0) >= 5; }).length : 0;
+    const n = st.radar ? rdrShoot(rdrTodayList()) : 0;
     nc.textContent = st.load.radar === 'ready' ? String(n) : '—';
   }
 
@@ -1622,6 +1850,27 @@ function mountRadar() {
       if (v === RDR.onlyHit) return;
       RDR.onlyHit = v;
       renderView(true);
+    });
+  });
+  sec.querySelectorAll('[data-rdr-day]').forEach(function (el) {
+    el.addEventListener('click', function () { rdrLoadDay(el.getAttribute('data-rdr-day')); });
+  });
+  const more = sec.querySelector('[data-rdr-more]');
+  if (more) more.addEventListener('click', function () {
+    RDR.more = !RDR.more;
+    renderView(true);
+  });
+  // 手机上日期条会横向滚，把选中的那天挪进视野
+  const on = sec.querySelector('.rdc-day.is-on');
+  if (on && on.parentNode && on.parentNode.scrollWidth > on.parentNode.clientWidth + 4) {
+    on.parentNode.scrollLeft = Math.max(0, on.offsetLeft - 14);
+  }
+  sec.querySelectorAll('[data-rdr-write]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const p = RDR.view[Number(el.getAttribute('data-rdr-write'))];
+      if (p) kbStartFrom(p);
     });
   });
 }
@@ -2782,8 +3031,8 @@ function mountDraw() {
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 /* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
-  { key: 'radar', cat: 'create', title: '今日雷达', desc: '全网热点 · 每天 10:20 自动抓一遍' },
-  { key: 'koubo', cat: 'create', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
+  { key: 'radar', cat: 'create', title: '今日雷达', desc: '每天 10:20 抓一遍 · 一天存一份 · 挑一条直接开稿' },
+  { key: 'koubo', cat: 'create', title: '口播工坊', desc: '自己写 · 自己改 · 定稿得你自己点' },
   { key: 'wenan', cat: 'create', title: '成品文案', desc: '存完整成片 · 分几段、每段几秒、画面拍什么' },
   { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 照老板的表搬上来' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
