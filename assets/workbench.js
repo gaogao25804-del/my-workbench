@@ -64,8 +64,9 @@ const st = {
   library: null,
   videos: null,
   radar: null,
-  load: { feishu: 'idle', library: 'idle', videos: 'idle', radar: 'idle' },
-  err: { feishu: '', library: '', videos: '', radar: '' },
+  drafts: null,
+  load: { feishu: 'idle', library: 'idle', videos: 'idle', radar: 'idle', drafts: 'idle' },
+  err: { feishu: '', library: '', videos: '', radar: '', drafts: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
   pixel: {
@@ -203,6 +204,22 @@ async function loadRadar() {
   } catch (e) {
     st.load.radar = 'error';
     st.err.radar = e.message || '加载失败';
+  }
+  updateChrome();
+  renderView(true);
+}
+
+async function loadDrafts() {
+  if (st.load.drafts === 'loading' || st.load.drafts === 'ready') return;
+  st.load.drafts = 'loading';
+  st.err.drafts = '';
+  renderView(true);
+  try {
+    st.drafts = await fetchJSON('content/drafts/index.json');
+    st.load.drafts = 'ready';
+  } catch (e) {
+    st.load.drafts = 'error';
+    st.err.drafts = e.message || '加载失败';
   }
   updateChrome();
   renderView(true);
@@ -947,33 +964,168 @@ function bookVar(title) {
   return h % 4;
 }
 
-/* ---------------- 口播工坊（内容留空，等数据接入后再填） ---------------- */
+/* ---------------- 口播工坊（读 content/drafts/index.json） ---------------- */
 const KB_LANES = [
-  { key: 'idea',  name: '选题池', en: 'IDEAS',  icon: 'inbox', empty: '还没有选题', tip: '想到什么先丢这儿，拍之前再挑' },
+  { key: 'idea',  name: '选题池', en: 'IDEAS',  icon: 'inbox', empty: '今天还没挑', tip: '下面这几条是雷达够分的，挑一条说一声就出稿' },
   { key: 'draft', name: '草稿',   en: 'DRAFT',  icon: 'pen',   empty: '还没有草稿', tip: '念得顺了才算过关' },
   { key: 'final', name: '定稿',   en: 'FINAL',  icon: 'check', empty: '还没有定稿', tip: '定稿的稿子，直接拿去向镜头' }
 ];
 
 const KB_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
+/* 界面状态：open=正在念哪一篇，text=正文缓存，copy=刚点过复制 */
+const KB = { open: '', text: {}, copy: '', busy: '' };
+
+function kbLane(s) {
+  const v = String(s || '').toLowerCase();
+  if (v === 'final' || v === 'done' || v === 'published' || v === 'shot') return 'final';
+  if (v === 'idea' || v === 'topic') return 'idea';
+  return 'draft';
+}
+
+function kbFind(file) {
+  const docs = (st.drafts && st.drafts.drafts) || [];
+  for (let i = 0; i < docs.length; i++) if (docs[i].file === file) return docs[i];
+  return null;
+}
+
+/* 从 md 里抽出真正要念的部分：钩子 / 正文 / 结尾，去掉标题行和列表符号 */
+function kbBody(md) {
+  let t = String(md || '').replace(/\r/g, '');
+  const a = t.indexOf('## 钩子');
+  const b = t.search(/^##\s*(标题|素材|备注|封面|文案备选)/m);
+  if (a >= 0) {
+    t = t.slice(a, b > a ? b : t.length);
+  } else {
+    const c = t.search(/^##\s*(正文|稿)/m);
+    if (c >= 0) t = t.slice(c);
+    else t = t.replace(/^---[\s\S]*?\n---\n/, '');
+  }
+  return t.split('\n')
+    .filter(function (l) { return !/^#{1,6}\s/.test(l) && !/^\s*[-*]\s+/.test(l); })
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function kbParas(txt) {
+  return txt.split(/\n{2,}/).map(function (p) {
+    return p.replace(/\n/g, '').trim();
+  }).filter(Boolean);
+}
+
+function kbWords(txt) { return String(txt || '').replace(/\s/g, '').length; }
+
+function kbDur(sec) {
+  const s = Number(sec) || 0;
+  if (!s) return '';
+  const m = Math.floor(s / 60);
+  return (m ? m + '分' : '') + (s % 60 ? (s % 60) + '秒' : '');
+}
+
+function kbDocHtml(d) {
+  const f = String(d.file || '');
+  const w = Number(d.words) || 0;
+  const dur = kbDur(d.duration_sec);
+  return '<div class="kb-doc" data-kb-open="' + esc(f) + '" tabindex="0" role="button">' +
+    '<div class="kb-doc-t">' + esc(d.title || '未命名') + '</div>' +
+    (d.hook ? '<div class="kb-doc-h">' + esc(d.hook) + '</div>' : '') +
+    '<div class="kb-doc-m">' +
+      '<span>' + esc(fmtMD(d.date) || '') + '</span>' +
+      (w ? '<span>' + w + ' 字</span>' : '') +
+      (dur ? '<span>' + esc(dur) + '</span>' : '') +
+      (d.publish_at ? '<span class="is-go">' + esc(d.publish_at) + ' 发</span>' : '') +
+    '</div>' +
+  '</div>';
+}
+
+/* 选题池：直接把今日雷达够分的候选搬进来，点标题看原文 */
+function kbIdeaHtml() {
+  const picks = (st.radar && st.radar.picks) ? st.radar.picks : [];
+  const use = picks.filter(function (p) { return (p.score || 0) >= 5; }).slice(0, 4);
+  return use.map(function (p) {
+    const tag = p.url ? 'a' : 'div';
+    const href = p.url ? ' href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer"' : '';
+    return '<' + tag + ' class="kb-doc is-idea"' + href + '>' +
+      '<div class="kb-doc-t">' + esc(p.title || '') + '</div>' +
+      '<div class="kb-doc-m">' +
+        '<span>' + esc(p.source || '') + '</span>' +
+        '<span class="is-go">' + (p.score || 0) + ' 分</span>' +
+      '</div>' +
+    '</' + tag + '>';
+  }).join('');
+}
+
+function kbReadHtml() {
+  if (!KB.open) return '';
+  const d = kbFind(KB.open);
+  const txt = KB.text[KB.open];
+  let body;
+  if (txt == null) {
+    body = '<div class="kb-read-wait">正在取正文…</div>';
+  } else {
+    const ps = kbParas(kbBody(txt));
+    body = ps.length
+      ? ps.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('')
+      : '<div class="kb-read-wait">这篇里没找到正文，点下面的仓库链接看原文</div>';
+  }
+  return '<div class="kb-read">' +
+    '<div class="kb-read-bar">' +
+      '<div class="kb-read-k">念稿</div>' +
+      '<div class="kb-read-t">' + esc(d ? d.title : '') + '</div>' +
+      '<button type="button" class="kb-read-btn" data-kb-copy="1">' + (KB.copy ? '已复制' : '复制全文') + '</button>' +
+      '<button type="button" class="kb-read-btn is-x" data-kb-close="1">关闭</button>' +
+    '</div>' +
+    '<div class="kb-read-body">' + body + '</div>' +
+  '</div>';
+}
+
 function renderKouboPage() {
   const d = new Date();
+  const docs = (st.drafts && st.drafts.drafts) || [];
 
   const lanes = KB_LANES.map(function (l) {
+    let inner = '';
+    let n = 0;
+    if (l.key === 'idea') {
+      const idea = kbIdeaHtml();
+      if (idea) { inner = '<div class="kb-list">' + idea + '</div>'; n = idea.split('class="kb-doc is-idea"').length - 1; }
+    } else {
+      const mine = docs.filter(function (x) { return kbLane(x.status) === l.key; });
+      n = mine.length;
+      if (n) inner = '<div class="kb-list">' + mine.map(kbDocHtml).join('') + '</div>';
+    }
+    if (!inner) {
+      inner = '<div class="kb-empty">' +
+        '<span class="kb-empty-ico">' + ic(l.icon) + '</span>' +
+        '<b>' + esc(l.empty) + '</b>' +
+        '<span>' + esc(l.tip) + '</span>' +
+      '</div>';
+    }
     return '<div class="kb-col" data-kb-lane="' + l.key + '">' +
       '<div class="kb-col-head">' +
         '<i class="kb-dot"></i>' +
         '<span class="kb-col-name">' + esc(l.name) + '</span>' +
         '<span class="kb-col-en">' + esc(l.en) + '</span>' +
-        '<span class="kb-col-count">0</span>' +
+        '<span class="kb-col-count">' + n + '</span>' +
       '</div>' +
-      '<div class="kb-empty">' +
-        '<span class="kb-empty-ico">' + ic(l.icon) + '</span>' +
-        '<b>' + esc(l.empty) + '</b>' +
-        '<span>' + esc(l.tip) + '</span>' +
-      '</div>' +
+      inner +
     '</div>';
   }).join('');
+
+  const nDraft = docs.filter(function (x) { return kbLane(x.status) === 'draft'; }).length;
+  const nFinal = docs.filter(function (x) { return kbLane(x.status) === 'final'; }).length;
+  const nIdea = (st.radar && st.radar.picks)
+    ? st.radar.picks.filter(function (p) { return (p.score || 0) >= 5; }).length : 0;
+
+  let note = '';
+  if (st.load.drafts === 'error') {
+    note = '<div class="kb-note is-err"><i></i>稿子索引读不到（' + esc(st.err.drafts || '') + '），列表是空的</div>';
+  } else if (st.load.drafts === 'ready' && !docs.length) {
+    note = '<div class="kb-note"><i></i>索引是好的，就是还没有稿子。index.json 里加一条就出来</div>';
+  } else {
+    note = '<div class="kb-note"><i></i>点任意一篇就能看全文，复制了直接念</div>';
+  }
 
   return '' +
     '<div class="kb-strip">' +
@@ -983,13 +1135,86 @@ function renderKouboPage() {
       '</div>' +
       '<div class="kb-slots">' +
         '<div class="kb-slot is-live"><span>发布</span><b>19:00</b></div>' +
-        '<div class="kb-slot"><span>待写</span><b>—</b></div>' +
-        '<div class="kb-slot"><span>待录</span><b>—</b></div>' +
-        '<div class="kb-slot"><span>已定稿</span><b>—</b></div>' +
+        '<div class="kb-slot"><span>能挑</span><b>' + (st.radar ? nIdea : '—') + '</b></div>' +
+        '<div class="kb-slot"><span>待念</span><b>' + (st.load.drafts === 'ready' ? nDraft : '—') + '</b></div>' +
+        '<div class="kb-slot"><span>已定稿</span><b>' + (st.load.drafts === 'ready' ? nFinal : '—') + '</b></div>' +
       '</div>' +
     '</div>' +
     '<div class="kb-board">' + lanes + '</div>' +
-    '<div class="kb-note"><i></i>区块已就位 · 内容先留空，等数据接进来再填</div>';
+    note +
+    kbReadHtml();
+}
+
+function mountKoubo() {
+  const nc = document.getElementById('navKouboCount');
+  if (nc) {
+    const n = (st.drafts && st.drafts.drafts) ? st.drafts.drafts.length : 0;
+    nc.textContent = st.load.drafts === 'ready' ? String(n) : '—';
+  }
+
+  document.body.classList.toggle('kb-lock', !!KB.open);
+
+  const sec = document.getElementById('sec-koubo');
+  if (!sec) return;
+
+  sec.querySelectorAll('[data-kb-open]').forEach(function (el) {
+    const go = function () {
+      const f = el.getAttribute('data-kb-open');
+      if (!f) return;
+      KB.open = f;
+      KB.copy = '';
+      renderView(true);
+      if (KB.text[f] == null && KB.busy !== f) {
+        KB.busy = f;
+        fetch(encodeURI(f) + '?t=' + Date.now())
+          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+          .then(function (t) { KB.text[f] = t; KB.busy = ''; if (KB.open === f) renderView(true); })
+          .catch(function () { KB.text[f] = ''; KB.busy = ''; if (KB.open === f) renderView(true); });
+      }
+    };
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+    });
+  });
+
+  const close = sec.querySelector('[data-kb-close]');
+  if (close) close.addEventListener('click', function () { KB.open = ''; renderView(true); });
+
+  const cp = sec.querySelector('[data-kb-copy]');
+  if (cp) cp.addEventListener('click', function () {
+    const txt = KB.text[KB.open];
+    if (txt == null) return;
+    const body = kbBody(txt);
+    const done = function () {
+      KB.copy = '1';
+      renderView(true);
+      setTimeout(function () { KB.copy = ''; if (KB.open) renderView(true); }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(body).then(done, function () { kbFallbackCopy(body); done(); });
+    } else {
+      kbFallbackCopy(body);
+      done();
+    }
+  });
+
+  const sheet = sec.querySelector('.kb-read');
+  if (sheet) {
+    sheet.addEventListener('click', function (e) {
+      if (e.target === sheet) { KB.open = ''; renderView(true); }
+    });
+  }
+}
+
+function kbFallbackCopy(t) {
+  const ta = document.createElement('textarea');
+  ta.value = t;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
 }
 
 /* ---------------- 战报（作品台账 · 只读快照） ---------------- */
@@ -2550,11 +2775,13 @@ function renderView(keepScroll) {
   mountDraw();
   mountReport();
   mountRadar();
+  mountKoubo();
 
   // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
   if (st.load.videos === 'idle') loadVideos();
   if (st.load.radar === 'idle') loadRadar();
+  if (st.load.drafts === 'idle') loadDrafts();
 
   // 重排后按真实滚动位置校正侧栏高亮
   syncActiveSection();
