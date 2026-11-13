@@ -4922,3 +4922,75 @@ body{
   .rd-src{ display:none; }
   .rd-time em{ display:block; margin:5px 0 0; }
 }
+
+/* ---------- 两大类：创作线 / 工具箱 ---------- */
+
+.side-switch{
+  display:grid; grid-template-columns:1fr 1fr; gap:6px;
+  margin:0 14px 8px;
+  padding:5px;
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+
+.sw-btn{
+  display:flex; flex-direction:column; gap:3px;
+  padding:8px 9px;
+  background:transparent;
+  border:1px solid transparent;
+  border-radius:10px;
+  text-align:left; cursor:pointer;
+  font:inherit;
+  transition:background .16s, border-color .16s, box-shadow .16s;
+}
+.sw-btn .sw-k{
+  font-size:12.5px; font-weight:650; letter-spacing:-.01em;
+  color:var(--ink-2);
+}
+.sw-btn .sw-v{
+  font-size:9.5px; line-height:1.35; letter-spacing:.02em;
+  color:var(--ink-3);
+}
+.sw-btn:hover{ background:rgba(255,255,255,.05); }
+.sw-btn.active{
+  background:linear-gradient(160deg, rgba(255,106,47,.2), rgba(255,106,47,.05));
+  border-color:rgba(255,106,47,.36);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 0 20px rgba(255,106,47,.12);
+}
+.sw-btn.active .sw-k{ color:var(--ink); }
+.sw-btn.active .sw-v{ color:var(--accent-deep); }
+
+/* 非当前大类的导航项 / 分组标题直接收起 */
+.side-nav[data-cat="create"] .nav-item[data-cat="tool"],
+.side-nav[data-cat="create"] .side-label[data-cat="tool"],
+.side-nav[data-cat="tool"] .nav-item[data-cat="create"],
+.side-nav[data-cat="tool"] .side-label[data-cat="create"]{ display:none; }
+
+/* 内容区顶部的分类横幅 */
+.cat-band{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  margin-top:34px; padding:14px 18px;
+  background:linear-gradient(120deg, rgba(255,106,47,.1), rgba(255,255,255,.02));
+  border:1px solid rgba(255,106,47,.24);
+  border-radius:16px;
+}
+.cat-band-k{
+  font-family:var(--mono); font-size:9.5px; font-weight:600;
+  letter-spacing:.22em; color:var(--ink-3);
+}
+.cat-band-b{ display:flex; align-items:baseline; gap:10px; min-width:0; flex-wrap:wrap; }
+.cat-band-b b{ font-size:15px; font-weight:750; letter-spacing:-.02em; color:var(--ink); }
+.cat-band-b span{ font-size:11.5px; color:var(--ink-3); }
+.cat-band-tag{
+  margin-left:auto;
+  font-family:var(--mono); font-size:10px; letter-spacing:.08em;
+  color:var(--accent-deep);
+}
+
+@media (max-width:640px){
+  .cat-band{ margin-top:24px; padding:12px 14px; gap:10px; }
+  .cat-band-b{ gap:6px; }
+  .cat-band-tag{ margin-left:0; }
+}
+

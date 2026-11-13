@@ -71,6 +71,7 @@ const PAGE_SIZE = { wenan: 10, task: 20 };
 /* ---------------- 全局状态 ---------------- */
 const st = {
   tab: 'home',
+  group: 'create',
   feishu: null,
   library: null,
   videos: null,
@@ -2532,16 +2533,26 @@ function mountDraw() {
 }
 
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
+/* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
-  { key: 'tasks', no: '01', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
-  { key: 'library', no: '02', title: '图书馆', desc: '藏书、书摘与思考' },
-  { key: 'wenan', no: '03', title: '文案库', desc: '口播脚本与流程文档' },
-  { key: 'koubo', no: '04', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
-  { key: 'pixel', no: '05', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
-  { key: 'draw', no: '06', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' },
-  { key: 'report', no: '07', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' },
-  { key: 'radar', no: '08', title: '今日雷达', desc: '全网热点 · 每天 10:20 自动抓一遍' }
+  { key: 'radar', cat: 'create', title: '今日雷达', desc: '全网热点 · 每天 10:20 自动抓一遍' },
+  { key: 'wenan', cat: 'create', title: '文案库', desc: '口播脚本与流程文档' },
+  { key: 'koubo', cat: 'create', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
+  { key: 'report', cat: 'create', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' },
+  { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
+  { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
+  { key: 'pixel', cat: 'tool', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
+  { key: 'draw', cat: 'tool', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
 ];
+
+const CATS = {
+  create: { name: '创作线', desc: '找选题 · 出文案 · 拍口播 · 看战报' },
+  tool:   { name: '工具箱', desc: '日历 · 图书馆 · 像素 · 画板' }
+};
+
+function secOf(key) {
+  return SECTIONS.filter(function (s) { return s.key === key; })[0] || null;
+}
 
 function secHead(s) {
   return '<div class="sec-head">' +
@@ -2562,8 +2573,16 @@ function renderView(keepScroll) {
   if (!view) return;
   const y = window.scrollY;
 
-  let html = renderHome();
-  SECTIONS.forEach(function (s) {
+  const list = SECTIONS.filter(function (s) { return s.cat === st.group; });
+  const cat = CATS[st.group] || CATS.create;
+
+  let html = renderHome() +
+    '<div class="cat-band">' +
+      '<div class="cat-band-k">CATEGORY</div>' +
+      '<div class="cat-band-b"><b>' + esc(cat.name) + '</b><span>' + esc(cat.desc) + '</span></div>' +
+      '<div class="cat-band-tag">' + list.length + ' 个区块</div>' +
+    '</div>';
+  list.forEach(function (s, i) {
     let body = '';
     if (s.key === 'tasks') body = renderTasksPage();
     else if (s.key === 'library') body = renderLibraryPage();
@@ -2574,7 +2593,8 @@ function renderView(keepScroll) {
     else if (s.key === 'report') body = renderReportPage();
     else if (s.key === 'radar') body = renderRadarPage();
     else body = '';
-    html += '<section class="page-sec" id="sec-' + s.key + '">' + secHead(s) + body + '</section>';
+    html += '<section class="page-sec" id="sec-' + s.key + '">' +
+      secHead({ no: pad2(i + 1), title: s.title, desc: s.desc }) + body + '</section>';
   });
   rwStop();
   view.innerHTML = html;
@@ -2613,12 +2633,23 @@ function renderView(keepScroll) {
 }
 
 function updateChrome() {
-  document.getElementById('pageTitle').textContent = '个人工作台';
-  document.getElementById('pageDesc').textContent = '任务 · 藏书 · 文案 · 像素，一页看完';
+  const cat = CATS[st.group] || CATS.create;
+  const page = PAGES[st.tab];
+  document.getElementById('pageTitle').textContent =
+    (st.tab === 'home' || !page) ? '个人工作台' : (cat.name + ' · ' + page.title);
+  document.getElementById('pageDesc').textContent = (st.tab === 'home' || !page) ? cat.desc : page.desc;
 
   const actions = document.getElementById('pageActions');
   actions.innerHTML = '<button class="btn btn-sm" data-action="refresh"' + (st.load.feishu === 'loading' ? ' disabled' : '') + '>' +
     ic('refresh', 'ico-14') + '<span>刷新数据</span></button>';
+
+  const nav = document.getElementById('sideNav');
+  if (nav) nav.dataset.cat = st.group;
+  document.querySelectorAll('#sideSwitch .sw-btn').forEach(function (b) {
+    const on = b.dataset.cat === st.group;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
 
   document.querySelectorAll('#sideNav .nav-item').forEach(function (el) {
     el.classList.toggle('active', el.dataset.nav === st.tab);
@@ -2955,15 +2986,37 @@ function scrollKeep(fn) {
   window.scrollTo(0, y);
 }
 
+function setGroup(cat) {
+  if (!CATS[cat] || cat === st.group) return false;
+  st.group = cat;
+  try { localStorage.setItem('wb.cat', cat); } catch (e) {}
+  return true;
+}
+
 function switchTab(key) {
   if (!PAGES[key]) key = 'home';
+  const sec = secOf(key);
+  const changed = !!(sec && sec.cat !== st.group && setGroup(sec.cat));
   st.tab = key;
   if (location.hash !== '#' + key) {
     try { history.replaceState(null, '', '#' + key); } catch (e) { location.hash = key; }
   }
   navGuard = { key: key, at: Date.now() };
+  if (changed) renderView(true);
   updateChrome();
   scrollToSection(key);
+  closeSidebar();
+}
+
+// 切换大类：整页重渲染成另一个大类，回到顶部
+function switchGroup(cat) {
+  if (!setGroup(cat)) return;
+  st.tab = 'home';
+  navGuard = null;
+  try { history.replaceState(null, '', '#home'); } catch (e) {}
+  updateChrome();
+  renderView(false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   closeSidebar();
 }
 
@@ -2981,6 +3034,7 @@ function syncActiveSection() {
   const probe = window.scrollY + 150;
   let cur = 'home';
   SECTIONS.forEach(function (s) {
+    if (s.cat !== st.group) return;
     const el = document.getElementById('sec-' + s.key);
     if (el && el.getBoundingClientRect().top + window.scrollY <= probe) cur = s.key;
   });
@@ -3111,6 +3165,15 @@ function init() {
     if (item) switchTab(item.dataset.nav);
   });
 
+  // 大类切换（创作线 / 工具箱）
+  const sw = document.getElementById('sideSwitch');
+  if (sw) {
+    sw.addEventListener('click', function (e) {
+      const b = e.target.closest('.sw-btn');
+      if (b) switchGroup(b.dataset.cat);
+    });
+  }
+
   // 移动端抽屉
   document.getElementById('menuBtn').addEventListener('click', function () {
     document.getElementById('sidebar').classList.add('open');
@@ -3129,6 +3192,15 @@ function init() {
     const btn = e.target.closest('[data-action="refresh"]');
     if (btn) loadFeishu(true);
   });
+
+  // 大类：先读本地记忆，再让 hash 覆盖（直达某个区块时自动切到它所在的大类）
+  try {
+    const g = localStorage.getItem('wb.cat');
+    if (CATS[g]) st.group = g;
+  } catch (err) {}
+  const h0 = (location.hash || '').replace('#', '');
+  const s0 = secOf(h0);
+  if (s0) st.group = s0.cat;
 
   updateChrome();
 
@@ -3154,11 +3226,7 @@ function init() {
 
   window.addEventListener('hashchange', function () {
     const h = (location.hash || '').replace('#', '');
-    if (h && PAGES[h]) {
-      st.tab = h;
-      updateChrome();
-      scrollToSection(h);
-    }
+    if (h && PAGES[h]) switchTab(h);
   });
 }
 
