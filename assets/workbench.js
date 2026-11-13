@@ -51,7 +51,7 @@ const PAGES = {
   wenan:   { title: '成品文案',   desc: '完整成片 · 分段 + 画面 + 口播' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
-  report:  { title: '战报',       desc: '作品数据回流 · 过线率与公式热力表' },
+  report:  { title: '战报',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
   radar:   { title: '今日雷达',   desc: '全网热点 · 每天自动抓一遍' }
 };
 
@@ -63,13 +63,13 @@ const st = {
   group: 'create',
   feishu: null,
   library: null,
-  videos: null,
+  report: null,
   radar: null,
   wechat: null,
   drafts: null,
   wenan: null,
-  load: { feishu: 'idle', library: 'idle', videos: 'idle', radar: 'idle', drafts: 'idle', wenan: 'idle' },
-  err: { feishu: '', library: '', videos: '', radar: '', drafts: '', wenan: '' },
+  load: { feishu: 'idle', library: 'idle', report: 'idle', radar: 'idle', drafts: 'idle', wenan: 'idle' },
+  err: { feishu: '', library: '', report: '', radar: '', drafts: '', wenan: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
   pixel: {
@@ -180,17 +180,17 @@ async function loadLibrary() {
   renderView(true);
 }
 
-async function loadVideos() {
-  if (st.load.videos === 'loading' || st.load.videos === 'ready') return;
-  st.load.videos = 'loading';
-  st.err.videos = '';
+async function loadReport() {
+  if (st.load.report === 'loading' || st.load.report === 'ready') return;
+  st.load.report = 'loading';
+  st.err.report = '';
   renderView(true);
   try {
-    st.videos = await fetchJSON('videos-data.json');
-    st.load.videos = 'ready';
+    st.report = await fetchJSON('content/report/index.json');
+    st.load.report = 'ready';
   } catch (e) {
-    st.load.videos = 'error';
-    st.err.videos = e.message || '加载失败';
+    st.load.report = 'error';
+    st.err.report = e.message || '加载失败';
   }
   updateChrome();
   renderView(true);
@@ -294,7 +294,7 @@ function renderHome() {
     { go: 'radar', icon: 'bolt', title: '今日雷达', desc: '热点候选 · 每天 10:20' },
     { go: 'koubo', icon: 'mic', title: '口播工坊', desc: '选题 · 草稿 · 念稿' },
     { go: 'wenan', icon: 'file', title: '成品文案', desc: '完整成片 · 照骨架抄' },
-    { go: 'report', icon: 'chart', title: '战报', desc: '播放数据 · 过线率' },
+    { go: 'report', icon: 'chart', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
     { go: 'tasks', icon: 'calendar', title: '任务与日历', desc: '飞书任务月历' },
     { go: 'library', icon: 'book', title: '图书馆', desc: '藏书与书摘' },
     { go: 'pixel', icon: 'pixel', title: '像素工坊', desc: '图片转像素' },
@@ -1292,215 +1292,224 @@ function kbFallbackCopy(t) {
   document.body.removeChild(ta);
 }
 
-/* ---------------- 战报（作品台账 · 只读快照） ---------------- */
-const RPT_PASS_PLAY = 35000;   // 过线门槛：3.5 万播放
-const RPT_MAX_MONTHS = 6;      // 热力表最多看 6 个月
-const RPT_MAX_ROWS = 40;       // 条目录最多列 40 条
-const RPT = { type: 'all', passOnly: false };
+/* ---------------- 战报（每月视频数据统计 · 照搬老板的 Excel） ---------------- */
+/* 数据：content/report/index.json（tools/build-report.py 从 xlsx 生成）
+   页面顺序与表格 sheet 一致：整体大盘 → 引流vs内容 → 全部明细 → TOP10 → 总结 */
 
-const RPT_TYPES = [
-  { key: 'all', name: '全部' },
-  { key: 'content', name: '内容' },
-  { key: 'traffic', name: '引流' },
-  { key: 'product', name: '产品' },
-  { key: 'commerce', name: '带货' }
-];
+const RRP = { month: '', top: '内容' };   // month 空 = 用最新一个月
 
-const RPT_FORMULA = {
-  F1: '跨品牌错位', F2: '提前爆料', F3: '站队抬杠', F4: '颜色纠结',
-  F5: '抢机拿下', F6: '代买报价', F7: '客户故事', F8: '教程干货',
-  F9: '单品三件套', F10: '反共识劝退', F11: '行业吐槽', F12: '委托寄机',
-  F13: '老机型服务', F14: '参数科普', F15: '一堆挨个试', F16: '公益纪录'
-};
+function rrpNum(n) { const v = Number(n); return isFinite(v) ? v : 0; }
 
-function rptNum(n) { const v = Number(n); return isFinite(v) ? v : 0; }
-function rptInter(v) { return rptNum(v.like) + rptNum(v.comment) + rptNum(v.share); }
-// 合格 = 播放过 3.5 万 且 有点赞/评论/分享里任意一种互动
-function rptPass(v) { return rptNum(v.play) >= RPT_PASS_PLAY && rptInter(v) > 0; }
-function rptMonth(v) { return String(v.date || '').slice(0, 7); }
-function rptWan(n) {
-  if (n >= 100000000) return (n / 100000000).toFixed(1) + '亿';
-  if (n >= 10000) return (n / 10000).toFixed(n >= 100000 ? 0 : 1) + '万';
-  return String(Math.round(n));
-}
-function rptPct(a, b) { return b ? Math.round(a / b * 100) : 0; }
-function rptFName(k) { return RPT_FORMULA[k] || '待归类'; }
-function rptTypeName(k) {
-  for (let i = 0; i < RPT_TYPES.length; i++) if (RPT_TYPES[i].key === k) return RPT_TYPES[i].name;
-  return '内容';
+function rrpInt(n) {
+  return String(Math.round(rrpNum(n))).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-// 条目录标题：说明当前筛选与实际显示条数
-function rptDirHint(all, shown) {
-  const on = RPT.type !== 'all' || RPT.passOnly;
-  if (on) return '<em>筛出 ' + shown.length + ' 条 · 共 ' + all.length + ' 条</em>';
-  if (all.length > RPT_MAX_ROWS) return '<em>共 ' + all.length + ' 条 · 只显示最近 ' + RPT_MAX_ROWS + ' 条</em>';
-  return '<em>共 ' + all.length + ' 条</em>';
+function rrpDec(n) {
+  const s = rrpNum(n).toFixed(1).split('.');
+  return rrpInt(s[0]) + '.' + s[1];
+}
+
+// t: num 千分位 / dec 一位小数 / rate 百分比
+function rrpVal(v, t) {
+  if (t === 'rate') return (rrpNum(v) * 100).toFixed(2) + '%';
+  if (t === 'dec') return rrpDec(v);
+  return rrpInt(v);
+}
+
+function rrpWan(n) {
+  const v = rrpNum(n);
+  if (v >= 100000000) return (v / 100000000).toFixed(2) + ' 亿';
+  if (v >= 10000) return (v / 10000).toFixed(1) + ' 万';
+  return rrpInt(v);
+}
+
+function rrpCur() {
+  const ms = (st.report && st.report.months) || [];
+  if (!ms.length) return null;
+  for (let i = 0; i < ms.length; i++) if (ms[i].key === RRP.month) return ms[i];
+  return ms[ms.length - 1];
+}
+
+function rrpPick(m, k) {
+  const a = (m && m.overview) || [];
+  for (let i = 0; i < a.length; i++) if (a[i].k === k) return a[i].v;
+  return 0;
+}
+
+function rrpHead(title, sub, right) {
+  return '<div class="rrp-h"><div class="rrp-h-t">' + title + (sub ? '<em>' + sub + '</em>' : '') + '</div>' +
+    (right ? '<div class="rrp-h-r">' + right + '</div>' : '') + '</div>';
+}
+
+// 指标｜数值，长表自动分两栏，省得一直往下滚
+function rrpKV(rows) {
+  const half = Math.ceil(rows.length / 2);
+  const one = function (arr) {
+    return '<table class="rrp-t rrp-kv-t"><tbody>' + arr.map(function (r) {
+      return '<tr><th>' + esc(r.k) + '</th><td>' + rrpVal(r.v, r.t) + '</td></tr>';
+    }).join('') + '</tbody></table>';
+  };
+  return '<div class="rrp-kv">' + one(rows.slice(0, half)) +
+    (rows.length > half ? one(rows.slice(half)) : '') + '</div>';
 }
 
 function renderReportPage() {
-  if (st.load.videos === 'error') {
-    return '<div class="card rp-card">' +
-      stateHtml('error', '作品数据读不到', (st.err.videos || 'videos-data.json 没加载成功') + ' · 确认文件在仓库根目录后刷新页面') +
+  if (st.load.report === 'error') {
+    return '<div class="card rrp-card">' +
+      stateHtml('error', '战报数据读不到',
+        (st.err.report || 'content/report/index.json 没加载成功') + ' · 跑一次 tools/build-report.py 重新生成') +
+      '</div>';
+  }
+  if (!st.report || st.load.report !== 'ready') {
+    return '<div class="card rrp-card">' + stateHtml('loading', '正在读取月度数据') + '</div>';
+  }
+
+  const ms = st.report.months || [];
+  if (!ms.length) {
+    return '<div class="card rrp-card">' +
+      stateHtml('empty', '还没有月度数据',
+        '把「X月视频数据统计.xlsx」丢给 tools/build-report.py，生成的 content/report/index.json 就是这块的内容') +
       '</div>';
   }
 
-  if (!st.videos || st.load.videos !== 'ready') {
-    return '<div class="card rp-card">' + stateHtml('loading', '正在读取作品数据') + '</div>';
-  }
+  const m = rrpCur();
+  const rows = m.rows || [];
+  const pub = rrpPick(m, '其中公开（条）');
 
-  const list = (st.videos.videos || []).filter(function (v) { return v && v.date; });
+  // 顶部：哪个月 + 一句话大盘
+  const chips = ms.map(function (x) {
+    return '<button class="rrp-chip' + (x.key === m.key ? ' on' : '') + '" data-rrp-month="' +
+      esc(x.key) + '">' + esc(x.label) + '</button>';
+  }).join('');
 
-  // 空数据：还没接过 Excel，直接告诉他缺什么
-  if (!list.length) {
-    return '<div class="card rp-card">' +
-      '<div class="rp-empty">' +
-        '<span class="rp-empty-ico">' + ic('chart') + '</span>' +
-        '<b>还没有作品数据</b>' +
-        '<span>这块要等 <em>videos-data.json</em> 里有内容才会长出来。把抖音后台导出的作品表转成这个文件放到仓库根目录，条目录、过线率、公式热力表就都有了。</span>' +
-        '<div class="rp-fields"><i>date</i><i>time</i><i>title</i><i>type</i><i>formula</i><i>play</i><i>like</i><i>comment</i><i>share</i><i>follow</i></div>' +
+  const head = '<div class="card rrp-card rrp-head">' +
+    '<div class="rrp-head-l">' +
+      '<div class="rrp-kicker"><b>REPORT</b> · 战报</div>' +
+      '<div class="rrp-title">' + esc(m.title) + '</div>' +
+      '<div class="rrp-sub">发布 ' + rrpInt(rrpPick(m, '发布视频数（条）')) +
+        ' 条 · 公开 ' + rrpInt(pub) +
+        ' · 总播放 ' + rrpWan(rrpPick(m, '总播放量')) +
+        ' · 涨粉 ' + rrpInt(rrpPick(m, '总粉丝增量')) +
       '</div>' +
-    '</div>';
+    '</div>' +
+    '<div class="rrp-chips">' + chips + '</div>' +
+  '</div>';
+
+  // ① 整体大盘
+  const kvCard = '<div class="card rrp-card">' +
+    rrpHead('<b>①</b> 整体大盘', '发布 ' + rrpInt(rrpPick(m, '发布视频数（条）')) + ' 条 · 指标只算公开视频') +
+    rrpKV(m.overview || []) +
+  '</div>';
+
+  // ② 引流 vs 内容
+  const cmp = m.compare || { cols: [], rows: [] };
+  let share = null;
+  cmp.rows.forEach(function (r) { if (r.k === '播放量占比') share = r.v; });
+  let bar = '';
+  if (share) {
+    const a = Math.round(rrpNum(share[0]) * 1000) / 10;
+    const b = Math.round((100 - a) * 10) / 10;
+    bar = '<div class="rrp-bar"><i style="width:' + a + '%"></i></div>' +
+      '<div class="rrp-bar-legend">' +
+        '<span><i class="a"></i>引流占播放 ' + a + '%</span>' +
+        '<span><i class="b"></i>内容占播放 ' + b + '%</span>' +
+      '</div>';
   }
+  const cmpCard = '<div class="card rrp-card">' +
+    rrpHead('<b>②</b> 引流 vs 内容', '同样在发，哪边更值') +
+    '<table class="rrp-t rrp-3col"><thead><tr><th>指标</th>' +
+      (cmp.cols || []).map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') +
+    '</tr></thead><tbody>' +
+      (cmp.rows || []).map(function (r) {
+        return '<tr><td>' + esc(r.k) + '</td>' +
+          r.v.map(function (x) { return '<td class="is-n">' + rrpVal(x, r.t) + '</td>'; }).join('') + '</tr>';
+      }).join('') +
+    '</tbody></table>' + bar +
+  '</div>';
 
-  const months = [];
-  list.forEach(function (v) { const m = rptMonth(v); if (m && months.indexOf(m) < 0) months.push(m); });
-  months.sort();
-  const cols = months.slice(-RPT_MAX_MONTHS);
-  const last = cols[cols.length - 1] || '';
+  // ③ 全部明细（跟 Excel 一模一样的列）
+  const detCard = '<div class="card rrp-card">' +
+    rrpHead('<b>③</b> 全部明细', '共 ' + rows.length + ' 条 · 按发布时间排 · 列多可以左右滑') +
+    '<div class="rrp-scroll"><table class="rrp-t rrp-detail"><thead><tr>' +
+      '<th>作品名称</th><th>发布时间</th><th>体裁</th><th>审核</th>' +
+      '<th class="is-n">播放量</th><th class="is-n">完播率</th><th class="is-n">5s完播率</th>' +
+      '<th class="is-n">封面点击率</th><th class="is-n">2s跳出率</th><th class="is-n">平均播放时长</th>' +
+      '<th class="is-n">点赞量</th><th class="is-n">分享量</th><th class="is-n">评论量</th>' +
+      '<th class="is-n">收藏量</th><th class="is-n">主页访问</th><th class="is-n">粉丝增量</th><th>类型</th>' +
+    '</tr></thead><tbody>' +
+    rows.map(function (r) {
+      return '<tr>' +
+        '<td class="is-title" title="' + esc(r.title) + '"><span>' + esc(r.title) + '</span></td>' +
+        '<td class="is-date">' + esc(String(r.date).slice(5)) + (r.time ? ' ' + esc(r.time) : '') + '</td>' +
+        '<td>' + esc(r.fmt || '') + '</td>' +
+        '<td>' + esc(r.audit || '') + '</td>' +
+        '<td class="is-n is-strong">' + rrpInt(r.play) + '</td>' +
+        '<td class="is-n">' + (rrpNum(r.fin) * 100).toFixed(2) + '%</td>' +
+        '<td class="is-n">' + (rrpNum(r.f5) * 100).toFixed(2) + '%</td>' +
+        '<td class="is-n">' + (r.ctr === null ? '—' : (rrpNum(r.ctr) * 100).toFixed(2) + '%') + '</td>' +
+        '<td class="is-n">' + (rrpNum(r.b2) * 100).toFixed(2) + '%</td>' +
+        '<td class="is-n">' + rrpDec(r.avg) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.like) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.share) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.cmt) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.fav) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.visit) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.fans) + '</td>' +
+        '<td>' + esc(r.type || '') + '</td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody></table></div>' +
+  '</div>';
 
-  const cur = list.filter(function (v) { return rptMonth(v) === last; });
-  const curPass = cur.filter(rptPass).length;
-  const curAvg = cur.length ? Math.round(cur.reduce(function (s, v) { return s + rptNum(v.play); }, 0) / cur.length) : 0;
-  const unknown = list.filter(function (v) { return !RPT_FORMULA[v.formula]; }).length;
+  // ④ TOP10
+  const tops = m.top || {};
+  const topKeys = ['内容', '引流'].filter(function (k) { return (tops[k] || []).length; });
+  const topCur = topKeys.indexOf(RRP.top) >= 0 ? RRP.top : (topKeys[0] || '内容');
+  const topChips = topKeys.map(function (k) {
+    return '<button class="rrp-chip' + (k === topCur ? ' on' : '') + '" data-rrp-top="' +
+      esc(k) + '">' + esc(k) + ' TOP10</button>';
+  }).join('');
+  const tl = tops[topCur] || [];
 
-  const strip = '<div class="rp-strip">' +
-      '<div class="rp-hero">' +
-        '<div class="rp-kicker"><b>REPORT</b> · 战报</div>' +
-        '<div class="rp-big"><b>' + rptPct(curPass, cur.length) + '</b><i>%</i></div>' +
-        '<div class="rp-hero-sub">' + (last ? last.replace('-', ' 年 ') + ' 月' : '—') + '合格率 · ' + curPass + '/' + cur.length + ' 条过线</div>' +
-      '</div>' +
-      '<div class="rp-slots">' +
-        '<div class="rp-slot"><span>本月条数</span><b>' + cur.length + '</b></div>' +
-        '<div class="rp-slot"><span>过线</span><b class="is-ok">' + curPass + '</b></div>' +
-        '<div class="rp-slot"><span>平均播放</span><b>' + rptWan(curAvg) + '</b></div>' +
-        '<div class="rp-slot"><span>待归类</span><b' + (unknown ? ' class="is-warn"' : '') + '>' + unknown + '</b></div>' +
-      '</div>' +
-    '</div>';
+  const topCard = '<div class="card rrp-card">' +
+    rrpHead('<b>④</b> ' + esc(topCur) + '视频 TOP10', '按播放量排 · 表里的原榜', topChips) +
+    '<div class="rrp-scroll"><table class="rrp-t rrp-top"><thead><tr>' +
+      '<th class="is-rk">#</th><th>作品名称</th><th>日期</th><th>体裁</th>' +
+      '<th class="is-n">播放量</th><th class="is-n">点赞量</th><th class="is-n">评论量</th>' +
+      '<th class="is-n">分享量</th><th class="is-n">收藏量</th><th class="is-n">粉丝增量</th><th class="is-n">主页访问</th>' +
+    '</tr></thead><tbody>' +
+    tl.map(function (r) {
+      return '<tr' + (r.rank <= 3 ? ' class="is-top3"' : '') + '>' +
+        '<td class="is-rk">' + r.rank + '</td>' +
+        '<td class="is-title" title="' + esc(r.title) + '"><span>' + esc(r.title) + '</span></td>' +
+        '<td class="is-date">' + esc(r.date) + '</td>' +
+        '<td>' + esc(r.fmt || '') + '</td>' +
+        '<td class="is-n is-strong">' + rrpInt(r.play) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.like) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.cmt) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.share) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.fav) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.fans) + '</td>' +
+        '<td class="is-n">' + rrpInt(r.visit) + '</td>' +
+      '</tr>';
+    }).join('') +
+    '</tbody></table></div>' +
+  '</div>';
 
-  // 公式 × 月份 热力表
-  const keys = [];
-  Object.keys(RPT_FORMULA).forEach(function (k) {
-    if (list.some(function (v) { return v.formula === k; })) keys.push(k);
-  });
-  keys.sort(function (a, b) { return Number(a.slice(1)) - Number(b.slice(1)); });
-
-  function cellsOf(key, month) {
-    return list.filter(function (v) {
-      const f = RPT_FORMULA[v.formula] ? v.formula : '?';
-      return f === key && rptMonth(v) === month;
-    });
-  }
-
-  let mx = '<div class="rp-matrix" style="--rp-cols:' + cols.length + '">' +
-    '<div class="rp-mx-row rp-mx-head"><span class="rp-mx-name">公式</span>' +
-      cols.map(function (m) { return '<span class="rp-mx-m">' + m.slice(5) + ' 月</span>'; }).join('') +
-    '</div>';
-
-  keys.forEach(function (k) {
-    const all = list.filter(function (v) { return (RPT_FORMULA[v.formula] ? v.formula : '?') === k; });
-    const allPass = all.filter(rptPass).length;
-    mx += '<div class="rp-mx-row"><span class="rp-mx-name"><b>' + esc(k) + '</b>' + esc(rptFName(k)) +
-      '<i>' + all.length + ' 条</i></span>' +
-      cols.map(function (m) {
-        const arr = cellsOf(k, m);
-        if (!arr.length) return '<span class="rp-mx-c is-empty">·</span>';
-        const ok = arr.filter(rptPass).length;
-        const rate = rptPct(ok, arr.length);
-        const a = (rate === 0 ? 0.05 : 0.12 + rate / 100 * 0.5).toFixed(2);
-        return '<span class="rp-mx-c" style="background:rgba(255,106,47,' + a + ')" title="' +
-          esc(rptFName(k) + ' · ' + m + ' · ' + ok + '/' + arr.length + ' 条过线') + '">' +
-          rate + '<i>%</i></span>';
-      }).join('') + '</div>';
-  });
-
-  mx += '<div class="rp-mx-row rp-mx-total"><span class="rp-mx-name"><b>合计</b>全部公式</span>' +
-    cols.map(function (m) {
-      const arr = list.filter(function (v) { return rptMonth(v) === m; });
-      const ok = arr.filter(rptPass).length;
-      return '<span class="rp-mx-c">' + rptPct(ok, arr.length) + '<i>%</i></span>';
-    }).join('') + '</div></div>';
-
-  // 本月结论：直接给出最稳和最差的两个公式，省得自己扫表格
-  const rank = keys.map(function (k) {
-    const arr = cellsOf(k, last);
-    return { k: k, n: arr.length, rate: rptPct(arr.filter(rptPass).length, arr.length) };
-  }).filter(function (r) { return r.n >= 2; })
-    .sort(function (a, b) { return b.rate - a.rate || b.n - a.n; });
-
-  const best = rank[0];
-  const worst = rank.length > 1 ? rank[rank.length - 1] : null;
-  const summary = (best && best.rate > (worst ? worst.rate : -1))
-    ? '<div class="rp-summary">本月最稳：<b>' + esc(best.k) + ' ' + esc(rptFName(best.k)) + '</b> ' +
-        best.rate + '%（' + best.n + ' 条）' +
-        (worst && worst.rate < best.rate
-          ? '　·　最差：<b>' + esc(worst.k) + ' ' + esc(rptFName(worst.k)) + '</b> ' + worst.rate + '%（' + worst.n + ' 条）'
-          : '') +
+  // ⑤ 总结（表里写的那段话，原样放）
+  const note = String(m.note || '').trim();
+  const noteCard = note
+    ? '<div class="card rrp-card">' +
+        rrpHead('<b>⑤</b> 总结', '表格里写的原话') +
+        note.split('\n').map(function (p) {
+          return p.trim() ? '<p class="rrp-note">' + esc(p.trim()) + '</p>' : '';
+        }).join('') +
       '</div>'
     : '';
 
-  const matrixCard = '<div class="card rp-card">' +
-    '<div class="rp-card-head"><div class="rp-card-title">哪种开头能过线<em>公式 × 月份 · 格子里是该月过线率</em></div>' +
-    (keys.length ? '<div class="rp-legend"><i></i>颜色越亮过线越多</div>' : '') + '</div>' +
-    (keys.length
-      ? mx + summary
-      : '<div class="rp-mx-blank">这一版还没有作品打上公式标签。<br>等转换脚本按关键词规则跑一遍，F1–F16 的过线率就会排在这里。</div>') +
-    '</div>';
-
-  // 条目录（可筛）
-  const filtered = list.filter(function (v) {
-    if (RPT.type !== 'all' && (v.type || 'content') !== RPT.type) return false;
-    if (RPT.passOnly && !rptPass(v)) return false;
-    return true;
-  }).sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
-
-  const chips = RPT_TYPES.map(function (t) {
-    return '<button class="chip' + (RPT.type === t.key ? ' active' : '') + '" data-rpt-type="' + t.key + '">' + t.name + '</button>';
-  }).join('') +
-    '<button class="chip' + (RPT.passOnly ? ' active' : '') + '" data-rpt-pass="1">只看过线</button>';
-
-  const rows = filtered.slice(0, RPT_MAX_ROWS).map(function (v) {
-    const ok = rptPass(v);
-    return '<div class="rp-tr' + (ok ? ' is-ok' : '') + '">' +
-      '<span class="rp-td-date">' + esc(String(v.date).slice(5).replace('-', '/')) + '</span>' +
-      '<span class="rp-td-title">' + esc(v.title || '（无标题）') +
-        '<i>' + esc(v.time || '') + (v.time ? ' · ' : '') + esc(rptTypeName(v.type || 'content')) + '</i></span>' +
-      '<span class="rp-td-f"><b>' + esc(v.formula || '?') + '</b>' + esc(rptFName(v.formula)) + '</span>' +
-      '<span class="rp-td-num">' + rptWan(rptNum(v.play)) + '</span>' +
-      '<span class="rp-td-num rp-td-inter">' + rptWan(rptInter(v)) + '</span>' +
-      '<span class="rp-td-flag">' + (ok ? '过线' : '—') + '</span>' +
-    '</div>';
-  }).join('');
-
-  const dirCard = '<div class="card rp-card">' +
-    '<div class="rp-card-head">' +
-      '<div class="rp-card-title">条目录' + rptDirHint(list, filtered) + '</div>' +
-      '<div class="rp-chips">' + chips + '</div>' +
-    '</div>' +
-    '<div class="rp-table"><div class="rp-tr rp-th">' +
-      '<span class="rp-td-date">日期</span><span class="rp-td-title">标题</span>' +
-      '<span class="rp-td-f">公式</span><span class="rp-td-num">播放</span>' +
-      '<span class="rp-td-num rp-td-inter">互动</span><span class="rp-td-flag">判定</span></div>' +
-      (filtered.length ? rows : stateHtml('empty', '这个筛选下没有条目', '换个类型或关掉「只看过线」')) +
-    '</div>' +
-    '<div class="rp-note"><i></i>合格口径：播放 ≥ ' + rptWan(RPT_PASS_PLAY) + ' 且有点赞/评论/分享 · 数据快照 ' +
-      esc(st.videos.updated_at || '—') + '</div>' +
-  '</div>';
-
-  return strip + matrixCard + dirCard;
+  return head + kvCard + cmpCard + detCard + topCard + noteCard;
 }
 
-// 战报筛选：重建 DOM 后重新挂监听
 /* ---------------- 今日雷达（全网热点 · 每天 10:20 自动更新） ---------------- */
 
 const RDR = { onlyHit: false };
@@ -1618,25 +1627,33 @@ function mountRadar() {
 }
 
 function mountReport() {
-  // 侧栏条目数：跟随快照里实际条数
+  // 侧栏条目数：所有月份加起来一共多少条视频
   const nc = document.getElementById('navReportCount');
   if (nc) {
-    const n = (st.videos && st.videos.videos) ? st.videos.videos.length : 0;
-    nc.textContent = st.load.videos === 'ready' ? String(n) : '—';
+    const ms = (st.report && st.report.months) ? st.report.months : [];
+    let n = 0;
+    ms.forEach(function (m) { n += (m.rows || []).length; });
+    nc.textContent = (st.load.report === 'ready' && n) ? String(n) : '—';
   }
 
   const sec = document.getElementById('sec-report');
   if (!sec) return;
-  sec.querySelectorAll('[data-rpt-type]').forEach(function (el) {
+
+  sec.querySelectorAll('[data-rrp-month]').forEach(function (el) {
     el.addEventListener('click', function () {
-      RPT.type = el.dataset.rptType;
+      const k = el.getAttribute('data-rrp-month');
+      if (k === RRP.month) return;
+      RRP.month = k;
       renderView(true);
     });
   });
-  const p = sec.querySelector('[data-rpt-pass]');
-  if (p) p.addEventListener('click', function () {
-    RPT.passOnly = !RPT.passOnly;
-    renderView(true);
+  sec.querySelectorAll('[data-rrp-top]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      const k = el.getAttribute('data-rrp-top');
+      if (k === RRP.top) return;
+      RRP.top = k;
+      renderView(true);
+    });
   });
 }
 
@@ -2768,7 +2785,7 @@ const SECTIONS = [
   { key: 'radar', cat: 'create', title: '今日雷达', desc: '全网热点 · 每天 10:20 自动抓一遍' },
   { key: 'koubo', cat: 'create', title: '口播工坊', desc: '选题 → 草稿 → 定稿 · 一天一条' },
   { key: 'wenan', cat: 'create', title: '成品文案', desc: '存完整成片 · 分几段、每段几秒、画面拍什么' },
-  { key: 'report', cat: 'create', title: '战报', desc: '发布后的数据回流 · 哪种开头能过线' },
+  { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 照老板的表搬上来' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
   { key: 'pixel', cat: 'tool', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
@@ -2857,7 +2874,7 @@ function renderView(keepScroll) {
 
   // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
-  if (st.load.videos === 'idle') loadVideos();
+  if (st.load.report === 'idle') loadReport();
   if (st.load.radar === 'idle') loadRadar();
   if (st.load.drafts === 'idle') loadDrafts();
   if (st.load.wenan === 'idle') loadWenan();
