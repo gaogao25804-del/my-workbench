@@ -4832,6 +4832,27 @@ body{
 
 .rd-row.is-top{ background:rgba(255,106,47,.055); }
 
+/* 整行可点：直达原文（08 候选池） */
+.rd-row.is-link{ cursor:pointer; text-decoration:none; color:inherit; transition:background .15s ease; }
+.rd-row.is-link:hover{ background:rgba(255,255,255,.045); }
+.rd-row.is-link:hover .rd-title{ color:var(--accent); }
+.rd-row.is-link:active{ background:rgba(255,255,255,.07); }
+.rd-row.is-link:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+.rd-row.is-link::after{
+  content:'\2197';
+  position:absolute; top:3px; right:3px;
+  font-family:var(--mono); font-size:10px; line-height:1;
+  color:var(--accent); opacity:0;
+  transition:opacity .15s ease;
+  pointer-events:none;
+}
+.rd-row.is-link:hover::after{ opacity:.9; }
+
+/* 触屏没有 hover，箭头常驻淡显，让人知道能点 */
+@media (hover:none){
+  .rd-row.is-link::after{ opacity:.45; }
+}
+
 .rd-score{
   justify-self:center;
   min-width:26px; padding:3px 0;

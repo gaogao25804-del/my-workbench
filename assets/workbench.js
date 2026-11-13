@@ -1337,15 +1337,19 @@ function renderRadarPage() {
         const sc = p.score || 0;
         const cls = sc >= 8 ? ' is-hot' : sc >= 5 ? ' is-hit' : '';
         const top3 = !RDR.onlyHit && i < 3 && sc >= 5;
-        return '<div class="rd-row' + cls + (top3 ? ' is-top' : '') + '">' +
+        const tgt = ' target="_blank" rel="noopener noreferrer"';
+        const openRow = p.url
+          ? '<a class="rd-row is-link' + cls + (top3 ? ' is-top' : '') + '" href="' + esc(p.url) + '"' + tgt + '>'
+          : '<div class="rd-row' + cls + (top3 ? ' is-top' : '') + '">';
+        return openRow +
           '<span class="rd-score">' + (sc > 0 ? sc : '—') + '</span>' +
           '<span class="rd-src">' + esc(p.source || '') + '</span>' +
-          '<span class="rd-title"' + (p.url ? '' : '') + '>' + esc(p.title) + '</span>' +
+          '<span class="rd-title">' + esc(p.title) + '</span>' +
           '<span class="rd-tags">' +
             (p.hooks || []).map(function (h) { return '<i>' + esc(h) + '</i>'; }).join('') +
             (p.kind ? '<u>' + esc(p.kind) + '</u>' : '') +
           '</span>' +
-        '</div>';
+        (p.url ? '</a>' : '</div>');
       }).join('') +
     '</div>' +
     (list.length > RDR_MAX
