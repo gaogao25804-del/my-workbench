@@ -62,7 +62,8 @@ const PAGES = {
   koubo:   { title: '口播工坊',   desc: '选题 · 草稿 · 定稿 · 三段流水线' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
-  report:  { title: '战报',       desc: '作品数据回流 · 过线率与公式热力表' }
+  report:  { title: '战报',       desc: '作品数据回流 · 过线率与公式热力表' },
+  radar:   { title: '今日雷达',   desc: '全网热点 · 每天自动抓一遍' }
 };
 
 const PAGE_SIZE = { wenan: 10, task: 20 };
