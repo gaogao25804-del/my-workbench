@@ -1,42 +1,56 @@
-# WorkBuddy 留言 · 2026-11-13
+# WorkBuddy → Trae 留言 · 2026-11-13 12:50
 
-留给 Trae。我是 WorkBuddy，第一天上同一套发布流程，有四件事要跟你对一下，都没动你的文件。
+## 这次动了界面文件，先说明
 
-## 1. 口播稿的时长口径，协议第四节和老板的实际要求对不上
+口播工坊原来是个空壳（`renderKouboPage` 里写着「内容留空，等数据接入后再填」），稿子在仓库里但界面不知道，老板打开看不到任何一篇，所以觉得"两个 agent 没联动、白做"。
 
-协议写的是「目标时长 60 秒 ≈ 220–260 字」「正文分 2–3 段」。
-老板这边一直是「520–700 字 / 1 分 20–1 分 40 / 不分段不编号 / 像语音转文字 / 自问自答」。
-这是硬要求，他反复退回重写过的。
+我把它接上了。**动了 `index.html` + `assets/workbench.js` + `assets/workbench.css` 三个文件**，按协议先留话。
 
-今天这份 `content/drafts/2026-11-13-iPhoneDuo三成退货.md` 我按**协议的文件名和骨架**写，但**正文按老板的体量**：695 字、一整段、不分点。
+### 改的函数（js）
+- 新增 `loadDrafts()` — 拉 `content/drafts/index.json`
+- 重写 `renderKouboPage()` — 三条泳道不再是死空态
+- 新增 `mountKoubo()` — 卡片点击 / 念稿浮层 / 复制
+- 新增 `kbLane()` `kbFind()` `kbBody()` `kbParas()` `kbWords()` `kbDur()` `kbDocHtml()` `kbIdeaHtml()` `kbReadHtml()` `kbFallbackCopy()`
+- 新增常量 `KB`（界面状态）、`KB_LANES`（改成带 tip 的版本）
+- `st` 增加 `drafts` / `load.drafts` / `err.drafts`
+- `renderView()` 里加 `mountKoubo()` 和 `if (st.load.drafts === 'idle') loadDrafts();`
 
-建议第四节改成：目标 80–100 秒，520–700 字，正文整段（不要分 2–3 段）。你同意就改，我不单方面动 protocol.md。
+### 改的 index.html
+只有一行：侧栏口播工坊加 `<span class="nav-count" id="navKouboCount">—</span>`。
 
-## 2. videos-data.json 找不到了
+### 改的 css
+只追加到文件末尾，`/* 口播工坊：稿子卡片 + 念稿浮层 */` 一段。新类全部前缀 `kb-`，
+没改任何既有的 `.kb-*` 规则，没新增色系，只用 `--surface/--line/--accent/--ink` 这些既有 token。
 
-协议第五节说它在仓库里、1056 条、合格率大号 73.8%/小号 53.1%，是判断选题的唯一依据。
-但现在 `main` 和 `gh-pages` 都没有这个文件，两边都 404。
-线上战报页数据却是好的（74% / 本月 111 条 / 待归类 663），说明数据换了地方待着。
+## 数据契约（我这边维护）
 
-我按协议去读会读空。请把新路径补进协议第五节，或者确认是不是已经内联进 js。
+`content/drafts/index.json` 我每写一篇稿就更新，字段：
 
-## 3. 候选池整行可点，以你的实现为准，我不重复做
+```json
+{
+  "file": "content/drafts/xxx.md",
+  "date": "2026-11-13",
+  "title": "标题",
+  "topic_id": "",
+  "hook": "钩子一句话",
+  "words": 695,
+  "duration_sec": 95,
+  "status": "draft",          // draft | final，决定落哪条泳道
+  "publish_at": "19:00",
+  "device": "iPhoneduo"
+}
+```
 
-我 11:55 推过一版（class `is-link` + css `::after` 画箭头），
-你后来用 `rd-link` + `<i class="rd-out">` 重做了一遍。
-线上我刚实测过：18 行全部可点，`target=_blank`、`rel="noopener noreferrer"` 都在，点第一条跳 IT之家原帖正确。
+界面读的就是这一个文件。**你那边如果要加筛选、状态流转、发布打勾，直接按这个结构做，我不会改字段。**
 
-同一个功能不留两套类名，我这边不再动雷达区的 js/css。以后这块归你。
+## 选题池是怎么来的
 
-## 4. radar-data.json 每天 10:20 的推送，暂时不走 publish.py
+不是空的。`kbIdeaHtml()` 读 `st.radar.picks` 里 `score >= 5` 的前 4 条，点标题直接跳原文。
+所以链路是：雷达抓 → 够分的自动进选题池 → 老板点一条 → 我出稿 → 落草稿泳道 → 点开就能念。
 
-它是个无人值守的 Windows 计划任务（`选题雷达/radar_run.py`），每天 10:20 抓完直接推 `radar-data.json` 到 main + gh-pages。
-push 时只点名这一个文件，符合「只发自己改的文件」；但内部是自己拼 API，没走 `tools/publish.py`——
-因为定时任务跑的时候没有交互式的仓库上下文，我不想让 10:20 的数据因为脚本找不到仓库根目录而断掉。
+## 还有两件事想请你确认
 
-要不要我改成先落地再调 publish.py，你定。在你回话之前我不动它。
-
----
-
-另外报一个今天已经修掉的坑，免得你踩：**线上页面读的是 gh-pages 分支里的 `radar-data.json` 副本**。
-只推 main 的话页面永远停在最后一次合并那天的数据。radar_run.py 现在两个分支都推（config 里 `mirror_branch`）。
+1. **`videos-data.json` 两个分支都 404，但战报页有数据**（74% / 本月 111 条 / 待归类 663）。
+   数据是不是换路径了？协议第五节还写着这个文件和 1056 条，已经过期。我要读它算合格率。
+2. **协议第四节和老板的要求打架**：它写「目标 60 秒 ≈ 220–260 字」「正文分 2–3 段」，
+   老板一直是 **520–700 字 / 1 分 20–1 分 40 / 不分段不编号**。建议改掉，我没单方面动 `protocol.md`。
