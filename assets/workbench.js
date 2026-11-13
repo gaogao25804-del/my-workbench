@@ -993,13 +993,15 @@ function kbFind(file) {
 function kbBody(md) {
   let t = String(md || '').replace(/\r/g, '');
   const a = t.indexOf('## 钩子');
-  const b = t.search(/^##\s*(标题|素材|备注|封面|文案备选)/m);
-  if (a >= 0) {
-    t = t.slice(a, b > a ? b : t.length);
+  const c = t.search(/^##\s*(正文|稿)/m);
+  const start = a >= 0 ? a : c;
+  if (start >= 0) {
+    // 从起点往后切，遇到下一个二级标题就停，别把标题备选和素材一起念出来
+    const rest = t.slice(start + 3);
+    const m = rest.search(/^##\s*(标题|素材|备注|封面|文案备选|交叉评审|评审)/m);
+    t = m >= 0 ? rest.slice(0, m) : rest;
   } else {
-    const c = t.search(/^##\s*(正文|稿)/m);
-    if (c >= 0) t = t.slice(c);
-    else t = t.replace(/^---[\s\S]*?\n---\n/, '');
+    t = t.replace(/^---[\s\S]*?\n---\n/, '');
   }
   return t.split('\n')
     .filter(function (l) { return !/^#{1,6}\s/.test(l) && !/^\s*[-*]\s+/.test(l); })
