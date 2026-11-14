@@ -2292,6 +2292,44 @@ body.sheet-open .toast{ display:none; }
   .film4.fold .foldbox .fb-go{ width:100%; justify-content:center; margin:0; }
 }
 
+/* ---------- ⑥ 桌面端收尺：脚垫 / 坐垫卡别再一张占半屏 ---------- */
+@media (min-width:1025px){
+  /* 图列 1:1 → 0.84:1，右栏内边距 56/60 → 32/40，整卡压到一屏内 */
+  .addon-card{ grid-template-columns:0.84fr 1fr; }
+  .addon-body{ padding:32px 40px; }
+  .addon-name{ font-size:21px; margin-top:10px; }
+  .addon-name u.set-n{ font-size:10.5px; margin-left:10px; }
+  .addon-spec{ font-size:11.5px; line-height:1.85; margin-top:10px; }
+  .addon-tags{ margin-top:11px; }
+  .addon-tags span{ font-size:10px; padding:3px 8px; }
+  .addon-note{ margin-top:9px; font-size:10.5px; }
+  .addon-buy{ margin-top:17px; padding-top:14px; }
+  .addon-price{ font-size:28px; }
+  .addon-price span{ font-size:10.5px; }
+  .addon-price .tbd-p{ font-size:22px; }
+  .addon-mats{ font-size:10.5px; line-height:1.7; }
+  /* 档位表：卡内留白与行高一起收 */
+  .addon-card .mtier{ margin:0 26px; padding:15px 0 16px; }
+  .addon-card .mtier-hd{ margin-bottom:8px; padding-bottom:9px; }
+  .addon-card .mt-hd-l b{ font-size:13px; }
+  .addon-card .mt-hd-l span{ font-size:11px; margin-top:3px; }
+  .addon-card .mt-hd-r em{ font-size:16px; }
+  .addon-card .mt-row{ padding:9px 11px; font-size:12px; }
+  /* 主图区封顶 360 高：再大的图也就这么高 */
+  .addon-pic{ height:360px; }
+  .addon-card--seat .addon-pic{ height:330px; }
+  /* 实车铺装四图：1:1 → 16:9，一整条从 289 压到约 240 */
+  .fit-strip{ padding:15px 26px 18px; }
+  .fit-strip .fit-row{ gap:10px; margin-top:13px; }
+  .fit-strip .fit-item .pframe{ aspect-ratio:16/9; }
+  .fit-strip .fit-cap{ font-size:10px; margin-top:5px; }
+  /* 赠品条跟着瘦一圈 */
+  .gift-bar{ padding:13px 26px; gap:16px; }
+  .gift-set{ padding-left:18px; }
+  .gift-set b{ font-size:30px; }
+  .gift-chips span{ font-size:10px; padding:4px 8px; }
+}
+
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
@@ -2532,8 +2570,6 @@ body.sheet-open .toast{ display:none; }
         </div>
         <div class="sil-grid gal" id="silGrid" data-page-node-id="ZOBu3ob2uu76nRBWG96Mcj"></div>
         <p class="gk-note" id="giftKnote" data-page-node-id="OhBDlF1RjS6ikSpogMkWHd">上图为 i6 车型 21 件套实拍，按车型配齐后随脚垫一并装车；其他车型件数与组合以实车为准。</p>
-      </div>
-    </div>
       </div>
     </div>
 
