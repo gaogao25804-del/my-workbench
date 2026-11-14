@@ -1605,7 +1605,7 @@ function renderReportPage() {
 
   // ① 整体大盘：总量 / 均值 / 分布，三类分开摆
   const kvCard = '<div class="card rrp-card">' +
-    rrpHead('<b>①</b> 整体大盘', '指标只算公开视频 · 共 ' + rrpInt(pub) + ' 条') +
+    rrpHead('<b>1</b> 整体大盘', '指标只算公开视频 · 共 ' + rrpInt(pub) + ' 条') +
     (g.total.length ? '<div class="rrp-grp"><div class="rrp-grp-k">总量</div>' + rrpTiles(g.total) + '</div>' : '') +
     (g.avg.length ? '<div class="rrp-grp"><div class="rrp-grp-k">均值与比率</div>' + rrpTiles(g.avg) + '</div>' : '') +
     (g.dist.length ? '<div class="rrp-grp"><div class="rrp-grp-k">播放量分布</div>' + rrpBars(g.dist, pub) + '</div>' : '') +
@@ -1639,7 +1639,7 @@ function renderReportPage() {
   }
 
   const cmpCard = '<div class="card rrp-card">' +
-    rrpHead('<b>②</b> 引流 vs 内容', '同样的工作量，哪边更值 · 赢的那格标橙') +
+    rrpHead('<b>2</b> 引流 vs 内容', '同样的工作量，哪边更值 · 赢的那格标橙') +
     '<div class="rrp-cmp-wrap"><table class="rrp-t rrp-cmp"><thead><tr><th>指标</th>' +
       cols2.map(function (c) { return '<th class="is-n">' + esc(c) + '</th>'; }).join('') +
       '<th class="is-n">差多少</th>' +
@@ -1706,7 +1706,7 @@ function renderReportPage() {
   }).join('');
 
   const detCard = '<div class="card rrp-card">' +
-    rrpHead('<b>③</b> 全部明细', '点表头换排序 · 点一行看这条的全部指标 · 列多可以左右滑') +
+    rrpHead('<b>3</b> 全部明细', '点表头换排序 · 点一行看这条的全部指标 · 列多可以左右滑') +
     '<div class="rrp-tool">' +
       '<label class="rrp-search">' + ic('search') +
         '<input type="search" data-rrp-q placeholder="搜作品名、类型、体裁" value="' + esc(RRP.q) + '" spellcheck="false">' +
@@ -1731,7 +1731,7 @@ function renderReportPage() {
   const maxPlay = tl.reduce(function (mx, r) { return Math.max(mx, rrpNum(r.play)); }, 1);
 
   const topCard = '<div class="card rrp-card">' +
-    rrpHead('<b>④</b> ' + esc(topCur) + '视频 TOP10', '按播放量排 · 表里的原榜', topChips) +
+    rrpHead('<b>4</b> ' + esc(topCur) + '视频 TOP10', '按播放量排 · 表里的原榜', topChips) +
     '<div class="rrp-scroll"><table class="rrp-t rrp-top"><thead><tr>' +
       '<th class="is-rk">#</th><th>作品名称</th><th>日期</th><th>体裁</th>' +
       '<th class="is-n">播放量</th><th class="is-n">点赞</th><th class="is-n">评论</th>' +
@@ -1761,7 +1761,7 @@ function renderReportPage() {
   const note = String(m.note || '').trim();
   const noteCard = note
     ? '<div class="card rrp-card">' +
-        rrpHead('<b>⑤</b> 总结', '表格里写的原话') +
+        rrpHead('<b>5</b> 总结', '表格里写的原话') +
         note.split('\n').map(function (p) {
           return p.trim() ? '<p class="rrp-note">' + esc(p.trim()) + '</p>' : '';
         }).join('') +
