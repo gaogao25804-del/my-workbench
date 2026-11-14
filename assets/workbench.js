@@ -44,7 +44,6 @@ function ic(name, cls) {
 
 /* ---------------- 页面配置 ---------------- */
 const PAGES = {
-  home:    { title: '主页',       desc: '工作台概览 · 数据来自飞书本地快照' },
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 点日期看当日清单', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
   koubo:   { title: '口播工坊',   desc: '自己写 · 自己改 · 定稿得你自己点' },
@@ -59,7 +58,7 @@ const PAGE_SIZE = { task: 20 };
 
 /* ---------------- 全局状态 ---------------- */
 const st = {
-  tab: 'home',
+  tab: 'radar',
   group: 'create',
   feishu: null,
   library: null,
@@ -294,188 +293,6 @@ function stateHtml(type, title, desc, actionLabel, actionAttr) {
     (desc ? '<div>' + esc(desc) + '</div>' : '') +
     (actionLabel ? '<button class="btn btn-sm" ' + actionAttr + '>' + esc(actionLabel) + '</button>' : '') +
     '</div>';
-}
-
-/* ---------------- 主页 ---------------- */
-function renderHome() {
-  const cards = [
-    { go: 'radar', icon: 'bolt', title: '今日雷达', desc: '每天 10:20 抓一遍 · 挑一条开稿' },
-    { go: 'koubo', icon: 'mic', title: '口播工坊', desc: '自己写 · 自己定稿' },
-    { go: 'wenan', icon: 'file', title: '成品文案', desc: '完整成片 · 照骨架抄' },
-    { go: 'report', icon: 'chart', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
-    { go: 'tasks', icon: 'calendar', title: '任务与日历', desc: '飞书任务月历' },
-    { go: 'library', icon: 'book', title: '图书馆', desc: '藏书与书摘' },
-    { go: 'pixel', icon: 'pixel', title: '像素工坊', desc: '图片转像素' },
-    { go: 'draw', icon: 'pen', title: '画板', desc: '随手画 · 导出图片' }
-  ];
-  return '<div class="hm-grid">' + cards.map(function (c) {
-    return '<button class="hm-card" type="button" data-go="' + c.go + '">' +
-      '<span class="hm-ico">' + ic(c.icon) + '</span>' +
-      '<span class="hm-txt"><b>' + esc(c.title) + '</b><span>' + esc(c.desc) + '</span></span>' +
-      '<span class="hm-go">\u2197</span>' +
-    '</button>';
-  }).join('') + '</div>';
-}
-
-/* ---------------- 首页 Runway Hero（Hero 30 风格复刻） ----------------
-   透视跑道 + 数字火苗：今日目标定得越高，火苗长得越高、跑道跑得越快。 */
-const RW = { goal: 10, min: 3, max: 20, raf: 0, ro: null, stats: null };
-
-/* 从飞书快照里算出真实的工作台数字：累计完成、有记录的天数、最近 7 天 */
-function rwStats() {
-  const list = (st.feishu && st.feishu.tasks && st.feishu.tasks.all) || [];
-  const seen = {};
-  let total = 0, first = '', last = '';
-  list.forEach(function (t) {
-    if (!t.completed_at) return;
-    const d = String(t.completed_at).slice(0, 10);
-    total++;
-    seen[d] = 1;
-    if (!first || d < first) first = d;
-    if (d > last) last = d;
-  });
-  let last7 = 0;
-  if (last) {
-    const end = parseDate(last);
-    list.forEach(function (t) {
-      if (!t.completed_at) return;
-      const d = parseDate(String(t.completed_at).slice(0, 10));
-      if (d && (end - d) / 86400000 <= 6) last7++;
-    });
-  }
-  return { total: total, days: Object.keys(seen).length, last7: last7, first: first, last: last };
-}
-
-function rwMonthDay(s) {
-  const d = parseDate(s);
-  return d ? (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日' : '—';
-}
-
-function rwSync() {
-  const gEl = document.getElementById('rwGoal');
-  if (gEl) gEl.textContent = RW.goal + ' 项';
-}
-
-function rwStop() {
-  if (RW.raf) cancelAnimationFrame(RW.raf);
-  RW.raf = 0;
-  if (RW.ro) { RW.ro.disconnect(); RW.ro = null; }
-}
-
-function mountRunway() {
-  rwStop();
-  const cv = document.getElementById('rwCanvas');
-  const host = document.getElementById('rwHero');
-  if (!cv || !host || !cv.getContext) return;
-  const ctx = cv.getContext('2d');
-  let W = 1, H = 1;
-
-  function size() {
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    W = Math.max(1, host.clientWidth);
-    H = Math.max(1, host.clientHeight);
-    cv.width = Math.round(W * dpr);
-    cv.height = Math.round(H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  size();
-
-  const range = document.getElementById('rwGoalRange');
-  if (range) {
-    range.value = String(RW.goal);
-    range.addEventListener('input', function () {
-      RW.goal = Number(range.value) || 10;
-      rwSync();
-    });
-  }
-  rwSync();
-
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const COLS = 13, ROWS = 11;
-
-  function frame(ts) {
-    const t = (ts || 0) / 1000;
-    const heatN = Math.max(0, Math.min(1, (RW.goal - RW.min) / (RW.max - RW.min)));
-    const flow = reduce ? 0.45 : ((t * (0.12 + heatN * 0.85)) % 1);
-
-    const cx = W * 0.5;
-    const hy = H * 0.44;                // 地平线
-    const baseY = H * 1.02;             // 最近处落点
-
-    ctx.clearRect(0, 0, W, H);
-
-    /* 地平线光带 */
-    const lg = ctx.createLinearGradient(cx - W * 0.46, 0, cx + W * 0.46, 0);
-    lg.addColorStop(0, 'rgba(255,106,47,0)');
-    lg.addColorStop(0.5, 'rgba(255,158,104,.7)');
-    lg.addColorStop(1, 'rgba(255,106,47,0)');
-    ctx.fillStyle = lg;
-    ctx.fillRect(0, hy - 1, W, 2);
-
-    /* 跑道边线：从地平线向两侧张开 */
-    ctx.strokeStyle = 'rgba(255,106,47,.14)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(cx - W * 0.06, hy);
-    ctx.lineTo(cx - W * 0.54, baseY);
-    ctx.moveTo(cx + W * 0.06, hy);
-    ctx.lineTo(cx + W * 0.54, baseY);
-    ctx.stroke();
-
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'bottom';
-
-    for (let r = 0; r < ROWS; r++) {
-      const zf = (r + flow) / ROWS;             // 0 远处 → 1 近处
-      const yy0 = hy + (baseY - hy) * Math.pow(zf, 2.2);
-      const sc = Math.pow(zf, 1.9);
-      if (Math.pow(zf, 1.9) < 0.02) continue;
-
-      /* 地面横线 */
-      ctx.fillStyle = 'rgba(255,106,47,' + (0.05 + 0.1 * sc).toFixed(3) + ')';
-      ctx.fillRect(0, Math.round(yy0), W, 1);
-
-      const fs = 5 + sc * H * 0.062;
-      ctx.font = '700 ' + fs.toFixed(1) + 'px ui-monospace, SFMono-Regular, Consolas, monospace';
-      const step = fs * 0.92;
-      const alpha = 0.1 + 0.9 * Math.pow(zf, 1.9);
-
-      for (let c = 0; c < COLS; c++) {
-        const u = (c / (COLS - 1)) * 2 - 1;
-        const x = cx + u * W * (0.07 + 0.47 * zf);
-        /* 中央通道留白：文案区正中的数字压暗，让火苗集中在两侧 */
-        const k = Math.abs(u) >= 0.85 ? 1 : 0.34 + 0.66 * (Math.abs(u) / 0.85);
-        const nail = (Math.sin(c * 3.1 + 1.2) + 1) / 2;
-        /* 火苗摆动：每列高度随时间轻微起伏，避免整排像静止的表格 */
-        const flick = reduce ? 1 : 0.86 + 0.14 * Math.sin(t * (1.4 + c * 0.33) + c * 2.2);
-        const stackN = Math.round((1.4 + heatN * 6.4) * (0.5 + nail * 1.0) * flick);
-        for (let j = 0; j < stackN; j++) {
-          const yy = yy0 - j * step;
-          if (yy < -fs * 1.4) break;
-          /* 火苗向上进入文案带时逐渐熄灭，越往下越亮 */
-          const vr = (yy - H * 0.54) / (H * 0.2);
-          const vf = vr <= 0 ? 0 : vr >= 1 ? 1 : vr * vr;
-          const a2 = alpha * (1 - (j / (stackN + 1.5)) * 0.55) * (k + (1 - k) * vf);
-          if (a2 <= 0.03) continue;
-          const dg = Math.floor(t * (2.5 + heatN * 7) + c * 37 + r * 11 + j * 5) % 10;
-          ctx.fillStyle = (j === 0 && zf > 0.45)
-            ? 'rgba(255,226,190,' + a2.toFixed(3) + ')'
-            : 'rgba(255,' + Math.round(126 + 46 * sc) + ',72,' + a2.toFixed(3) + ')';
-          ctx.fillText(String(dg), x, yy);
-        }
-      }
-    }
-
-    if (!reduce) RW.raf = requestAnimationFrame(frame);
-  }
-
-  if (reduce) frame(0);
-  else RW.raf = requestAnimationFrame(frame);
-
-  if (window.ResizeObserver) {
-    RW.ro = new ResizeObserver(function () { size(); });
-    RW.ro.observe(host);
-  }
 }
 
 function syncCard(info) {
@@ -3314,16 +3131,10 @@ function renderView(keepScroll) {
     return '';
   };
 
-  let html;
-  if (st.tab === 'home') {
-    html = renderHome();
-  } else {
-    const s = secOf(st.tab) || list[0];
-    html = '<section class="page-sec" id="sec-' + s.key + '">' +
-      secHead({ no: '01', title: s.title, desc: s.desc }) + bodyOf(s) + '</section>';
-  }
+  const s = secOf(st.tab) || list[0];
+  const html = '<section class="page-sec" id="sec-' + s.key + '">' +
+    secHead({ no: '01', title: s.title, desc: s.desc }) + bodyOf(s) + '</section>';
 
-  rwStop();
   view.innerHTML = html;
 
   if (keepScroll) {
@@ -3332,19 +3143,14 @@ function renderView(keepScroll) {
     const g = navGuard;
     if (g && Date.now() - g.at < 1500) {
       navGuard = null;
-      if (g.key === 'home') {
-        window.scrollTo(0, 0);
-      } else {
-        const el = document.getElementById('sec-' + g.key);
-        window.scrollTo(0, el ? Math.max(0, el.getBoundingClientRect().top + window.scrollY - 76) : y);
-      }
+      const el = document.getElementById('sec-' + g.key);
+      window.scrollTo(0, el ? Math.max(0, el.getBoundingClientRect().top + window.scrollY - 76) : y);
     } else {
       window.scrollTo(0, y);
     }
   }
 
-  // 首页跑道动画 + 像素工坊画布 + 画板，都在重建 DOM 后重新挂载
-  mountRunway();
+  // 像素工坊画布 + 画板，都在重建 DOM 后重新挂载
   mountPixel();
   mountDraw();
   mountReport();
@@ -3365,12 +3171,11 @@ function renderView(keepScroll) {
 
 function updateChrome() {
   const cat = CATS[st.group] || CATS.create;
-  const page = PAGES[st.tab];
-  const isHome = st.tab === 'home' || !page;
-  document.getElementById('pageTitle').innerHTML = isHome
-    ? '<em>Workbench</em><span>个人工作台</span>'
-    : '<em>' + esc(cat.name) + '</em><span>' + esc(page.title) + '</span>';
-  document.getElementById('pageDesc').textContent = isHome ? cat.desc : page.desc;
+  const sec = secOf(st.tab) || SECTIONS.filter(function (s) { return s.cat === st.group; })[0];
+  const page = PAGES[st.tab] || sec || { title: '', desc: '' };
+  document.getElementById('pageTitle').innerHTML =
+    '<em>' + esc(cat.name) + '</em><span>' + esc(page.title) + '</span>';
+  document.getElementById('pageDesc').textContent = page.desc || '';
 
   const actions = document.getElementById('pageActions');
   actions.innerHTML = '<button class="btn btn-sm" data-action="refresh"' + (st.load.feishu === 'loading' ? ' disabled' : '') + '>' +
@@ -3507,7 +3312,7 @@ function setGroup(cat) {
 }
 
 function switchTab(key) {
-  if (!PAGES[key]) key = 'home';
+  if (!PAGES[key]) return;
   const sec = secOf(key);
   const changed = !!(sec && sec.cat !== st.group && setGroup(sec.cat));
   st.tab = key;
@@ -3522,12 +3327,13 @@ function switchTab(key) {
   closeSidebar();
 }
 
-// 切换大类：整页重渲染成另一个大类，回到顶部
+// 切换大类：整页重渲染成另一个大类，落到该大类第一个区块
 function switchGroup(cat) {
   if (!setGroup(cat)) return;
-  st.tab = 'home';
+  const first = SECTIONS.filter(function (s) { return s.cat === cat; })[0];
+  st.tab = first ? first.key : st.tab;
   navGuard = null;
-  try { history.replaceState(null, '', '#home'); } catch (e) {}
+  try { history.replaceState(null, '', '#' + st.tab); } catch (e) {}
   updateChrome();
   renderView(false);
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3542,19 +3348,19 @@ function scrollToSection(key, instant) {
 // 滚动时同步侧栏高亮
 function syncActiveSection() {
   const probe = window.scrollY + 150;
-  let cur = 'home';
+  let cur = '';
   SECTIONS.forEach(function (s) {
     if (s.cat !== st.group) return;
     const el = document.getElementById('sec-' + s.key);
     if (el && el.getBoundingClientRect().top + window.scrollY <= probe) cur = s.key;
   });
-  // 页面只有一张卡片、撑不满一屏时滚不动，probe 落不到区块上会把 tab 判成 home，
-  // 下一次重渲染就跳回首页。页面上明明有区块，就以那个区块为准。
-  if (cur === 'home') {
+  // 页面只有一张卡片、撑不满一屏时滚不动，probe 落不到区块上，
+  // 就以页面上实际渲染的区块为准，避免高亮丢失。
+  if (!cur) {
     const only = document.querySelector('#view .page-sec');
     if (only && only.id) cur = only.id.replace('sec-', '');
   }
-  if (cur !== st.tab) { st.tab = cur; updateChrome(); }
+  if (cur && cur !== st.tab) { st.tab = cur; updateChrome(); }
 }
 
 function closeSidebar() {
@@ -3635,10 +3441,6 @@ function onViewClick(e) {
   // 详情入口
   const bk = t.closest('.lib-cover');
   if (bk) { openBook(bk.dataset.book, bk); return; }
-
-  // 跳转
-  const go = t.closest('[data-go]');
-  if (go) { switchTab(go.dataset.go); return; }
 }
 
 let searchTimer = null;
@@ -3709,7 +3511,13 @@ function init() {
   } catch (err) {}
   const h0 = (location.hash || '').replace('#', '');
   const s0 = secOf(h0);
-  if (s0) st.group = s0.cat;
+  if (s0) {
+    st.group = s0.cat;
+    st.tab = s0.key;
+  } else {
+    const first = SECTIONS.filter(function (s) { return s.cat === st.group; })[0];
+    if (first) st.tab = first.key;
+  }
 
   updateChrome();
 
@@ -3727,7 +3535,7 @@ function init() {
     if (fab) fab.classList.toggle('show', window.scrollY > 420);
   }, { passive: true });
   const hash = (location.hash || '').replace('#', '');
-  if (hash && PAGES[hash] && hash !== 'home') {
+  if (hash && PAGES[hash]) {
     st.tab = hash;
     updateChrome();
     setTimeout(function () { scrollToSection(hash, true); }, 400);
