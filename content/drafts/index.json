@@ -1,7 +1,19 @@
 {
- "updated_at": "2026-11-13",
+ "updated_at": "2026-11-14",
  "_note": "WorkBuddy 维护。这里只是素材：放进来的稿子一律算「草稿」，谁都不许写 final——定稿只能老板在页面上自己点。真正验收过的稿子在 文案/已验收/。",
  "drafts": [
+  {
+   "file": "content/drafts/2026-11-14-星芒O1Pro对比PuraXView.md",
+   "date": "2026-11-14",
+   "title": "星芒 O1 Pro 跟 Pura X View 有啥区别",
+   "topic_id": "H1",
+   "hook": "说是毫无区别，那到底差在哪",
+   "words": 571,
+   "duration_sec": 95,
+   "status": "draft",
+   "publish_at": "19:00",
+   "device": "puraxview"
+  },
   {
    "file": "content/drafts/2026-11-13-iPhoneDuo三成退货.md",
    "date": "2026-11-13",
