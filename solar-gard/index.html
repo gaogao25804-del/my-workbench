@@ -517,6 +517,10 @@ a{ color:inherit; text-decoration:none; }
 .addon-mats:empty{ display:none; }
 /* 「到店核」和 ¥ 数字同号位，别一高一低跳戏 */
 .addon-price .tbd-p{ font-family:var(--fn); font-size:26px; font-weight:500; color:var(--ink); letter-spacing:0; }
+/* 配置单里的赠品行：写「赠」而不是 ¥0，客人一眼知道这是送的 */
+.qp .free-p{
+  font-family:var(--fn); font-size:17px; font-weight:500; color:var(--gold); letter-spacing:.06em;
+}
 /* 赠品条：深色反差，把"白送的东西"做成整张卡最抢眼的一块 */
 .gift-bar{
   grid-column:1/-1; display:flex; align-items:center; gap:20px;
@@ -938,6 +942,8 @@ a{ color:inherit; text-decoration:none; }
    响应式
    ============================================================ */
 @media (max-width:1079px){
+  /* 两列时脚垫九宫格会把整卡顶到 1100+，跟右侧文字高度脱节，封个顶 */
+  .addon-card:not(.addon-card--seat) .addon-pic{ height:380px; }
   .wrap{ padding:0 30px; }
   .cb-in{ padding:12px 30px; }
   .nav-in{ padding:0 30px; }
@@ -1030,6 +1036,29 @@ a{ color:inherit; text-decoration:none; }
 
   .addon-card{ grid-template-columns:1fr; }
   /* 脚垫整套图长宽比各不相同，别锁死方框，否则窄图会飘在一大块白里 */
+  /* 脚垫整套图是「整车 11 件平铺」，一张图吃掉半屏。
+     压成固定高度、整图缩小，别裁——九宫格被切断看着像图坏了；
+     要看清楚就点「看全 N 件」放大。 */
+  .addon-card:not(.addon-card--seat) .addon-pic{
+    aspect-ratio:auto; height:clamp(215px,54vw,300px);
+    /* 顶上留一点白：卡片右上那颗「加入配置」压的是图自带的留白，不盖到垫子 */
+    padding:34px 12px 12px;
+  }
+  .addon-card:not(.addon-card--seat) .addon-pic img{
+    width:100%; height:100%; object-fit:contain; background:#fff;
+  }
+  /* 赠品 22 件的标签横着滑，不再折成五六行把卡片撑长（下面还有完整清单） */
+  .gift-chips{
+    flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    padding-bottom:2px; mask-image:linear-gradient(90deg,#000 88%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);
+  }
+  .gift-chips::-webkit-scrollbar{ display:none; }
+  .gift-chips span{ flex:none; }
+  /* 「赠硅胶套装」这块已在下方 gift-bar 写全，卡头别占两行 */
+  .addon-card:not(.addon-card--seat) .addon-tags span.gtag{ display:none; }
+  .pic-more{ right:9px; bottom:9px; padding:8px 13px; font-size:10.5px; }
   .addon-pic{ aspect-ratio:auto; padding:10px; }
   .addon-pic img{ object-fit:contain; background:#fff; }
   .addon-body{ padding:26px 22px 28px; }
@@ -1053,6 +1082,16 @@ a{ color:inherit; text-decoration:none; }
   .gift-set small{ margin:0; font-size:10px; }
 
   .fit-row{ grid-template-columns:repeat(2,1fr); gap:8px; margin-top:18px; }
+  /* 实车铺装手机端横着一排滑，四张图铺成两行会白白多占 200px */
+  .fit-strip .fit-row{
+    display:flex; gap:9px; overflow-x:auto; overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    scroll-snap-type:x mandatory; padding-bottom:3px;
+  }
+  .fit-strip .fit-row::-webkit-scrollbar{ display:none; }
+  .fit-strip .fit-item{ flex:0 0 62%; scroll-snap-align:start; }
+  .fit-strip .fit-item .pframe{ aspect-ratio:16/10; }
+  .fit-strip .fit-cap{ font-size:10px; margin-top:5px; }
   .trio{ gap:8px; margin-top:18px; }
   /* 座椅垫三款对照手机端：胶囊缩一号，MEGA 这类长名也不会被截 */
   .sk-wrap{ margin-top:20px; }
@@ -2049,7 +2088,7 @@ body.pmodal-open{ overflow:hidden; }
 .mt-row:focus-visible{ outline:2px solid var(--gold); outline-offset:-2px; }
 .mt-row.hot i, .mt-row.hot em{ color:#8A6A2E; }
 /* 坐垫款式行：名称列宽一点，色点插在说明与价格之间 */
-.mt-row--seat{ grid-template-columns:minmax(112px,auto) minmax(0,1fr) auto auto; }
+.mt-row--seat{ grid-template-columns:minmax(112px,auto) minmax(0,1fr) auto; }
 .mt-row--seat i{ white-space:normal; line-height:1.35; }
 /* 色点：小圆点，选中套金圈；点击只换图不换款 */
 .mt-sw{ display:flex; align-items:center; gap:7px; padding:0 2px; }
@@ -2118,11 +2157,9 @@ body.pmodal-open{ overflow:hidden; }
   .mt-row em{ grid-column:2; grid-row:1; font-size:14px; text-align:right; }
   .mt-row .mt-spec{ grid-column:1/3; grid-row:2; display:block; font-size:11px; }
   .mt-row .mt-spec::after{ display:none; }
-  /* 坐垫行：色点挤在名称右侧（第三列），说明独占一行 */
-  .mt-row--seat{ grid-template-columns:minmax(0,1fr) auto auto; }
-  .mt-row--seat .mt-sw{ grid-column:2; grid-row:1; gap:5px; }
-  .mt-row--seat .mt-sw i{ width:14px; height:14px; }
-  .mt-row--seat em{ grid-column:3; grid-row:1; }
+  /* 坐垫行：色点已搬到卡片上方，行里只剩「款名 + 说明 + 价」，价格贴右好扫 */
+  .mt-row--seat{ grid-template-columns:minmax(0,1fr) auto; }
+  .mt-row--seat em{ grid-column:2; grid-row:1; }
   .mtier-note{ font-size:10px; margin-top:10px; }
   .gift-val{ font-size:11px; padding:3px 9px; }
 }
@@ -2260,6 +2297,76 @@ body.pmodal-open{ overflow:hidden; }
 }
 /* ---------- ④ 坐垫卡：跟脚垫同一副骨架 ---------- */
 .addon-card--seat .addon-pic{ background:#fff; }
+
+/* ---------- 坐垫配色：从档位行里搬到大图旁边 ----------
+   原来色点塞在 mt-row 的第三列，价格在最右，390 宽下两点之间隔了一个屏宽，
+   手指根本够不到；而且「换颜色」是看款时的第一动作，藏在表格行里没人发现。 */
+.seat-colors{
+  display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+  margin-top:18px; padding:14px 16px;
+  background:#FBFAF6; border:1px solid var(--line); border-radius:8px;
+}
+.sc-lab{
+  flex:none; font-size:10.5px; letter-spacing:.16em; color:var(--sub2);
+}
+.sc-opts{ display:flex; flex-wrap:wrap; gap:8px; }
+.sc-opt{
+  display:flex; align-items:center; gap:9px; min-height:40px;
+  padding:0 15px 0 10px; border:1px solid #DED9CD; border-radius:999px;
+  background:#fff; font-size:12.5px; color:var(--ink); letter-spacing:.02em;
+  cursor:pointer; transition:background .18s, border-color .18s, color .18s, box-shadow .18s;
+}
+.sc-opt i{
+  width:24px; height:24px; border-radius:50%; flex:none; position:relative;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);
+}
+.sc-opt:hover{ border-color:var(--ink); background:#F7F5EF; }
+.sc-opt.on{
+  background:var(--ink); border-color:var(--ink); color:#fff;
+  box-shadow:0 8px 18px -10px rgba(0,0,0,.55);
+}
+.sc-opt.on i::after{
+  content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.7);
+}
+.sc-opt:active{ transform:scale(.97); }
+
+/* ---------- 赠品区：跟别的配件一样给个明确入口 ---------- */
+.gk-ctl{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.gk-add{
+  display:flex; align-items:center; gap:7px; flex:none;
+  min-height:40px; padding:0 17px; border-radius:999px;
+  background:var(--ink); color:#fff; font-size:12.5px; letter-spacing:.03em;
+  box-shadow:0 10px 22px -12px rgba(0,0,0,.6);
+  transition:background .2s, box-shadow .2s, transform .12s;
+}
+.gk-add b{ font-weight:600; }
+.gk-add:hover{ background:#2C2A25; box-shadow:0 12px 26px -12px rgba(0,0,0,.7); }
+.gk-add:active{ transform:scale(.97); }
+.gk-add.on{
+  background:#fff; color:#8A6A2E; border:1px solid rgba(185,154,91,.6);
+  box-shadow:none;
+}
+.gk-add.on b{ color:#8A6A2E; }
+
+/* ---------- 脚垫主图：单屏放不下整车明细时，给一个「看全」 ---------- */
+.pic-more{
+  position:absolute; right:10px; bottom:10px; z-index:4;
+  display:flex; align-items:center; gap:6px;
+  font-size:10.5px; letter-spacing:.04em; color:var(--ink);
+  background:rgba(255,255,255,.95); border:1px solid rgba(0,0,0,.12);
+  padding:7px 13px; border-radius:999px; cursor:pointer;
+  box-shadow:0 6px 16px -8px rgba(0,0,0,.5);
+  transition:background .2s, transform .12s;
+}
+.pic-more:hover{ background:#fff; transform:translateY(-1px); }
+.pic-more:active{ transform:none; }
+.pic-more i{ font-style:normal; font-size:13px; line-height:1; color:var(--gold); }
+.pmodal-bd .kit-full{ display:block; width:100%; }
+.pmodal-bd .kit-full img{ display:block; width:100%; height:auto; border-radius:8px; background:#fff; }
+.pmodal-bd .kit-full figcaption{
+  margin-top:14px; font-size:11.5px; line-height:1.9; color:var(--sub); letter-spacing:.02em;
+}
 .addon-card--seat .addon-pic img{ max-height:none; }
 .addon-card--seat .addon-pic::after{ content:"分解示意"; }
 .addon-card--seat .addon-name u{ font-size:12px; }
@@ -2452,6 +2559,26 @@ body.pmodal-open{ overflow:hidden; }
   /* 只收三件套那张（名字多两个字），两件套保持老板觉得刚好的样子 */
   .tiers.fold .sc-tier--hl .t-lab{ font-size:14px; }
   .tiers.fold .sc-tier--hl .t-set{ font-size:10.5px; white-space:nowrap; }
+}
+
+
+/* ---------- 2026-11-14 v46：小屏收尾（写在最后，压过前面的全局定义） ---------- */
+@media (max-width:759px){
+  /* 配色条：标签一行、三个色卡等分一行，别换行成 2+1 把卡片撑高 */
+  .seat-colors{ flex-direction:column; align-items:stretch; gap:9px; padding:13px 14px; }
+  .seat-colors .sc-opts{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+  .seat-colors .sc-opt{ justify-content:center; min-height:42px; padding:0 6px; gap:7px; font-size:12px; }
+  .seat-colors .sc-opt i{ width:21px; height:21px; }
+
+  /* 赠品区：色卡与「加入配置」各占一行，拇指够得到，色卡也不用缩到看不清 */
+  .gk-head{ flex-direction:column; align-items:stretch; gap:12px; }
+  .gk-ctl{ flex-direction:column; align-items:stretch; gap:10px; }
+  /* 手机端角标小一号：390 宽里占三分之一太抢，缩到 96x38 刚好压在图上留白处 */
+  .addon-card.pick--lg::after, .seat-card.pick--lg::after{
+    height:38px; min-width:96px; padding:0 13px; font-size:11.5px; top:10px; right:10px;
+  }
+  .gk-ctl{ align-items:flex-start; }
+  .gk-add{ align-self:flex-start; width:auto; min-height:42px; padding:0 22px; }
 }
 
 </style>
@@ -2690,7 +2817,10 @@ body.pmodal-open{ overflow:hidden; }
       <div class="giftkit" data-page-node-id="e2hUPhyLRFMizsu88zXB2N">
         <div class="gk-head" data-page-node-id="BTHbYZpeOWhLP4ski1f5lh">
           <div class="gk-l" id="giftHead" data-page-node-id="scecE2q4cCPJgMJfwqD4k9">GIFT · 21 件 / 随脚垫整车配送</div>
-          <div class="gk-swatches" id="giftSw" data-page-node-id="NwGFjUFUu0w4IDao405mbp"></div>
+          <div class="gk-ctl">
+            <div class="gk-swatches" id="giftSw" data-page-node-id="NwGFjUFUu0w4IDao405mbp"></div>
+            <button class="gk-add" id="giftAdd" data-giftadd aria-pressed="false"><b>＋ 加入配置</b></button>
+          </div>
         </div>
         <div class="sil-grid gal" id="silGrid" data-page-node-id="ZOBu3ob2uu76nRBWG96Mcj"></div>
         <p class="gk-note" id="giftKnote" data-page-node-id="OhBDlF1RjS6ikSpogMkWHd">上图为 i6 车型 21 件套实拍，按车型配齐后随脚垫一并装车；其他车型件数与组合以实车为准。</p>
@@ -3245,7 +3375,7 @@ const ACC_SMALL = [
 
 /* ========================= 状态 ========================= */
 const state = {
-  model:'i6', screen:null, coat:null, film:null, silColor:'w', acc:new Set(),
+  model:'i6', screen:null, coat:null, film:null, silColor:'w', silIn:false, acc:new Set(),
   coatOpen:false, filmOpen:false, screenOpen:false,   /* 折叠：默认只看起步价 / 只露一张主卡 */
   tier:{}, seatKind:{}, seatColor:{}       /* 脚垫看哪一档 / 坐垫选哪款哪色，按车型各记一份 */
 };
@@ -3496,6 +3626,26 @@ function openPick(kind){
   document.body.classList.add('pmodal-open');
 }
 
+/* 脚垫「看全 N 件」：同一层浮层，只是里面换成一张整车明细大图 */
+function openKit(src, name, n){
+  if (!src) return;
+  pickKind = 'kit';
+  const bd = $('#pmodalBody'), tt = $('#pmodalTitle'), ft = $('#pmodalFt');
+  /* 标题只留件数：车型名 + 款名 + 件数凑一行会在手机上折成两行，还跟卡片里的标题重复 */
+  tt.textContent = n ? `脚垫整车明细 · ${n} 件套` : '脚垫整车明细';
+  bd.innerHTML = `<figure class="kit-full">
+    <img src="${src}" alt="${name || '脚垫'} 整车铺装明细" decoding="async">
+  </figure>`;
+  /* 底栏文案要跟着换：留着车衣那句「点任意一款即选中」会让人以为这图能点 */
+  ft.textContent = '整车这一套到底有哪几件 · 点右上角 × 退回，页面停在原处';
+  bd.scrollTop = 0;
+  pickFocus = document.activeElement;
+  const pm = $('#pmodal');
+  pm.classList.add('on');
+  pm.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('pmodal-open');
+}
+
 function closePick(){
   const pm = $('#pmodal');
   if (!pm || !pm.classList.contains('on')) return;
@@ -3556,7 +3706,9 @@ function bigCard(a){
     <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${aName} ${nTxt}，${tbd?'价格到店核':'¥'+money(px(fp))}">
       <div class="addon-top">
-        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}" loading="lazy" decoding="async">${ct && ct.n ? `<i class="pic-tier">整车 ${ct.n} 件套</i>` : ''}</div>
+        <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}" loading="lazy" decoding="async">${ct && ct.n ? `<i class="pic-tier">整车 ${ct.n} 件套</i>` : ''}
+          <button class="pic-more" data-kit="${pic}" data-kitname="${curModel().name} ${aName} · ${nTxt}" data-kitn="${(ct && ct.n) || (ms && ms.n) || ''}">${((ct && ct.n) || (ms && ms.n)) ? `看全 <b>${(ct && ct.n) || (ms && ms.n)}</b> 件` : '看整车'} <i>›</i></button>
+        </div>
         <div class="addon-body">
           <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送硅胶套装 + 配件</span></div>
           <div class="addon-name">${aName}<u class="set-n">${curModel().name} · ${nTxt}</u></div>
@@ -3680,11 +3832,19 @@ function bigCard(a){
           <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 按车型配齐</span></div>
           <div class="addon-name">座椅垫<u class="set-n">${curModel().name} · ${skSet}${curC ? ' · ' + curC : ''}</u></div>
           <div class="addon-spec">${opt ? opt.inc : '按本车座型配齐'}<br>${kitNote}</div>
-          <div class="addon-tags"><span>${curModel().seats} 座舱 · 专车专用开模</span>${colorTxt?`<span class="gtag">配色 · ${colorTxt}</span>`:''}</div>
+          <div class="addon-tags"><span>${curModel().seats} 座舱 · 专车专用开模</span>${list.length > 1 ? `<span>${list.length} 款可选</span>` : ''}</div>
+          ${(opt && opt.colors && opt.colors.length) ? `<div class="seat-colors">
+            <span class="sc-lab">配色</span>
+            <div class="sc-opts">${opt.colors.map(cc => `
+              <button class="sc-opt${col && cc.c === col.c ? ' on' : ''}" data-sw="${cc.sku}"
+                      aria-pressed="${col && cc.c === col.c}">
+                <i style="background:${SEAT_CSWATCH[cc.c]}"></i>${SEAT_CNAME[cc.c]}
+              </button>`).join('')}</div>
+          </div>` : ''}
           <div class="addon-note">单张、一对、座垫片等不单列；要单买配件直接问。</div>
           <div class="addon-buy">
             <div class="addon-price">${tbd ? '<b class="tbd-p">到店核</b>' : `<i>¥</i>${money(sp)}`}<span>${skSet} · 含装车</span></div>
-            <div class="addon-mats">${curModel().name} 专属开模<br><b>${colorTxt ? '配色 · ' + colorTxt : '按车型配齐'}</b></div>
+            <div class="addon-mats">${curModel().name} 专属开模<br><b>${col ? '当前配色 · ' + curC : (colorTxt ? '配色可选 · ' + colorTxt : '按车型配齐')}</b></div>
             <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '点此加入配置单'}</span>
           </div>
         </div>
@@ -3693,7 +3853,7 @@ function bigCard(a){
           <div class="mtier-hd">
             <div class="mt-hd-l">
               <b>${curModel().name} · 整车坐垫配置</b>
-              <span>${list.length > 1 ? '点行选中款式 · 点行里的色点换配色' : '点色点换配色，大图跟着换'}</span>
+              <span>${list.length > 1 ? '点一行选中这一款，价格跟着变' : '配色在上面选，大图跟着换'}</span>
             </div>
             <div class="mt-hd-r">
               <i>${skSet}${curC ? ' · ' + curC : ''}</i>
@@ -3710,16 +3870,11 @@ function bigCard(a){
                 aria-label="选 ${o.name}${o.n ? ' ' + o.n + ' 件套' : ''}，${rbd ? '价格到店核' : '¥' + money(px(o.p))}">
                 <i>${o.name}${o.n ? `<u>${o.n} 件</u>` : ''}</i>
                 <span class="mt-spec">${o.inc}</span>
-                ${o.colors
-                  ? `<span class="mt-sw">${o.colors.map(cc =>
-                      `<i data-sw="${cc.sku}" title="${SEAT_CNAME[cc.c]}" aria-label="看${SEAT_CNAME[cc.c]}"
-                         style="background:${SEAT_CSWATCH[cc.c]}"${c0 && cc.c === c0.c ? ' class="on"' : ''}></i>`).join('')}</span>`
-                  : ''}
                 <em>${rbd ? '<small>到店核</small>' : '¥' + money(px(o.p))}</em>
               </div>`;
             }).join('')}
           </div>
-          <p class="mtier-note">只列本车型件数最多的那一档满配（单张、一对、座垫片等不单列；要单买配件直接问）。件数 / 配色取自固特异京东旗舰店 2026-11 在售清单；有实数的取公开渠道实测价，没有实数的到店核、按你的车实测报价，不编价。</p>
+          <p class="mtier-note">只列本车型件数最多的那一档满配。件数 / 配色取自固特异京东旗舰店 2026-11 在售清单；有实数的取公开渠道实测价，没有实数的到店核、按你的车实测报价，不编价。</p>
         </div>
     </div>`;
 }
@@ -3827,6 +3982,19 @@ function renderSil(animate){
   document.querySelectorAll('[data-sil]').forEach(el => {
     el.classList.toggle('on', set && el.dataset.sil === set.k);
   });
+
+  /* 赠品区那颗「加入配置」：有套装可加才点亮，加过就换成已加入 */
+  const ga = $('#giftAdd');
+  if (ga){
+    const on = !!state.silIn && !!g;
+    ga.classList.toggle('on', on);
+    ga.setAttribute('aria-pressed', String(on));
+    ga.innerHTML = on ? '<b>✓ 已加入配置单</b>' : '<b>＋ 加入配置</b>';
+    ga.disabled = !g;
+    ga.style.opacity = g ? '' : '.4';
+    ga.style.cursor = g ? '' : 'default';
+  }
+
   if (animate){
     grid.classList.remove('swap');
     void grid.offsetWidth;
@@ -3921,6 +4089,20 @@ function picked(){
       });
     }
   });
+  /* 全车硅胶套装：不是商品，是脚垫的赠品，所以价格记 0、单据上打「赠」。
+     脚垫已在单里时不再单列一行——脚垫那行本来就写着「含赠品 全车硅胶 N 件套 · 颜色」，
+     再列一遍老板会以为送两套。 */
+  if (state.silIn){
+    const gg = silGift(), gs = curSilSet(gg);
+    const footIn = out.some(x => x.rid === 'acc:a1');
+    if (gg && !footIn){
+      out.push({
+        rid:'sil', k:'赠品', v:`全车硅胶 ${gg.n} 件套`,
+        sub:`${gs ? gs.n + ' · ' : ''}随脚垫赠送，下单需同时选脚垫`,
+        p:0, free:true
+      });
+    }
+  }
   return out;
 }
 
@@ -4068,7 +4250,7 @@ function renderSheet(list, total){
       <span class="qk">${x.k}</span>
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
         ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶 ${x.gift.n} 件套${x.gift.color?' · '+x.gift.color:''}</small>`:''}</span>
-      <span class="qp">${x.tbd?'<b class="tbd-p">到店核</b>':`<i>¥</i>${money(x.p)}`}</span>
+      <span class="qp">${x.free?'<b class="free-p">赠</b>':x.tbd?'<b class="tbd-p">到店核</b>':`<i>¥</i>${money(x.p)}`}</span>
       <button class="qdel" data-del="${x.rid}" aria-label="删除：${x.v}" title="删除此项">×</button>
     </div>`).join('');
 
@@ -4105,6 +4287,7 @@ function removeItem(rid, rowEl){
     else if (rid.indexOf('coat:') === 0){ state.coat = null; renderCoat(); }
     else if (rid.indexOf('film:') === 0){ state.film = null; renderFilm(); }
     else if (rid.indexOf('acc:') === 0){ state.acc.delete(rid.slice(4)); renderAcc(); }
+    else if (rid === 'sil'){ state.silIn = false; renderSil(); }
     refresh();
     toast('已移出配置单', 'warn');
   };
@@ -4115,8 +4298,9 @@ function removeItem(rid, rowEl){
 
 function clearCart(){
   state.screen = null; state.coat = null; state.film = null;
+  state.silIn = false;
   state.acc.clear();
-  renderScreen(); renderCoat(); renderFilm(); renderAcc();
+  renderScreen(); renderCoat(); renderFilm(); renderAcc(); renderSil();
   refresh();
   toast('配置单已清空', 'warn');
 }
@@ -4128,7 +4312,7 @@ function copyQuote(list, total, m){
     '————————————'
   ];
   list.forEach(x => {
-    lines.push(`${x.k}　${x.v}　${x.tbd ? '价格到店核' : fmt(x.p)}`);
+    lines.push(`${x.k}　${x.v}　${x.free ? '赠品（不另计价）' : x.tbd ? '价格到店核' : fmt(x.p)}`);
     /* 脚垫的件数、毯面跟着「选中的那一档」走，单据上写清楚，老板交车时才不用再问一遍 */
     if (x.footSet){
       const f = x.footSet;
@@ -4350,6 +4534,31 @@ document.addEventListener('click', e => {
       const hit = findFilm(id);
       if (hit){ flyToBag(r); toast(`已加入 · ${hit.se.name} · ${hit.t.code} 档 · ¥${money(px(hit.t.price))}`, 'ok'); }
     } else toast('已移出配置单', 'warn');
+    return;
+  }
+
+  /* 全车硅胶套装：是脚垫的赠品，不能单独卖，所以「加入」只把它记进配置单，不计价 */
+  const gadd = e.target.closest('[data-giftadd]');
+  if (gadd){
+    if (gadd.disabled) return;
+    const g = silGift(), gs = curSilSet(g);
+    const on = !state.silIn;
+    state.silIn = on;
+    renderSil(); refresh();
+    if (on){
+      const footIn = state.acc.has('a1');
+      toast(footIn
+        ? `已加入 · 全车硅胶 ${g.n} 件套 · ${gs ? gs.n : ''}`
+        : `已加入 · 全车硅胶 ${g.n} 件套 · ${gs ? gs.n : ''}（随脚垫赠送，需与脚垫同单）`, 'ok');
+    } else toast('已移出配置单', 'warn');
+    return;
+  }
+
+  /* 脚垫主图「看全 N 件」：开浮层看整车明细大图 */
+  const km = e.target.closest('[data-kit]');
+  if (km){
+    e.stopPropagation();
+    openKit(km.dataset.kit, km.dataset.kitname || '', km.dataset.kitn || '');
     return;
   }
 
