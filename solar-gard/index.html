@@ -2024,6 +2024,192 @@ body.sheet-open .toast{ display:none; }
   .gift-val{ font-size:11px; padding:3px 9px; }
 }
 
+/* ============================================================
+   2026-11-14 界面精简（老板逐条提的六条）
+   ① 01 屏幕保护：默认只留一张主卡，选了哪档才弹哪档的图
+   ② 02 车衣：折叠态收成一张大卡，交互点做大，整段短一半
+   ③ 04 脚垫：铺装实拍搬进卡里，点完档位抬头就见
+   ④ 坐垫：骨架改回脚垫那套「左图右文 + 档位表」
+   ⑤ 其余配件：4 列 → 5 列，卡片整体收小
+   ============================================================ */
+
+/* ---------- ① 01 屏幕保护：一条主卡 ---------- */
+.tiers.fold{ grid-template-columns:minmax(0,1fr); gap:10px; margin:34px 0 4px; }
+#screenFold{ margin:20px 0 0; }
+.three{ margin-top:30px; }
+.tiers.fold .sc-tier{
+  display:flex; flex-direction:column; justify-content:center;
+  padding:32px 224px 32px 38px; min-height:140px;
+}
+.tiers.fold .sc-tier .t-top{ margin-bottom:16px; }
+/* 右侧那点小字：把满宽卡的空白补上，别写成新承诺，只用页面已有说法 */
+.tiers.fold .t-side{
+  display:none; position:absolute; right:40px; bottom:36px; max-width:280px;
+  text-align:right; font-size:11px; line-height:1.75; color:var(--sub2); letter-spacing:.02em;
+  pointer-events:none;
+}
+.tiers.fold .t-side b{ display:block; font-size:10px; letter-spacing:.22em; color:var(--gold); margin-bottom:6px; }
+.tiers.fold .sc-tier .t-side{ display:block; }
+.tiers.fold .t-lab{ font-size:18px; }
+.tiers.fold .t-set{ font-size:12.5px; }
+.tiers.fold .t-num{ font-size:56px; }
+.tiers.fold .t-num i{ font-size:22px; vertical-align:10px; }
+/* 折叠态下面那条「换成三件套 / 两件套」 */
+.tiers.fold .sc-alt{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:15px 20px; border:1px solid var(--line); border-radius:8px;
+  background:#FBFAF6; cursor:pointer; text-align:left;
+  transition:border-color .2s, background .2s;
+}
+.tiers.fold .sc-alt::after{ display:none; }   /* 这行是「换一档」，不挂加入按钮角标 */
+.tiers.fold .sc-tier{ overflow:hidden; }
+.tiers.fold .sc-tier::before{
+  content:""; position:absolute; right:-40px; top:-70px; width:340px; height:340px;
+  background:radial-gradient(circle, rgba(185,154,91,.15), rgba(185,154,91,0) 68%);
+  pointer-events:none;
+}
+.tiers.fold .sc-alt:hover{ border-color:var(--ink); background:#fff; }
+.sc-alt .sa-l{ font-size:13px; font-weight:600; letter-spacing:.02em; }
+.sc-alt .sa-s{ font-size:11.5px; color:var(--sub); flex:1 1 auto; }
+.sc-alt .sa-p{ font-family:var(--fn); font-size:17px; font-weight:500; }
+.sc-alt .sa-go{
+  display:inline-flex; align-items:center; gap:7px; flex:none;
+  height:40px; padding:0 16px; border-radius:999px;
+  border:1.5px solid var(--ink); background:var(--ink); color:#fff;
+  font-size:12.5px; font-weight:600; letter-spacing:.02em;
+}
+.tiers.fold .sc-alt:hover .sa-go{ background:var(--gold); border-color:var(--gold); }
+
+/* 图区：两件套就两张，三件套才三张，切换时淡入「弹」出来 */
+.three[data-set="s2"]{ grid-template-columns:repeat(2,1fr); }
+.three[data-set="s2"] figure[data-part="tv"]{ display:none; }
+.three.swapping figure{ animation:figPop .34s cubic-bezier(.22,1,.3,1) backwards; }
+.three.swapping figure:nth-child(2){ animation-delay:.05s; }
+.three.swapping figure:nth-child(3){ animation-delay:.1s; }
+@keyframes figPop{
+  from{ opacity:0; transform:translateY(12px) scale(.98); }
+  to{ opacity:1; transform:none; }
+}
+@media (prefers-reduced-motion: reduce){ .three.swapping figure{ animation:none; } }
+/* 说明条里的升级入口 */
+.three-note .note-up{
+  display:inline-flex; align-items:center; gap:8px; margin-left:12px; vertical-align:2px;
+  height:38px; padding:0 16px; border-radius:999px; cursor:pointer;
+  border:1.5px solid var(--ink); background:#fff; color:var(--ink);
+  font-family:inherit; font-size:12.5px; font-weight:600; letter-spacing:.02em;
+  transition:background .2s, color .2s, border-color .2s;
+}
+.three-note .note-up:hover{ background:var(--ink); color:#fff; }
+.three-note .note-up[hidden]{ display:none; }
+
+/* ---------- ② 02 车衣：折叠态一张大卡 ---------- */
+.coat4.fold{ grid-template-columns:minmax(0,1fr); }
+.coat4.fold .pcol{
+  border:2px solid var(--ink); border-radius:12px; background:#fff;
+  padding:26px 30px 28px; box-shadow:0 24px 48px -40px rgba(0,0,0,.62);
+  transition:box-shadow .2s, transform .2s;
+}
+.coat4.fold .pcol:hover{
+  box-shadow:0 30px 56px -40px rgba(0,0,0,.66);
+}
+.coat4.fold .pcolhead{ border-bottom:0; padding:0 0 18px; align-items:center; }
+.coat4.fold .ptag{ font-size:11px; letter-spacing:.2em; color:var(--gold); }
+.coat4.fold .pfrom{ display:none; }
+.coat4.fold .prow{
+  width:100%; margin:0; padding:0 190px 0 0; border:0; background:transparent;
+  border-radius:0;
+}
+.coat4.fold .prow:hover{ background:transparent; border-color:transparent; }
+.coat4.fold .pname{ font-size:24px; font-weight:600; letter-spacing:.02em; }
+.coat4.fold .pspec{ font-size:12.5px; margin-top:9px; }
+.coat4.fold .pprice{ font-size:40px; font-weight:300; margin-top:18px; letter-spacing:-.02em; }
+.coat4.fold .pprice i{ font-size:17px; vertical-align:6px; }
+.coat4.fold .prow .ck{ right:6px; width:auto; min-width:158px; height:52px; padding:0 20px; border-radius:999px; font-size:13.5px; }
+/* 卡下面那行「另有 10 款」收成一条细提示，不再是一大块空白 */
+.coat4.fold .foldbox{
+  grid-column:1 / -1;
+  flex-direction:row; align-items:center; justify-content:flex-start; gap:16px;
+  margin-top:14px; padding:13px 18px; border:1px solid var(--line); border-radius:8px;
+  background:#FBFAF6;
+}
+.coat4.fold .foldbox .fb-go{ margin-left:auto; }
+.coat4.fold .foldbox::after{ display:none; }
+.coat4.fold .fb-k{ display:none; }
+.coat4.fold .fb-t{ font-size:15px; font-family:var(--ff); font-weight:600; letter-spacing:.01em; }
+.coat4.fold .fb-s{ font-size:11.5px; line-height:1.6; max-width:none; }
+.coat4.fold .fb-s br{ display:none; }
+.coat4.fold .foldbox .fb-go{ margin-top:0; height:38px; flex:none; }
+.coat4.fold .foldbox .fb-sel{ margin-top:0; flex:none; }
+
+/* ---------- ③ 04 脚垫卡内：铺装实拍 ---------- */
+.fit-strip{ grid-column:1 / -1; margin-top:24px; padding-top:22px; border-top:1px solid var(--line); }
+.fs-hd{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.fs-hd b{ font-size:13px; font-weight:600; letter-spacing:.04em; }
+.fs-hd span{ font-size:11px; color:var(--sub); }
+.fit-strip .fit-row{ grid-template-columns:repeat(4,1fr); gap:10px; margin-top:0; }
+.fit-strip .fit-item .pframe{ aspect-ratio:4/3; }
+.fit-strip .fit-cap{
+  font-size:10.5px; color:var(--sub2); margin-top:7px; letter-spacing:.02em;
+}
+/* ---------- ④ 坐垫卡：跟脚垫同一副骨架 ---------- */
+.addon-card--seat .addon-pic{ background:#fff; }
+.addon-card--seat .addon-pic img{ max-height:none; }
+.addon-card--seat .addon-pic::after{ content:"分解示意"; }
+.addon-card--seat .addon-name u{ font-size:12px; }
+.seat-sk-line{
+  display:flex; flex-wrap:wrap; gap:6px; margin-top:14px;
+}
+.seat-sk-line i{
+  font-style:normal; font-size:11px; letter-spacing:.02em; color:#6E6A60;
+  background:#F8F6F1; border:1px solid #EDE7DA; border-radius:4px; padding:4px 9px;
+}
+
+/* ---------- ⑤ 其余配件：整体收小 ---------- */
+.acc-grid{ grid-template-columns:repeat(5,1fr); }
+.acc-item .acc-pic{ aspect-ratio:4/3; }
+.acc-item .acc-n{ padding:14px 15px 16px; }
+.acc-item .acc-n b{ font-size:12.5px; }
+.acc-item .acc-n span{ font-size:10.5px; margin-top:5px; }
+.acc-item .acc-n i{ font-size:15px; margin-top:10px; margin-bottom:12px; }
+.acc-item .acc-n::after{ height:36px; font-size:11.5px; }
+.acc-item .unit-tag{ padding:4px 8px; font-size:9px; }
+.acc-item--more{ padding:20px 18px; }
+.am-t{ font-size:13px; letter-spacing:.04em; }
+.am-d{ margin:11px 0 10px; }
+.am-l{ font-size:10.5px; line-height:1.8; }
+.am-go{ font-size:11px; }
+
+/* ---------- 赠品整套图：限高，别一屏都装不下 ---------- */
+.gk-pic img{ height:clamp(240px, 30vw, 430px); object-fit:contain; }
+
+@media (max-width:1079px){
+  .acc-grid{ grid-template-columns:repeat(4,1fr); }
+}
+@media (max-width:759px){
+  .tiers.fold .sc-tier{ padding:24px 132px 24px 22px; min-height:124px; }
+  .tiers.fold .sc-tier .t-side{ display:none; }
+  .tiers.fold .t-lab{ font-size:15px; }
+  .tiers.fold .t-set{ font-size:11px; }
+  .tiers.fold .t-num{ font-size:42px; }
+  .tiers.fold .t-num i{ font-size:17px; vertical-align:7px; }
+  .tiers.fold .sc-alt{ padding:13px 15px; gap:8px; }
+  .sc-alt .sa-s{ flex:1 1 100%; order:5; }
+  .sc-alt .sa-go{ height:38px; padding:0 13px; font-size:11.5px; }
+  .three-note .note-up{ margin:10px 0 0; width:100%; justify-content:center; height:44px; }
+  .coat4.fold .pcol{ padding:20px 20px 22px; }
+  .coat4.fold .pname{ font-size:19px; }
+  .coat4.fold .pprice{ font-size:32px; margin-top:14px; }
+  .coat4.fold .prow{ padding:0 0 58px; }
+  .coat4.fold .prow .ck{ right:auto; left:0; top:auto; bottom:0; transform:none; min-width:0; width:100%; height:46px; font-size:13px; }
+  .coat4.fold .foldbox{ flex-direction:column; align-items:flex-start; gap:10px; padding:14px 15px; }
+  .coat4.fold .fb-t{ font-size:14px; }
+  .coat4.fold .foldbox .fb-go{ width:100%; justify-content:center; }
+  .fit-strip .fit-row{ grid-template-columns:repeat(2,1fr); gap:8px; }
+  .acc-grid{ grid-template-columns:repeat(2,1fr); }
+  .acc-item--more{ grid-column:span 2; }   /* 件数是奇数时别让黑卡孤零零占半行 */
+  .gk-pic img{ height:clamp(190px, 46vw, 300px); }
+}
+
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
@@ -2102,7 +2288,7 @@ body.sheet-open .toast{ display:none; }
     </div>
     <p class="sec-p" data-page-node-id="adCbDUUkujR8pmHv2uoafe">ARAG 钢化膜 · 无尘仓一体贴膜器，一盖一拉就贴好。按你要贴的屏数选两件套还是三件套。</p>
     <div class="picktip">点下面任意一张卡片，就是选中这一档</div>
-    <div class="tiers" id="secScreen" data-page-node-id="J37upbop4nMmvFv6fYhCu6">
+    <div class="tiers fold" id="secScreen" data-page-node-id="J37upbop4nMmvFv6fYhCu6">
     <button class="sc-tier pick pick--lg" data-screen="s2">
       <div class="t-top">
         <span class="t-lab">两件套</span>
@@ -2119,6 +2305,7 @@ body.sheet-open .toast{ display:none; }
       </div>
       <div class="t-num"><i>¥</i>699</div>
     </button></div>
+    <div class="foldbar" id="screenFold"></div>
     <div class="three" data-page-node-id="JKATlHWDcmfB6ZTCsw6Gfp">
       <figure data-part="mid" data-page-node-id="kiAm6OXbhYdC3wjNpttv67">
         <div class="ph gal" data-page-node-id="GRXbDqPdcD5rQIjTd3WaQm"><img src="asset/screen/mid.webp" alt="中控大屏无尘仓钢化膜" data-page-node-id="sqm28IGVA1MtJ4KerevfOE" loading="lazy" decoding="async"></div>
@@ -2133,7 +2320,7 @@ body.sheet-open .toast{ display:none; }
         <figcaption data-page-node-id="F5prLnCgD0t09OJVLN1Jho"><b data-page-node-id="vTZNaFgWyiU4YDkGqSXfJ1">冰箱控制屏<i class="fig-in"></i></b><span data-page-node-id="hoBFSXnEPzbdqtNHystBiM">钢化膜 · 高透爽滑</span></figcaption>
       </figure>
     </div>
-    <p class="three-note" id="screenFigNote">两件套贴中控大屏 + 冰箱控制屏；后排电视屏要三件套才有，多 ¥100。</p>
+    <p class="three-note" id="screenFigNote">两件套贴中控大屏 + 冰箱控制屏；后排电视屏要三件套才有，多 ¥100。<button class="note-up" data-screen="s3" hidden>换三件套 · 加 ¥100 →</button></p>
   </div>
 </section>
 
@@ -2247,19 +2434,6 @@ body.sheet-open .toast{ display:none; }
         <div class="gift-set"><b>21</b><i>件</i><small>整车配齐</small></div>
       </div>
     </div></div>
-
-    <div class="sub-block" data-page-node-id="NJsm6D2xuKiFVMaMZb6jEN">
-      <div class="sub-head" data-page-node-id="FSU7dKOVwqftU3RNch07uF">
-        <b data-page-node-id="VjE0lENhocLmOpzWVfHF8N">实车铺装</b>
-        <span data-page-node-id="8LWO6tga9ZwAyzdNihO4qk">高边全包围 · 卡扣固定，不打滑不卷边</span>
-      </div>
-      <div class="fit-row" data-page-node-id="jrP4ejhwffKpIJEY02iOQg">
-        <div class="fit-item" data-page-node-id="dSxHHSGlnclbiXAksLs5nX"><div class="pframe gal" data-page-node-id="Rr6YrJPDM2yTQz2Kt9BSAL"><img src="asset/acc/car1.webp" alt="实车铺装 星空丝绒毯" data-page-node-id="FUv3cxkBmXlCby7dWWX72d" loading="lazy" decoding="async"></div></div>
-        <div class="fit-item" data-page-node-id="bgShbgNQAT0eRGElnk86Gd"><div class="pframe gal" data-page-node-id="AI9AsVUh6w2Z1oCbMtrBSI"><img src="asset/acc/car2.webp" alt="实车铺装 菱格毯 橙棕" data-page-node-id="moPHXtETDNEDxFdiriKp6T" loading="lazy" decoding="async"></div></div>
-        <div class="fit-item" data-page-node-id="1Fi6ktRTRxd4UA941W64uG"><div class="pframe gal" data-page-node-id="yy00rZJ6kuwWLMFKV4OKLL"><img src="asset/acc/car3.webp" alt="实车铺装 菱格毯 灰黑" data-page-node-id="QWSNBvPedgYuyBBPthAcd8" loading="lazy" decoding="async"></div></div>
-        <div class="fit-item" data-page-node-id="69lzLJSkpJnenpnXEViqJ1"><div class="pframe gal" data-page-node-id="ojEdHf4HX6WA3cErstBmQr"><img src="asset/acc/car4.webp" alt="实车铺装 编织毯面" data-page-node-id="taxKPZeDolGY7dwfQw2txz" loading="lazy" decoding="async"></div></div>
-      </div>
-    </div>
 
     <div class="sub-block" data-page-node-id="lGIOGFHA4uGzNwajSwdCRd">
       <div class="sub-head" data-page-node-id="KFxzQzbBT5e66J9DkwrNyR">
@@ -2774,6 +2948,15 @@ const ACC_BIG = [
     ] }
 ];
 
+/* 铺装实拍：同一套垫体换不同毯面的实车效果（2026-11-14 从区外搬进脚垫卡里，
+   老板点完档位抬头就能看见，不用再往下滚一屏） */
+const FIT_FIGS = [
+  { img:'asset/acc/car1.webp', alt:'实车铺装 · 星空丝绒毯面' },
+  { img:'asset/acc/car2.webp', alt:'实车铺装 · 菱格毯面 橙棕' },
+  { img:'asset/acc/car3.webp', alt:'实车铺装 · 菱格毯面 灰黑' },
+  { img:'asset/acc/car4.webp', alt:'实车铺装 · 编织毯面' }
+];
+
 const ACC_SMALL = [
   { id:'a3', name:'门槛条 10 件套', spec:'RosyClouds · 不锈钢', price:468,
     imgs:['asset/acc/n/a3_sill.webp'] },
@@ -2808,7 +2991,7 @@ const ACC_SMALL = [
 /* ========================= 状态 ========================= */
 const state = {
   model:'i6', screen:null, coat:null, film:null, silColor:'w', acc:new Set(),
-  coatOpen:false, filmOpen:false,          /* 折叠：默认只看起步价 */
+  coatOpen:false, filmOpen:false, screenOpen:false,   /* 折叠：默认只看起步价 / 只露一张主卡 */
   tier:{}, seatKind:{}, seatColor:{}       /* 脚垫看哪一档 / 坐垫选哪款哪色，按车型各记一份 */
 };
 
@@ -2858,8 +3041,16 @@ const money = n => {
 const fmt = n => '¥' + money(n);
 
 /* ========================= 渲染 ========================= */
+/* 01 屏幕保护：默认只露一张主卡（两件套），三件套收成卡下面一行
+   —— 老板 2026-11-14：界面太长，别一进来就摊两张卡 */
 function renderScreen(){
-  $('#secScreen').innerHTML = SCREEN.map(o => `
+  const open = state.screenOpen;
+  const box  = $('#secScreen');
+  if (!box) return;
+  box.classList.toggle('fold', !open);
+  const cur = SCREEN.find(o => o.id === state.screen) || SCREEN[0];
+  const alt = SCREEN.find(o => o.id !== cur.id) || SCREEN[0];
+  const card = o => `
     <button class="sc-tier pick pick--lg${o.hl?' sc-tier--hl':''}${state.screen===o.id?' on':''}" data-screen="${o.id}">
       <div class="t-top">
         <span class="t-lab">${o.name}</span>
@@ -2868,28 +3059,50 @@ function renderScreen(){
       </div>
       <div class="t-num"><i>¥</i>${money(px(o.price))}</div>
       <span class="pick-hint">${state.screen === o.id ? '已加入配置单' : '点此加入配置单'}</span>
-    </button>`).join('');
+      <div class="t-side"><b>ARAG</b>无尘仓一体贴膜器<br>一盖一拉就贴好</div>
+    </button>`;
+  box.innerHTML = open
+    ? SCREEN.map(card).join('')
+    : card(cur) + `
+      <div class="sc-alt pick" data-screen="${alt.id}" role="button" tabindex="0"
+           aria-label="换成 ${alt.name}，${alt.set}，¥${money(px(alt.price))}">
+        <span class="sa-l">还有 ${alt.name}</span>
+        <span class="sa-s">${alt.set}</span>
+        <span class="sa-p">¥${money(px(alt.price))}</span>
+        <span class="sa-go">换成${alt.name} →</span>
+      </div>`;
+
+  const bar = $('#screenFold');
+  if (bar) bar.innerHTML = `<button class="foldup" data-fold="screen">${
+    open ? '收起，只看一档 <i>↑</i>' : `两档摊开对比 <i>↓</i>`}</button>`;
 }
 
-/* 三张屏的图跟着选中档位走：两件套只亮中控 + 冰箱，三件套三张全亮 */
+/* 图区跟着选中档位走：两件套只出两张（中控 + 冰箱），三件套三张全出，切换时淡入 */
 function syncScreenFigs(){
   const box = document.querySelector('#s-screen .three');
   const nt  = document.getElementById('screenFigNote');
   if (!box) return;
   const s = state.screen;
-  if (s === 's2' || s === 's3') box.dataset.set = s;
-  else delete box.dataset.set;
-  const word = s === 's3' ? '三件套含' : s === 's2' ? '两件套含' : '';
+  const setNow = s === 's3' ? 's3' : 's2';
+  const prev = box.dataset.set;
+  box.dataset.set = setNow;
+  if (prev && prev !== setNow){
+    box.classList.remove('swapping');
+    void box.offsetWidth;
+    box.classList.add('swapping');
+  }
+  const word = setNow === 's3' ? '三件套含' : '两件套含';
   box.querySelectorAll('.fig-in').forEach(el => {
     const part = el.closest('figure').dataset.part;
-    el.textContent = (s === 's2' && part === 'tv') ? '' : word;
+    el.textContent = (part === 'tv' && setNow !== 's3') ? '' : word;
   });
   if (!nt) return;
-  nt.innerHTML = s === 's2'
-    ? '已选 <b>两件套</b>：贴中控大屏 + 冰箱控制屏。后排电视屏要升级<b>三件套</b>才有，加 ¥100。'
-    : s === 's3'
-      ? '已选 <b>三件套</b>：中控大屏 + 后排电视屏 + 冰箱控制屏，三块屏全贴。'
-      : '两件套贴中控大屏 + 冰箱控制屏；后排电视屏要三件套才有，多 ¥100。';
+  const up = `<button class="note-up" data-screen="s3"${setNow === 's3' ? ' hidden' : ''}>换三件套 · 加 ¥100 →</button>`;
+  nt.innerHTML = (s === 's3'
+    ? '已选 <b>三件套</b>：中控大屏 + 后排电视屏 + 冰箱控制屏，三块屏全贴。'
+    : s === 's2'
+      ? '已选 <b>两件套</b>：贴中控大屏 + 冰箱控制屏。后排电视屏要<b>三件套</b>才有，加 ¥100。'
+      : '默认 <b>两件套</b>：中控大屏 + 冰箱控制屏。后排电视屏要<b>三件套</b>才有，加 ¥100。') + up;
 }
 
 /* 折叠时右侧的说明块：告诉客人还有更贵的，但不主动摊开 */
@@ -2901,7 +3114,7 @@ function foldBoxCoat(){
        aria-expanded="false" aria-label="展开查看全部 ${COAT_ALL.length} 款价位">
     <div class="fb-k">以上是起步款</div>
     <div class="fb-t">另有 <b>${COAT_REST.length}</b> 款更高价位</div>
-    <div class="fb-s"><b>¥${money(COAT_REST[0].price)} – ¥${money(COAT_REST[COAT_REST.length - 1].price)}</b>，差在厚度、自修复、质保年限。<br>默认收起，需要对比时再展开。</div>
+    <div class="fb-s"><b>¥${money(COAT_REST[0].price)} – ¥${money(COAT_REST[COAT_REST.length - 1].price)}</b>，差在厚度、自修复、质保年限。</div>
     ${sel ? `<span class="fb-sel"><i>✓</i>当前已选 <b>${sel.name} ¥${money(sel.price)}</b><u>展开看</u></span>` : ''}
     <span class="fb-go">展开全部 ${COAT_ALL.length} 款 <i>↓</i></span>
   </div>`;
@@ -2945,9 +3158,13 @@ function renderCoat(){
     </div>`;}).join('') + (open ? '' : foldBoxCoat());
 
   const bar = $('#coatFold');
-  if (bar) bar.innerHTML = open
-    ? `<button class="foldup" data-fold="coat">收起，只看 ¥${money(BASE_COAT.price)} 起步款 <i>↑</i></button>`
-    : `<button class="foldup" data-fold="coat">查看全部 ${COAT_ALL.length} 款价位 <em>¥${money(COAT_REST[0].price)} 起</em> <i>↓</i></button>`;
+  if (bar){
+    /* 折叠态那条提示里已经有「展开全部」，底下这颗就不再重复一遍 */
+    bar.style.display = open ? '' : 'none';
+    bar.innerHTML = open
+      ? `<button class="foldup" data-fold="coat">收起，只看 ¥${money(BASE_COAT.price)} 起步款 <i>↑</i></button>`
+      : '';
+  }
 }
 
 function renderFilm(){
@@ -3092,6 +3309,15 @@ function bigCard(a){
           : `本店只做整车整套：<b>¥${ms && ms.price ? ms.price.toLocaleString('en-US') : '—'}</b> 含装车，赠全车硅胶套装。价格按车型单独核定（同款同件套，各车型实价本来就不一样），不是全系一口价。只做整车整套，不拆件套单卖 —— 拆开就不送配件了。`}</p>
       </div>`;
       })()}
+      <div class="fit-strip">
+        <div class="fs-hd"><b>实车铺装</b><span>同一套垫体换毯面的实车效果 · 毯面可另配</span></div>
+        <div class="fit-row">
+          ${FIT_FIGS.map(f => `<div class="fit-item">
+            <div class="pframe"><img src="${f.img}" alt="${f.alt}" loading="lazy" decoding="async"></div>
+            <div class="fit-cap">${f.alt.replace('实车铺装 · ', '')}</div>
+          </div>`).join('')}
+        </div>
+      </div>
       <div class="gift-bar">
         <div class="gift-tag">赠</div>
         <div class="gift-txt">
@@ -3134,21 +3360,28 @@ function bigCard(a){
     11: '图示 11 件套 · 6 靠背 + 5 座垫',
     12: '图示 12 件套 · 6 靠背 + 6 座垫'
   };
-  const capHtml = (opt && opt.n && KIT_NOTE[opt.n])
-    ? `<p class="seat-hero-cap">${KIT_NOTE[opt.n]}</p>` : '';
+  const kitNote = (opt && opt.n && KIT_NOTE[opt.n]) || `${curModel().seats} 座舱 · 按座型配齐`;
+  const colorTxt = (opt && opt.colors && opt.colors.length)
+    ? opt.colors.map(c => SEAT_CNAME[c.c]).join(' / ') : '';
   return `
-    <div class="seat-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
+    <div class="addon-card addon-card--seat pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
          role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"
          aria-label="座椅垫，${curModel().name} ${skName} ${skSet}${curC ? ' ' + curC : ''}，${tbd?'价格到店核':'¥'+money(sp)}">
-      <div class="seat-body">
-        <div class="sub-head" style="padding-bottom:10px">
-          <b>座椅垫</b>
-          <span class="cnt">${skSet}</span>
-          <span class="hi-tag">主推 · 按车型配齐</span>
-          <span>${a.brand}</span>
-          <i class="sub-price">${tbd ? '<b class="tbd-p">到店核</b>' : `¥${money(sp)}`}<em>${curModel().name} · ${skName}${curC ? ' · ' + curC : ''}</em></i>
+      <div class="addon-top">
+        <div class="addon-pic">${picHtml}<i class="pic-tier">正在看 ${skName}${curC ? ' · ' + curC : ''}</i></div>
+        <div class="addon-body">
+          <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 按车型配齐</span></div>
+          <div class="addon-name">座椅垫<u class="set-n">${curModel().name} · ${skSet}${curC ? ' · ' + curC : ''}</u></div>
+          <div class="addon-spec">${opt ? opt.inc : '按本车座型配齐'}<br>${kitNote}</div>
+          <div class="addon-tags"><span>${curModel().seats} 座舱 · 专车专用开模</span>${colorTxt?`<span class="gtag">配色 · ${colorTxt}</span>`:''}</div>
+          <div class="addon-note">单张、一对、座垫片等不单列；要单买配件直接问。</div>
+          <div class="addon-buy">
+            <div class="addon-price">${tbd ? '<b class="tbd-p">到店核</b>' : `<i>¥</i>${money(sp)}`}<span>${skSet} · 含装车</span></div>
+            <div class="addon-mats">${curModel().name} 专属开模<br><b>${colorTxt ? '配色 · ' + colorTxt : '按车型配齐'}</b></div>
+            <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '点此加入配置单'}</span>
+          </div>
         </div>
-        <span class="pick-hint">${state.acc.has(a.id) ? '已加入配置单' : '整卡可点 · 点此加入配置单'}</span>
+      </div>
         <div class="mtier">
           <div class="mtier-hd">
             <div class="mt-hd-l">
@@ -3181,10 +3414,6 @@ function bigCard(a){
           </div>
           <p class="mtier-note">只列本车型件数最多的那一档满配（单张、一对、座垫片等不单列；要单买配件直接问）。件数 / 配色取自固特异京东旗舰店 2026-11 在售清单；有实数的取公开渠道实测价，没有实数的到店核、按你的车实测报价，不编价。</p>
         </div>
-        <div class="mat-kit${(opt && opt.n) ? ' mat-kit--seat' : ''}" style="position:relative">${picHtml}<i class="pic-tier">正在看 ${skName}${curC ? ' · ' + curC : ''}</i></div>
-        ${capHtml}
-        <p class="mat-parts">${curModel().seats} 座舱 · 按座型配齐${opt && opt.n ? ' · 与所选件数一致' : ''}</p>
-      </div>
     </div>`;
 }
 
@@ -3685,13 +3914,19 @@ document.addEventListener('click', e => {
   const fd = e.target.closest('[data-fold]');
   if (fd){
     const k = fd.dataset.fold;
-    if (k === 'coat') state.coatOpen = !state.coatOpen;
-    else state.filmOpen = !state.filmOpen;
-    const open = k === 'coat' ? state.coatOpen : state.filmOpen;
-    if (k === 'coat') renderCoat(); else renderFilm();
-    if (!open){
-      const s = document.getElementById(k === 'coat' ? 's-coat' : 's-film');
-      if (s) s.scrollIntoView({ behavior:'smooth', block:'start' });
+    const FLD = {
+      screen:{ open:() => state.screenOpen = !state.screenOpen, draw:renderScreen, sec:'s-screen' },
+      coat:  { open:() => state.coatOpen   = !state.coatOpen,   draw:renderCoat,   sec:'s-coat' },
+      film:  { open:() => state.filmOpen   = !state.filmOpen,   draw:renderFilm,   sec:'s-film' }
+    }[k];
+    if (FLD){
+      FLD.open();
+      const open = k === 'screen' ? state.screenOpen : k === 'coat' ? state.coatOpen : state.filmOpen;
+      FLD.draw();
+      if (!open){
+        const s = document.getElementById(FLD.sec);
+        if (s) s.scrollIntoView({ behavior:'smooth', block:'start' });
+      }
     }
     return;
   }
