@@ -2703,8 +2703,12 @@ body.pmodal-open{ overflow:hidden; }
   .af-price{ font-size:24px; }
   .af-price i{ font-size:12px; vertical-align:4px; }
   .af-price small{ font-size:15px; }
-  .af-add{ grid-column:1 / -1; width:100%; min-height:44px; font-size:12.5px; margin-top:4px; }
-  .af-detail{ display:none; }
+  /* 手机上「查看全部细节」不再压在图上（会盖住垫子标注），改到信息栏里单独一行 */
+  .af-cue{ display:none; }
+  .af-info{ grid-column:1; grid-row:1; }
+  .af-price{ grid-column:2; grid-row:1; }
+  .af-detail{ grid-column:1 / -1; grid-row:2; justify-self:start; font-size:11.5px; padding-bottom:2px; }
+  .af-add{ grid-column:1 / -1; grid-row:3; width:100%; min-height:44px; font-size:12.5px; }
   .af-badge{ left:10px; top:10px; font-size:10px; padding:4px 8px; }
   .af-cue{ right:10px; bottom:10px; font-size:10.5px; padding:7px 12px; }
 
