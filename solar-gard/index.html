@@ -2679,6 +2679,48 @@ body.pmodal-open{ overflow:hidden; }
 .pmodal-bd .addon-card .fit-strip{ margin:26px 0 0; padding:22px 0 0; }
 .pmodal-bd .addon-card .gift-bar{ margin:24px 0 0; }
 
+/* ---------- 内页里的「购脚垫即赠」整套明细 ---------- */
+/* 这块原来是页面上独立的一大段（三屏多），现在只活在脚垫内页里 */
+.gift-kit{ margin:26px 0 0; padding:24px 0 0; border-top:1px solid var(--line); }
+.gk-top{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.gk-top b{ font-size:16px; font-weight:600; letter-spacing:.04em; }
+.gk-cnt{
+  font-style:normal; font-size:10.5px; letter-spacing:.1em;
+  padding:3px 9px; background:var(--ink); color:#fff; border-radius:2px;
+}
+.gk-sum{ flex:1 1 100%; font-size:11.5px; color:var(--sub); letter-spacing:.03em; }
+.gk-sub{ font-size:12px; line-height:1.9; color:var(--sub); margin-top:12px; }
+.gk-sub b{ color:var(--ink); }
+.pmodal-bd .gift-kit .giftkit{ margin-top:22px; }
+.pmodal-bd .gift-kit .sil-grid{ border-radius:8px; overflow:hidden; }
+/* 底栏那颗「＋ 加入配置单」是加脚垫的实心主按钮，赠品这颗要退到次要：
+   白底墨边，客人不会以为「记赠品」= 下单 */
+.pmodal-bd .gift-kit .gk-add{
+  background:#fff; color:var(--ink); border:1px solid var(--ink);
+  box-shadow:none;
+}
+.pmodal-bd .gift-kit .gk-add:hover{ background:#F7F4EC; box-shadow:none; }
+.pmodal-bd .gift-kit .gk-add.on{
+  background:#FBF4E4; color:#8A6A2E; border-color:rgba(185,154,91,.7);
+}
+.pmodal-bd .gift-kit .gk-add.on b{ color:#8A6A2E; }
+/* 手机上「GIFT · N 件 / 随脚垫整车配送」这行纯英文标签占一整行却没信息量：
+   上面的 gift-bar 与「全车硅胶 N 件」徽章已经说过一遍，直接把位置让给色卡 */
+@media (max-width:759px){
+  .pmodal-bd .gift-kit .gk-l{ display:none; }
+  .pmodal-bd .gift-kit .gk-head{ padding-bottom:12px; }
+  .pmodal-bd .gift-kit .gk-add{ min-height:40px; padding:0 16px; font-size:12px; }
+  .pmodal-bd .gift-kit .gk-sub{ margin-top:10px; }
+}
+
+/* 主页面精简卡上的「赠 N 件硅胶」角标：赠品收进内页了，门口得留个招牌 */
+.af-gift{
+  position:absolute; right:14px; top:14px;
+  font-size:10.5px; letter-spacing:.06em; color:#5A4420;
+  background:linear-gradient(145deg,#F2E1B8,#DCC28C);
+  padding:5px 11px; border-radius:3px; box-shadow:0 6px 14px -10px rgba(90,68,32,.8);
+}
+
 /* 内页底栏：加不加配置单在这里 */
 .pd-ft{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
 .pd-ft > span{ font-size:11.5px; color:var(--sub); letter-spacing:.03em; }
@@ -2710,6 +2752,7 @@ body.pmodal-open{ overflow:hidden; }
   .af-detail{ grid-column:1 / -1; grid-row:2; justify-self:start; font-size:11.5px; padding-bottom:2px; }
   .af-add{ grid-column:1 / -1; grid-row:3; width:100%; min-height:44px; font-size:12.5px; }
   .af-badge{ left:10px; top:10px; font-size:10px; padding:4px 8px; }
+  .af-gift{ right:10px; top:10px; font-size:10px; padding:4px 8px; }
   .af-cue{ right:10px; bottom:10px; font-size:10.5px; padding:7px 12px; }
 
   /* 图再压扁一点：4:3 会把价格挤到第一屏外，3:2 刚好露出来 */
@@ -2943,31 +2986,13 @@ body.pmodal-open{ overflow:hidden; }
         <div class="gift-tag">赠</div>
         <div class="gift-txt">
           <b>买 TPE 脚垫 · 即送全车硅胶套装</b>
-          <div class="gift-chips"><span>无线充垫</span><span>前排水杯套</span><span>扶手箱储物盒 · 全包连体</span><span>后排水杯套</span><span>中控下储物盒 ×2</span><span>冰箱储物盒 ×2</span><span>车门按键防护垫 ×4</span><span>车门内门碗贴 ×4</span><span>车门下硅胶盒 ×4</span><span>OBD 保护盖</span></div>
+          <span>21 件整车配齐 · 颜色可选 · 随脚垫一并装车</span>
         </div>
         <div class="gift-set"><b>21</b><i>件</i><small>整车配齐</small></div>
       </div>
     </div></div>
 
-    <div class="sub-block" data-page-node-id="lGIOGFHA4uGzNwajSwdCRd">
-      <div class="sub-head" data-page-node-id="KFxzQzbBT5e66J9DkwrNyR">
-        <b data-page-node-id="LrcCI3o0r0g3QF9CirUK6Z">购脚垫即赠</b>
-        <span class="cnt" id="giftCnt" data-page-node-id="e1BAUzjOvSaqih3qJ7Am9n">全车硅胶 21 件</span>
-        <span id="giftSum" data-page-node-id="ATdYjboFdPIuxTio1a4ymM">无线充垫 / 水杯套 / 储物盒 / 车门按键 / 门碗贴 / OBD 盖</span>
-      </div>
-      <p class="sub-note" id="giftNote" data-page-node-id="0EaFwDIqxgOHtAaEJ9geMQ">26 款 i6 送 <b data-page-node-id="Us0VKoB9SeID5MowaPjz0k">21 件套</b>；按对应车型配齐，随脚垫一并装车。</p>
-      <div class="giftkit" data-page-node-id="e2hUPhyLRFMizsu88zXB2N">
-        <div class="gk-head" data-page-node-id="BTHbYZpeOWhLP4ski1f5lh">
-          <div class="gk-l" id="giftHead" data-page-node-id="scecE2q4cCPJgMJfwqD4k9">GIFT · 21 件 / 随脚垫整车配送</div>
-          <div class="gk-ctl">
-            <div class="gk-swatches" id="giftSw" data-page-node-id="NwGFjUFUu0w4IDao405mbp"></div>
-            <button class="gk-add" id="giftAdd" data-giftadd aria-pressed="false"><b>＋ 加入配置</b></button>
-          </div>
-        </div>
-        <div class="sil-grid gal" id="silGrid" data-page-node-id="ZOBu3ob2uu76nRBWG96Mcj"></div>
-        <p class="gk-note" id="giftKnote" data-page-node-id="OhBDlF1RjS6ikSpogMkWHd">上图为 i6 车型 21 件套实拍，按车型配齐后随脚垫一并装车；其他车型件数与组合以实车为准。</p>
-      </div>
-    </div>
+    <!-- 「购脚垫即赠」整套明细已收进脚垫内页（openDetail），页面不再占位 -->
 
     <div id="secAccSeat" data-page-node-id="ohRRYPe9C6drbGzS1AcmLn">
     <div class="seat-card pick pick--lg" data-acc="a2">
@@ -3813,6 +3838,7 @@ function openDetail(id){
   const bd = $('#pmodalBody'), tt = $('#pmodalTitle'), ft = $('#pmodalFt');
   tt.textContent = a.slot === 'seat' ? '座椅垫 · 全部细节' : '脚垫 · 全部细节';
   bd.innerHTML = bigCard(a, true);
+  renderSil();              /* 赠品明细就在这层里，body 重建后要重新灌一次 */
   bd.scrollTop = 0;
   ft.innerHTML = `<div class="pd-ft">
       <span>含装车 · 到店按你的车实测再核一遍</span>
@@ -3834,6 +3860,7 @@ function renderDetail(){
   if (!a || !bd) return;
   const keep = bd.scrollTop;
   bd.innerHTML = bigCard(a, true);
+  renderSil();              /* 换档 / 换色重建 body，赠品明细跟着重灌，否则浮层里这块会空掉 */
   bd.scrollTop = keep;
   syncDetailBtn();
 }
@@ -3872,6 +3899,36 @@ function renderFilmBar(){
     <span class="pb-spec">${hit.spec}</span>
     <span class="pb-price">¥${money(px(hit.price))}</span>
     <button class="pb-x" data-clear="film">取消选择</button>`;
+}
+
+/* ============================================================
+   「购脚垫即赠」整套明细：原来是页面上独立的一大块，三屏多，
+   客人看到的是三屏图片而不是价目单。它本来就是脚垫的配套赠品，
+   现在整块搬进脚垫内页（openDetail）里，页面不再占位。
+   浮层每次重建 body 后 renderSil() 会重新灌色卡与逐件清单，
+   所以这里的 id 必须和 renderSil 找的那几个保持一致。
+   ============================================================ */
+function giftBlock(){
+  return `
+    <div class="gift-kit" id="giftKit">
+      <div class="gk-top">
+        <b>购脚垫即赠</b>
+        <em class="gk-cnt" id="giftCnt"></em>
+        <span class="gk-sum" id="giftSum"></span>
+      </div>
+      <p class="gk-sub" id="giftNote"></p>
+      <div class="giftkit">
+        <div class="gk-head">
+          <div class="gk-l" id="giftHead"></div>
+          <div class="gk-ctl">
+            <div class="gk-swatches" id="giftSw"></div>
+            <button class="gk-add" id="giftAdd" data-giftadd aria-pressed="false" aria-label="把赠品记进配置单，价格 0 元"><b>＋ 记为赠品</b></button>
+          </div>
+        </div>
+        <div class="sil-grid" id="silGrid"></div>
+        <p class="gk-note" id="giftKnote"></p>
+      </div>
+    </div>`;
 }
 
 function bigCard(a, detail){
@@ -3973,20 +4030,15 @@ function bigCard(a, detail){
         <div class="gift-tag">赠</div>
         <div class="gift-txt">
           <b>${aGift}</b>
-          ${(() => {
-            /* 赠品明细按车型走（品牌方 2026-11-14 官方物料逐项核对过），
-               数量 >1 的标 ×N，带备注的（连体全包 / 升级杯架）跟在后面 */
-            const gi = ((curModel().gift || {}).items) || [];
-            if (!gi.length) return `<span>${a.giftNote || ''}</span>`;
-            return `<div class="gift-chips">${gi.map(([nm, cnt, note]) =>
-              `<span>${nm}${cnt > 1 ? ' ×' + cnt : ''}${note ? ' · ' + note : ''}</span>`).join('')}</div>`;
-          })()}
-          ${a.giftValue ? `<span class="gift-val">配件价值 ${a.giftValue}</span>` : ''}
+          <span>${giftN()
+            ? `${giftN()} 件整车配齐 · 颜色可选 · 逐件明细在下面`
+            : `按 ${curModel().seats} 座舱布局整车配齐 · 逐件明细在下面`}${a.giftValue ? ` · 配件价值 ${a.giftValue}` : ''}</span>
         </div>
         <div class="gift-set">${giftN()
           ? `<b>${giftN()}</b><i>件</i><small>硅胶套装 · 整车配齐</small>`
           : `<small>按 ${curModel().seats} 座舱布局<br>整车配齐</small>`}</div>
       </div>
+      ${giftBlock()}
     </div>`;
   }
   /* 座椅垫：按京东官方在售 SKU 全集列款式（每款车只列本车能选的），
@@ -4078,7 +4130,7 @@ function bigCard(a, detail){
    ============================================================ */
 function miniCard(a){
   const seat = a.slot === 'seat';
-  let pic, name, sub, price, tbd, badge;
+  let pic, name, sub, price, tbd, badge, gift = 0;
 
   if (!seat){
     const ct = curTier();
@@ -4094,6 +4146,8 @@ function miniCard(a){
     price = tbd ? 0 : px(tPrice);
     sub = `${curModel().name} · ${nTxt} · 含装车`;
     badge = nTxt;
+    /* 赠品那块搬进内页了，页面上必须留一句「有得送」，否则客人根本不会点进去看 */
+    gift = giftN();
   } else {
     const opt = curSeatKind();
     const col = seatColorOf(opt);
@@ -4115,6 +4169,7 @@ function miniCard(a){
     <button class="af-media" data-detail="${a.id}" aria-label="查看 ${name} 的全部细节">
       <img src="${pic}" alt="${curModel().name} ${name}实拍" loading="lazy" decoding="async">
       <span class="af-badge">${badge}</span>
+      ${gift ? `<span class="af-gift">赠 ${gift} 件硅胶</span>` : ''}
       <span class="af-cue">全部细节 <i>›</i></span>
     </button>
     <div class="af-bar">
@@ -4236,7 +4291,7 @@ function renderSil(animate){
     const on = !!state.silIn && !!g;
     ga.classList.toggle('on', on);
     ga.setAttribute('aria-pressed', String(on));
-    ga.innerHTML = on ? '<b>✓ 已加入配置单</b>' : '<b>＋ 加入配置</b>';
+    ga.innerHTML = on ? '<b>✓ 赠品已记录</b>' : '<b>＋ 记为赠品</b>';
     ga.disabled = !g;
     ga.style.opacity = g ? '' : '.4';
     ga.style.cursor = g ? '' : 'default';
