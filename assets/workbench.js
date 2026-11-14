@@ -34,7 +34,8 @@ const ICON_PATHS = {
   trash: '<path d="M4 7h16"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"/><path d="M6.5 7l1 12.5h9l1-12.5"/>',
   mic: '<rect x="9" y="2.8" width="6" height="10.4" rx="3"/><path d="M5.6 11.2a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.6V21"/><path d="M8.6 21h6.8"/>',
   bolt: '<path d="M13.2 2.6 5.4 13.4h5.2L10.2 21.4 18.6 10.2h-5.4z"/>',
-  chart: '<path d="M4 20.2h16"/><rect x="5.4" y="11" width="3.4" height="6.2" rx="1"/><rect x="10.3" y="6.6" width="3.4" height="10.6" rx="1"/><rect x="15.2" y="13.4" width="3.4" height="3.8" rx="1"/>'
+  chart: '<path d="M4 20.2h16"/><rect x="5.4" y="11" width="3.4" height="6.2" rx="1"/><rect x="10.3" y="6.6" width="3.4" height="10.6" rx="1"/><rect x="15.2" y="13.4" width="3.4" height="3.8" rx="1"/>',
+  lang: '<circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2"/><path d="M12 3.4a13.2 13.2 0 0 1 0 17.2a13.2 13.2 0 0 1 0-17.2"/>'
 };
 
 function ic(name, cls) {
@@ -49,6 +50,7 @@ const PAGES = {
   koubo:   { title: '口播工坊',   desc: '自己写 · 自己改 · 定稿得你自己点' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
+  trans:   { title: '英文翻译',   desc: '中文翻英文 · 本地模型优先，失败自动走在线' },
   report:  { title: '战报',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
   radar:   { title: '今日雷达',   desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' }
 };
@@ -3105,6 +3107,207 @@ function mountDraw() {
   }
 }
 
+/* ---------------- 英文翻译（中文 → 英文） ----------------
+   优先用浏览器自带的本地翻译模型（Chrome 138+ 的 Translator API），
+   本地不可用或下载失败时，自动退回 MyMemory 免费在线接口。 */
+const TR = { src: '', out: '', engine: '', err: '', busy: false, prog: '', note: '' };
+let trInst = null;
+let trLocalDead = false;
+
+function trTimeout(p, ms, msg) {
+  return Promise.race([p, new Promise(function (_, rej) {
+    setTimeout(function () { rej(new Error(msg || 'timeout')); }, ms);
+  })]);
+}
+
+function renderTransPage() {
+  return '<div class="tr-grid">' +
+    '<div class="card tr-pane">' +
+      '<div class="tr-head"><span>中文原文</span><span class="tr-count" id="trCount">0 字</span></div>' +
+      '<textarea id="trSrc" class="tr-area" spellcheck="false" placeholder="把要翻译的中文粘进来，一句一段都行"></textarea>' +
+      '<div class="tr-bar">' +
+        '<button class="btn btn-main" type="button" data-tr="go">翻译成英文</button>' +
+        '<button class="btn btn-sm" type="button" data-tr="clear">清空</button>' +
+        '<span class="tr-hint" id="trHint">Ctrl / ⌘ + Enter 直接翻译</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="card tr-pane">' +
+      '<div class="tr-head"><span>English</span><span class="tr-engine" id="trEngine"></span></div>' +
+      '<div class="tr-out" id="trOut"><div class="tr-empty">译文会出现在这里</div></div>' +
+      '<div class="tr-bar">' +
+        '<button class="btn btn-sm" type="button" data-tr="copy">复制译文</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+/* 按句号切块，在线接口一次最多 450 字 */
+function trChunks(text) {
+  const segs = [];
+  let buf = '';
+  for (let i = 0; i < text.length; i++) {
+    const ch = text.charAt(i);
+    buf += ch;
+    if ('。！？；!?;\n'.indexOf(ch) >= 0 || buf.length >= 420) { segs.push(buf); buf = ''; }
+  }
+  if (buf) segs.push(buf);
+  const out = [];
+  let cur = '';
+  segs.forEach(function (s) {
+    if (cur && (cur + s).length > 450) { out.push(cur); cur = s; }
+    else cur += s;
+  });
+  if (cur.trim()) out.push(cur);
+  return out.length ? out : [text];
+}
+
+function trDecode(s) {
+  return String(s).replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+}
+
+async function trLocal(text) {
+  const avail = await trTimeout(
+    Translator.availability({ sourceLanguage: 'zh', targetLanguage: 'en' }), 2500, '本地模型检测超时');
+  if (avail === 'unavailable') throw new Error('本地模型不可用');
+  if (!trInst) {
+    if (avail !== 'available') {
+      TR.note = '首次使用正在下载本地模型，装好以后就离线也能翻';
+      trPaint();
+    }
+    trInst = await trTimeout(Translator.create({
+      sourceLanguage: 'zh',
+      targetLanguage: 'en',
+      monitor: function (m) {
+        m.addEventListener('downloadprogress', function (e) {
+          TR.prog = '下载本地模型 ' + Math.round((e.loaded || 0) * 100) + '%';
+          trPaint();
+        });
+      }
+    }), 8000, '本地模型没准备好');
+  }
+  return await trTimeout(trInst.translate(text), 12000, '本地翻译超时');
+}
+
+async function trOnline(text) {
+  const chunks = trChunks(text);
+  const outs = [];
+  for (let i = 0; i < chunks.length; i++) {
+    if (chunks.length > 1) { TR.prog = '在线翻译 ' + (i + 1) + '/' + chunks.length; trPaint(); }
+    const url = 'https://api.mymemory.translated.net/get?q=' +
+      encodeURIComponent(chunks[i]) + '&langpair=zh-CN%7Cen';
+    let j = null;
+    try {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      j = await r.json();
+    } catch (e) {
+      throw new Error('在线翻译没连上，检查网络后再试');
+    }
+    const t = j && j.responseData && j.responseData.translatedText;
+    if (j && j.responseStatus && j.responseStatus !== 200) {
+      throw new Error(j.responseDetails || '在线翻译暂时不可用');
+    }
+    if (!t) throw new Error('在线翻译没返回内容');
+    if (/MYMEMORY WARNING/i.test(t)) throw new Error('今天的免费翻译额度用完了，明天再来');
+    outs.push(trDecode(t));
+  }
+  return outs.join(' ');
+}
+
+async function trRun() {
+  if (TR.busy) return;
+  const text = (TR.src || '').trim();
+  if (!text) { toast('先把要翻译的中文粘进来', 'err'); return; }
+  TR.busy = true; TR.err = ''; TR.out = ''; TR.engine = ''; TR.note = ''; TR.prog = '正在翻译…';
+  trPaint();
+  try {
+    let out = '';
+    if (!trLocalDead && self.Translator && Translator.create) {
+      try {
+        out = await trLocal(text);
+        TR.engine = 'Chrome 本地模型';
+      } catch (e) { out = ''; trLocalDead = true; }
+    }
+    if (!out) {
+      TR.prog = '正在翻译…';
+      trPaint();
+      out = await trOnline(text);
+      TR.engine = 'MyMemory 在线';
+    }
+    TR.out = String(out).trim();
+    TR.prog = '';
+  } catch (e) {
+    TR.err = (e && e.message) || '翻译失败';
+    TR.prog = '';
+  }
+  TR.busy = false;
+  trPaint();
+}
+
+function trPaint() {
+  const out = document.getElementById('trOut');
+  if (out) {
+    if (TR.err) {
+      out.innerHTML = '<div class="tr-err">' + esc(TR.err) + '</div>' +
+        '<div class="tr-note">中文翻英文；连不上在线服务时，稍后再试一次。</div>';
+    } else if (TR.busy) {
+      out.innerHTML = '<div class="tr-loading"><span class="spinner"></span><span>' +
+        esc(TR.prog || '正在翻译…') + '</span></div>';
+    } else if (TR.out) {
+      out.textContent = TR.out;
+    } else {
+      out.innerHTML = '<div class="tr-empty">译文会出现在这里</div>';
+    }
+  }
+  const eng = document.getElementById('trEngine');
+  if (eng) eng.textContent = TR.engine || '';
+  const hint = document.getElementById('trHint');
+  if (hint) hint.textContent = TR.note || 'Ctrl / ⌘ + Enter 直接翻译';
+  const cnt = document.getElementById('trCount');
+  if (cnt) cnt.textContent = (TR.src || '').replace(/\s/g, '').length + ' 字';
+  const go = document.querySelector('[data-tr="go"]');
+  if (go) {
+    go.disabled = TR.busy;
+    go.textContent = TR.busy ? '翻译中…' : '翻译成英文';
+  }
+}
+
+function mountTrans() {
+  const src = document.getElementById('trSrc');
+  if (!src) return;
+  src.value = TR.src;
+  src.addEventListener('input', function () {
+    TR.src = src.value;
+    trPaint();
+  });
+  src.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      trRun();
+    }
+  });
+  const wrap = document.getElementById('sec-trans');
+  if (wrap) {
+    wrap.addEventListener('click', function (e) {
+      const b = e.target.closest('[data-tr]');
+      if (!b) return;
+      if (b.dataset.tr === 'go') {
+        trRun();
+      } else if (b.dataset.tr === 'copy') {
+        if (!TR.out) { toast('还没有译文', 'err'); return; }
+        copyText(TR.out);
+      } else if (b.dataset.tr === 'clear') {
+        TR.src = ''; TR.out = ''; TR.err = ''; TR.engine = ''; TR.prog = ''; TR.note = '';
+        const el = document.getElementById('trSrc');
+        if (el) { el.value = ''; el.focus(); }
+        trPaint();
+      }
+    });
+  }
+  trPaint();
+}
+
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 /* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
@@ -3113,6 +3316,7 @@ const SECTIONS = [
   { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 照老板的表搬上来' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
+  { key: 'trans', cat: 'tool', title: '英文翻译', desc: '中文翻英文 · 一句一段都行' },
   { key: 'pixel', cat: 'tool', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
   { key: 'draw', cat: 'tool', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
 ];
@@ -3150,6 +3354,7 @@ function renderView(keepScroll) {
   const bodyOf = function (s) {
     if (s.key === 'tasks') return renderTasksPage();
     if (s.key === 'library') return renderLibraryPage();
+    if (s.key === 'trans') return renderTransPage();
     if (s.key === 'koubo') return renderKouboPage();
     if (s.key === 'pixel') return renderPixelPage();
     if (s.key === 'draw') return renderDrawPage();
@@ -3183,6 +3388,7 @@ function renderView(keepScroll) {
   mountReport();
   mountRadar();
   mountKoubo();
+  mountTrans();
 
   // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
