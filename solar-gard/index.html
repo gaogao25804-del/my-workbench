@@ -853,13 +853,36 @@ a{ color:inherit; text-decoration:none; }
 .sh-tag.on{ opacity:1; transform:scale(1); }
 .sheet-hd .x{ font-size:22px; color:var(--sub); line-height:1; }
 .sheet-bd{ padding:8px 26px 26px; overflow-y:auto; }
-.qcar{ font-size:11.5px; color:var(--sub); padding:16px 0; border-bottom:1px solid var(--line); letter-spacing:.04em; }
-.qcar b{ color:var(--ink); font-weight:600; }
-.qempty{ text-align:center; padding:56px 0; font-size:13px; color:var(--sub); line-height:2.2; }
-.qline{
-  display:grid; grid-template-columns:auto 1fr auto; gap:12px;
-  padding:15px 0; border-bottom:1px solid var(--line2); align-items:baseline;
+.qcar{
+  font-size:11.5px; color:var(--sub); padding:14px 0; border-bottom:1px solid var(--line);
+  letter-spacing:.04em; display:flex; align-items:center; gap:12px;
 }
+.qcar b{ color:var(--ink); font-weight:600; }
+.qcar > span{ min-width:0; }
+.qempty{ text-align:center; padding:56px 0; font-size:13px; color:var(--sub); line-height:2.2; }
+/* 一键清空：灰底描边，不抢「去结账」的戏；点了先进「再确认」态防误触 */
+.qclear{
+  flex:none; margin-left:auto; font-size:11px; letter-spacing:.04em; color:var(--sub); white-space:nowrap;
+  padding:6px 12px; border:1px solid var(--line); border-radius:999px; background:#fff;
+  transition:color .2s, border-color .2s, background .2s;
+}
+.qclear:hover{ color:#B4483B; border-color:#E8CCC5; background:#FDF6F4; }
+.qclear.armed{ color:#fff; background:#B4483B; border-color:#B4483B; }
+.qline{
+  display:grid; grid-template-columns:auto 1fr auto 30px; gap:12px;
+  padding:15px 0; border-bottom:1px solid var(--line2); align-items:baseline;
+  transition:opacity .19s ease, transform .19s ease;
+}
+.qline.out{ opacity:0; transform:translateX(12px); }
+/* 单项删除：默认极淡，hover 才露红——平时不干扰读价 */
+.qdel{
+  flex:none; width:28px; height:28px; border-radius:50%; color:#ADA79B;
+  font-size:16px; line-height:1; align-self:start; margin-top:-5px;
+  display:flex; align-items:center; justify-content:center;
+  transition:color .2s, background .2s;
+}
+.qdel:hover{ color:#B4483B; background:#FDF3F1; }
+.qdel:active{ background:#F8E9E5; }
 .qk{ font-size:10px; letter-spacing:.1em; color:var(--gold); }
 .qv{ font-size:13px; font-weight:500; }
 .qv small{ display:block; font-size:10.5px; color:var(--sub); font-weight:400; margin-top:4px; }
@@ -1082,8 +1105,11 @@ a{ color:inherit; text-decoration:none; }
     content:""; position:absolute; left:50%; top:8px; width:36px; height:3px;
     background:var(--line); border-radius:2px; transform:translateX(-50%);
   }
-  .qline{ grid-template-columns:1fr auto; gap:6px 10px; }
+  .qline{ grid-template-columns:1fr auto 30px; gap:6px 8px; }
   .qk{ display:none; }
+  .qdel{ width:30px; height:30px; font-size:17px; margin-top:-4px; }
+  .qcar{ padding:13px 0; }
+  .qclear{ padding:7px 12px; }
   .qv{ font-size:12.5px; }
   .qtotal .tv{ font-size:27px; }
   .toast{ bottom:84px; max-width:calc(100vw - 32px); font-size:12px; padding:10px 16px 10px 10px; }
@@ -1491,7 +1517,7 @@ body.has-models .hero{ padding-top:0; }
 
 /* 触摸设备：去掉系统灰块，双击不再等 300ms */
 html{ -webkit-tap-highlight-color:transparent; }
-.pick, .pill, .mchip, .acc-item, .foldup, .sw, .cb-bag, .cb-go, .qbtn, .pb-x, .sheet-hd .x{ touch-action:manipulation; }
+.pick, .pill, .mchip, .acc-item, .foldup, .sw, .cb-bag, .cb-go, .qbtn, .pb-x, .qdel, .qclear, .sheet-hd .x{ touch-action:manipulation; }
 
 /* 1) 选中确认：卡片是重渲染出来的，进场补一段 200ms 过渡（不至于「唰」地跳成金色） */
 @keyframes pickIn{
@@ -1565,7 +1591,7 @@ body:not(.has-cart) .nav .pill.light:hover{
 /* 7) 键盘可达：统一金色焦点环 */
 .pill:focus-visible, .mchip:focus-visible, .nav-r a:focus-visible,
 .foldup:focus-visible, .sw:focus-visible, .cb-bag:focus-visible,
-.cb-go:focus-visible, .pb-x:focus-visible, .sheet-hd .x:focus-visible{
+.cb-go:focus-visible, .pb-x:focus-visible, .qdel:focus-visible, .qclear:focus-visible, .sheet-hd .x:focus-visible{
   outline:2px solid var(--gold); outline-offset:2px;
 }
 
@@ -3698,15 +3724,15 @@ function renderAcc(){
 function picked(){
   const out = [];
   const s = SCREEN.find(x => x.id === state.screen);
-  if (s) out.push({ k:'屏幕保护', v:`${s.name} · ${s.set}`, p:px(s.price) });
+  if (s) out.push({ rid:'sc', k:'屏幕保护', v:`${s.name} · ${s.set}`, p:px(s.price) });
 
   /* 车衣全系同价，不走尺寸系数 */
   COAT.forEach(g => g.items.forEach(it => {
-    if (it.id === state.coat) out.push({ k:'隐形车衣', v:it.name, sub:it.spec, p:pxC(it.price), same:true });
+    if (it.id === state.coat) out.push({ rid:'coat:'+it.id, k:'隐形车衣', v:it.name, sub:it.spec, p:pxC(it.price), same:true });
   }));
 
   FILM.forEach(se => se.tiers.forEach(t => {
-    if (t.id === state.film) out.push({ k:'玻璃膜', v:`${se.name} · ${t.code} 档`, sub:t.spec, p:px(t.price) });
+    if (t.id === state.film) out.push({ rid:'film:'+t.id, k:'玻璃膜', v:`${se.name} · ${t.code} 档`, sub:t.spec, p:px(t.price) });
   }));
 
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
@@ -3752,7 +3778,7 @@ function picked(){
         sub = (a.spec || '').replace(/<br>/g, ' ');
       }
       out.push({
-        k:'配件', v:nm, sub,
+        rid:'acc:'+a.id, k:'配件', v:nm, sub,
         p: px(ap), gift, tbd,
         footSet: ms ? {
           mats: hasMats ? ms.mats : '',
@@ -3900,7 +3926,9 @@ function renderSheet(list, total){
   if (!list.length){
     $('#sheetBody').innerHTML = `
       <div class="qcar">车型：<b>${m.name}${m.sub?' · '+m.sub:''}</b></div>
-      <div class="qempty">还没勾选项目<br>返回页面选择你需要的内容</div>`;
+      <div class="qempty">配置单还是空的<br>回页面勾选你需要的内容</div>
+      <div class="qact"><button class="qbtn" id="btnEmptyBack">返回页面挑选 →</button></div>`;
+    $('#btnEmptyBack').onclick = closeSheet;
     return;
   }
   const rows = list.map((x, i) => `
@@ -3909,10 +3937,12 @@ function renderSheet(list, total){
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
         ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶 ${x.gift.n} 件套${x.gift.color?' · '+x.gift.color:''}</small>`:''}</span>
       <span class="qp">${x.tbd?'<b class="tbd-p">到店核</b>':`<i>¥</i>${money(x.p)}`}</span>
+      <button class="qdel" data-del="${x.rid}" aria-label="删除：${x.v}" title="删除此项">×</button>
     </div>`).join('');
 
   $('#sheetBody').innerHTML = `
-    <div class="qcar">车型：<b>${m.name}${m.sub?' · '+m.sub:''}</b>　｜　共 ${list.length} 项</div>
+    <div class="qcar"><span>车型：<b>${m.name}${m.sub?' · '+m.sub:''}</b>　｜　共 ${list.length} 项</span>
+      <button class="qclear" id="btnClearAll">清空全部</button></div>
     ${rows}
     <div class="qtotal">
       <span class="tk">合计<span class="tnote">共 ${list.length} 项 · 不含施工</span></span>
@@ -3933,6 +3963,30 @@ function renderSheet(list, total){
 
   $('#btnCopy').onclick = () => copyQuote(list, total, m);
   $('#btnClose2').onclick = closeSheet;
+}
+
+/* 单项删除：卡片、价格、购物袋计数、顶部导航金点都由 refresh 统一收口，
+   所以这里只要清掉 state 里的那一项，绝不能只从配置单里抹掉一行 DOM。 */
+function removeItem(rid, rowEl){
+  const run = () => {
+    if (rid === 'sc'){ state.screen = null; renderScreen(); }
+    else if (rid.indexOf('coat:') === 0){ state.coat = null; renderCoat(); }
+    else if (rid.indexOf('film:') === 0){ state.film = null; renderFilm(); }
+    else if (rid.indexOf('acc:') === 0){ state.acc.delete(rid.slice(4)); renderAcc(); }
+    refresh();
+    toast('已移出配置单', 'warn');
+  };
+  /* 先让这一行淡出再重绘，不然整张单子会「唰」地闪一下 */
+  if (rowEl){ rowEl.classList.add('out'); setTimeout(run, 185); }
+  else run();
+}
+
+function clearCart(){
+  state.screen = null; state.coat = null; state.film = null;
+  state.acc.clear();
+  renderScreen(); renderCoat(); renderFilm(); renderAcc();
+  refresh();
+  toast('配置单已清空', 'warn');
 }
 
 function copyQuote(list, total, m){
@@ -4058,7 +4112,31 @@ function flashPick(el){
   setTimeout(() => el.classList.remove('just'), 440);
 }
 
+let clearArmT;
 document.addEventListener('click', e => {
+  /* 配置单 - 单项删除 */
+  const dq = e.target.closest('[data-del]');
+  if (dq){
+    removeItem(dq.dataset.del, dq.closest('.qline'));
+    return;
+  }
+  /* 配置单 - 一键清空：不可撤销，第一次点变红问一句，第二次才真清 */
+  const cq = e.target.closest('#btnClearAll');
+  if (cq){
+    if (!cq.classList.contains('armed')){
+      cq.classList.add('armed');
+      cq.textContent = '再点一次清空';
+      clearTimeout(clearArmT);
+      clearArmT = setTimeout(() => {
+        if (cq.isConnected){ cq.classList.remove('armed'); cq.textContent = '清空全部'; }
+      }, 2800);
+      return;
+    }
+    clearTimeout(clearArmT);
+    clearCart();
+    return;
+  }
+
   /* 展开 / 收起更高价位 */
   const fd = e.target.closest('[data-fold]');
   if (fd){
