@@ -1406,7 +1406,8 @@ function kbStartFrom(idea) {
 /* 数据：content/report/index.json（tools/build-report.py 从 xlsx 生成）
    页面顺序与表格 sheet 一致：整体大盘 → 引流vs内容 → 全部明细 → TOP10 → 总结 */
 
-const RRP = { month: '', top: '内容' };   // month 空 = 用最新一个月
+const RRP = { month: '', top: '内容', q: '', type: '', sort: 'date', dir: 1, view: [] };
+// month 空 = 用最新一个月；q/type 是明细筛选；sort/dir 是明细排序
 
 function rrpNum(n) { const v = Number(n); return isFinite(v) ? v : 0; }
 
@@ -1451,16 +1452,91 @@ function rrpHead(title, sub, right) {
     (right ? '<div class="rrp-h-r">' + right + '</div>' : '') + '</div>';
 }
 
-// 指标｜数值，长表自动分两栏，省得一直往下滚
-function rrpKV(rows) {
-  const half = Math.ceil(rows.length / 2);
-  const one = function (arr) {
-    return '<table class="rrp-t rrp-kv-t"><tbody>' + arr.map(function (r) {
-      return '<tr><th>' + esc(r.k) + '</th><td>' + rrpVal(r.v, r.t) + '</td></tr>';
-    }).join('') + '</tbody></table>';
-  };
-  return '<div class="rrp-kv">' + one(rows.slice(0, half)) +
-    (rows.length > half ? one(rows.slice(half)) : '') + '</div>';
+/* 指标名去掉单位后缀，当小标题用 */
+function rrpClean(k) {
+  return String(k || '')
+    .replace(/（条）\s*$/, '')
+    .replace(/^体裁\s*·\s*/, '')
+    .replace(/^审核\s*·\s*/, '')
+    .replace(/^播放量\s+/, '');
+}
+
+/* 大盘指标分五组：总量 / 均值比率 / 播放分布 / 体裁 / 审核 */
+function rrpGroups(m) {
+  const g = { total: [], avg: [], dist: [], fmt: [], audit: [] };
+  (m.overview || []).forEach(function (r) {
+    const k = String(r.k || '');
+    if (/^播放量[\s·]/.test(k)) g.dist.push(r);
+    else if (/^体裁/.test(k)) g.fmt.push(r);
+    else if (/^审核/.test(k)) g.audit.push(r);
+    else if (/^总|^发布|^其中|^内容视频|^引流视频/.test(k)) g.total.push(r);
+    else g.avg.push(r);
+  });
+  return g;
+}
+
+function rrpTiles(rows) {
+  return '<div class="rrp-tiles">' + rows.map(function (r) {
+    return '<div class="rrp-tile"><span>' + esc(rrpClean(r.k)) + '</span>' +
+      '<b>' + rrpVal(r.v, r.t) + '</b></div>';
+  }).join('') + '</div>';
+}
+
+/* 分布：一条细横条 + 数量 + 占比 */
+function rrpBars(rows, total) {
+  let sum = 0;
+  rows.forEach(function (r) { sum += rrpNum(r.v); });
+  if (total) sum = total;
+  if (!sum) sum = 1;
+  return '<div class="rrp-bars">' + rows.map(function (r) {
+    const v = rrpNum(r.v);
+    const w = v > 0 ? Math.max(2, (v / sum) * 100) : 0;
+    return '<div class="rrp-bar-row">' +
+      '<span class="rrp-bl">' + esc(rrpClean(r.k)) + '</span>' +
+      '<span class="rrp-bt"><i style="width:' + w.toFixed(2) + '%"></i></span>' +
+      '<b class="rrp-bn">' + rrpVal(r.v, r.t) + '</b>' +
+      '<em class="rrp-bp">' + ((v / sum) * 100).toFixed(1) + '%</em>' +
+    '</div>';
+  }).join('') + '</div>';
+}
+
+/* 明细表列定义：k=字段 · 名称 · class */
+const RRP_COLS = [
+  ['title', '作品名称', 'is-title'],
+  ['date', '发布时间', 'is-date'],
+  ['fmt', '体裁', ''],
+  ['audit', '审核', ''],
+  ['play', '播放量', 'is-n'],
+  ['fin', '完播率', 'is-n'],
+  ['f5', '5s完播率', 'is-n'],
+  ['ctr', '封面点击', 'is-n'],
+  ['b2', '2s跳出', 'is-n'],
+  ['avg', '平均时长', 'is-n'],
+  ['like', '点赞', 'is-n'],
+  ['share', '分享', 'is-n'],
+  ['cmt', '评论', 'is-n'],
+  ['fav', '收藏', 'is-n'],
+  ['visit', '主页访问', 'is-n'],
+  ['fans', '涨粉', 'is-n'],
+  ['type', '类型', '']
+];
+
+function rrpCellHtml(r, k) {
+  if (k === 'title') return '<td class="is-title" title="' + esc(r.title) + '"><span>' + esc(r.title) + '</span></td>';
+  if (k === 'date') return '<td class="is-date">' + esc(String(r.date || '').slice(5)) + (r.time ? ' ' + esc(r.time) : '') + '</td>';
+  if (k === 'fmt') return '<td class="is-dim">' + esc(r.fmt || '') + '</td>';
+  if (k === 'audit') return '<td class="is-dim">' + esc(r.audit || '') + '</td>';
+  if (k === 'type') {
+    const c = r.type === '内容视频' ? ' is-c' : (r.type === '引流视频' ? ' is-y' : '');
+    return '<td><span class="rrp-tag' + c + '">' + esc(r.type || '—') + '</span></td>';
+  }
+  if (k === 'avg') return '<td class="is-n">' + rrpDec(r.avg) + '</td>';
+  if (k === 'ctr') {
+    return '<td class="is-n">' + (r.ctr == null ? '<i class="rrp-nil">—</i>' : (rrpNum(r.ctr) * 100).toFixed(2) + '%') + '</td>';
+  }
+  if (k === 'fin' || k === 'f5' || k === 'b2') return '<td class="is-n">' + (rrpNum(r[k]) * 100).toFixed(2) + '%</td>';
+  if (k === 'play') return '<td class="is-n is-strong">' + rrpInt(r.play) + '</td>';
+  return '<td class="is-n">' + rrpInt(r[k]) + '</td>';
 }
 
 function renderReportPage() {
@@ -1483,92 +1559,164 @@ function renderReportPage() {
   }
 
   const m = rrpCur();
-  const rows = m.rows || [];
+  const rowsAll = m.rows || [];
   const pub = rrpPick(m, '其中公开（条）');
+  const g = rrpGroups(m);
 
-  // 顶部：哪个月 + 一句话大盘
+  // 顶部：哪个月 + 四块大盘数 + 月份切换
   const chips = ms.map(function (x) {
     return '<button class="rrp-chip' + (x.key === m.key ? ' on' : '') + '" data-rrp-month="' +
       esc(x.key) + '">' + esc(x.label) + '</button>';
   }).join('');
 
-  const head = '<div class="card rrp-card rrp-head">' +
-    '<div class="rrp-head-l">' +
-      '<div class="rrp-kicker"><b>REPORT</b> · 战报</div>' +
-      '<div class="rrp-title">' + esc(m.title) + '</div>' +
-      '<div class="rrp-sub">发布 ' + rrpInt(rrpPick(m, '发布视频数（条）')) +
-        ' 条 · 公开 ' + rrpInt(pub) +
-        ' · 总播放 ' + rrpWan(rrpPick(m, '总播放量')) +
-        ' · 涨粉 ' + rrpInt(rrpPick(m, '总粉丝增量')) +
+  // 跟上个月比：只比播放和涨粉，没上个月就不显示
+  const mi = ms.indexOf(m);
+  const prev = mi > 0 ? ms[mi - 1] : null;
+  const rrpDelta = function (key) {
+    if (!prev) return '';
+    const a = rrpPick(prev, key), b = rrpPick(m, key);
+    if (!rrpNum(a)) return '';
+    const d = ((rrpNum(b) - rrpNum(a)) / rrpNum(a)) * 100;
+    return '<em class="rrp-dt' + (d >= 0 ? ' is-up' : ' is-down') + '">' +
+      (d >= 0 ? '↑' : '↓') + Math.abs(d).toFixed(1) + '%</em>';
+  };
+
+  const head = '<div class="rrp-hero">' +
+    '<div class="rrp-hero-top">' +
+      '<div class="rrp-hero-l">' +
+        '<div class="rrp-kicker"><b>REPORT</b> · 战报</div>' +
+        '<div class="rrp-hero-t">' + esc(String(m.key).replace('-', ' 年 ')) + ' 月<em>数码科技账号</em></div>' +
+        '<div class="rrp-hero-s">发布 ' + rrpInt(rrpPick(m, '发布视频数（条）')) +
+          ' 条 · 公开 ' + rrpInt(pub) + ' · 取自「' + esc(m.label) + '视频数据统计.xlsx」</div>' +
       '</div>' +
+      '<div class="rrp-chips">' + chips + '</div>' +
     '</div>' +
-    '<div class="rrp-chips">' + chips + '</div>' +
+    '<div class="rrp-kpis">' +
+      '<div class="rrp-kpi"><span>发布视频</span><b>' + rrpInt(rrpPick(m, '发布视频数（条）')) + '</b>' +
+        '<i>公开 ' + rrpInt(pub) + ' 条</i></div>' +
+      '<div class="rrp-kpi"><span>总播放</span><b>' + rrpWan(rrpPick(m, '总播放量')) + '</b>' +
+        '<i>' + rrpDelta('总播放量') + '均播 ' + rrpWan(rrpPick(m, '平均单条播放量')) + '</i></div>' +
+      '<div class="rrp-kpi"><span>涨粉</span><b>' + rrpInt(rrpPick(m, '总粉丝增量')) + '</b>' +
+        '<i>' + rrpDelta('总粉丝增量') + '主页访问 ' + rrpWan(rrpPick(m, '总主页访问量')) + '</i></div>' +
+      '<div class="rrp-kpi"><span>互动率</span><b>' + rrpVal(rrpPick(m, '互动率（赞+评+藏+转）/播放'), 'rate') + '</b>' +
+        '<i>平均完播 ' + rrpVal(rrpPick(m, '平均完播率'), 'rate') + '</i></div>' +
+    '</div>' +
   '</div>';
 
-  // ① 整体大盘
+  // ① 整体大盘：总量 / 均值 / 分布，三类分开摆
   const kvCard = '<div class="card rrp-card">' +
-    rrpHead('<b>①</b> 整体大盘', '发布 ' + rrpInt(rrpPick(m, '发布视频数（条）')) + ' 条 · 指标只算公开视频') +
-    rrpKV(m.overview || []) +
+    rrpHead('<b>①</b> 整体大盘', '指标只算公开视频 · 共 ' + rrpInt(pub) + ' 条') +
+    (g.total.length ? '<div class="rrp-grp"><div class="rrp-grp-k">总量</div>' + rrpTiles(g.total) + '</div>' : '') +
+    (g.avg.length ? '<div class="rrp-grp"><div class="rrp-grp-k">均值与比率</div>' + rrpTiles(g.avg) + '</div>' : '') +
+    (g.dist.length ? '<div class="rrp-grp"><div class="rrp-grp-k">播放量分布</div>' + rrpBars(g.dist, pub) + '</div>' : '') +
+    ((g.fmt.length || g.audit.length)
+      ? '<div class="rrp-grp rrp-grp-2col">' +
+          (g.fmt.length ? '<div><div class="rrp-grp-k">体裁</div>' +
+            rrpBars(g.fmt, rrpPick(m, '发布视频数（条）')) + '</div>' : '') +
+          (g.audit.length ? '<div><div class="rrp-grp-k">审核</div>' +
+            rrpBars(g.audit, rrpPick(m, '发布视频数（条）')) + '</div>' : '') +
+        '</div>'
+      : '') +
   '</div>';
 
-  // ② 引流 vs 内容
+  // ② 引流 vs 内容：每行赢的那格标橙
   const cmp = m.compare || { cols: [], rows: [] };
-  let share = null;
-  cmp.rows.forEach(function (r) { if (r.k === '播放量占比') share = r.v; });
+  const cols2 = cmp.cols || [];
+  let shareA = null;
+  cmp.rows.forEach(function (r) { if (r.k === '播放量占比') shareA = rrpNum(r.v[0]) * 100; });
+
   let bar = '';
-  if (share) {
-    const a = Math.round(rrpNum(share[0]) * 1000) / 10;
-    const b = Math.round((100 - a) * 10) / 10;
-    bar = '<div class="rrp-bar"><i style="width:' + a + '%"></i></div>' +
-      '<div class="rrp-bar-legend">' +
-        '<span><i class="a"></i>引流占播放 ' + a + '%</span>' +
-        '<span><i class="b"></i>内容占播放 ' + b + '%</span>' +
-      '</div>';
+  if (shareA != null) {
+    const b = 100 - shareA;
+    bar = '<div class="rrp-share">' +
+      '<div class="rrp-share-bar"><i style="width:' + shareA.toFixed(1) + '%"></i>' +
+        '<u style="width:' + b.toFixed(1) + '%"></u></div>' +
+      '<div class="rrp-share-legend">' +
+        '<span><i class="a"></i>' + esc(cols2[0] || '引流') + ' · 占播放 ' + shareA.toFixed(1) + '%</span>' +
+        '<span><i class="b"></i>' + esc(cols2[1] || '内容') + ' · 占播放 ' + b.toFixed(1) + '%</span>' +
+      '</div>' +
+    '</div>';
   }
+
   const cmpCard = '<div class="card rrp-card">' +
-    rrpHead('<b>②</b> 引流 vs 内容', '同样在发，哪边更值') +
-    '<table class="rrp-t rrp-3col"><thead><tr><th>指标</th>' +
-      (cmp.cols || []).map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') +
+    rrpHead('<b>②</b> 引流 vs 内容', '同样的工作量，哪边更值 · 赢的那格标橙') +
+    '<div class="rrp-cmp-wrap"><table class="rrp-t rrp-cmp"><thead><tr><th>指标</th>' +
+      cols2.map(function (c) { return '<th class="is-n">' + esc(c) + '</th>'; }).join('') +
+      '<th class="is-n">差多少</th>' +
     '</tr></thead><tbody>' +
       (cmp.rows || []).map(function (r) {
+        const a = rrpNum(r.v[0]), b = rrpNum(r.v[1]);
+        const win = a === b ? -1 : (a > b ? 0 : 1);
+        let gap = '<span class="rrp-gap is-mute">—</span>';
+        if (a || b) {
+          const d = a ? ((b - a) / Math.abs(a)) * 100 : 100;
+          if (!a) gap = '<span class="rrp-gap is-c">内容独有</span>';
+          else {
+            const side = d >= 0 ? '内容' : '引流';
+            gap = '<span class="rrp-gap ' + (d >= 0 ? 'is-c' : 'is-y') + '">' +
+              side + ' ' + (d >= 0 ? '+' : '−') + Math.abs(d).toFixed(0) + '%</span>';
+          }
+        }
         return '<tr><td>' + esc(r.k) + '</td>' +
-          r.v.map(function (x) { return '<td class="is-n">' + rrpVal(x, r.t) + '</td>'; }).join('') + '</tr>';
+          '<td class="is-n' + (win === 0 ? ' is-win' : '') + '">' + rrpVal(r.v[0], r.t) + '</td>' +
+          '<td class="is-n' + (win === 1 ? ' is-win' : '') + '">' + rrpVal(r.v[1], r.t) + '</td>' +
+          '<td class="is-n">' + gap + '</td></tr>';
       }).join('') +
-    '</tbody></table>' + bar +
+    '</tbody></table></div>' + bar +
   '</div>';
 
-  // ③ 全部明细（跟 Excel 一模一样的列）
+  // ③ 全部明细：可搜、可按列排、点一行看全部指标
+  const sk = RRP.sort || 'date';
+  const dir = RRP.dir < 0 ? -1 : 1;
+  const view = rowsAll.slice();
+  view.sort(function (a, b) {
+    if (sk === 'date') {
+      return (String(a.date || '') + ' ' + String(a.time || ''))
+        .localeCompare(String(b.date || '') + ' ' + String(b.time || '')) * dir;
+    }
+    if (sk === 'title' || sk === 'fmt' || sk === 'audit' || sk === 'type') {
+      return String(a[sk] || '').localeCompare(String(b[sk] || ''), 'zh') * dir;
+    }
+    let va = rrpNum(a[sk]), vb = rrpNum(b[sk]);
+    if (a[sk] == null) va = -1;
+    if (b[sk] == null) vb = -1;
+    return (va - vb) * dir;
+  });
+  RRP.view = view;
+
+  const th = RRP_COLS.map(function (c) {
+    const on = RRP.sort === c[0];
+    return '<th class="' + c[2] + (on ? ' is-sorted' : '') + '">' +
+      '<button type="button" class="rrp-thb" data-rrp-sort="' + c[0] + '">' + esc(c[1]) +
+        '<span class="rrp-ar' + (on ? (dir > 0 ? ' is-up' : ' is-down') : '') + '"></span>' +
+      '</button></th>';
+  }).join('');
+
+  const typeChips = ['', '内容视频', '引流视频'].map(function (t) {
+    return '<button type="button" class="rrp-fchip' + (RRP.type === t ? ' on' : '') +
+      '" data-rrp-type="' + esc(t) + '">' + (t ? t.replace('视频', '') : '全部') + '</button>';
+  }).join('');
+
+  const detBody = view.map(function (r, i) {
+    return '<tr data-rrp-row="' + i + '" data-type="' + esc(r.type || '') + '"' +
+      ' data-q="' + esc((String(r.title || '') + ' ' + String(r.type || '') + ' ' + String(r.fmt || '')).toLowerCase()) + '"' +
+      ' tabindex="0">' +
+      RRP_COLS.map(function (c) { return rrpCellHtml(r, c[0]); }).join('') +
+    '</tr>';
+  }).join('');
+
   const detCard = '<div class="card rrp-card">' +
-    rrpHead('<b>③</b> 全部明细', '共 ' + rows.length + ' 条 · 按发布时间排 · 列多可以左右滑') +
-    '<div class="rrp-scroll"><table class="rrp-t rrp-detail"><thead><tr>' +
-      '<th>作品名称</th><th>发布时间</th><th>体裁</th><th>审核</th>' +
-      '<th class="is-n">播放量</th><th class="is-n">完播率</th><th class="is-n">5s完播率</th>' +
-      '<th class="is-n">封面点击率</th><th class="is-n">2s跳出率</th><th class="is-n">平均播放时长</th>' +
-      '<th class="is-n">点赞量</th><th class="is-n">分享量</th><th class="is-n">评论量</th>' +
-      '<th class="is-n">收藏量</th><th class="is-n">主页访问</th><th class="is-n">粉丝增量</th><th>类型</th>' +
-    '</tr></thead><tbody>' +
-    rows.map(function (r) {
-      return '<tr>' +
-        '<td class="is-title" title="' + esc(r.title) + '"><span>' + esc(r.title) + '</span></td>' +
-        '<td class="is-date">' + esc(String(r.date).slice(5)) + (r.time ? ' ' + esc(r.time) : '') + '</td>' +
-        '<td>' + esc(r.fmt || '') + '</td>' +
-        '<td>' + esc(r.audit || '') + '</td>' +
-        '<td class="is-n is-strong">' + rrpInt(r.play) + '</td>' +
-        '<td class="is-n">' + (rrpNum(r.fin) * 100).toFixed(2) + '%</td>' +
-        '<td class="is-n">' + (rrpNum(r.f5) * 100).toFixed(2) + '%</td>' +
-        '<td class="is-n">' + (r.ctr === null ? '—' : (rrpNum(r.ctr) * 100).toFixed(2) + '%') + '</td>' +
-        '<td class="is-n">' + (rrpNum(r.b2) * 100).toFixed(2) + '%</td>' +
-        '<td class="is-n">' + rrpDec(r.avg) + '</td>' +
-        '<td class="is-n">' + rrpInt(r.like) + '</td>' +
-        '<td class="is-n">' + rrpInt(r.share) + '</td>' +
-        '<td class="is-n">' + rrpInt(r.cmt) + '</td>' +
-        '<td class="is-n">' + rrpInt(r.fav) + '</td>' +
-        '<td class="is-n">' + rrpInt(r.visit) + '</td>' +
-        '<td class="is-n">' + rrpInt(r.fans) + '</td>' +
-        '<td>' + esc(r.type || '') + '</td>' +
-      '</tr>';
-    }).join('') +
-    '</tbody></table></div>' +
+    rrpHead('<b>③</b> 全部明细', '点表头换排序 · 点一行看这条的全部指标 · 列多可以左右滑') +
+    '<div class="rrp-tool">' +
+      '<label class="rrp-search">' + ic('search') +
+        '<input type="search" data-rrp-q placeholder="搜作品名、类型、体裁" value="' + esc(RRP.q) + '" spellcheck="false">' +
+      '</label>' +
+      '<div class="rrp-fchips">' + typeChips + '</div>' +
+      '<span class="rrp-count" data-rrp-count>' + rowsAll.length + ' 条</span>' +
+    '</div>' +
+    '<div class="rrp-scroll"><table class="rrp-t rrp-detail"><thead><tr>' + th + '</tr></thead>' +
+      '<tbody>' + detBody + '</tbody></table></div>' +
+    '<div class="rrp-none">没有符合条件的作品，换个词试试</div>' +
   '</div>';
 
   // ④ TOP10
@@ -1580,21 +1728,24 @@ function renderReportPage() {
       esc(k) + '">' + esc(k) + ' TOP10</button>';
   }).join('');
   const tl = tops[topCur] || [];
+  const maxPlay = tl.reduce(function (mx, r) { return Math.max(mx, rrpNum(r.play)); }, 1);
 
   const topCard = '<div class="card rrp-card">' +
     rrpHead('<b>④</b> ' + esc(topCur) + '视频 TOP10', '按播放量排 · 表里的原榜', topChips) +
     '<div class="rrp-scroll"><table class="rrp-t rrp-top"><thead><tr>' +
       '<th class="is-rk">#</th><th>作品名称</th><th>日期</th><th>体裁</th>' +
-      '<th class="is-n">播放量</th><th class="is-n">点赞量</th><th class="is-n">评论量</th>' +
-      '<th class="is-n">分享量</th><th class="is-n">收藏量</th><th class="is-n">粉丝增量</th><th class="is-n">主页访问</th>' +
+      '<th class="is-n">播放量</th><th class="is-n">点赞</th><th class="is-n">评论</th>' +
+      '<th class="is-n">分享</th><th class="is-n">收藏</th><th class="is-n">涨粉</th><th class="is-n">主页访问</th>' +
     '</tr></thead><tbody>' +
     tl.map(function (r) {
+      const w = (rrpNum(r.play) / maxPlay) * 100;
       return '<tr' + (r.rank <= 3 ? ' class="is-top3"' : '') + '>' +
-        '<td class="is-rk">' + r.rank + '</td>' +
+        '<td class="is-rk"><span>' + r.rank + '</span></td>' +
         '<td class="is-title" title="' + esc(r.title) + '"><span>' + esc(r.title) + '</span></td>' +
-        '<td class="is-date">' + esc(r.date) + '</td>' +
-        '<td>' + esc(r.fmt || '') + '</td>' +
-        '<td class="is-n is-strong">' + rrpInt(r.play) + '</td>' +
+        '<td class="is-date">' + esc(String(r.date || '').slice(5)) + '</td>' +
+        '<td class="is-dim">' + esc(r.fmt || '') + '</td>' +
+        '<td class="is-n is-strong"><span class="rrp-play">' + rrpInt(r.play) + '</span>' +
+          '<span class="rrp-mini"><i style="width:' + w.toFixed(1) + '%"></i></span></td>' +
         '<td class="is-n">' + rrpInt(r.like) + '</td>' +
         '<td class="is-n">' + rrpInt(r.cmt) + '</td>' +
         '<td class="is-n">' + rrpInt(r.share) + '</td>' +
@@ -1897,6 +2048,8 @@ function mountReport() {
       const k = el.getAttribute('data-rrp-month');
       if (k === RRP.month) return;
       RRP.month = k;
+      RRP.q = '';
+      RRP.type = '';
       renderView(true);
     });
   });
@@ -1907,6 +2060,89 @@ function mountReport() {
       RRP.top = k;
       renderView(true);
     });
+  });
+
+  // 明细：搜、筛、排、看详情
+  const q = sec.querySelector('[data-rrp-q]');
+  if (q) {
+    q.addEventListener('input', function () { RRP.q = q.value; rrpFilter(sec); });
+    q.addEventListener('search', function () { RRP.q = q.value; rrpFilter(sec); });
+  }
+  sec.querySelectorAll('[data-rrp-type]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      const t = el.getAttribute('data-rrp-type') || '';
+      if (t === RRP.type) return;
+      RRP.type = t;
+      sec.querySelectorAll('[data-rrp-type]').forEach(function (b) {
+        b.classList.toggle('on', (b.getAttribute('data-rrp-type') || '') === t);
+      });
+      rrpFilter(sec);
+    });
+  });
+  sec.querySelectorAll('[data-rrp-sort]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      const k = el.getAttribute('data-rrp-sort');
+      if (k === RRP.sort) RRP.dir = (RRP.dir < 0 ? 1 : -1);
+      else { RRP.sort = k; RRP.dir = (k === 'date' || k === 'title' || k === 'fmt' || k === 'audit' || k === 'type') ? 1 : -1; }
+      renderView(true);
+    });
+  });
+  sec.querySelectorAll('[data-rrp-row]').forEach(function (tr) {
+    tr.addEventListener('click', function () { rrpOpenRow(Number(tr.getAttribute('data-rrp-row'))); });
+    tr.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        rrpOpenRow(Number(tr.getAttribute('data-rrp-row')));
+      }
+    });
+  });
+
+  rrpFilter(sec);
+}
+
+/* 明细筛选只动 DOM，不重渲染 —— 输入时不丢焦点 */
+function rrpFilter(sec) {
+  const q = String(RRP.q || '').trim().toLowerCase();
+  const t = RRP.type || '';
+  let n = 0;
+  sec.querySelectorAll('.rrp-detail tbody tr[data-rrp-row]').forEach(function (tr) {
+    const okQ = !q || String(tr.getAttribute('data-q') || '').indexOf(q) >= 0;
+    const okT = !t || tr.getAttribute('data-type') === t;
+    const on = okQ && okT;
+    tr.style.display = on ? '' : 'none';
+    if (on) n++;
+  });
+  const cnt = sec.querySelector('[data-rrp-count]');
+  if (cnt) cnt.textContent = (n === RRP.view.length) ? (n + ' 条') : (n + ' / ' + RRP.view.length + ' 条');
+  const none = sec.querySelector('.rrp-none');
+  if (none) none.classList.toggle('is-on', !n);
+}
+
+/* 点一行：把这支视频的全部指标摊开 */
+function rrpOpenRow(i) {
+  const r = (RRP.view || [])[i];
+  if (!r) return;
+  const pct = function (v) { return (rrpNum(v) * 100).toFixed(2) + '%'; };
+  const items = [
+    ['播放量', rrpInt(r.play)],
+    ['完播率', pct(r.fin)],
+    ['5s 完播率', pct(r.f5)],
+    ['封面点击率', r.ctr == null ? '—' : pct(r.ctr)],
+    ['2s 跳出率', pct(r.b2)],
+    ['平均播放时长', rrpDec(r.avg) + ' 秒'],
+    ['点赞', rrpInt(r.like)],
+    ['评论', rrpInt(r.cmt)],
+    ['分享', rrpInt(r.share)],
+    ['收藏', rrpInt(r.fav)],
+    ['主页访问', rrpInt(r.visit)],
+    ['涨粉', rrpInt(r.fans)]
+  ];
+  openModal({
+    title: r.title || '未命名作品',
+    meta: [r.date + (r.time ? ' ' + r.time : ''), r.fmt, r.audit, r.type],
+    body: '<div class="rrp-metrics">' + items.map(function (x) {
+      return '<div class="rrp-metric"><span>' + esc(x[0]) + '</span><b>' + x[1] + '</b></div>';
+    }).join('') + '</div>'
   });
 }
 
