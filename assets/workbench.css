@@ -5661,11 +5661,16 @@ body{
     radial-gradient(620px 200px at 96% -60%, rgba(240,148,16,.14), rgba(240,148,16,0) 70%),
     #fff;
 }
-.kb-shell{ display:grid; grid-template-columns:290px minmax(0,1fr); gap:14px; align-items:start; }
+.kb-shell{ display:grid; grid-template-columns:290px minmax(0,1fr); gap:14px; align-items:stretch; }
+
+/* 日历塞在左栏顶上，样式全复用雷达那套 rdk-*，这里只管分隔 */
+.kb-cal{ padding-bottom:11px; margin-bottom:11px; border-bottom:1px dashed rgba(188,67,13,.16); }
+.kb-cal .rdk{ flex:0 0 auto; }
+.kb-cal .rdk-foot{ margin-top:9px; padding-top:9px; }
 
 .kb-rail{
   display:flex; flex-direction:column;
-  padding:12px;
+  padding:12px; overflow:hidden;
   border:1px solid rgba(188,67,13,.11); border-radius:18px; background:#fff;
 }
 .kb-rail-head{ display:flex; align-items:center; gap:8px; }
@@ -5689,7 +5694,8 @@ body{
 }
 .kb-new:hover{ background:#fff2e6; border-color:#e8c3a9; color:#a03a0c; }
 
-.kb-list{ margin-top:12px; display:flex; flex-direction:column; gap:7px; max-height:560px; overflow-y:auto; }
+/* 列表吃掉左栏剩下的高度，自己在框里滚，别顶出卡片 */
+.kb-list{ flex:1 1 auto; margin-top:12px; display:flex; flex-direction:column; gap:7px; min-height:150px; overflow-y:auto; }
 .kb-doc{
   position:relative; padding:10px 12px;
   border:1px solid rgba(188,67,13,.10); border-radius:12px;
@@ -5706,7 +5712,7 @@ body{
 .kb-doc-m .is-dim{ color:#b9a294; }
 
 .kb-ed{
-  display:flex; flex-direction:column; min-height:460px;
+  display:flex; flex-direction:column; min-height:520px; height:100%;
   padding:18px 20px 14px;
   border:1px solid rgba(188,67,13,.11); border-radius:18px; background:#fff;
 }
@@ -5776,7 +5782,7 @@ body{
   .rrp-grp-2col{ grid-template-columns:1fr; }
   .rrp-chips{ margin-left:0; width:100%; }
   .kb-shell{ grid-template-columns:1fr; }
-  .kb-list{ max-height:340px; }
+  .kb-list{ flex:0 0 auto; max-height:340px; min-height:0; }
   .kb-ed{ min-height:420px; }
 }
 @media (max-width:640px){

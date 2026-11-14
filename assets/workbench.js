@@ -47,7 +47,6 @@ const PAGES = {
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 点日期看当日清单', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
   koubo:   { title: '口播工坊',   desc: '自己写 · 自己改 · 定稿得你自己点' },
-  wenan:   { title: '成品文案',   desc: '完整成片 · 分段 + 画面 + 口播' },
   pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
   report:  { title: '战报',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
@@ -68,9 +67,8 @@ const st = {
   dayCache: {},
   wechat: null,
   drafts: null,
-  wenan: null,
-  load: { feishu: 'idle', library: 'idle', report: 'idle', radar: 'idle', drafts: 'idle', wenan: 'idle' },
-  err: { feishu: '', library: '', report: '', radar: '', drafts: '', wenan: '' },
+  load: { feishu: 'idle', library: 'idle', report: 'idle', radar: 'idle', drafts: 'idle' },
+  err: { feishu: '', library: '', report: '', radar: '', drafts: '' },
   cal: { cursor: null, selected: null, taskTab: 'all', taskCat: 'all', page: 1 },
   lib: { q: '', page: 1 },
   pixel: {
@@ -629,115 +627,6 @@ function bookVar(title) {
   return h % 4;
 }
 
-/* ---------------- 成品文案库（读 content/library/index.json） ----------------
-   存的不是草稿，是「施工图」：分几段、每段几秒、画面拍什么、嘴里说什么、配套怎么设。
-   新稿照这个骨架抄，比抄句子有用。 */
-const WN = { open: '' };
-
-function wnLineHtml(label, text, cls) {
-  return '<div class="wn-line ' + (cls || '') + '"><b>' + esc(label) + '</b><span>' + esc(text) + '</span></div>';
-}
-
-function wnStepHtml(s) {
-  return '<li class="wn-step">' +
-    '<div class="wn-step-h">' +
-      '<span class="wn-time">' + esc(s.t || '') + '</span>' +
-      '<span class="wn-role">' + esc(s.role || '') + '</span>' +
-    '</div>' +
-    (s.visual ? wnLineHtml('画面', s.visual, 'wn-visual') : '') +
-    (s.vo ? wnLineHtml('口播', s.vo, 'wn-vo') : '') +
-  '</li>';
-}
-
-function wnItemHtml(it) {
-  const id = String(it.id || '');
-  const on = WN.open === id;
-  const segs = it.segments || [];
-  const extra = it.extra || [];
-
-  let meta = '';
-  if (it.kind) meta += '<span class="wn-tag">' + esc(it.kind) + '</span>';
-  if (it.duration) meta += '<span>' + esc(it.duration) + '</span>';
-  if (segs.length) meta += '<span>' + segs.length + ' 段</span>';
-  if (it.date) meta += '<span>' + esc(it.date) + '</span>';
-  if (it.source) meta += '<span>' + esc(it.source) + '</span>';
-
-  return '<article class="wn-item' + (on ? ' is-open' : '') + '">' +
-    '<button class="wn-head" type="button" data-wn-toggle="' + esc(id) + '" aria-expanded="' + (on ? 'true' : 'false') + '">' +
-      '<span class="wn-h-main">' +
-        '<span class="wn-title">' + esc(it.title || '未命名') + '</span>' +
-        '<span class="wn-meta">' + meta + '</span>' +
-      '</span>' +
-      '<span class="wn-cue" aria-hidden="true"></span>' +
-    '</button>' +
-    '<div class="wn-body">' +
-      (it.note ? '<div class="wn-note"><b>可抄的</b><span>' + esc(it.note) + '</span></div>' : '') +
-      (segs.length ? '<ol class="wn-steps">' + segs.map(wnStepHtml).join('') + '</ol>' : '') +
-      (extra.length ? '<div class="wn-extra">' + extra.map(function (e) {
-        return '<div class="wn-kv"><b>' + esc(e.k || '') + '</b><span>' + esc(e.v || '') + '</span></div>';
-      }).join('') + '</div>' : '') +
-    '</div>' +
-  '</article>';
-}
-
-function renderWenanPage() {
-  if (st.load.wenan === 'error') {
-    return stateHtml('error', '成品文案读不到', st.err.wenan, '重试', 'data-wn-retry="1"');
-  }
-  const items = (st.wenan && st.wenan.items) || [];
-  const lead = '<div class="wn-lead">' +
-    '<b>' + (st.load.wenan === 'ready' ? items.length + ' 条' : '—') + '</b>' +
-    '<span>每条都是完整成片：分几段、每段几秒、画面拍什么、嘴里说什么、配套怎么设。写新稿照这个骨架来，别抄句子。</span>' +
-  '</div>';
-  if (st.load.wenan !== 'ready') return lead + stateHtml('loading', '正在取成品文案…');
-  if (!items.length) return lead + '<div class="wn-empty">还没有存进来的成品文案</div>';
-  return lead + '<div class="wn-list">' + items.map(wnItemHtml).join('') + '</div>';
-}
-
-function mountWenan() {
-  const nc = document.getElementById('navWenanCount');
-  if (nc) {
-    const n = (st.wenan && st.wenan.items) ? st.wenan.items.length : 0;
-    nc.textContent = st.load.wenan === 'ready' ? String(n) : '—';
-  }
-  const sec = document.getElementById('sec-wenan');
-  if (!sec) return;
-
-  sec.querySelectorAll('[data-wn-toggle]').forEach(function (el) {
-    el.addEventListener('click', function () {
-      const id = el.getAttribute('data-wn-toggle');
-      const item = el.closest('.wn-item');
-      const wasOpen = (WN.open === id);
-      WN.open = wasOpen ? '' : id;
-      if (item) item.classList.toggle('is-open', !wasOpen);
-      el.setAttribute('aria-expanded', wasOpen ? 'false' : 'true');
-    });
-  });
-
-  const rt = sec.querySelector('[data-wn-retry]');
-  if (rt) rt.addEventListener('click', function () {
-    st.load.wenan = 'idle';
-    st.err.wenan = '';
-    loadWenan();
-  });
-}
-
-async function loadWenan() {
-  if (st.load.wenan === 'loading' || st.load.wenan === 'ready') return;
-  st.load.wenan = 'loading';
-  st.err.wenan = '';
-  renderView(true);
-  try {
-    st.wenan = await fetchJSON('content/library/index.json');
-    st.load.wenan = 'ready';
-  } catch (e) {
-    st.load.wenan = 'error';
-    st.err.wenan = e.message || '加载失败';
-  }
-  updateChrome();
-  renderView(true);
-}
-
 /* ---------------- 口播工坊（自己写 · 自己定稿） ---------------- */
 /* 数据两层：
    ① 仓库 content/drafts/index.json + 同名 md —— 我放进来的，只当素材
@@ -748,9 +637,109 @@ async function loadWenan() {
 const KB_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 const KB_STORE = 'wb.kb.docs.v2';
 
-const KB = { open: '', lane: 'draft', md: {}, local: null, saved: '' };
+/* day: 日历上选中的那天（空 = 今天） · ym: 日历翻到哪个月（空 = 跟着 day） · all: 列表看这天还是全部 */
+const KB = { open: '', day: '', ym: '', all: false, md: {}, local: null, saved: '' };
 
 function kbWords(txt) { return String(txt || '').replace(/\s/g, '').length; }
+
+/* ---- 按天归档：稿子的 date 就是它落在日历哪一格 ---- */
+function kbToday() { return fmtDate(new Date()); }
+function kbDay() { return KB.day || kbToday(); }
+function kbIsToday() { return kbDay() === kbToday(); }
+
+/* 一天几条、几篇定稿 */
+function kbDayMeta() {
+  const m = {};
+  kbDocs().forEach(function (d) {
+    const k = String(d.date || '').slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
+    const o = m[k] || (m[k] = { n: 0, fin: 0 });
+    o.n++;
+    if (d.final) o.fin++;
+  });
+  return m;
+}
+
+function kbShiftYm(step) {
+  const ym = KB.ym || kbDay().slice(0, 7);
+  let y = Number(ym.slice(0, 4));
+  let m = Number(ym.slice(5, 7)) + step;
+  if (m < 1) { m = 12; y -= 1; }
+  if (m > 12) { m = 1; y += 1; }
+  const next = y + '-' + pad2(m);
+  const keys = Object.keys(kbDayMeta()).sort();
+  const minYm = keys.length ? keys[0].slice(0, 7) : kbToday().slice(0, 7);
+  if (next < minYm || next > kbToday().slice(0, 7)) return null;
+  return next;
+}
+
+/* 日历：格子里的小数字 = 这天写了几条。有稿子的天和今天能点，别的天点不动 */
+function kbCal() {
+  const today = kbToday();
+  const day = kbDay();
+  const meta = kbDayMeta();
+  const ym = KB.ym || day.slice(0, 7);
+  const y = Number(ym.slice(0, 4));
+  const mo = Number(ym.slice(5, 7)) - 1;
+  const total = new Date(y, mo + 1, 0).getDate();
+  const lead = (new Date(y, mo, 1).getDay() + 6) % 7;
+
+  const cells = [];
+  let i;
+  for (i = 0; i < lead; i++) cells.push('<span class="rdk-c is-void"></span>');
+
+  let nDays = 0;
+  let nDocs = 0;
+  for (let d = 1; d <= total; d++) {
+    const key = y + '-' + pad2(mo + 1) + '-' + pad2(d);
+    const m = meta[key];
+    const isToday = key === today;
+    const future = key > today;
+    const has = !!(m && m.n);
+    let cls = 'rdk-c';
+    let tip;
+    if (has) {
+      cls += ' is-arch';
+      tip = '这天写了 ' + m.n + ' 条' + (m.fin ? ' · 定稿 ' + m.fin : '');
+      nDays++;
+      nDocs += m.n;
+    } else if (isToday) {
+      tip = '今天还没写';
+    } else if (future) {
+      cls += ' is-off';
+      tip = '还没到';
+    } else {
+      cls += ' is-off';
+      tip = '这天没写';
+    }
+    if (isToday) cls += ' is-today';
+    if (key === day) cls += ' is-on';
+    const inner = '<b>' + d + '</b>' + (has ? '<i>' + m.n + '</i>' : '');
+    cells.push(has || isToday
+      ? '<button type="button" class="' + cls + '" data-kb-day="' + key + '" title="' + esc(tip) + '">' + inner + '</button>'
+      : '<span class="' + cls + '" title="' + esc(tip) + '">' + inner + '</span>');
+  }
+
+  const prev = kbShiftYm(-1);
+  const next = kbShiftYm(1);
+  const week = ['一', '二', '三', '四', '五', '六', '日'];
+
+  return '<div class="rdk">' +
+    '<div class="rdk-head">' +
+      '<button type="button" class="rdk-nav" data-kb-ym="-1"' + (prev ? '' : ' disabled') + ' aria-label="上个月">‹</button>' +
+      '<span class="rdk-ym">' + y + ' 年 ' + (mo + 1) + ' 月</span>' +
+      '<button type="button" class="rdk-nav" data-kb-ym="1"' + (next ? '' : ' disabled') + ' aria-label="下个月">›</button>' +
+      '<button type="button" class="rdk-today" data-kb-today="1">今天</button>' +
+    '</div>' +
+    '<div class="rdk-week">' + week.map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div>' +
+    '<div class="rdk-grid">' + cells.join('') + '</div>' +
+    '<div class="rdk-foot">' +
+      '本月 <b>' + nDays + '</b> 天 · <b>' + nDocs + '</b> 篇' +
+      '<span class="rdk-dot is-on"></span><em>正在看</em>' +
+      '<span class="rdk-dot is-arch"></span><em>有稿</em>' +
+    '</div>' +
+  '</div>';
+}
 
 function kbSec(n) { return Math.round((Number(n) || 0) / 5.5); }
 
@@ -916,55 +905,60 @@ function kbEditorHtml(d) {
 }
 
 function renderKouboPage() {
-  const d = new Date();
+  const today = kbToday();
+  const day = kbDay();
   const docs = kbDocs();
-  const nDraft = docs.filter(function (x) { return !x.final; }).length;
   const nFinal = docs.filter(function (x) { return x.final; }).length;
-
-  const lane = KB.lane;
-  const mine = docs.filter(function (x) { return lane === 'final' ? x.final : !x.final; });
+  const dayDocs = docs.filter(function (x) { return String(x.date || '').slice(0, 10) === day; });
+  const pool = KB.all ? docs : dayDocs;
   const cur = KB.open ? kbGet(KB.open) : null;
-  const inLane = cur && (lane === 'final' ? cur.final : !cur.final);
 
-  const list = mine.length
-    ? mine.map(kbItemHtml).join('')
+  const list = pool.length
+    ? pool.map(kbItemHtml).join('')
     : '<div class="kb-empty is-mini">' +
-        '<span class="kb-empty-ico">' + ic(lane === 'final' ? 'check' : 'pen') + '</span>' +
-        '<b>' + (lane === 'final' ? '还没有定稿' : '草稿是空的') + '</b>' +
-        '<span>' + (lane === 'final' ? '你自己点了「标为定稿」，才会进这里' : '点「+ 新建」，或者去雷达挑一条') + '</span>' +
+        '<span class="kb-empty-ico">' + ic('pen') + '</span>' +
+        '<b>' + (KB.all ? '库里一篇都没有' : '这天还没写') + '</b>' +
+        '<span>' + (KB.all ? '点「+ 新建」写第一条' : '点「+ 新建」写一条，稿子就落在这天') + '</span>' +
       '</div>';
 
   let note = '';
   if (st.load.drafts === 'error') {
     note = '<div class="kb-note is-err"><i></i>仓库里的稿子索引读不到（' + esc(st.err.drafts || '') + '），只显示这台设备上存的</div>';
   } else {
-    note = '<div class="kb-note"><i></i>改动只存在这台设备的浏览器里 · 换设备要挪稿子，点「复制全文」</div>';
+    note = '<div class="kb-note"><i></i>稿子按天存在这台设备的浏览器里 · 换设备要挪稿子，点「复制全文」</div>';
   }
+
+  const dd = parseDate(day) || new Date();
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  const rel = day === today ? '今天' : (day === fmtDate(y) ? '昨天' : '');
 
   return '' +
     '<div class="kb-strip">' +
       '<div class="kb-strip-main">' +
-        '<div class="kb-kicker"><b>TODAY</b> · 口播</div>' +
-        '<div class="kb-date">' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日<em>' + KB_WEEK[d.getDay()] + '</em></div>' +
+        '<div class="kb-kicker"><b>口播</b> · 一天一格</div>' +
+        '<div class="kb-date">' + (dd.getMonth() + 1) + ' 月 ' + dd.getDate() + ' 日' +
+          '<em>' + KB_WEEK[dd.getDay()] + (rel ? ' · ' + rel : '') + '</em></div>' +
       '</div>' +
       '<div class="kb-slots">' +
         '<div class="kb-slot is-live"><span>发布</span><b>19:00</b></div>' +
-        '<div class="kb-slot"><span>草稿</span><b>' + nDraft + '</b></div>' +
+        '<div class="kb-slot"><span>这天</span><b>' + dayDocs.length + '</b></div>' +
         '<div class="kb-slot"><span>定稿</span><b>' + nFinal + '</b></div>' +
       '</div>' +
     '</div>' +
     '<div class="kb-shell">' +
       '<aside class="kb-rail">' +
+        '<div class="kb-cal">' + kbCal() + '</div>' +
         '<div class="kb-rail-head">' +
           '<div class="kb-tabs">' +
-            '<button type="button" class="kb-tab' + (lane === 'draft' ? ' is-on' : '') + '" data-kb-lane="draft">草稿 <b>' + nDraft + '</b></button>' +
-            '<button type="button" class="kb-tab' + (lane === 'final' ? ' is-on' : '') + '" data-kb-lane="final">定稿 <b>' + nFinal + '</b></button>' +
+            '<button type="button" class="kb-tab' + (KB.all ? '' : ' is-on') + '" data-kb-all="0">这天 <b>' + dayDocs.length + '</b></button>' +
+            '<button type="button" class="kb-tab' + (KB.all ? ' is-on' : '') + '" data-kb-all="1">全部 <b>' + docs.length + '</b></button>' +
           '</div>' +
           '<button type="button" class="kb-new" data-kb-new="1">+ 新建</button>' +
         '</div>' +
-        '<div class="kb-list' + (mine.length ? '' : ' is-empty') + '">' + list + '</div>' +
+        '<div class="kb-list' + (pool.length ? '' : ' is-empty') + '">' + list + '</div>' +
       '</aside>' +
-      kbEditorHtml(inLane ? cur : null) +
+      kbEditorHtml(cur) +
     '</div>' +
     note;
 }
@@ -987,7 +981,7 @@ function kbSyncMeta() {
 function mountKoubo() {
   const nc = document.getElementById('navKouboCount');
   if (nc) {
-    const n = kbDocs().filter(function (x) { return !x.final; }).length;
+    const n = kbDocs().length;
     nc.textContent = st.load.drafts === 'ready' ? String(n) : String(n || 0);
   }
 
@@ -1007,34 +1001,68 @@ function mountKoubo() {
   sec.addEventListener('click', function (e) {
     const t = e.target;
     const openEl = t.closest('[data-kb-open]');
-    const laneEl = t.closest('[data-kb-lane]');
+    const dayEl = t.closest('[data-kb-day]');
+    const ymEl = t.closest('[data-kb-ym]');
+    const todayBtn = t.closest('[data-kb-today]');
+    const allEl = t.closest('[data-kb-all]');
     const isNew = t.closest('[data-kb-new]');
     const isFinal = t.closest('[data-kb-final]');
     const isUnfinal = t.closest('[data-kb-unfinal]');
     const isCopy = t.closest('[data-kb-copy]');
     const isDel = t.closest('[data-kb-del]');
 
+    // 日历点一天：列表只留那天。今天存空，屏幕上永远是活的「今天」
+    if (dayEl) {
+      const key = dayEl.getAttribute('data-kb-day');
+      KB.day = key === kbToday() ? '' : key;
+      KB.ym = key.slice(0, 7);
+      KB.all = false;
+      const c = KB.open ? kbGet(KB.open) : null;
+      if (c && String(c.date || '').slice(0, 10) !== key) KB.open = '';
+      renderView(true);
+      return;
+    }
+    if (ymEl) {
+      const next = kbShiftYm(Number(ymEl.getAttribute('data-kb-ym')) || 0);
+      if (!next) return;
+      KB.ym = next;
+      renderView(true);
+      return;
+    }
+    if (todayBtn) {
+      KB.day = '';
+      KB.ym = '';
+      KB.all = false;
+      const c = KB.open ? kbGet(KB.open) : null;
+      if (c && String(c.date || '').slice(0, 10) !== kbToday()) KB.open = '';
+      renderView(true);
+      return;
+    }
+    if (allEl) {
+      const want = allEl.getAttribute('data-kb-all') === '1';
+      if (want === KB.all) return;
+      KB.all = want;
+      renderView(true);
+      return;
+    }
+
     if (isNew) {
+      // 在「全部」里新建，就落今天；在「这天」里新建，落你正看着的那天
+      const dd = KB.all ? kbToday() : kbDay();
       const d = {
         id: 'n' + Date.now(), local: true, file: null,
         title: '', body: '', final: false,
-        date: fmtDate(new Date()), src: '', url: ''
+        date: dd, src: '', url: ''
       };
       kbLocal().unshift(d);
       kbPersist();
       KB.open = d.id;
-      KB.lane = 'draft';
+      KB.all = false;
+      KB.day = dd === kbToday() ? '' : dd;
+      KB.ym = dd.slice(0, 7);
       renderView(true);
       const inp = document.querySelector('#sec-koubo .kb-ed-t');
       if (inp) inp.focus();
-      return;
-    }
-    if (laneEl) {
-      const k = laneEl.getAttribute('data-kb-lane');
-      if (k === KB.lane) return;
-      KB.lane = k;
-      KB.open = '';
-      renderView(true);
       return;
     }
     if (openEl) {
@@ -1051,7 +1079,6 @@ function mountKoubo() {
       if (!d) return;
       d.final = !!isFinal;
       kbPersist();
-      KB.lane = d.final ? 'final' : 'draft';
       renderView(true);
       toast(isFinal ? '进定稿了' : '退回草稿了', 'ok');
       return;
@@ -1112,7 +1139,9 @@ function kbStartFrom(idea) {
   kbLocal().unshift(d);
   kbPersist();
   KB.open = d.id;
-  KB.lane = 'draft';
+  KB.day = '';
+  KB.ym = '';
+  KB.all = false;
   switchTab('koubo');
   toast('开了个空稿，标题先填上了', 'ok');
 }
@@ -3081,7 +3110,6 @@ function mountDraw() {
 const SECTIONS = [
   { key: 'radar', cat: 'create', title: '今日雷达', desc: '每天 10:20 抓一遍 · 一天存一份 · 挑一条直接开稿' },
   { key: 'koubo', cat: 'create', title: '口播工坊', desc: '自己写 · 自己改 · 定稿得你自己点' },
-  { key: 'wenan', cat: 'create', title: '成品文案', desc: '存完整成片 · 分几段、每段几秒、画面拍什么' },
   { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 照老板的表搬上来' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
@@ -3123,7 +3151,6 @@ function renderView(keepScroll) {
     if (s.key === 'tasks') return renderTasksPage();
     if (s.key === 'library') return renderLibraryPage();
     if (s.key === 'koubo') return renderKouboPage();
-    if (s.key === 'wenan') return renderWenanPage();
     if (s.key === 'pixel') return renderPixelPage();
     if (s.key === 'draw') return renderDrawPage();
     if (s.key === 'report') return renderReportPage();
@@ -3156,14 +3183,12 @@ function renderView(keepScroll) {
   mountReport();
   mountRadar();
   mountKoubo();
-  mountWenan();
 
   // 懒加载：图书馆 / 作品数据按需请求
   if (st.load.library === 'idle') loadLibrary();
   if (st.load.report === 'idle') loadReport();
   if (st.load.radar === 'idle') loadRadar();
   if (st.load.drafts === 'idle') loadDrafts();
-  if (st.load.wenan === 'idle') loadWenan();
 
   // 重排后按真实滚动位置校正侧栏高亮
   syncActiveSection();
