@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-13 13:46",
+ "updated": "2026-11-14 10:20",
  "stats": {
   "抖音": 50,
-  "快手": 50,
+  "快手": 48,
   "头条": 50,
   "B站": 50,
   "百度": 51,
@@ -10,53 +10,36 @@
  },
  "picks": [
   {
-   "title": "22999 元：华为 Mate XT 2 非凡大师三折叠手机 16GB+512GB 灵盾防窥屏版开售",
+   "title": "CNET 耐久测试：苹果首款折叠 iPhone Duo 撑过 45.7 万次开合，铰链磨损变松 / 屏幕未见裂纹",
    "source": "IT之家",
    "kind": "新品",
-   "score": 10,
+   "score": 8,
    "why": [
-    "+5 mate xt",
-    "+3 元",
-    "+2 三折叠"
+    "+5 iphone duo",
+    "+3 裂"
    ],
    "hooks": [
-    "钱"
+    "冲突"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/522.htm"
+   "url": "https://www.ithome.com/1/027/046.htm"
   },
   {
-   "title": "华为 Mate X8 真机曝光：搭载 8 英寸京东方新屏 + 超平整折痕技术",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 7,
-   "why": [
-    "+5 mate x8",
-    "+2 折痕"
-   ],
-   "hooks": [
-    "爆料"
-   ],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/679.htm"
-  },
-  {
-   "title": "18999 元起，三星与中国电信联合打造心系天下 W27 折叠屏手机开售",
+   "title": "再次延期：华为 HarmonyOS 7 小艺 AI 快捷栏 11 月中旬开推，首批含 Pura X View 等",
    "source": "IT之家",
    "kind": "新品",
    "score": 5,
    "why": [
-    "+3 元",
-    "+2 折叠屏"
+    "+5 pura x"
    ],
    "hooks": [
-    "钱"
+    "冲突"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/507.htm"
+   "url": "https://www.ithome.com/1/026/962.htm"
   },
   {
-   "title": "Foxconn revenue climbs 46%; Bloomberg forecasts 16M iPhone Duo sales",
+   "title": "9to5Mac Overtime 090: iPhone Duo honeymoon",
    "source": "9to5Mac",
    "kind": "新品",
    "score": 5,
@@ -65,36 +48,22 @@
    ],
    "hooks": [],
    "hot": "",
-   "url": "https://9to5mac.com/2026/11/12/foxconn-revenue-climbs-46-bloomberg-forecasts-16m-iphone-duo-sales/"
+   "url": "https://9to5mac.com/2026/11/13/9to5mac-overtime-090-iphone-duo-honeymoon/"
   },
   {
-   "title": "30% of iPhone Duo buyers may have returned it, but I don’t think Apple should worry",
-   "source": "9to5Mac",
+   "title": "苹果首款智能家居中枢 HomeView 开售：戴墨镜可能认不出你",
+   "source": "IT之家",
    "kind": "新品",
-   "score": 5,
+   "score": 3,
    "why": [
-    "+5 iphone duo"
+    "+3 开售"
    ],
    "hooks": [],
    "hot": "",
-   "url": "https://9to5mac.com/2026/11/12/30-of-iphone-duo-buyers-may-have-returned-it-but-i-dont-think-apple-should-worry/"
+   "url": "https://www.ithome.com/1/027/043.htm"
   },
   {
-   "title": "华为Mate X8真机疑曝光",
-   "source": "头条",
-   "kind": "热榜",
-   "score": 5,
-   "why": [
-    "+5 mate x8"
-   ],
-   "hooks": [
-    "爆料"
-   ],
-   "hot": "3591899",
-   "url": "https://so.toutiao.com/search?keyword=%E5%8D%8E%E4%B8%BAMate%20X8%E7%9C%9F%E6%9C%BA%E7%96%91%E6%9B%9D%E5%85%89"
-  },
-  {
-   "title": "荣耀李健官宣荣耀 700 系列发布会定档 11 月 23 日，鞠婧祎代言",
+   "title": "宁德时代发布巧克力电池管家，2027 年预计建成 6000 座换电站、覆盖 297 座城市",
    "source": "IT之家",
    "kind": "新品",
    "score": 3,
@@ -103,33 +72,7 @@
    ],
    "hooks": [],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/674.htm"
-  },
-  {
-   "title": "肯辛通 Expert Mouse Pro TB900 EQ 轨迹球鼠标国行上市，999 元",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 3,
-   "why": [
-    "+3 元"
-   ],
-   "hooks": [
-    "钱"
-   ],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/629.htm"
-  },
-  {
-   "title": "餐饮店员工店内抠脚玩手机被辞退",
-   "source": "百度",
-   "kind": "热榜",
-   "score": 3,
-   "why": [
-    "+3 退"
-   ],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.baidu.com/s?wd=%E9%A4%90%E9%A5%AE%E5%BA%97%E5%91%98%E5%B7%A5%E5%BA%97%E5%86%85%E6%8A%A0%E8%84%9A%E7%8E%A9%E6%89%8B%E6%9C%BA%E8%A2%AB%E8%BE%9E%E9%80%80"
+   "url": "https://www.ithome.com/1/026/956.htm"
   },
   {
    "title": "折叠屏手机的转身｜明日后视镜",
@@ -159,17 +102,19 @@
    "url": "https://search.bilibili.com/all?keyword=iPhone%E9%94%80%E9%87%8F%E4%B8%BA%E4%BD%95%E8%83%BD%E9%80%86%E5%8A%BF%E9%A2%86%E8%B7%91"
   },
   {
-   "title": "漫威《蜘蛛侠：崭新之日》今日网播，登陆爱优腾、B站、华为视频等各大平台",
+   "title": "消息称某厂 6.3 英寸 1.5K 小屏机立项，预计小米 REDMI 旗下",
    "source": "IT之家",
    "kind": "新品",
    "score": 0,
    "why": [],
-   "hooks": [],
+   "hooks": [
+    "爆料"
+   ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/680.htm"
+   "url": "https://www.ithome.com/1/027/048.htm"
   },
   {
-   "title": "苹果票房最高电影《F1: 狂飙飞车》后皮特再接 Apple TV 新片：把故事搬到纽约高空",
+   "title": "Epic 指责苹果以 27% 佣金规避法院禁令：增聘最高法院资深律师，双方诉讼将于明年 1 月继续",
    "source": "IT之家",
    "kind": "新品",
    "score": 0,
@@ -178,10 +123,55 @@
     "反差"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/672.htm"
+   "url": "https://www.ithome.com/1/027/006.htm"
   },
   {
-   "title": "消息称三星电子正谈判收购数据中心散热企业 Modine",
+   "title": "NearLink E1.0 也有新特性！华为 MatePad Pro 13.2 2023 等平板获推支持星闪电竞专链功能",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/995.htm"
+  },
+  {
+   "title": "华为麒麟 9050 系列芯片新一代灵犀 CPU 详细信息公开：9 核 16 线程并行调度，支持内存压缩加速",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/993.htm"
+  },
+  {
+   "title": "麒麟 8000 系也有份：华为更多机型更新 HarmonyOS 7 系统后补齐沉浸光感粒子动效",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/991.htm"
+  },
+  {
+   "title": "苹果股价升至 360 美元 / 股、再创新高，总市值超英伟达 1.3 万亿美元",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [
+    "+3 元",
+    "+-3 股价"
+   ],
+   "hooks": [
+    "钱"
+   ],
+   "hot": "",
+   "url": "https://www.ithome.com/1/026/964.htm"
+  },
+  {
+   "title": "AI 助力复活尘封 15 年废案，iOS 4 时代苹果卡片后台界面曝光",
    "source": "IT之家",
    "kind": "新品",
    "score": 0,
@@ -190,81 +180,20 @@
     "爆料"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/661.htm"
+   "url": "https://www.ithome.com/1/026/959.htm"
   },
   {
-   "title": "主导苹果 M1 芯片的传奇架构师谈 AI 电力危机：用造 iPhone 芯片的“抠门”哲学建超算",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/591.htm"
-  },
-  {
-   "title": "小米超级岛官宣支持《王者荣耀》手游，复活时间实时提醒",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/588.htm"
-  },
-  {
-   "title": "OPPO 多款新品曝光：Pocket 云台相机预计年底前后登场，阔折、阔直板都在路上",
-   "source": "IT之家",
+   "title": "iPhone 20 爆料汇总：一整块玻璃，藏着苹果下一个十年",
+   "source": "爱范儿",
    "kind": "新品",
    "score": 0,
    "why": [],
    "hooks": [
+    "钱",
     "爆料"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/582.htm"
-  },
-  {
-   "title": "华为首个动态血糖仪：维感 G1 持续葡萄糖监测系统官宣，可搭配手机手表使用",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/581.htm"
-  },
-  {
-   "title": "黄仁勋离任后谁来接英伟达 CEO？曝苹果 Mac 芯片负责人斯鲁吉纳入考察范围",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [
-    "爆料"
-   ],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/555.htm"
-  },
-  {
-   "title": "Axelera AI 公布数据中心级 AIPU 芯片 Titania 架构，2027Q3 投产",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/544.htm"
-  },
-  {
-   "title": "华为鸿蒙电脑更新 7.0.0.115 SP11 版本，小艺 Work 支持文档处理、PPT 制作等",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/526.htm"
+   "url": "https://www.ifanr.com/1689409?utm_source=rss&utm_medium=rss&utm_campaign="
   },
   {
    "title": "iPhone Siri AI 体验：距离真正的 AI Phone，苹果还有多远？| 附开通指南",
@@ -289,51 +218,98 @@
    "url": "https://www.ifanr.com/1689051?utm_source=rss&utm_medium=rss&utm_campaign="
   },
   {
-   "title": "早报｜华为小折叠电脑MateBook Fold S亮相/《GTA VI》开启预载，全平台目标30fps/董明珠回应格力业绩下滑：铜价上涨，格力将继续用铜",
-   "source": "爱范儿",
+   "title": "Deals: HomeView discount, M5 iPad Pro $300 off, Magic Keyboard, AirTag 2 all-time low, more",
+   "source": "9to5Mac",
    "kind": "新品",
    "score": 0,
    "why": [],
    "hooks": [],
    "hot": "",
-   "url": "https://www.ifanr.com/1688852?utm_source=rss&utm_medium=rss&utm_campaign="
+   "url": "https://9to5mac.com/2026/11/12/deals-homeview-m5-ipad-pro-magic-keyboard-airtag-2/"
+  },
+  {
+   "title": "Google’s new Android XR glasses work with iOS, Made for iPhone certified",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5google.com/2026/11/12/google-glasses-iphone-support/"
+  },
+  {
+   "title": "Apple adjusts iPhone and Apple Watch trade-in values, adds Samsung foldables",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/12/apple-adjusts-iphone-and-apple-watch-trade-in-values-adds-samsung-foldables/"
+  },
+  {
+   "title": "Binance warns iPhone crypto holders of security flaw researchers say remains unpatched",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/11/binance-warns-iphone-crypto-holders-of-security-flaw-researchers-say-remains-unpatched/"
+  },
+  {
+   "title": "iPhone is the winner of new battery test, topping all Androids",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/11/iphone-is-the-winner-of-new-battery-test-topping-all-androids/"
+  },
+  {
+   "title": "Apple to investigate accident that killed three workers at iPhone parts factory in India",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/10/apple-to-investigate-accident-that-killed-three-workers-at-iphone-parts-factory-in-india/"
+  },
+  {
+   "title": "iOS 27.2 adds new features in six iPhone apps, details here",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/10/ios-27-2-adds-new-features-in-six-iphone-apps-details-here/"
   }
  ],
  "meme": [
+  "阿根廷1:2乌拉圭",
   "课本里的逍遥游有画面了",
+  "用一次旅行来敬重自己",
   "手工敲虾到底有多好吃",
-  "淡人友好冬日旅行",
-  "R星入驻抖音",
-  "时间从来证明不了什么",
-  "破译“科学”流言密码",
-  "欧国联意大利3:1胜法国",
-  "情呀爱呀手势舞",
-  "你爱的是花还是花为你开",
-  "烂奇迹翻唱",
-  "首个AI漫剧晚会阵容官宣",
-  "今天是太阳雨假表哥真表嫂",
-  "你还是逃不过覆面系",
-  "可以给我买麻辣烫糖葫芦吗",
-  "我军无人发烟车亮相演练场",
-  "停车楼飘移帅炸了"
+  "上抖音看阿图什杯",
+  "以我之名为LPL加油",
+  "芬兰证实俄军舰在芬兰湾遇袭",
+  "本周谣言鉴赏",
+  "我们再发光开播啦",
+  "烂奇迹手势舞挑战",
+  "覆面系转场挑战",
+  "蒋一帆沈阳为爱而歌歌友会",
+  "当你被选中和吴彦祖一起嗦粉",
+  "停车楼飘移帅炸了",
+  "高校学子为BLG助威",
+  "和范丞丞一起看昊天武道会"
  ],
- "resonance": [
-  {
-   "entity": "华为",
-   "platforms": [
-    "头条",
-    "快手"
-   ],
-   "score": 2,
-   "titles": [
-    "华为折叠电脑海外火出圈",
-    "华为Mate X8真机疑曝光"
-   ]
-  }
- ],
+ "resonance": [],
  "counts": {
-  "picks": 41,
-  "shootable": 6,
+  "picks": 29,
+  "shootable": 3,
   "meme": 16
  }
 }
