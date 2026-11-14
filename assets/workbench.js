@@ -1924,7 +1924,7 @@ function renderRadarPage() {
   let totalSrc = 0;
   platforms.forEach(function (k) { totalSrc += stats[k]; });
 
-  let html = '<div class="card rd-card"><div class="rdc-wrap">' +
+  let html = '<div class="card rd-card rd-top"><div class="rdc-wrap">' +
     '<div class="rdc-top">' +
       '<div>' +
         '<div class="rd-kicker"><b>每日雷达</b> 每天 10:20 抓一遍 · 一天存一份</div>' +
@@ -3375,9 +3375,11 @@ function renderView(keepScroll) {
 function updateChrome() {
   const cat = CATS[st.group] || CATS.create;
   const page = PAGES[st.tab];
-  document.getElementById('pageTitle').textContent =
-    (st.tab === 'home' || !page) ? '个人工作台' : (cat.name + ' · ' + page.title);
-  document.getElementById('pageDesc').textContent = (st.tab === 'home' || !page) ? cat.desc : page.desc;
+  const isHome = st.tab === 'home' || !page;
+  document.getElementById('pageTitle').innerHTML = isHome
+    ? '<em>Workbench</em><span>个人工作台</span>'
+    : '<em>' + esc(cat.name) + '</em><span>' + esc(page.title) + '</span>';
+  document.getElementById('pageDesc').textContent = isHome ? cat.desc : page.desc;
 
   const actions = document.getElementById('pageActions');
   actions.innerHTML = '<button class="btn btn-sm" data-action="refresh"' + (st.load.feishu === 'loading' ? ' disabled' : '') + '>' +
@@ -3542,12 +3544,8 @@ function switchGroup(cat) {
 }
 
 function scrollToSection(key, instant) {
-  const behavior = instant ? 'auto' : 'smooth';
-  if (key === 'home') { window.scrollTo({ top: 0, behavior: behavior }); return; }
-  const el = document.getElementById('sec-' + key);
-  if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - 76;
-  window.scrollTo({ top: Math.max(0, top), behavior: behavior });
+  // 现在一页只渲染当前区块，区块本身就在顶部，锚点滚动只会把页头推到吸顶栏底下
+  window.scrollTo({ top: 0, behavior: instant ? 'auto' : 'smooth' });
 }
 
 // 滚动时同步侧栏高亮
