@@ -2581,6 +2581,145 @@ body.pmodal-open{ overflow:hidden; }
   .gk-add{ align-self:flex-start; width:auto; min-height:42px; padding:0 22px; }
 }
 
+/* ============================================================
+   2026-11-14 v47：脚垫 / 坐垫在主页面只留一张图
+   以前一条卡 1300px 高，说明、tags、档位表、实车铺装、赠品明细全堆着，
+   一屏看不到第二张；现在页面只回答「长什么样、多少钱」，细节点进内页浮层。
+   ============================================================ */
+.acc-fold{
+  display:grid; grid-template-columns:1.18fr .82fr;
+  background:var(--panel); border:1px solid var(--line); overflow:hidden;
+  transition:border-color .25s, box-shadow .25s;
+}
+.acc-fold + .acc-fold{ margin-top:22px; }
+.acc-fold.on{ border-color:#CDBA93; box-shadow:0 20px 46px -34px rgba(0,0,0,.5); }
+
+.af-media{
+  position:relative; display:flex; align-items:center; justify-content:center;
+  width:100%; margin:0; padding:18px; aspect-ratio:16/11;
+  border:0; border-radius:0; background:#fff; overflow:hidden; cursor:pointer;
+  -webkit-appearance:none; appearance:none;
+}
+.af-media img{
+  display:block; width:100%; height:100%; object-fit:contain;
+  filter:saturate(.96); transition:transform .6s cubic-bezier(.2,.8,.3,1);
+}
+.af-media:hover img{ transform:scale(1.015); }
+.af-badge{
+  position:absolute; left:16px; top:16px;
+  font-size:10.5px; letter-spacing:.06em; color:var(--ink);
+  background:rgba(255,255,255,.94); border:1px solid rgba(0,0,0,.08);
+  padding:5px 11px; border-radius:3px;
+}
+.af-cue{
+  position:absolute; right:16px; bottom:16px;
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:11.5px; letter-spacing:.03em; color:var(--ink);
+  background:rgba(255,255,255,.96); border:1px solid rgba(0,0,0,.1);
+  padding:8px 15px; border-radius:999px;
+  box-shadow:0 8px 20px -12px rgba(0,0,0,.5);
+  transition:transform .2s, box-shadow .2s;
+}
+.af-cue i{ font-style:normal; font-size:14px; line-height:1; color:var(--gold); }
+.af-media:hover .af-cue{ transform:translateY(-1px); box-shadow:0 12px 24px -12px rgba(0,0,0,.55); }
+
+.af-bar{
+  display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+  gap:20px; padding:42px 44px; border-left:1px solid var(--line);
+}
+.af-detail{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; letter-spacing:.03em; color:var(--sub);
+  padding-bottom:3px; border-bottom:1px solid var(--line); transition:color .2s, border-color .2s;
+}
+.af-detail i{ font-style:normal; color:var(--gold); font-size:14px; line-height:1; }
+.af-detail:hover{ color:var(--ink); border-color:var(--ink); }
+/* 桌面用信息栏里那条文字链，图上胶囊只在手机出现，避免两个入口 */
+@media (min-width:760px){ .af-cue{ display:none; } }
+.af-info b{ display:block; font-size:21px; font-weight:600; letter-spacing:.01em; line-height:1.35; }
+.af-info span{ display:block; margin-top:9px; font-size:11.5px; color:var(--sub); letter-spacing:.03em; }
+.af-price{ font-family:var(--fn); font-size:34px; font-weight:300; line-height:1; letter-spacing:-.02em; }
+.af-price i{ font-style:normal; font-size:15px; margin-right:3px; vertical-align:7px; }
+.af-price small{ font-family:var(--fn); font-size:19px; font-weight:500; letter-spacing:0; color:var(--ink); }
+.af-add{
+  margin-top:2px; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:46px; padding:0 26px; border-radius:999px;
+  background:var(--ink); color:#fff; font-size:13px; letter-spacing:.04em;
+  box-shadow:0 14px 28px -16px rgba(0,0,0,.65);
+  transition:background .2s, box-shadow .2s, color .2s, transform .12s;
+}
+.af-add:hover{ background:#2C2A25; }
+.af-add:active{ transform:scale(.97); }
+.af-add.on{ background:#fff; color:#8A6A2E; border:1px solid rgba(185,154,91,.6); box-shadow:none; }
+
+/* ---------- 内页浮层里的完整卡：图上、文下 ---------- */
+.pmodal-bd .addon-card,
+.pmodal-bd .addon-card--detail{
+  grid-template-columns:minmax(0,1fr); cursor:default;
+  border:0; background:transparent; box-shadow:none;
+}
+.pmodal-bd .addon-card.on{ box-shadow:none; }
+/* 图给足高度但别占满整屏——下面还有档位、实车、赠品要看 */
+.pmodal-bd .addon-card:not(.addon-card--seat) .addon-pic{
+  height:min(34vh,310px); aspect-ratio:auto; padding:8px;
+  border-radius:10px; background:#FBFAF6;
+}
+.pmodal-bd .addon-card--seat .addon-pic{
+  height:min(36vh,340px); aspect-ratio:auto; padding:8px;
+  border-radius:10px; background:#FBFAF6;
+}
+.pmodal-bd .addon-card .addon-body{ padding:30px 2px 0; }
+.pmodal-bd .addon-card .addon-pic::after{ display:none; }
+/* 图左上角那枚「正在看 XX」：浮层里图有圆角，角标别贴死边缘，长文案允许折行 */
+.pmodal-bd .addon-card .pic-tier{
+  left:8px; top:8px; border-radius:4px;
+  max-width:calc(100% - 16px); white-space:normal; line-height:1.55;
+}
+/* 底栏已经有「加入配置单」，图下那句「点此加入配置单」在浮层里是重复的 */
+.pmodal-bd .addon-card .pick-hint{ display:none; }
+.pmodal-bd .addon-card .mtier{ margin:24px 0 0; padding:24px 0 0; border-top:1px solid var(--line); }
+.pmodal-bd .addon-card .fit-strip{ margin:26px 0 0; padding:22px 0 0; }
+.pmodal-bd .addon-card .gift-bar{ margin:24px 0 0; }
+
+/* 内页底栏：加不加配置单在这里 */
+.pd-ft{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.pd-ft > span{ font-size:11.5px; color:var(--sub); letter-spacing:.03em; }
+.pd-add{
+  flex:none; min-height:44px; padding:0 24px; border-radius:999px;
+  background:var(--ink); color:#fff; font-size:13px; letter-spacing:.03em;
+  transition:background .2s, color .2s;
+}
+.pd-add:hover{ background:#2C2A25; }
+.pd-add.on{ background:#fff; color:#8A6A2E; border:1px solid rgba(185,154,91,.6); }
+
+@media (max-width:759px){
+  .acc-fold{ grid-template-columns:minmax(0,1fr); }
+  .af-media{ aspect-ratio:4/3; padding:12px; }
+  .af-bar{
+    display:grid; grid-template-columns:minmax(0,1fr) auto;
+    align-items:center; gap:10px 12px;
+    padding:14px 15px 15px; border-left:0; border-top:1px solid var(--line);
+  }
+  .af-info b{ font-size:16px; }
+  .af-info span{ margin-top:5px; font-size:10.5px; }
+  .af-price{ font-size:24px; }
+  .af-price i{ font-size:12px; vertical-align:4px; }
+  .af-price small{ font-size:15px; }
+  .af-add{ grid-column:1 / -1; width:100%; min-height:44px; font-size:12.5px; margin-top:4px; }
+  .af-detail{ display:none; }
+  .af-badge{ left:10px; top:10px; font-size:10px; padding:4px 8px; }
+  .af-cue{ right:10px; bottom:10px; font-size:10.5px; padding:7px 12px; }
+
+  .pmodal-bd .addon-card:not(.addon-card--seat) .addon-pic,
+  .pmodal-bd .addon-card--seat .addon-pic{ height:auto; aspect-ratio:4/3; }
+  .pmodal-bd .addon-card .addon-body{ padding:20px 2px 0; }
+  .pmodal-bd .addon-card .mtier{ margin:20px 0 0; padding:18px 0 0; }
+  .pmodal-bd .addon-card .fit-strip{ margin:20px 0 0; padding:16px 0 0; }
+
+  .pd-ft{ flex-direction:column-reverse; align-items:stretch; gap:9px; }
+  .pd-add{ width:100%; justify-content:center; }
+}
+
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
@@ -2780,7 +2919,7 @@ body.pmodal-open{ overflow:hidden; }
     </div>
     <p class="sec-p" id="accSecP" data-page-node-id="gbojpFVKxM1oxlsT6ATU1X">整车配件 · 单项可加装。脚垫与座椅垫为整套价，其余小件为单品价，不含施工。</p>
 
-    <div class="picktip">点卡片加入配置单，同一区可以多选</div>
+    <div class="picktip">点「加入配置单」即可，同一区可以多选；想看细节点图片</div>
     <div id="secAccFoot" style="margin-top:44px" data-page-node-id="PWxzagmpCNCkcV5ZWmAd8w">
     <div class="addon-card pick pick--lg" data-acc="a1">
       <div class="addon-top">
@@ -3602,6 +3741,7 @@ let pickKind = '', pickFocus = null;
 
 function openPick(kind){
   pickKind = kind;
+  detailId = null;
   const bd = $('#pmodalBody'), tt = $('#pmodalTitle'), ft = $('#pmodalFt');
   if (kind === 'coat'){
     tt.textContent = `隐形车衣 · 全部 ${COAT_ALL.length} 款`;
@@ -3646,12 +3786,63 @@ function openKit(src, name, n){
   document.body.classList.add('pmodal-open');
 }
 
+/* ============================================================
+   配件内页：脚垫 / 坐垫的全部细节都在这层浮层里
+   主页面只留图，客人想看「这套到底几件、怎么配、实车什么样」才点进来；
+   右上角 × 退回，页面位置一动不动。
+   ============================================================ */
+let detailId = null;
+
+function syncDetailBtn(){
+  const btn = $('#pmodalAdd');
+  if (!btn || !detailId) return;
+  const on = state.acc.has(detailId);
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', String(on));
+  btn.textContent = on ? '✓ 已加入配置单' : '＋ 加入配置单';
+}
+
+function openDetail(id){
+  const a = ACC_BIG.find(x => x.id === id);
+  if (!a) return;
+  detailId = id;
+  pickKind = 'detail';
+  const bd = $('#pmodalBody'), tt = $('#pmodalTitle'), ft = $('#pmodalFt');
+  tt.textContent = a.slot === 'seat' ? '座椅垫 · 全部细节' : '脚垫 · 全部细节';
+  bd.innerHTML = bigCard(a, true);
+  bd.scrollTop = 0;
+  ft.innerHTML = `<div class="pd-ft">
+      <span>含装车 · 到店按你的车实测再核一遍</span>
+      <button class="pd-add" id="pmodalAdd" data-acc="${a.id}" aria-pressed="false">＋ 加入配置单</button>
+    </div>`;
+  syncDetailBtn();
+  pickFocus = document.activeElement;
+  const pm = $('#pmodal');
+  pm.classList.add('on');
+  pm.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('pmodal-open');
+}
+
+/* 浮层里换了档位 / 款式 / 配色：页面卡和浮层内容一起重画，滚动位置留住 */
+function renderDetail(){
+  if (!detailId) return;
+  const a = ACC_BIG.find(x => x.id === detailId);
+  const bd = $('#pmodalBody');
+  if (!a || !bd) return;
+  const keep = bd.scrollTop;
+  bd.innerHTML = bigCard(a, true);
+  bd.scrollTop = keep;
+  syncDetailBtn();
+}
+
 function closePick(){
   const pm = $('#pmodal');
   if (!pm || !pm.classList.contains('on')) return;
   pm.classList.remove('on');
   pm.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('pmodal-open');
+  detailId = null;
+  pickKind = '';
   /* 焦点还回触发它的那颗按钮，键盘用户不至于迷路；preventScroll 保证页面不会被拽回去 */
   if (pickFocus && pickFocus.focus){
     try { pickFocus.focus({ preventScroll: true }); } catch(e){}
@@ -3680,7 +3871,7 @@ function renderFilmBar(){
     <button class="pb-x" data-clear="film">取消选择</button>`;
 }
 
-function bigCard(a){
+function bigCard(a, detail){
   if (a.slot === 'foot'){
     const ct  = curTier();                    /* 当前在看哪一档：图、价、件数三者一起跟它换 */
     const ms  = MAT_SET[curModel().id] || MAT_SET.i6;
@@ -3703,11 +3894,9 @@ function bigCard(a){
     const aNote = ms && ms.note !== undefined ? ms.note : a.note;
     const aGift = (ms && ms.gift) || a.gift;
     return `
-    <div class="addon-card pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
-         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}" aria-label="${aName} ${nTxt}，${tbd?'价格到店核':'¥'+money(px(fp))}">
+    <div class="addon-card${detail ? ' addon-card--detail' : ' pick pick--lg'}${state.acc.has(a.id)?' on':''}"${detail ? '' : ` data-acc="${a.id}" role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"`} aria-label="${aName} ${nTxt}，${tbd?'价格到店核':'¥'+money(px(fp))}">
       <div class="addon-top">
         <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}" loading="lazy" decoding="async">${ct && ct.n ? `<i class="pic-tier">整车 ${ct.n} 件套</i>` : ''}
-          <button class="pic-more" data-kit="${pic}" data-kitname="${curModel().name} ${aName} · ${nTxt}" data-kitn="${(ct && ct.n) || (ms && ms.n) || ''}">${((ct && ct.n) || (ms && ms.n)) ? `看全 <b>${(ct && ct.n) || (ms && ms.n)}</b> 件` : '看整车'} <i>›</i></button>
         </div>
         <div class="addon-body">
           <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送硅胶套装 + 配件</span></div>
@@ -3823,8 +4012,7 @@ function bigCard(a){
   const colorTxt = (opt && opt.colors && opt.colors.length)
     ? opt.colors.map(c => SEAT_CNAME[c.c]).join(' / ') : '';
   return `
-    <div class="addon-card addon-card--seat pick pick--lg${state.acc.has(a.id)?' on':''}" data-acc="${a.id}"
-         role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"
+    <div class="addon-card addon-card--seat${detail ? ' addon-card--detail' : ' pick pick--lg'}${state.acc.has(a.id)?' on':''}"${detail ? '' : ` data-acc="${a.id}" role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"`}
          aria-label="座椅垫，${curModel().name} ${skName} ${skSet}${curC ? ' ' + curC : ''}，${tbd?'价格到店核':'¥'+money(sp)}">
       <div class="addon-top">
         <div class="addon-pic">${picHtml}<i class="pic-tier">正在看 ${skName}${curC ? ' · ' + curC : ''}</i></div>
@@ -3877,6 +4065,62 @@ function bigCard(a){
           <p class="mtier-note">只列本车型件数最多的那一档满配。件数 / 配色取自固特异京东旗舰店 2026-11 在售清单；有实数的取公开渠道实测价，没有实数的到店核、按你的车实测报价，不编价。</p>
         </div>
     </div>`;
+}
+
+/* ============================================================
+   主页面上的配件卡：只留一张图 + 一行价
+   脚垫 / 坐垫的说明、tags、档位表、实车铺装、赠品明细、配色，
+   以前全堆在页面上，一张卡 1300px 高，滑半天还看不清这一块到底卖什么。
+   现在全部收进 openDetail 的内页浮层，页面只回答两件事：长什么样、多少钱。
+   ============================================================ */
+function miniCard(a){
+  const seat = a.slot === 'seat';
+  let pic, name, sub, price, tbd, badge;
+
+  if (!seat){
+    const ct = curTier();
+    const ms = MAT_SET[curModel().id] || MAT_SET.i6;
+    const nTxt = ct ? (ct.n ? ct.n + ' 件套' : '整车全包')
+                    : (ms && ms.n ? ms.n + ' 件套' : '整车全包');
+    pic = (ct && ct.n)
+      ? (ct.img || `asset/mats/tier/${curModel().id}_${ct.n}.webp`)
+      : ((a.imgs && a.imgs[curModel().id]) || a.img);
+    name = (ms && ms.title) || a.name;
+    const tPrice = tierStore(ct, ms);
+    tbd = tPrice == null;
+    price = tbd ? 0 : px(tPrice);
+    sub = `${curModel().name} · ${nTxt} · 含装车`;
+    badge = nTxt;
+  } else {
+    const opt = curSeatKind();
+    const col = seatColorOf(opt);
+    const kitSet = SEAT_KIT[opt && opt.n] || SEAT_KIT[11];
+    pic = (opt && opt.colors && col)
+      ? (kitSet[col.c] || kitSet.br)
+      : (opt ? opt.img : a.img);
+    name = opt ? opt.name : a.name;
+    tbd = !(opt && opt.p != null);
+    price = tbd ? 0 : px(opt.p);
+    const st = opt ? (opt.n ? opt.n + ' 件套' : '按车型配') : '整套';
+    sub = `${curModel().name} · ${st}${col ? ' · ' + SEAT_CNAME[col.c] : ''} · 含装车`;
+    badge = (opt && opt.n) ? opt.n + ' 件套' : '整车一套';
+  }
+
+  const on = state.acc.has(a.id);
+  return `
+  <div class="acc-fold${on ? ' on' : ''}" data-accbox="${a.id}">
+    <button class="af-media" data-detail="${a.id}" aria-label="查看 ${name} 的全部细节">
+      <img src="${pic}" alt="${curModel().name} ${name}实拍" loading="lazy" decoding="async">
+      <span class="af-badge">${badge}</span>
+      <span class="af-cue">全部细节 <i>›</i></span>
+    </button>
+    <div class="af-bar">
+      <div class="af-info"><b>${name}</b><span>${sub}</span></div>
+      <button class="af-detail" data-detail="${a.id}">查看全部细节 <i>›</i></button>
+      <div class="af-price">${tbd ? '<small>价格到店核</small>' : `<i>¥</i>${money(price)}`}</div>
+      <button class="af-add${on ? ' on' : ''}" data-acc="${a.id}" aria-pressed="${on}">${on ? '✓ 已加入配置单' : '＋ 加入配置单'}</button>
+    </div>
+  </div>`;
 }
 
 /* ---------- 硅胶套装：按车型出清单（i6 有实拍，其余按实车清单） ---------- */
@@ -4003,8 +4247,9 @@ function renderSil(animate){
 }
 
 function renderAcc(){
-  $('#secAccFoot').innerHTML = ACC_BIG.filter(a => a.slot === 'foot').map(bigCard).join('');
-  $('#secAccSeat').innerHTML = ACC_BIG.filter(a => a.slot === 'seat').map(bigCard).join('');
+  /* 页面上只出「一张图 + 一行价」，细节在 openDetail 的浮层里 */
+  $('#secAccFoot').innerHTML = ACC_BIG.filter(a => a.slot === 'foot').map(miniCard).join('');
+  $('#secAccSeat').innerHTML = ACC_BIG.filter(a => a.slot === 'seat').map(miniCard).join('');
 
   $('#secAccSmall').innerHTML = ACC_SMALL.map(a => `
     <button class="acc-item pick pick--sm${state.acc.has(a.id)?' on':''}" data-acc="${a.id}">
@@ -4018,6 +4263,9 @@ function renderAcc(){
         <span class="am-l">脚垫 / 坐垫 / 门槛条<br>把套 / 防虫网 等</span>
         <em class="am-go">到店详询<b>&#8594;</b></em>
       </div>`;
+
+  /* 浮层开着的时候换档 / 换色，内页内容要跟着重画，否则浮层里还是旧的图和价 */
+  renderDetail();
 }
 
 /* ========================= 结算 ========================= */
@@ -4576,6 +4824,14 @@ document.addEventListener('click', e => {
   }
 
   /* 配件 */
+  /* 主页面那张图：点开内页看全部细节，不加入配置单，所以要先于 data-acc 拦掉 */
+  const dt = e.target.closest('[data-detail]');
+  if (dt){
+    e.preventDefault();
+    openDetail(dt.dataset.detail);
+    return;
+  }
+
   /* 档位行、款式行、色点：只切「看哪一档/哪款哪色」，不碰配置单，所以必须在整卡点击之前拦掉 */
   const swc = e.target.closest('[data-sw]');
   if (swc){
