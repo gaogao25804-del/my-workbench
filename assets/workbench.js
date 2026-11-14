@@ -640,9 +640,11 @@ const KB_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '�
 const KB_STORE = 'wb.kb.docs.v2';
 /* 仓库里那些稿子，在这台设备上被删掉的记录（只藏本机，不动仓库，别人还看得见） */
 const KB_HIDE = 'wb.kb.hide.v2';
+/* 仓库稿在这台设备上被改过的归档日期（补录旧稿用，不动仓库） */
+const KB_DOV = 'wb.kb.date.v2';
 
 /* day: 日历上选中的那天（空 = 今天） · ym: 日历翻到哪个月（空 = 跟着 day） · all: 列表看这天还是全部 */
-const KB = { open: '', day: '', ym: '', all: false, md: {}, local: null, hide: null, saved: '' };
+const KB = { open: '', day: '', ym: '', all: false, md: {}, local: null, hide: null, dov: null, saved: '' };
 
 function kbWords(txt) { return String(txt || '').replace(/\s/g, '').length; }
 
@@ -778,6 +780,42 @@ function kbPersist() {
 }
 
 /* ---- 远端稿的「删掉」：只在这台设备上藏起来 ---- */
+/* 补录旧稿：仓库稿在这台设备上改过的归档日期 */
+function kbDateOv() {
+  if (KB.dov) return KB.dov;
+  KB.dov = {};
+  try {
+    const o = JSON.parse(localStorage.getItem(KB_DOV) || '{}');
+    if (o && typeof o === 'object') KB.dov = o;
+  } catch (e) { KB.dov = {}; }
+  return KB.dov;
+}
+
+function kbSetDate(d, day) {
+  if (!d) return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return false;
+  if (day > kbToday()) { toast('不能归到还没到的日子', 'err'); return false; }
+  if (d.local) {
+    const t = kbLocal().filter(function (x) { return x.id === d.id || (d.file && x.file === d.file); })[0];
+    if (!t) return false;
+    t.date = day;
+    kbPersist();
+    if (d.file) {
+      const ov0 = kbDateOv();
+      ov0[d.file] = day;
+      try { localStorage.setItem(KB_DOV, JSON.stringify(ov0)); } catch (e) {}
+    }
+  } else if (d.file) {
+    const ov = kbDateOv();
+    if (day === d.rawDate) delete ov[d.file];
+    else ov[d.file] = day;
+    try { localStorage.setItem(KB_DOV, JSON.stringify(ov)); } catch (e) { return false; }
+  } else {
+    return false;
+  }
+  return true;
+}
+
 function kbHidden() {
   if (KB.hide) return KB.hide;
   KB.hide = {};
@@ -826,8 +864,14 @@ function kbMdParse(md) {
 /* 本地 + 仓库合成一份清单，同一篇按 file 去重（本地优先） */
 function kbDocs() {
   const hide = kbHidden();
+  const dov = kbDateOv();
   const locals = kbLocal().filter(function (d) { return !(d.file && hide[d.file]); });
   const out = locals.slice();
+  out.forEach(function (d) {
+    if (!d.file) return;
+    d.rawDate = d.date;
+    if (dov[d.file]) d.date = dov[d.file];
+  });
   const files = {};
   locals.forEach(function (d) { if (d.file) files[d.file] = 1; });
   const rem = (st.drafts && st.drafts.drafts) ? st.drafts.drafts : [];
@@ -839,7 +883,8 @@ function kbDocs() {
     out.push({
       id: 'r:' + r.file, file: r.file, local: false,
       title: r.title || (p ? p.title : ''), body: p ? p.body : null, final: false,
-      date: r.date || '', src: '我放进来的', publish_at: r.publish_at || ''
+      date: dov[r.file] || r.date || '', rawDate: r.date || '',
+      src: '我放进来的', publish_at: r.publish_at || ''
     });
   });
   out.sort(function (a, b) {
@@ -921,6 +966,9 @@ function kbEditorHtml(d) {
       ? '<div class="kb-ed-wait">正在取原稿…</div>'
       : '<textarea class="kb-ed-b" data-kb-field="body" spellcheck="false" placeholder="直接往这儿写。一整段别分，像说话那样。">' + esc(d.body || '') + '</textarea>') +
     '<div class="kb-ed-bar">' +
+      '<label class="kb-ed-d" title="补录旧稿：把这篇归到别的那天"><span>归档</span>' +
+        '<input type="date" data-kb-date="1" max="' + kbToday() + '" value="' + esc(String(d.date || '').slice(0, 10)) + '">' +
+      '</label>' +
       '<span class="kb-ed-num' + (n > 700 ? ' is-over' : '') + '">' + (n ? n + ' 字 · 约 ' + kbDurText(n) : '空') + '</span>' +
       '<span class="kb-ed-hint">目标 520–700 字 · 1 分 20–1 分 40 · 一整段不分行</span>' +
       '<span class="kb-ed-save">' + (KB.saved ? '已存本地 ' + KB.saved : '还没动过') + '</span>' +
@@ -1127,6 +1175,20 @@ function mountKoubo() {
       toast(d.file && !d.local ? '从这台设备上拿掉了' : '删了', 'ok');
       return;
     }
+  });
+
+  // 归档日期：4 号写的稿今天才录进来，就靠这个挪回去
+  sec.addEventListener('change', function (e) {
+    if (!e.target.getAttribute || !e.target.getAttribute('data-kb-date')) return;
+    const d = kbGet(KB.open);
+    if (!d) return;
+    const day = e.target.value;
+    if (day === String(d.date || '').slice(0, 10)) return;
+    if (!kbSetDate(d, day)) { e.target.value = String(d.date || '').slice(0, 10); return; }
+    KB.day = day;
+    KB.ym = day.slice(0, 7);
+    renderView(true);
+    toast('归到 ' + fmtMD(day) + ' 了', 'ok');
   });
 
   sec.addEventListener('input', function (e) {
