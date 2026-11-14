@@ -5767,6 +5767,15 @@ body{
 }
 .kb-ed-num{ font-weight:600; color:var(--ink-2); font-variant-numeric:tabular-nums; }
 .kb-ed-num.is-over{ color:#c0342a; }
+/* 归档日期：补录旧稿用，点一下就挪到那天 */
+.kb-ed-d{ display:inline-flex; align-items:center; gap:5px; padding:1px 7px 1px 8px; border:1px solid rgba(188,67,13,.16); border-radius:7px; background:#fffaf6; }
+.kb-ed-d span{ color:var(--ink-3); font-size:11px; }
+.kb-ed-d input{
+  border:0; outline:none; background:transparent; padding:0; width:104px;
+  font:inherit; font-size:11.5px; color:var(--ink-2); font-variant-numeric:tabular-nums; cursor:pointer;
+}
+.kb-ed-d:hover{ border-color:rgba(188,67,13,.3); }
+.kb-ed-d input::-webkit-calendar-picker-indicator{ opacity:.42; cursor:pointer; }
 .kb-ed-save{ margin-left:auto; }
 .kb-note{ display:flex; align-items:center; gap:7px; margin-top:12px; font-size:11px; color:var(--ink-3); }
 .kb-note i{ width:5px; height:5px; border-radius:50%; background:#e2b48f; }
