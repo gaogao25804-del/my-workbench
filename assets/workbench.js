@@ -1775,7 +1775,7 @@ function renderReportPage() {
 /* 数据：radar-data.json（今天）+ wechat-feed.json（公众号）+ content/radar/YYYY-MM-DD.json（每天存档）
    页面：日期条（前天→今天→后天）→ 候选池（默认只摆 8 条）→ 热梗 */
 
-const RDR = { onlyHit: false, day: '', more: false, view: [] };
+const RDR = { onlyHit: false, day: '', more: false, view: [], ym: '' };
 const RDR_MAX = 8;
 const RDR_OFFSETS = [-3, -2, -1, 0, 1, 2];
 
@@ -1824,48 +1824,132 @@ function rdrShoot(list) {
   return list.filter(function (p) { return (p.score || 0) >= 5; }).length;
 }
 
-/* 日期条：昨天前天有存档就能点，明天后天只写「10:20 自动抓」 */
-function rdcStrip(curKey) {
+/* 日历：一格一天。有存档的才给按钮，今天永远能点（实时数据），
+   没抓过的日子和未来只留灰数字——不写「没存档」三个字，省得难看 */
+function rdrYm() {
+  if (RDR.ym) return RDR.ym;
+  const d = parseDate(RDR.day || rdrToday()) || new Date();
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1);
+}
+
+/* radar-data.json 真正是哪天抓的（定时任务漏跑时，别把旧数据当今天） */
+function rdrDataDate() {
+  const m = String((st.radar && st.radar.updated) || '').match(/^(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : '';
+}
+
+function rdrDayMeta() {
   const today = rdrToday();
   const meta = {};
   ((st.radarDays && st.radarDays.days) || []).forEach(function (x) {
-    if (x && x.date) meta[x.date] = x;
+    if (x && x.date && x.picks) meta[x.date] = x;
   });
-  const todayList = rdrTodayList();
-  if (curKey === today && todayList.length) {
-    meta[today] = { date: today, picks: todayList.length, shootable: rdrShoot(todayList) };
+  // 今天的数在内存里。index.json 有没有今天都得算上（以前漏的就是这一笔），
+  // 但 radar-data.json 不是今天抓的就不给条数，只在日历上留一个能点的今天
+  const tl = rdrTodayList();
+  const fresh = rdrDataDate() === today;
+  meta[today] = {
+    date: today,
+    picks: fresh ? tl.length : 0,
+    shootable: fresh ? rdrShoot(tl) : 0,
+    fresh: fresh
+  };
+  return meta;
+}
+
+function rdrShiftYm(step) {
+  const ym = rdrYm();
+  let y = Number(ym.slice(0, 4));
+  let m = Number(ym.slice(5, 7)) + step;
+  if (m < 1) { m = 12; y -= 1; }
+  if (m > 12) { m = 1; y += 1; }
+  const next = y + '-' + pad2(m);
+  const today = rdrToday();
+  const keys = Object.keys(rdrDayMeta()).sort();
+  const minYm = keys.length ? keys[0].slice(0, 7) : today.slice(0, 7);
+  if (next < minYm || next > today.slice(0, 7)) return null;
+  return next;
+}
+
+function rdcCal(curKey, data) {
+  const today = rdrToday();
+  const meta = rdrDayMeta();
+  const ym = rdrYm();
+  const y = Number(ym.slice(0, 4));
+  const mo = Number(ym.slice(5, 7)) - 1;
+  const total = new Date(y, mo + 1, 0).getDate();
+  const lead = (new Date(y, mo, 1).getDay() + 6) % 7;   // 周一打头
+
+  const cells = [];
+  let i;
+  for (i = 0; i < lead; i++) cells.push('<span class="rdk-c is-void"></span>');
+
+  let nDays = 0;
+  let nPicks = 0;
+  for (let d = 1; d <= total; d++) {
+    const key = y + '-' + pad2(mo + 1) + '-' + pad2(d);
+    const m = meta[key];
+    const isToday = key === today;
+    const future = key > today;
+    const has = !!(m && m.picks);
+    let cls = 'rdk-c';
+    let tip;
+    if (has) {
+      cls += ' is-arch';
+      tip = '这天存了 ' + m.picks + ' 条 · ' + (m.shootable || 0) + ' 条能拍';
+      nDays++;
+      nPicks += m.picks;
+    } else if (isToday) {
+      tip = m && m.fresh === false ? '今天还没抓，下面是 ' + (rdrDataDate() || '以前') + ' 抓的' : '今天还没抓';
+    } else if (future) {
+      cls += ' is-off';
+      tip = '还没到';
+    } else {
+      cls += ' is-off';
+      tip = '这天没抓';
+    }
+    if (isToday) cls += ' is-today';
+    if (key === curKey) cls += ' is-on';
+    const inner = '<b>' + d + '</b>' + (has ? '<i>' + m.picks + '</i>' : '');
+    cells.push(has || isToday
+      ? '<button type="button" class="' + cls + '" data-rdr-day="' + key + '" title="' + esc(tip) + '">' + inner + '</button>'
+      : '<span class="' + cls + '" title="' + esc(tip) + '">' + inner + '</span>');
   }
 
-  return '<div class="rdc-strip">' + RDR_OFFSETS.map(function (off) {
-    const dt = rdrOffsetDate(off);
-    const key = fmtDate(dt);
-    const lbl = off === 0 ? '今天'
-      : off === -1 ? '昨天'
-      : off === -2 ? '前天'
-      : off === 1 ? '明天'
-      : off === 2 ? '后天'
-      : KB_WEEK[dt.getDay()];
-    const m = meta[key];
-    let cls = 'rdc-day';
-    let sub = '';
-    let click = false;
-    if (off > 0) {
-      cls += ' is-future';
-      sub = '10:20 自动抓';
-    } else if (m && m.picks) {
-      sub = m.picks + ' 条 · ' + (m.shootable || 0) + ' 能拍';
-      click = true;
-    } else {
-      cls += ' is-none';
-      sub = off === 0 ? '今天还没抓' : '没存档';
-    }
-    if (key === curKey) cls += ' is-on';
-    const inner = '<span class="rdc-lbl">' + esc(lbl) + '</span>' +
-      '<b>' + pad2(dt.getMonth() + 1) + '-' + pad2(dt.getDate()) + '</b>' +
-      '<i>' + esc(sub) + '</i>';
-    if (!click) return '<div class="' + cls + '">' + inner + '</div>';
-    return '<button type="button" class="' + cls + '" data-rdr-day="' + key + '">' + inner + '</button>';
-  }).join('') + '</div>';
+  const prev = rdrShiftYm(-1);
+  const next = rdrShiftYm(1);
+  const week = ['一', '二', '三', '四', '五', '六', '日'];
+
+  // 这天各平台抓了多少条（老板要的「每天都抓了什么」）
+  const stats = (data && data.stats) || {};
+  const plats = Object.keys(stats).filter(function (k) { return stats[k] > 0; });
+  let srcSum = 0;
+  plats.forEach(function (k) { srcSum += stats[k]; });
+  const srcHtml = plats.length
+    ? '<div class="rdk-src">' +
+        '<div class="rdk-src-h">这天扫了 ' + srcSum + ' 条热榜</div>' +
+        '<div class="rdk-src-g">' + plats.map(function (k) {
+          return '<span>' + esc(k) + '<b>' + stats[k] + ' 条</b></span>';
+        }).join('') + '</div>' +
+      '</div>'
+    : '';
+
+  return '<div class="rdk">' +
+    '<div class="rdk-head">' +
+      '<button type="button" class="rdk-nav" data-rdr-ym="-1"' + (prev ? '' : ' disabled') + ' aria-label="上个月">‹</button>' +
+      '<span class="rdk-ym">' + y + ' 年 ' + (mo + 1) + ' 月</span>' +
+      '<button type="button" class="rdk-nav" data-rdr-ym="1"' + (next ? '' : ' disabled') + ' aria-label="下个月">›</button>' +
+      '<button type="button" class="rdk-today" data-rdr-today="1">回今天</button>' +
+    '</div>' +
+    '<div class="rdk-week">' + week.map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div>' +
+    '<div class="rdk-grid">' + cells.join('') + '</div>' +
+    srcHtml +
+    '<div class="rdk-foot">' +
+      '本月 <b>' + nDays + '</b> 天 · <b>' + nPicks + '</b> 条' +
+      '<span class="rdk-dot is-on"></span><em>正在看</em>' +
+      '<span class="rdk-dot is-arch"></span><em>有存档</em>' +
+    '</div>' +
+  '</div>';
 }
 
 function rdcRow(p, i) {
@@ -1903,9 +1987,9 @@ function renderRadarPage() {
   const arch = isToday ? null : ((st.dayCache || {})[dayKey] || null);
 
   if (!isToday && !arch) {
-    return '<div class="card rd-card"><div class="rdc-wrap">' +
-      rdcStrip(dayKey) +
-      '<div class="rdc-miss">这天的存档还没读上来，切回今天再点一次</div>' +
+    return '<div class="card rd-card rd-top"><div class="rdc-wrap">' +
+      '<div class="rd-kicker"><b>每日雷达</b> 每天 10:20 抓一遍 · 一天存一份</div>' +
+      '<div class="rdc-miss">这天的存档还没读上来，点日历上的「回今天」再看一次</div>' +
     '</div></div>';
   }
 
@@ -1940,10 +2024,11 @@ function renderRadarPage() {
         '<div class="rd-slot"><span>热梗</span><b>' + ((data.meme || []).length) + '</b></div>' +
       '</div>' +
     '</div>' +
-    rdcStrip(dayKey) +
   '</div></div>';
 
-  html += '<div class="card rd-card">' +
+  html += '<div class="card rd-card rd-split">' +
+    '<div class="rdc-side">' + rdcCal(dayKey, data) + '</div>' +
+    '<div class="rdc-body">' +
     '<div class="rd-card-head">' +
       '<div class="rd-card-title">候选池<em>点一行看原文 · 点「写」直接开稿</em></div>' +
       '<div class="rd-chips">' +
@@ -1957,6 +2042,7 @@ function renderRadarPage() {
       : (RDR.more && list.length > RDR_MAX
           ? '<button type="button" class="rdc-more" data-rdr-more="1">收起来，只看前 ' + RDR_MAX + ' 条</button>'
           : '<div class="rd-note"><i></i>分数只是「值不值得开机」，最后拍哪条你自己定</div>')) +
+    '</div>' +
   '</div>';
 
   if ((data.meme || []).length) {
@@ -2015,11 +2101,19 @@ function mountRadar() {
     RDR.more = !RDR.more;
     renderView(true);
   });
-  // 手机上日期条会横向滚，把选中的那天挪进视野
-  const on = sec.querySelector('.rdc-day.is-on');
-  if (on && on.parentNode && on.parentNode.scrollWidth > on.parentNode.clientWidth + 4) {
-    on.parentNode.scrollLeft = Math.max(0, on.offsetLeft - 14);
-  }
+  const back = sec.querySelector('[data-rdr-today]');
+  if (back) back.addEventListener('click', function () {
+    RDR.ym = '';
+    rdrLoadDay(rdrToday());
+  });
+  sec.querySelectorAll('[data-rdr-ym]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      const ym = rdrShiftYm(Number(el.getAttribute('data-rdr-ym')));
+      if (!ym || ym === rdrYm()) return;
+      RDR.ym = ym;
+      renderView(true);
+    });
+  });
   sec.querySelectorAll('[data-rdr-write]').forEach(function (el) {
     el.addEventListener('click', function (e) {
       e.preventDefault();
