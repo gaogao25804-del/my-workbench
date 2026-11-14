@@ -459,7 +459,7 @@ function renderTasksPage() {
       sort: raw.slice(0, 16) || '0',
       time: raw.slice(11, 16) || '—',
       kind: done ? 'DONE' : 'TODO',
-      state: done ? '已完成' : '待办',
+      state: done ? '已完成' : (t.status === 'in_progress' ? '进行中' : '待办'),
       cat: t.category || '其他',
       tone: catTone(t.category),
       title: t.summary || '—'
