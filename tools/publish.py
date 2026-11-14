@@ -16,6 +16,7 @@ token 不写在仓库里，运行时从 git 凭据里取（或读环境变量 GI
     py -3 tools/publish.py index.html assets/workbench.css -m "改了侧栏"
     py -3 tools/publish.py radar-data.json -m "更新雷达" --branches main
     py -3 tools/publish.py index.html --check        # 只检查 token 和分支，不写任何东西
+    py -3 tools/publish.py content/drafts/index.json --rm content/drafts/旧稿.md -m "删一篇"
 """
 
 import argparse
@@ -108,9 +109,11 @@ def publish(branch, tree, message):
 
 def main():
     ap = argparse.ArgumentParser(description="推指定文件到 main / gh-pages 并触发 Pages 重建")
-    ap.add_argument("files", nargs="+", help="要发布的文件（相对仓库根目录）")
+    ap.add_argument("files", nargs="*", help="要发布的文件（相对仓库根目录）")
     ap.add_argument("-m", "--message", default="更新工作台", help="提交说明")
     ap.add_argument("--branches", default="main,gh-pages", help="默认 main,gh-pages")
+    ap.add_argument("--rm", action="append", default=[], metavar="FILE",
+                    help="要删除的远端文件（相对仓库根目录，可写多次）。tree 里给 sha=null，GitHub 就会删掉这个路径")
     ap.add_argument("--check", action="store_true", help="只检查连通性和分支，不写")
     args = ap.parse_args()
 
@@ -126,6 +129,18 @@ def main():
     if missing:
         sys.exit("找不到文件：" + ", ".join(missing))
 
+    # 删除：tree 里 sha 给 null，GitHub 在 base_tree 之上把这个路径抹掉
+    gone = []
+    if args.rm:
+        print("待删除：")
+        for f in args.rm:
+            rel = f.replace("\\", "/")
+            gone.append({"path": rel, "mode": "100644", "type": "blob", "sha": None})
+            print("  - %s" % rel)
+
+    if not tree and not gone:
+        sys.exit("没给要发布的文件，也没给 --rm 要删的文件。")
+
     branches = [b.strip() for b in args.branches.split(",") if b.strip()]
     if args.check:
         for b in branches:
@@ -137,9 +152,10 @@ def main():
     for item in tree:
         item["sha"] = blob_for(os.path.join(ROOT, item["path"]))
 
+    alltree = tree + gone
     print("写入分支：")
     for b in branches:
-        publish(b, tree, args.message)
+        publish(b, alltree, args.message)
 
     try:
         gh("POST", API + "/pages/builds", {})

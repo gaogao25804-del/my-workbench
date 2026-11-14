@@ -638,9 +638,11 @@ function bookVar(title) {
 
 const KB_WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 const KB_STORE = 'wb.kb.docs.v2';
+/* 仓库里那些稿子，在这台设备上被删掉的记录（只藏本机，不动仓库，别人还看得见） */
+const KB_HIDE = 'wb.kb.hide.v2';
 
 /* day: 日历上选中的那天（空 = 今天） · ym: 日历翻到哪个月（空 = 跟着 day） · all: 列表看这天还是全部 */
-const KB = { open: '', day: '', ym: '', all: false, md: {}, local: null, saved: '' };
+const KB = { open: '', day: '', ym: '', all: false, md: {}, local: null, hide: null, saved: '' };
 
 function kbWords(txt) { return String(txt || '').replace(/\s/g, '').length; }
 
@@ -775,6 +777,25 @@ function kbPersist() {
   } catch (e) { return false; }
 }
 
+/* ---- 远端稿的「删掉」：只在这台设备上藏起来 ---- */
+function kbHidden() {
+  if (KB.hide) return KB.hide;
+  KB.hide = {};
+  try {
+    const raw = localStorage.getItem(KB_HIDE);
+    const arr = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(arr)) arr.forEach(function (f) { if (f) KB.hide[f] = 1; });
+  } catch (e) { KB.hide = {}; }
+  return KB.hide;
+}
+
+function kbHideSave() {
+  try {
+    localStorage.setItem(KB_HIDE, JSON.stringify(Object.keys(kbHidden())));
+    return true;
+  } catch (e) { return false; }
+}
+
 /* 远端 md 拆成标题 + 正文。正文规矩跟以前一样：跳过 `## 正文` 这类标题行 */
 function kbBody(md) {
   let t = String(md || '').replace(/\r/g, '');
@@ -804,13 +825,14 @@ function kbMdParse(md) {
 
 /* 本地 + 仓库合成一份清单，同一篇按 file 去重（本地优先） */
 function kbDocs() {
-  const locals = kbLocal();
+  const hide = kbHidden();
+  const locals = kbLocal().filter(function (d) { return !(d.file && hide[d.file]); });
   const out = locals.slice();
   const files = {};
   locals.forEach(function (d) { if (d.file) files[d.file] = 1; });
   const rem = (st.drafts && st.drafts.drafts) ? st.drafts.drafts : [];
   rem.forEach(function (r) {
-    if (!r.file || files[r.file]) return;
+    if (!r.file || files[r.file] || hide[r.file]) return;
     // md 已经拉下来的话，正文直接给编辑器，别再显示「正在取原稿」
     const md = KB.md[r.file];
     const p = md != null ? kbMdParse(md) : null;
@@ -889,7 +911,7 @@ function kbEditorHtml(d) {
           ? '<button type="button" class="kb-btn" data-kb-unfinal="1">退回草稿</button>'
           : '<button type="button" class="kb-btn is-go" data-kb-final="1">标为定稿</button>') +
         '<button type="button" class="kb-btn" data-kb-copy="1">复制全文</button>' +
-        (d.local ? '<button type="button" class="kb-btn is-x" data-kb-del="1">删掉</button>' : '') +
+        '<button type="button" class="kb-btn is-x" data-kb-del="1">删掉</button>' +
       '</div>' +
     '</div>' +
     (src || link
@@ -1092,13 +1114,17 @@ function mountKoubo() {
     }
     if (isDel) {
       const d = kbGet(KB.open);
-      if (!d || !d.local) return;
+      if (!d) return;
       if (!window.confirm('删掉「' + (d.title || '没写标题') + '」？删了就找不回来。')) return;
-      KB.local = kbLocal().filter(function (x) { return x.id !== d.id; });
-      kbPersist();
+      if (d.local) {
+        KB.local = kbLocal().filter(function (x) { return x.id !== d.id; });
+        kbPersist();
+      }
+      // 仓库里也有一份的话，一起在这台设备上藏掉，否则刷一下就又冒出来
+      if (d.file) { kbHidden()[d.file] = 1; kbHideSave(); }
       KB.open = '';
       renderView(true);
-      toast('删了', 'ok');
+      toast(d.file && !d.local ? '从这台设备上拿掉了' : '删了', 'ok');
       return;
     }
   });
