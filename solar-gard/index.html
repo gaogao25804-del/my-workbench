@@ -2661,7 +2661,7 @@ body.pmodal-open{ overflow:hidden; }
 .pmodal-bd .addon-card.on{ box-shadow:none; }
 /* 图给足高度但别占满整屏——下面还有档位、实车、赠品要看 */
 .pmodal-bd .addon-card:not(.addon-card--seat) .addon-pic{
-  height:min(34vh,310px); aspect-ratio:auto; padding:8px;
+  height:min(40vh,360px); aspect-ratio:auto; padding:8px;
   border-radius:10px; background:#FBFAF6;
 }
 .pmodal-bd .addon-card--seat .addon-pic{
@@ -2670,11 +2670,9 @@ body.pmodal-open{ overflow:hidden; }
 }
 .pmodal-bd .addon-card .addon-body{ padding:30px 2px 0; }
 .pmodal-bd .addon-card .addon-pic::after{ display:none; }
-/* 图左上角那枚「正在看 XX」：浮层里图有圆角，角标别贴死边缘，长文案允许折行 */
-.pmodal-bd .addon-card .pic-tier{
-  left:8px; top:8px; border-radius:4px;
-  max-width:calc(100% - 16px); white-space:normal; line-height:1.55;
-}
+/* 图左上角「整车 12 件套 / 正在看 XX」在浮层里藏掉：
+   标题的「理想 i6 · 12 件套」已经写全，角标只会压住第一块垫子 */
+.pmodal-bd .addon-card .pic-tier{ display:none; }
 /* 底栏已经有「加入配置单」，图下那句「点此加入配置单」在浮层里是重复的 */
 .pmodal-bd .addon-card .pick-hint{ display:none; }
 .pmodal-bd .addon-card .mtier{ margin:24px 0 0; padding:24px 0 0; border-top:1px solid var(--line); }
@@ -2710,7 +2708,8 @@ body.pmodal-open{ overflow:hidden; }
   .af-badge{ left:10px; top:10px; font-size:10px; padding:4px 8px; }
   .af-cue{ right:10px; bottom:10px; font-size:10.5px; padding:7px 12px; }
 
-  .pmodal-bd .addon-card:not(.addon-card--seat) .addon-pic,
+  /* 图再压扁一点：4:3 会把价格挤到第一屏外，3:2 刚好露出来 */
+  .pmodal-bd .addon-card:not(.addon-card--seat) .addon-pic{ height:auto; aspect-ratio:3/2; }
   .pmodal-bd .addon-card--seat .addon-pic{ height:auto; aspect-ratio:4/3; }
   .pmodal-bd .addon-card .addon-body{ padding:20px 2px 0; }
   .pmodal-bd .addon-card .mtier{ margin:20px 0 0; padding:18px 0 0; }
