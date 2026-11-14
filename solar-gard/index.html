@@ -2330,6 +2330,27 @@ body.sheet-open .toast{ display:none; }
   .gift-chips span{ font-size:10px; padding:4px 8px; }
 }
 
+/* ---------- ⑦ 手机端三件套：一行三张屏，一屏看全 ---------- */
+@media (max-width:759px){
+  .three[data-set="s3"]{ grid-template-columns:repeat(3,1fr); gap:7px; margin-top:22px; }
+  .three[data-set="s3"] .ph{ aspect-ratio:4/3; }
+  .three[data-set="s3"] figcaption{ padding-top:8px; margin-top:8px; }
+  /* 每张只有 113 宽：只留屏名，「三件套含」角标和长描述都省掉，避免挤行裁字 */
+  .three[data-set="s3"] figcaption b{ font-size:11px; letter-spacing:0; white-space:nowrap; }
+  .three[data-set="s3"] figcaption > span{ display:none; }
+  .three[data-set="s3"] .fig-in{ display:none; }
+  .three[data-set="s3"] .plus-tag{ font-size:9px; padding:2px 5px; }
+  /* 小图上「实拍参考」角标占掉半张图，去掉 */
+  .three[data-set="s3"] .ph::after,
+  .three[data-set="s3"] .gal::after{ display:none; }
+  /* 卡头「三件套 中控+电视+冰箱 全都有」别折成三行：
+     卡片本身已留 132px 右侧给按钮，t-top 再留 110 就是双份，内容被挤到 90px 宽 */
+  .tiers.fold .sc-tier .t-top{ gap:7px; padding-right:0; }
+  /* 只收三件套那张（名字多两个字），两件套保持老板觉得刚好的样子 */
+  .tiers.fold .sc-tier--hl .t-lab{ font-size:14px; }
+  .tiers.fold .sc-tier--hl .t-set{ font-size:10.5px; white-space:nowrap; }
+}
+
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
