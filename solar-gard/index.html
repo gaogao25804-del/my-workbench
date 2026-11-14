@@ -2036,6 +2036,10 @@ body.sheet-open .toast{ display:none; }
 /* ---------- ① 01 屏幕保护：一条主卡 ---------- */
 .tiers.fold{ grid-template-columns:minmax(0,1fr); gap:10px; margin:34px 0 4px; }
 #screenFold{ margin:20px 0 0; }
+/* 图紧跟主卡：卡 → 实拍图 → 说明条 → 还有三件套 → 摊开对比 */
+#secScreen + .three{ margin-top:20px; }
+.sc-altbar{ margin-top:14px; }
+.sc-altbar:empty{ display:none; }
 .three{ margin-top:30px; }
 .tiers.fold .sc-tier{
   display:flex; flex-direction:column; justify-content:center;
@@ -2055,20 +2059,20 @@ body.sheet-open .toast{ display:none; }
 .tiers.fold .t-num{ font-size:56px; }
 .tiers.fold .t-num i{ font-size:22px; vertical-align:10px; }
 /* 折叠态下面那条「换成三件套 / 两件套」 */
-.tiers.fold .sc-alt{
+#secScreen .sc-alt, .sc-altbar .sc-alt{
   display:flex; align-items:center; gap:14px; flex-wrap:wrap;
   padding:15px 20px; border:1px solid var(--line); border-radius:8px;
   background:#FBFAF6; cursor:pointer; text-align:left;
   transition:border-color .2s, background .2s;
 }
-.tiers.fold .sc-alt::after{ display:none; }   /* 这行是「换一档」，不挂加入按钮角标 */
+.tiers.fold .sc-alt::after, .sc-altbar .sc-alt::after{ display:none; }   /* 这行是「换一档」，不挂加入按钮角标 */
 .tiers.fold .sc-tier{ overflow:hidden; }
 .tiers.fold .sc-tier::before{
   content:""; position:absolute; right:-40px; top:-70px; width:340px; height:340px;
   background:radial-gradient(circle, rgba(185,154,91,.15), rgba(185,154,91,0) 68%);
   pointer-events:none;
 }
-.tiers.fold .sc-alt:hover{ border-color:var(--ink); background:#fff; }
+.sc-alt:hover{ border-color:var(--ink); background:#fff; }
 .sc-alt .sa-l{ font-size:13px; font-weight:600; letter-spacing:.02em; }
 .sc-alt .sa-s{ font-size:11.5px; color:var(--sub); flex:1 1 auto; }
 .sc-alt .sa-p{ font-family:var(--fn); font-size:17px; font-weight:500; }
@@ -2078,7 +2082,7 @@ body.sheet-open .toast{ display:none; }
   border:1.5px solid var(--ink); background:var(--ink); color:#fff;
   font-size:12.5px; font-weight:600; letter-spacing:.02em;
 }
-.tiers.fold .sc-alt:hover .sa-go{ background:var(--gold); border-color:var(--gold); }
+.sc-alt:hover .sa-go{ background:var(--gold); border-color:var(--gold); }
 
 /* 图区：两件套就两张，三件套才三张，切换时淡入「弹」出来 */
 .three[data-set="s2"]{ grid-template-columns:repeat(2,1fr); }
@@ -2210,6 +2214,84 @@ body.sheet-open .toast{ display:none; }
   .gk-pic img{ height:clamp(190px, 46vw, 300px); }
 }
 
+/* ---------- ⑥ 03 玻璃膜：折叠态照车衣那套做成一张大卡 ---------- */
+.film4.fold{
+  grid-template-columns:minmax(0,1fr); gap:0;
+  background:transparent; border:0; margin-top:4px;
+}
+.film4.fold .card{
+  border:2px solid var(--ink); border-radius:12px; background:#fff;
+  padding:26px 30px 24px;
+  box-shadow:0 24px 48px -40px rgba(0,0,0,.62);
+  transition:box-shadow .2s, transform .2s;
+}
+.film4.fold .card:hover{ box-shadow:0 30px 56px -40px rgba(0,0,0,.66); }
+.film4.fold .card.picked,
+.film4.fold .card--hit.picked{
+  border-color:var(--gold); background:rgba(185,154,91,.045);
+  box-shadow:0 24px 48px -40px rgba(0,0,0,.62);
+}
+.film4.fold .card--hit:not(.picked){ box-shadow:0 24px 48px -40px rgba(0,0,0,.62); }
+.film4.fold .ctag{ display:none; }         /* 折叠态只有这一档，牌子不用再挂 */
+.film4.fold .cpicked{ display:none; }      /* 「已选 A 档」角标会压住「性价比档」，按钮已说明 */
+.film4.fold .ctagline{ display:none; }
+.film4.fold .card::before{
+  content:"性价比档"; font-size:11px; letter-spacing:.2em; color:var(--gold);
+  margin-bottom:12px;
+}
+.film4.fold .cname{ font-size:24px; letter-spacing:.08em; }
+.film4.fold .cstars{ margin-top:10px; font-size:12px; letter-spacing:.16em; }
+.film4.fold .cprice{ font-size:44px; margin-top:16px; }
+.film4.fold .cprice i{ font-size:19px; vertical-align:8px; }
+.film4.fold .cprice small{ font-size:12px; }
+.film4.fold .cdesc{ min-height:0; margin-top:14px; font-size:12.5px; line-height:1.8; max-width:620px; }
+.film4.fold .cline{ margin:16px 0 0; }
+.film4.fold .crow{
+  margin:16px 0 0; padding:14px 22px 14px 16px;
+  border:1px solid var(--line); border-radius:8px; background:#FBFAF6;
+  box-shadow:none;
+}
+.film4.fold .crow:hover{ background:#F7F4EC; border-color:#E2DCCC; }
+/* 卡右侧那片空白，用「四档一览」一句小字补上 */
+.film4.fold .card::after{
+  content:"四档任选 · GK / PRO / HONOUR / LEADER";
+  position:absolute; right:30px; top:30px; text-align:right;
+  font-size:11px; line-height:1.9; color:var(--sub2); letter-spacing:.06em;
+  pointer-events:none;
+}
+.film4.fold .crow .ck{
+  right:6px; width:auto; min-width:158px; height:52px; padding:0 20px;
+  border-radius:999px; font-size:13.5px;
+}
+/* 卡下方那条「另有 3 档」压成一行细提示 */
+.film4.fold .foldbox{
+  grid-column:1 / -1; flex-direction:row; align-items:center; gap:16px;
+  margin-top:14px; padding:13px 18px;
+  border:1px solid var(--line); border-radius:8px; background:#FBFAF6;
+}
+.film4.fold .foldbox::after{ display:none; }
+.film4.fold .fb-k{ display:none; }
+.film4.fold .fb-t{ font-size:15px; font-family:var(--ff); font-weight:600; letter-spacing:.01em; flex:none; }
+.film4.fold .fb-s{ font-size:11.5px; line-height:1.6; max-width:none; }
+.film4.fold .fb-s br{ display:none; }
+.film4.fold .foldbox .fb-go{ margin:0 0 0 auto; height:38px; flex:none; }
+
+@media (max-width:759px){
+  .film4.fold .card{ padding:20px 20px 22px; }
+  .film4.fold .cname{ font-size:19px; }
+  .film4.fold .cprice{ font-size:32px; margin-top:14px; }
+  .film4.fold .cprice i{ font-size:15px; vertical-align:6px; }
+  .film4.fold .cdesc{ margin-top:12px; }
+  .film4.fold .card::after{ display:none; }
+  .film4.fold .crow{ display:block; padding:12px 12px 60px; }
+  .film4.fold .crow .ck{
+    position:absolute; right:0; left:0; top:auto; bottom:0; transform:none;
+    width:100%; min-width:0; height:46px; font-size:13px;
+  }
+  .film4.fold .foldbox{ flex-direction:column; align-items:flex-start; gap:10px; padding:14px 15px; }
+  .film4.fold .foldbox .fb-go{ width:100%; justify-content:center; margin:0; }
+}
+
 </style>
 <style id="__dm_no_drag_style__">* { -webkit-user-drag: none !important; }</style><style id="__dm_bindable_badge_style__">[data-sp-bindable="database"]{outline:1px dashed #0088ff;outline-offset:2px;border-radius:4px;}[data-sp-bindable="database"] *{pointer-events:none !important;transition:none !important;animation:none !important;}[data-sp-bindable="database"]{transition:none !important;animation:none !important;}</style></head>
 <body data-page-node-id="TGOV7CDA56DWmnqwHpzpVB" style="">
@@ -2305,7 +2387,6 @@ body.sheet-open .toast{ display:none; }
       </div>
       <div class="t-num"><i>¥</i>699</div>
     </button></div>
-    <div class="foldbar" id="screenFold"></div>
     <div class="three" data-page-node-id="JKATlHWDcmfB6ZTCsw6Gfp">
       <figure data-part="mid" data-page-node-id="kiAm6OXbhYdC3wjNpttv67">
         <div class="ph gal" data-page-node-id="GRXbDqPdcD5rQIjTd3WaQm"><img src="asset/screen/mid.webp" alt="中控大屏无尘仓钢化膜" data-page-node-id="sqm28IGVA1MtJ4KerevfOE" loading="lazy" decoding="async"></div>
@@ -2321,6 +2402,8 @@ body.sheet-open .toast{ display:none; }
       </figure>
     </div>
     <p class="three-note" id="screenFigNote">两件套贴中控大屏 + 冰箱控制屏；后排电视屏要三件套才有，多 ¥100。<button class="note-up" data-screen="s3" hidden>换三件套 · 加 ¥100 →</button></p>
+    <div class="sc-altbar" id="screenAlt"></div>
+    <div class="foldbar" id="screenFold"></div>
   </div>
 </section>
 
@@ -3061,9 +3144,13 @@ function renderScreen(){
       <span class="pick-hint">${state.screen === o.id ? '已加入配置单' : '点此加入配置单'}</span>
       <div class="t-side"><b>ARAG</b>无尘仓一体贴膜器<br>一盖一拉就贴好</div>
     </button>`;
-  box.innerHTML = open
-    ? SCREEN.map(card).join('')
-    : card(cur) + `
+  /* 折叠态：主卡下面紧接着就是实拍图（老板要求图跟卡在一起），
+     「还有三件套」这行挪到图与说明条之后，不再夹在卡和图中间 */
+  box.innerHTML = open ? SCREEN.map(card).join('') : card(cur);
+
+  const altBox = $('#screenAlt');
+  if (altBox){
+    altBox.innerHTML = open ? '' : `
       <div class="sc-alt pick" data-screen="${alt.id}" role="button" tabindex="0"
            aria-label="换成 ${alt.name}，${alt.set}，¥${money(px(alt.price))}">
         <span class="sa-l">还有 ${alt.name}</span>
@@ -3071,6 +3158,7 @@ function renderScreen(){
         <span class="sa-p">¥${money(px(alt.price))}</span>
         <span class="sa-go">换成${alt.name} →</span>
       </div>`;
+  }
 
   const bar = $('#screenFold');
   if (bar) bar.innerHTML = `<button class="foldup" data-fold="screen">${
@@ -3128,7 +3216,7 @@ function foldBoxFilm(){
        aria-expanded="false" aria-label="展开查看全部 ${FILM.length} 档规格">
     <div class="fb-k">以上是性价比档</div>
     <div class="fb-t">另有 <b>${FILM_REST.length}</b> 档更高规格</div>
-    <div class="fb-s">${FILM_REST.map(se => `<span class="fdi"><b>${se.name}</b> ¥${money(filmFrom(se))} 起</span>`).join(' · ')}<br>隔热和透光再往上走，默认收起，需要对比时展开。</div>
+    <div class="fb-s">${FILM_REST.map(se => `<span class="fdi"><b>${se.name}</b> ¥${money(filmFrom(se))} 起</span>`).join(' · ')}</div>
     ${sel ? `<span class="fb-sel"><i>✓</i>当前已选 <b>${sel.se.name} · ${sel.t.code} 档 ¥${money(sel.t.price)}</b><u>展开看</u></span>` : ''}
     <span class="fb-go">展开全部 ${FILM.length} 档 <i>↓</i></span>
   </div>`;
@@ -3197,9 +3285,13 @@ function renderFilm(){
   renderFilmBar();
 
   const bar = $('#filmFold');
-  if (bar) bar.innerHTML = open
-    ? `<button class="foldup" data-fold="film">收起，只看 ¥${money(filmFrom(FILM_BASE))} 档 <i>↑</i></button>`
-    : `<button class="foldup" data-fold="film">查看全部 ${FILM.length} 档规格 <em>¥${money(filmFrom(FILM_REST[0]))} 起</em> <i>↓</i></button>`;
+  if (bar){
+    /* 折叠态那条提示里已经有「展开全部」，底下这颗就不再重复一遍（与车衣一致） */
+    bar.style.display = open ? '' : 'none';
+    bar.innerHTML = open
+      ? `<button class="foldup" data-fold="film">收起，只看 ¥${money(filmFrom(FILM_BASE))} 档 <i>↑</i></button>`
+      : '';
+  }
 }
 
 /* 玻璃膜「当前所选」提示条 */
