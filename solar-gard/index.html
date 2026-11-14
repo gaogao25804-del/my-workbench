@@ -918,7 +918,7 @@ a{ color:inherit; text-decoration:none; }
 .qt span{ display:block; font-size:10.5px; line-height:1.9; color:var(--sub); margin-top:6px; }
 
 .toast{
-  position:fixed; left:50%; bottom:100px; transform:translate(-50%,14px) scale(.94); z-index:99;
+  position:fixed; left:50%; bottom:100px; transform:translate(-50%,14px) scale(.94); z-index:130;
   background:rgba(17,17,17,.95); color:#fff; font-size:12.5px; letter-spacing:.02em;
   padding:11px 20px 11px 12px; border-radius:999px;
   display:flex; align-items:center; gap:10px;
@@ -1659,6 +1659,83 @@ body.sheet-open .toast{ display:none; }
 .card--hit:active{ background:#F7F4EC; box-shadow:inset 0 0 0 1.5px rgba(185,154,91,.7); }
 .card--hit.hl:active{ background:#242320; }
 .card--hit:focus-visible{ outline:2px solid var(--gold); outline-offset:-2px; }
+
+/* ============================================================
+   全部价款浮层（车衣 11 款 / 玻璃膜 12 档）
+   原来点「展开全部」是把整段列表塞回页面里，页面高度翻倍：
+   手机上展开后要往下滑很久才看到下一区，收起来又要找回原位。
+   改成盖一层内部可滚动的浮层，页面高度、滚动位置一动不动。
+   ============================================================ */
+.pmodal{
+  position:fixed; inset:0; z-index:120;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px; background:rgba(24,23,20,.46);
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity .26s ease, visibility 0s linear .26s;
+}
+.pmodal.on{
+  opacity:1; visibility:visible; pointer-events:auto;
+  transition:opacity .26s ease, visibility 0s;
+}
+.pmodal-panel{
+  width:min(960px,100%); max-height:min(90vh,900px);
+  display:flex; flex-direction:column; overflow:hidden;
+  background:#fff; border-radius:16px;
+  box-shadow:0 50px 110px -40px rgba(0,0,0,.55);
+  transform:translateY(16px) scale(.99);
+  transition:transform .32s cubic-bezier(.2,.8,.3,1);
+}
+.pmodal.on .pmodal-panel{ transform:none; }
+.pmodal-hd{
+  flex:none; position:relative;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:20px 24px 18px; border-bottom:1px solid var(--line);
+}
+.pmodal-hd h3{ font-size:15px; font-weight:600; letter-spacing:.04em; }
+.pmodal-x{
+  flex:none; width:40px; height:40px; margin:-8px -8px -8px 0;
+  border-radius:50%; font-size:22px; line-height:1; color:var(--sub);
+  display:flex; align-items:center; justify-content:center; transition:.2s;
+}
+.pmodal-x:hover{ background:#F5F3EE; color:var(--ink); }
+.pmodal-x:active{ background:#EDE9E0; }
+.pmodal-bd{
+  flex:1; min-height:0; overflow-y:auto; padding:24px;
+  -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+}
+.pmodal-ft{
+  flex:none; padding:13px 24px; border-top:1px solid var(--line);
+  background:#FBFAF6; font-size:11.5px; letter-spacing:.03em; color:var(--sub);
+}
+/* 车衣：桌面两列，比页面上的四列更宽，行更好点 */
+.pmodal-bd .coat4{ grid-template-columns:repeat(2,1fr); margin-top:0; }
+.pmodal-bd .pcol{ padding:0 28px; }
+.pmodal-bd .pcol:nth-child(odd){ border-left:0; padding-left:0; }
+.pmodal-bd .pcol:nth-child(even){ padding-right:0; }
+.pmodal-bd .film4{ grid-template-columns:repeat(2,1fr); margin-top:0; }
+.pmodal-bd .card{ padding:28px 22px 22px; }
+.pmodal-bd .prow{ margin-bottom:8px; }
+body.pmodal-open{ overflow:hidden; }
+
+@media (max-width:759px){
+  .pmodal{ align-items:flex-end; padding:0; }
+  .pmodal-panel{
+    width:100%; max-height:88vh; border-radius:16px 16px 0 0;
+    transform:translateY(26px);
+  }
+  .pmodal-hd{ padding:19px 18px 15px; }
+  .pmodal-hd::before{
+    content:""; position:absolute; left:50%; top:8px; width:36px; height:3px;
+    border-radius:2px; background:var(--line); transform:translateX(-50%);
+  }
+  .pmodal-x{ width:44px; height:44px; }
+  .pmodal-bd{ padding:16px 18px 20px; }
+  .pmodal-bd .coat4, .pmodal-bd .film4{ grid-template-columns:1fr; }
+  .pmodal-bd .pcol{ padding:0; border-left:0; }
+  .pmodal-bd .pcol + .pcol{ margin-top:4px; }
+  .pmodal-bd .pcolhead{ padding:18px 0 12px; }
+  .pmodal-ft{ padding:11px 18px calc(11px + env(safe-area-inset-bottom)); font-size:11px; }
+}
 
 
 @media (max-width:759px){
@@ -2774,6 +2851,18 @@ body.sheet-open .toast{ display:none; }
       <div class="qempty">还没勾选项目<br>返回页面选择你需要的内容</div></div>
 </div>
 
+<!-- 全部价款浮层：车衣 / 玻璃膜共用，点「展开全部」开，右上角 × 关 -->
+<div class="pmodal" id="pmodal" role="dialog" aria-modal="true" aria-labelledby="pmodalTitle" aria-hidden="true">
+  <div class="pmodal-panel">
+    <div class="pmodal-hd">
+      <h3 id="pmodalTitle">全部价款</h3>
+      <button class="pmodal-x" id="pmodalX" aria-label="关闭并返回">×</button>
+    </div>
+    <div class="pmodal-bd" id="pmodalBody"></div>
+    <div class="pmodal-ft" id="pmodalFt">点任意一款即选中；不想改就点右上角 × 退回，页面位置不会动</div>
+  </div>
+</div>
+
 <div class="toast" id="toast" data-page-node-id="H4iy2l2EOFdhnSfiYF8QeW"></div>
 
 <script>
@@ -3282,12 +3371,12 @@ function foldBoxCoat(){
   const sel = hit && hit.id !== BASE_COAT.id ? hit : null;
   return `
   <div class="foldbox foldbox--hit" data-fold="coat" role="button" tabindex="0"
-       aria-expanded="false" aria-label="展开查看全部 ${COAT_ALL.length} 款价位">
+       aria-haspopup="dialog" aria-label="弹出查看全部 ${COAT_ALL.length} 款价位">
     <div class="fb-k">以上是起步款</div>
     <div class="fb-t">另有 <b>${COAT_REST.length}</b> 款更高价位</div>
     <div class="fb-s"><b>¥${money(COAT_REST[0].price)} – ¥${money(COAT_REST[COAT_REST.length - 1].price)}</b>，差在厚度、自修复、质保年限。</div>
     ${sel ? `<span class="fb-sel"><i>✓</i>当前已选 <b>${sel.name} ¥${money(sel.price)}</b><u>展开看</u></span>` : ''}
-    <span class="fb-go">展开全部 ${COAT_ALL.length} 款 <i>↓</i></span>
+    <span class="fb-go">查看全部 ${COAT_ALL.length} 款 <i>›</i></span>
   </div>`;
 }
 
@@ -3296,22 +3385,20 @@ function foldBoxFilm(){
   const sel = hit && !FILM_BASE.tiers.some(t => t.id === hit.t.id) ? hit : null;
   return `
   <div class="foldbox foldbox--hit" data-fold="film" role="button" tabindex="0"
-       aria-expanded="false" aria-label="展开查看全部 ${FILM.length} 档规格">
+       aria-haspopup="dialog" aria-label="弹出查看全部 ${FILM.length} 档规格">
     <div class="fb-k">以上是性价比档</div>
     <div class="fb-t">另有 <b>${FILM_REST.length}</b> 档更高规格</div>
     <div class="fb-s">${FILM_REST.map(se => `<span class="fdi"><b>${se.name}</b> ¥${money(filmFrom(se))} 起</span>`).join(' · ')}</div>
     ${sel ? `<span class="fb-sel"><i>✓</i>当前已选 <b>${sel.se.name} · ${sel.t.code} 档 ¥${money(sel.t.price)}</b><u>展开看</u></span>` : ''}
-    <span class="fb-go">展开全部 ${FILM.length} 档 <i>↓</i></span>
+    <span class="fb-go">查看全部 ${FILM.length} 档 <i>›</i></span>
   </div>`;
 }
 
-function renderCoat(){
-  const open = state.coatOpen;
-  const box = $('#secCoat');
-  box.classList.toggle('fold', !open);
+/* 车衣列表：open=true → 完整 11 款（只给浮层用）；false → 页面上的折叠态一款 */
+function coatInner(open){
   const groups = open ? COAT : [{ ...COAT[0], items: [COAT[0].items[0]] }];
-  box.innerHTML = groups.map(g => {
-    /* 折叠态只剩一款：把「入门 ¥5,980 起」这块表头也做成热区，点它等于点下面那一款 */
+  return groups.map(g => {
+    /* 折叠态只剩一款：「入门 ¥5,980 起」这块表头也是热区，点它等于点下面那一款 */
     const hit = (!open && g.items.length) ? g.items[0].id : '';
     return `
     <div class="pcol">
@@ -3327,23 +3414,21 @@ function renderCoat(){
           <i class="ck"></i>
         </button>`).join('')}
     </div>`;}).join('') + (open ? '' : foldBoxCoat());
-
-  const bar = $('#coatFold');
-  if (bar){
-    /* 折叠态那条提示里已经有「展开全部」，底下这颗就不再重复一遍 */
-    bar.style.display = open ? '' : 'none';
-    bar.innerHTML = open
-      ? `<button class="foldup" data-fold="coat">收起，只看 ¥${money(BASE_COAT.price)} 起步款 <i>↑</i></button>`
-      : '';
-  }
 }
 
-function renderFilm(){
-  const open = state.filmOpen;
-  const box = $('#secFilm');
-  box.classList.toggle('fold', !open);
+function renderCoat(){
+  const box = $('#secCoat');
+  /* 页面永远停在折叠态：11 款只在浮层里出现，所以主体高度不会因为「展开」被拉长 */
+  box.classList.add('fold');
+  box.innerHTML = coatInner(false);
+  const bar = $('#coatFold');
+  if (bar){ bar.style.display = 'none'; bar.innerHTML = ''; }
+}
+
+/* 玻璃膜列表：open=true → 全部 4 档（只给浮层用）；false → 页面上的折叠态一档 */
+function filmInner(open){
   const list = open ? FILM : [FILM_BASE];
-  box.innerHTML = list.map(se => {
+  return list.map(se => {
     const cur = se.tiers.find(t => t.id === state.film);
     /* 折叠态每张卡只有一档：整张卡都做成热区，点标题/价格/星级也等于选这一档 */
     const only = (!open && se.tiers.length === 1) ? se.tiers[0] : null;
@@ -3365,16 +3450,63 @@ function renderFilm(){
           <i class="ck"></i>
         </button>`).join('')}
     </div>`}).join('') + (open ? '' : foldBoxFilm());
-  renderFilmBar();
+}
 
+function renderFilm(){
+  const box = $('#secFilm');
+  /* 同车衣：页面永远折叠，4 档规格只在浮层里出现 */
+  box.classList.add('fold');
+  box.innerHTML = filmInner(false);
+  renderFilmBar();
   const bar = $('#filmFold');
-  if (bar){
-    /* 折叠态那条提示里已经有「展开全部」，底下这颗就不再重复一遍（与车衣一致） */
-    bar.style.display = open ? '' : 'none';
-    bar.innerHTML = open
-      ? `<button class="foldup" data-fold="film">收起，只看 ¥${money(filmFrom(FILM_BASE))} 档 <i>↑</i></button>`
-      : '';
+  if (bar){ bar.style.display = 'none'; bar.innerHTML = ''; }
+}
+
+/* ============================================================
+   全部价款浮层：车衣 11 款 / 玻璃膜 12 档
+   为什么不原地展开：那会把页面撑高一倍，手机上展开后要滑很久才到下一区，
+   收起来又得滚回去找原来的位置——来回弹跳，客人没耐心。
+   这里改成盖一层，页面高度与滚动位置完全不动，右上角 × 一键退回。
+   ============================================================ */
+let pickKind = '', pickFocus = null;
+
+function openPick(kind){
+  pickKind = kind;
+  const bd = $('#pmodalBody'), tt = $('#pmodalTitle'), ft = $('#pmodalFt');
+  if (kind === 'coat'){
+    tt.textContent = `隐形车衣 · 全部 ${COAT_ALL.length} 款`;
+    bd.innerHTML = `<div class="coat4">${coatInner(true)}</div>`;
+    ft.textContent = '点任意一款即选中并回到页面 · 只想看看就点右上角 ×';
+  } else {
+    tt.textContent = `玻璃膜 · 全部 ${FILM.length} 档`;
+    bd.innerHTML = `<div class="film4">${filmInner(true)}</div>`;
+    ft.textContent = '点任意一档即选中并回到页面 · 只想看看就点右上角 ×';
   }
+  bd.scrollTop = 0;
+  /* 已经选过的那一款直接滚到视线中间：11 款单列排下来，不自动定位就要客人自己找 */
+  const sel = bd.querySelector('.prow.on, .crow.on');
+  if (sel){
+    const r = sel.getBoundingClientRect(), br = bd.getBoundingClientRect();
+    bd.scrollTop += (r.top - br.top) - (bd.clientHeight - r.height) / 2;
+  }
+  pickFocus = document.activeElement;
+  const pm = $('#pmodal');
+  pm.classList.add('on');
+  pm.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('pmodal-open');
+}
+
+function closePick(){
+  const pm = $('#pmodal');
+  if (!pm || !pm.classList.contains('on')) return;
+  pm.classList.remove('on');
+  pm.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('pmodal-open');
+  /* 焦点还回触发它的那颗按钮，键盘用户不至于迷路；preventScroll 保证页面不会被拽回去 */
+  if (pickFocus && pickFocus.focus){
+    try { pickFocus.focus({ preventScroll: true }); } catch(e){}
+  }
+  pickFocus = null;
 }
 
 /* 玻璃膜「当前所选」提示条 */
@@ -4137,21 +4269,16 @@ document.addEventListener('click', e => {
     return;
   }
 
-  /* 展开 / 收起更高价位 */
+  /* 展开更高价位：车衣 / 玻璃膜开浮层，屏幕保护仍是原地展开（只有两张卡，撑不长） */
   const fd = e.target.closest('[data-fold]');
   if (fd){
     const k = fd.dataset.fold;
-    const FLD = {
-      screen:{ open:() => state.screenOpen = !state.screenOpen, draw:renderScreen, sec:'s-screen' },
-      coat:  { open:() => state.coatOpen   = !state.coatOpen,   draw:renderCoat,   sec:'s-coat' },
-      film:  { open:() => state.filmOpen   = !state.filmOpen,   draw:renderFilm,   sec:'s-film' }
-    }[k];
-    if (FLD){
-      FLD.open();
-      const open = k === 'screen' ? state.screenOpen : k === 'coat' ? state.coatOpen : state.filmOpen;
-      FLD.draw();
-      if (!open){
-        const s = document.getElementById(FLD.sec);
+    if (k === 'coat' || k === 'film'){ openPick(k); return; }
+    if (k === 'screen'){
+      state.screenOpen = !state.screenOpen;
+      renderScreen();
+      if (!state.screenOpen){
+        const s = document.getElementById('s-screen');
         if (s) s.scrollIntoView({ behavior:'smooth', block:'start' });
       }
     }
@@ -4185,8 +4312,11 @@ document.addEventListener('click', e => {
   if (co){
     const id = co.dataset.coat;
     const was = state.coat === id;
-    const r = co.getBoundingClientRect();
+    const inModal = !!co.closest('#pmodal');
+    /* 浮层里没有「飞进购物袋」可看，位置也不该动 —— 直接量页面那张起步款卡当面跳的起点 */
+    const r = (inModal ? document.querySelector('.coat4 .prow') : co).getBoundingClientRect();
     state.coat = was ? null : id;
+    if (inModal) closePick();       /* 选完立刻退回，页面停在原位 */
     renderCoat(); refresh();
     if (!was){
       flashPick(document.querySelector(`[data-coat="${id}"]`));
@@ -4210,8 +4340,10 @@ document.addEventListener('click', e => {
   if (fi){
     const id = fi.dataset.film;
     const was = state.film === id;
-    const r = fi.getBoundingClientRect();
+    const inModal = !!fi.closest('#pmodal');
+    const r = (inModal ? document.querySelector('.film4 .card') : fi).getBoundingClientRect();
     state.film = was ? null : id;
+    if (inModal) closePick();       /* 选完立刻退回，页面停在原位 */
     renderFilm(); refresh();
     if (!was){
       flashPick(document.querySelector(`[data-film="${id}"]`));
@@ -4299,6 +4431,16 @@ document.addEventListener('keydown', e => {
     const n = document.querySelector(`[data-acc="${key}"],[data-screen="${key}"],[data-coat="${key}"],[data-film="${key}"]`);
     if (n && n.focus) n.focus();
   });
+});
+
+/* 浮层的三个出口：右上角 ×、点遮罩空白、Esc */
+$('#pmodalX').onclick = closePick;
+$('#pmodal').addEventListener('click', e => {
+  /* 只认点遮罩本身：面板里点到空白处不关，选到一半手抖不至于全白看 */
+  if (e.target.id === 'pmodal') closePick();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' || e.key === 'Esc') closePick();
 });
 
 $('#cbGo').onclick = () => {
