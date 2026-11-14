@@ -13,6 +13,18 @@
    "status": "draft",
    "publish_at": "19:00",
    "device": "puraxview"
+  },
+  {
+   "file": "content/drafts/2026-11-04-iPhoneDuo裂屏了怎么办.md",
+   "date": "2026-11-04",
+   "title": "iPhoneDuo裂屏了怎么办",
+   "topic_id": "J2",
+   "hook": "裂了等不到一月份，先用x8顶着，回头还挣点",
+   "words": 288,
+   "duration_sec": 52,
+   "status": "draft",
+   "publish_at": "19:00",
+   "device": "iPhoneduo"
   }
  ]
 }
