@@ -4026,7 +4026,7 @@ function bigCard(a, detail){
         <div class="fs-hd"><b>实车铺装</b><span>同一套垫体换毯面的实车效果 · 毯面可另配</span></div>
         <div class="fit-row">
           ${FIT_FIGS.map(f => `<div class="fit-item">
-            <div class="pframe"><img src="${f.img}" alt="${f.alt}" loading="lazy" decoding="async"></div>
+            <div class="pframe"><img src="${f.img}" alt="${f.alt}" loading="eager" decoding="async"></div>
             <div class="fit-cap">${f.alt.replace('实车铺装 · ', '')}</div>
           </div>`).join('')}
         </div>
