@@ -895,6 +895,15 @@ a{ color:inherit; text-decoration:none; }
 .qv small{ display:block; font-size:10.5px; color:var(--sub); font-weight:400; margin-top:4px; }
 .qp{ font-family:var(--fn); font-size:14px; }
 .qp i{ font-style:normal; font-size:10px; color:var(--sub); margin-right:1px; }
+/* 配置单按车型分段：一台车一段，段头写清车型 / 项数 / 小计。
+   一张单子里同时有 i6 和 i8 时才出现，单车型还是原来那张单子 */
+.qgrp{
+  display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+  margin:20px 0 2px; padding:0 0 9px; border-bottom:1px solid var(--ink);
+}
+.qgrp b{ font-size:13px; font-weight:600; letter-spacing:.03em; }
+.qgrp span{ font-size:10.5px; color:var(--sub); letter-spacing:.03em; }
+.qgrp em{ margin-left:auto; font-style:normal; font-family:var(--fn); font-size:13.5px; letter-spacing:-.01em; }
 /* 合计：全单最该被看清的一个数，加重分隔 + 淡金底 + 更大字号 */
 .qtotal{
   display:flex; align-items:baseline; justify-content:space-between;
@@ -1534,6 +1543,51 @@ body.has-models .hero{ padding-top:0; }
 @media (hover:hover){
   .mchip:not(.on):hover{ border-color:var(--ink); transform:translateY(-1px); box-shadow:0 8px 18px -14px rgba(0,0,0,.5); }
 }
+/* 点了车型：胶囊弹一下 + 车型条底下扫一道金线 + 页面内容上浮淡入，
+   不然换个车型价格没变（玻璃膜各车同价），客人以为没点上 */
+@keyframes chipTap{ 0%{transform:scale(.93)} 55%{transform:scale(1.05)} 100%{transform:scale(1)} }
+.mchip.tap{ animation:chipTap .44s cubic-bezier(.2,1.3,.4,1); }
+@keyframes mbSweep{ 0%{width:0;opacity:1} 55%{width:100%;opacity:1} 100%{width:100%;opacity:0} }
+.modelbar::after{
+  content:""; position:absolute; left:0; bottom:-1px; height:2px; width:0;
+  background:linear-gradient(90deg,var(--gold),#E9D6AA); opacity:0; pointer-events:none;
+}
+body.model-swap .modelbar::after{ animation:mbSweep .8s ease-out; }
+@keyframes modelSwapIn{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+body.model-swap .hero-top, body.model-swap .sec{ animation:modelSwapIn .48s cubic-bezier(.2,.7,.2,1) both; }
+body.model-swap .sec{ animation-delay:.05s; }
+@media (prefers-reduced-motion: reduce){
+  body.model-swap .hero-top, body.model-swap .sec, .mchip.tap{ animation:none; }
+  body.model-swap .modelbar::after{ animation:none; }
+}
+
+/* 换车型回执：贴在车型条下面滑进来，5.6s 自己收；
+   里面留一颗「回到刚才那一段」，被弹回顶部的客人一键回去继续比价 */
+.msb{
+  position:fixed; left:50%; z-index:68; top:150px;
+  display:flex; align-items:center; gap:12px;
+  width:min(660px, calc(100vw - 28px));
+  padding:12px 13px 12px 12px; border-radius:14px;
+  background:rgba(17,17,17,.96); color:#fff;
+  box-shadow:0 18px 44px -18px rgba(0,0,0,.7);
+  opacity:0; transform:translate(-50%,-10px) scale(.98); pointer-events:none;
+  transition:opacity .26s, transform .34s cubic-bezier(.2,1.2,.4,1);
+}
+.msb.on{ opacity:1; transform:translate(-50%,0) scale(1); pointer-events:auto; }
+.msb-ic{
+  flex:none; width:24px; height:24px; border-radius:50%; background:var(--gold); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;
+}
+.msb-t{ flex:1; min-width:0; }
+.msb-t b{ display:block; font-size:13px; font-weight:600; letter-spacing:.02em; }
+.msb-t span{ display:block; margin-top:3px; font-size:11px; color:rgba(255,255,255,.56); letter-spacing:.02em; }
+.msb-back{
+  flex:none; height:32px; padding:0 14px; border-radius:999px; cursor:pointer;
+  border:1px solid rgba(255,255,255,.3); background:transparent; color:#fff;
+  font-size:11.5px; font-family:inherit; letter-spacing:.02em; white-space:nowrap;
+  transition:background .2s, border-color .2s;
+}
+.msb-back:hover{ background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.55); }
 
 /* 全系同价角标 */
 .sec-h .same{
@@ -2809,6 +2863,8 @@ body.pmodal-open{ overflow:hidden; }
     <div class="mb-list" id="mbList"></div>
   </div>
 </div>
+<!-- 换车型回执条（默认隐藏，点车型才滑进来） -->
+<div class="msb" id="msb" role="status" aria-live="polite"></div>
 
 <!-- ========== HERO ========== -->
 <header class="hero" data-page-node-id="1L02QMtj7sA5f0ZCADLpE1">
@@ -3429,27 +3485,27 @@ const SEAT2 = {
 };
 
 /* 脚垫：当前车型在看的那一档；坐垫：当前车型选中的那一款 + 那个配色 */
-function curTier(){
-  const lad = MAT_LADDER[state.model] || [];
-  const want = state.tier[state.model];
+function curTier(mid = state.model){
+  const lad = MAT_LADDER[mid] || [];
+  const want = state.tier[mid];
   return lad.find(t => t.n === want) || lad.find(t => t.hot) || lad[lad.length - 1] || null;
 }
-function curSeatKind(){
-  const list = SEAT2[state.model] || [];
-  const want = state.seatKind[state.model];
+function curSeatKind(mid = state.model){
+  const list = SEAT2[mid] || [];
+  const want = state.seatKind[mid];
   return list.find(o => o.k === want) || list.find(o => o.k === 'full') || list[list.length - 1] || null;
 }
 /* 当前款式下看的配色：记住每款车每款式的选择，切换款式不丢色 */
-function seatColorOf(row){
+function seatColorOf(row, mid = state.model){
   if (!row || !row.colors || !row.colors.length) return null;
-  const bag = state.seatColor[state.model] || (state.seatColor[state.model] = {});
+  const bag = state.seatColor[mid] || (state.seatColor[mid] = {});
   const want = bag[row.k];
   return row.colors.find(c => c.c === want) || row.colors[0];
 }
 
 /* 这一档具体含哪些件：把前几档的增量串成一句，单据上不会出现「5 件套却写着含前仓垫/毯面」 */
-function tierSpec(t){
-  const lad = MAT_LADDER[state.model] || [];
+function tierSpec(t, mid = state.model){
+  const lad = MAT_LADDER[mid] || [];
   const i = lad.findIndex(x => x.n === (t && t.n));
   if (i < 0) return '';
   return lad.slice(0, i + 1).map(x => x.inc.replace(/^\+\s*/, '')).join(' + ');
@@ -3470,9 +3526,9 @@ function tierStore(t, ms){
    以前 inc 是「相对上一档加了什么」，得从第一档累加才能看出含不含毯面。
    2026-11-09 起每款车只剩顶配一档（整车整套），整车整套必带毯面，
    直接看 MAT_SET.mats 更准；MEGA 是全包脚垫，表层恒带。 */
-function tierHasMats(t){
+function tierHasMats(t, mid = state.model){
   if (!t) return false;
-  const ms = MAT_SET[state.model];
+  const ms = MAT_SET[mid];
   if (!ms) return false;
   return !ms.n || !!ms.mats;
 }
@@ -3550,10 +3606,32 @@ const ACC_SMALL = [
 
 /* ========================= 状态 ========================= */
 const state = {
-  model:'i6', screen:null, coat:null, film:null, silColor:'w', silIn:false, acc:new Set(),
+  model:'i6',
+  /* 配置单按车型各记一桶：i6 的脚垫和 i8 的脚垫是两件东西，同一张单子里可以同时有，
+     互不覆盖。以前只有一个全局 Set，切到 i8 再点一次「加入」，i6 那行就被顶掉了。 */
+  cart:{},
   coatOpen:false, filmOpen:false, screenOpen:false,   /* 折叠：默认只看起步价 / 只露一张主卡 */
   tier:{}, seatKind:{}, seatColor:{}       /* 脚垫看哪一档 / 坐垫选哪款哪色，按车型各记一份 */
 };
+
+/* 某台车的配置桶；读的时候顺手建空桶，省掉满屏判空 */
+const cart = (mid = state.model) => state.cart[mid] ||
+  (state.cart[mid] = { screen:null, coat:null, film:null, silIn:false, acc:new Set(), silColor:'w' });
+const cartHas = mid => {
+  const b = state.cart[mid];
+  return !!(b && (b.screen || b.coat || b.film || b.silIn || b.acc.size));
+};
+
+/* 这六项以前是全局单一值，切车型就互相覆盖。现在做成「当前车型那一桶」的读写口：
+   老的 state.acc.has(...) / state.silIn = ... 一个都不用改，语义变成「这台车选了什么」 */
+Object.defineProperties(state, {
+  screen:  { enumerable:true, get:() => cart().screen,  set:v => { cart().screen  = v; } },
+  coat:    { enumerable:true, get:() => cart().coat,    set:v => { cart().coat    = v; } },
+  film:    { enumerable:true, get:() => cart().film,    set:v => { cart().film    = v; } },
+  silIn:   { enumerable:true, get:() => cart().silIn,   set:v => { cart().silIn   = v; } },
+  acc:     { enumerable:true, get:() => cart().acc },
+  silColor:{ enumerable:true, get:() => cart().silColor, set:v => { cart().silColor = v; } }
+});
 
 /* 起步价基准：车衣取第一款，玻璃膜取最低的一档 */
 const COAT_ALL  = COAT.flatMap(g => g.items);
@@ -3561,7 +3639,7 @@ const BASE_COAT = COAT[0].items[0];
 const COAT_REST = COAT_ALL.filter(i => i.id !== BASE_COAT.id).sort((a,b) => a.price - b.price);
 
 /* ===== 车型 ===== */
-const curModel = () => MODELS.find(m => m.id === state.model) || MODELS[0];
+const curModel = (mid = state.model) => MODELS.find(m => m.id === mid) || MODELS[0];
 /* hero 大图：i6 用超宽横幅，其余车型用各自的方图裁成横幅 */
 const HERO = {
   i6:'asset/car_hero.webp', i8:'asset/car_i8_sq.webp', i9:'asset/car_i9_sq.webp',
@@ -4199,12 +4277,13 @@ const GKSIZE = {
   'asset/acc/sil/set_mega_white.webp':[883,680]
 };
 
-const silGift = () => curModel().gift || null;
+const silGift = (mid = state.model) => curModel(mid).gift || null;
 
 /* 当前车型下选中的颜色：换车型后若该色不存在，自动落回第一色 */
-function curSilSet(g){
+function curSilSet(g, mid = state.model){
   if (!g || !g.sets || !g.sets.length) return null;
-  return g.sets.find(x => x.k === state.silColor) || g.sets[0];
+  const want = cart(mid).silColor;
+  return g.sets.find(x => x.k === want) || g.sets[0];
 }
 
 function renderSil(animate){
@@ -4323,27 +4402,42 @@ function renderAcc(){
 }
 
 /* ========================= 结算 ========================= */
+/* 配置单是所有车型的桶摊平成一张单子：先看 i6 的，再看 i8 的。
+   每一行都带 m（哪台车）——删行、分组、复制文案全靠它，rid 仍保持原来的语义键 */
 function picked(){
   const out = [];
-  const s = SCREEN.find(x => x.id === state.screen);
-  if (s) out.push({ rid:'sc', k:'屏幕保护', v:`${s.name} · ${s.set}`, p:px(s.price) });
+  MODELS.forEach(m => {
+    if (m.ready === false) return;
+    if (!cartHas(m.id)) return;
+    pickedFor(m.id, out);
+  });
+  return out;
+}
+
+function pickedFor(mid, out){
+  const bk = cart(mid);
+  const push = row => out.push(Object.assign({ m: mid, mname: curModel(mid).name }, row));
+
+  const s = SCREEN.find(x => x.id === bk.screen);
+  if (s) push({ rid:'sc', k:'屏幕保护', v:`${s.name} · ${s.set}`, p:px(s.price) });
 
   /* 车衣全系同价，不走尺寸系数 */
   COAT.forEach(g => g.items.forEach(it => {
-    if (it.id === state.coat) out.push({ rid:'coat:'+it.id, k:'隐形车衣', v:it.name, sub:it.spec, p:pxC(it.price), same:true });
+    if (it.id === bk.coat) push({ rid:'coat:'+it.id, k:'隐形车衣', v:it.name, sub:it.spec, p:pxC(it.price), same:true });
   }));
 
   FILM.forEach(se => se.tiers.forEach(t => {
-    if (t.id === state.film) out.push({ rid:'film:'+t.id, k:'玻璃膜', v:`${se.name} · ${t.code} 档`, sub:t.spec, p:px(t.price) });
+    if (t.id === bk.film) push({ rid:'film:'+t.id, k:'玻璃膜', v:`${se.name} · ${t.code} 档`, sub:t.spec, p:px(t.price) });
   }));
 
   ACC_BIG.concat(ACC_SMALL).forEach(a => {
-    if (state.acc.has(a.id)){
-      /* 脚垫、座椅垫都按车型走：件套与价格跟着当前车型 + 当前档位，不能拿一款的价套七款 */
+    if (bk.acc.has(a.id)){
+      /* 脚垫、座椅垫都按车型走：件套与价格跟着「这一桶的车型」+ 它自己选的档位，
+         不能拿一款的价套七款，也不能拿 i6 选的档去算 i8 */
       let ms = null, aName = a.name, setTxt = '', ap = a.price, gift = false, tbd = false;
       if (a.slot === 'foot'){
-        ms = MAT_SET[curModel().id] || null;
-        const ct = curTier();
+        ms = MAT_SET[mid] || null;
+        const ct = curTier(mid);
         aName = (ms && ms.title) || a.name;
         /* MEGA 的 aName 本身就是「全包脚垫」，不再补件套后缀避免重复 */
         setTxt = ct ? (ct.n ? ct.n + ' 件套' : '')
@@ -4353,11 +4447,11 @@ function picked(){
         tbd = st == null;
         ap = st != null ? st : ((ms && ms.price) || a.price);
         /* 赠品必须写清件数和颜色：老板交车时照着单子配货，光写「套装」等于没写 */
-        const gg = silGift(), gs = curSilSet(gg);
+        const gg = silGift(mid), gs = curSilSet(gg, mid);
         gift = { n:(gg && gg.n) || 0, color: gs ? gs.n : '' };
       } else if (a.slot === 'seat'){
-        const o = curSeatKind();
-        const col = seatColorOf(o);
+        const o = curSeatKind(mid);
+        const col = seatColorOf(o, mid);
         aName = o ? o.name : a.name;
         setTxt = o ? (o.n ? o.n + ' 件套' : '按车型配') : '';
         if (col) setTxt += ' · ' + SEAT_CNAME[col.c];
@@ -4366,20 +4460,20 @@ function picked(){
         ap = (o && o.p != null) ? o.p : 0;
         gift = !!a.gift;
       }
-      const ct2 = a.slot === 'foot' ? curTier() : null;
+      const ct2 = a.slot === 'foot' ? curTier(mid) : null;
       /* MEGA 是全包（ms.n 为空）恒带表层；其他车按当前档看带不带毯 */
-      const hasMats = a.slot === 'foot' && !!(ms && (ms.n ? tierHasMats(ct2) : true));
+      const hasMats = a.slot === 'foot' && !!(ms && (ms.n ? tierHasMats(ct2, mid) : true));
       const nm = setTxt ? `${aName} · ${setTxt}` : aName;
       /* 脚垫的说明按档重写：5 件套就别再写「含前仓垫 / 靠背垫 / 三款毯面」 */
       let sub;
       if (a.slot === 'foot'){
         sub = (ms && !ms.n)
           ? ((ms.spec || a.spec) || '').replace(/<br>/g, ' ')          /* MEGA 全包脚垫 */
-          : [tierSpec(ct2), hasMats ? (ms && ms.mats) : ''].filter(Boolean).join(' · ');
+          : [tierSpec(ct2, mid), hasMats ? (ms && ms.mats) : ''].filter(Boolean).join(' · ');
       } else {
         sub = (a.spec || '').replace(/<br>/g, ' ');
       }
-      out.push({
+      push({
         rid:'acc:'+a.id, k:'配件', v:nm, sub,
         p: px(ap), gift, tbd,
         footSet: ms ? {
@@ -4394,18 +4488,17 @@ function picked(){
   /* 全车硅胶套装：不是商品，是脚垫的赠品，所以价格记 0、单据上打「赠」。
      脚垫已在单里时不再单列一行——脚垫那行本来就写着「含赠品 全车硅胶 N 件套 · 颜色」，
      再列一遍老板会以为送两套。 */
-  if (state.silIn){
-    const gg = silGift(), gs = curSilSet(gg);
-    const footIn = out.some(x => x.rid === 'acc:a1');
+  if (bk.silIn){
+    const gg = silGift(mid), gs = curSilSet(gg, mid);
+    const footIn = out.some(x => x.m === mid && x.rid === 'acc:a1');
     if (gg && !footIn){
-      out.push({
+      push({
         rid:'sil', k:'赠品', v:`全车硅胶 ${gg.n} 件套`,
         sub:`${gs ? gs.n + ' · ' : ''}随脚垫赠送，下单需同时选脚垫`,
         p:0, free:true
       });
     }
   }
-  return out;
 }
 
 /* 价格滚动：从旧值滚到新值，并闪一下金色 */
@@ -4506,11 +4599,16 @@ function refresh(){
   if (n !== lastN){ lastN = n; pulseCart(); }
   const cl = $('#cbList');
   if (cl){
+    const ids = [...new Set(list.map(x => x.m))];
     const names = list.map(x => x.v.split(/[ ·（(]/)[0]);
-    cl.innerHTML = names.length
-      ? names.slice(0, 3).map(v => `<b>${v}</b>`).join(' · ') +
-        (names.length > 3 ? ` 等 ${names.length} 项` : '')
-      : '';
+    /* 单子里有第二台车时，底部条上先把车型点出来：
+       不然客人当前页什么都没选，购物袋却亮着 3 项，会以为页面出错了 */
+    cl.innerHTML = !list.length ? ''
+      : ids.length > 1
+        ? ids.map(id => `<b>${curModel(id).name.replace('理想 ', '')}</b>`).join(' · ') +
+          ` ${ids.length} 个车型 · ${list.length} 项`
+        : names.slice(0, 3).map(v => `<b>${v}</b>`).join(' · ') +
+          (names.length > 3 ? ` 等 ${names.length} 项` : '');
   }
   const nb = $('#navBtn');
   if (nb) nb.textContent = n ? `我的配置单 · ${n}` : '我的配置单';
@@ -4537,8 +4635,24 @@ function syncNavDots(){
   });
 }
 
+/* 按车型分堆：单车型时就是原来那张单子，多车型时每台车一段，各自小计 */
+function cartGroups(list){
+  const groups = [];
+  list.forEach(x => {
+    let g = groups.find(g => g.id === x.m);
+    if (!g){
+      const md = curModel(x.m);
+      g = { id: x.m, name: md.name, sub: md.body || '', rows: [], sum: 0 };
+      groups.push(g);
+    }
+    g.rows.push(x);
+    g.sum += x.p;
+  });
+  return groups;
+}
+
 function renderSheet(list, total){
-  const m = MODELS.find(x => x.id === state.model);
+  const m = curModel();
   if (!list.length){
     $('#sheetBody').innerHTML = `
       <div class="qcar">车型：<b>${m.name}${m.sub?' · '+m.sub:''}</b></div>
@@ -4547,17 +4661,35 @@ function renderSheet(list, total){
     $('#btnEmptyBack').onclick = closeSheet;
     return;
   }
-  const rows = list.map((x, i) => `
+  const groups = cartGroups(list);
+  const multi = groups.length > 1;
+
+  const rowHTML = (x, i) => `
     <div class="qline" style="--i:${i}">
       <span class="qk">${x.k}</span>
       <span class="qv">${x.v}${x.sub?`<small>${x.sub}</small>`:''}
         ${x.gift?`<small style="color:#C09A4A">含赠品：全车硅胶 ${x.gift.n} 件套${x.gift.color?' · '+x.gift.color:''}</small>`:''}</span>
       <span class="qp">${x.free?'<b class="free-p">赠</b>':x.tbd?'<b class="tbd-p">到店核</b>':`<i>¥</i>${money(x.p)}`}</span>
-      <button class="qdel" data-del="${x.rid}" aria-label="删除：${x.v}" title="删除此项">×</button>
-    </div>`).join('');
+      <button class="qdel" data-del="${x.m}|${x.rid}" aria-label="删除：${x.v}" title="删除此项">×</button>
+    </div>`;
+
+  let head, rows;
+  if (multi){
+    let i = 0;
+    rows = groups.map(g => `
+      <div class="qgrp">
+        <b>${g.name}</b>
+        <span>${g.sub ? g.sub + ' · ' : ''}${g.rows.length} 项</span>
+        <em>¥${money(g.sum)}</em>
+      </div>` + g.rows.map(x => rowHTML(x, i++)).join('')).join('');
+    head = `<span>共 ${list.length} 项 · ${groups.length} 个车型</span>`;
+  } else {
+    rows = groups[0].rows.map(rowHTML).join('');
+    head = `<span>车型：<b>${m.name}${m.sub?' · '+m.sub:''}</b>　｜　共 ${list.length} 项</span>`;
+  }
 
   $('#sheetBody').innerHTML = `
-    <div class="qcar"><span>车型：<b>${m.name}${m.sub?' · '+m.sub:''}</b>　｜　共 ${list.length} 项</span>
+    <div class="qcar">${head}
       <button class="qclear" id="btnClearAll">清空全部</button></div>
     ${rows}
     <div class="qtotal">
@@ -4568,7 +4700,9 @@ function renderSheet(list, total){
       <button class="qbtn" id="btnCopy">复制发给老板 →</button>
       <button class="qbtn ghost" id="btnClose2">继续挑选</button>
     </div>
-    <div class="qnote">以上为${m.name}零售价；车衣为全系同价，其他车型尺寸价另计；窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。</div>
+    <div class="qnote">${multi
+      ? '以上为各车型零售价，按下单车型分别核价；车衣为全系同价，窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。'
+      : `以上为${m.name}零售价；车衣为全系同价，其他车型尺寸价另计；窗膜为前挡 + 侧挡组合价，配件不含施工。最终以门店报价为准。`}</div>
     <div class="qrwrap">
       <img src="asset/qr.png" alt="微信二维码" loading="lazy" decoding="async">
       <div class="qt">
@@ -4577,19 +4711,26 @@ function renderSheet(list, total){
       </div>
     </div>`;
 
-  $('#btnCopy').onclick = () => copyQuote(list, total, m);
+  $('#btnCopy').onclick = () => copyQuote(list, total);
   $('#btnClose2').onclick = closeSheet;
 }
 
 /* 单项删除：卡片、价格、购物袋计数、顶部导航金点都由 refresh 统一收口，
-   所以这里只要清掉 state 里的那一项，绝不能只从配置单里抹掉一行 DOM。 */
-function removeItem(rid, rowEl){
+   所以这里只要清掉那一桶里的那一项，绝不能只从配置单里抹掉一行 DOM。
+   行上带的是「车型|键」，删 i8 的行不能把 i6 的同名配件一起删掉。 */
+function removeItem(spec, rowEl){
+  const cut = spec.indexOf('|');
+  const mid = cut > 0 ? spec.slice(0, cut) : state.model;
+  const rid = cut > 0 ? spec.slice(cut + 1) : spec;
   const run = () => {
-    if (rid === 'sc'){ state.screen = null; renderScreen(); }
-    else if (rid.indexOf('coat:') === 0){ state.coat = null; renderCoat(); }
-    else if (rid.indexOf('film:') === 0){ state.film = null; renderFilm(); }
-    else if (rid.indexOf('acc:') === 0){ state.acc.delete(rid.slice(4)); renderAcc(); }
-    else if (rid === 'sil'){ state.silIn = false; renderSil(); }
+    const bk = cart(mid);
+    if (rid === 'sc'){ bk.screen = null; }
+    else if (rid.indexOf('coat:') === 0){ bk.coat = null; }
+    else if (rid.indexOf('film:') === 0){ bk.film = null; }
+    else if (rid.indexOf('acc:') === 0){ bk.acc.delete(rid.slice(4)); }
+    else if (rid === 'sil'){ bk.silIn = false; }
+    /* 页面画的永远是当前车型，删的是别的车的行就别白重画一遍 */
+    if (mid === state.model){ renderScreen(); renderCoat(); renderFilm(); renderAcc(); renderSil(); }
     refresh();
     toast('已移出配置单', 'warn');
   };
@@ -4598,35 +4739,51 @@ function removeItem(rid, rowEl){
   else run();
 }
 
+/* 「清空全部」= 七款车一起清。只清当前车型的会让人以为单子坏了 */
 function clearCart(){
-  state.screen = null; state.coat = null; state.film = null;
-  state.silIn = false;
-  state.acc.clear();
+  Object.keys(state.cart).forEach(k => {
+    const bk = state.cart[k];
+    bk.screen = null; bk.coat = null; bk.film = null; bk.silIn = false;
+    bk.acc.clear();
+  });
   renderScreen(); renderCoat(); renderFilm(); renderAcc(); renderSil();
   refresh();
   toast('配置单已清空', 'warn');
 }
 
-function copyQuote(list, total, m){
-  const lines = [
-    '郝金彪的理想车库 · 报价单',
-    `车型：${m.name}${m.sub ? ' · ' + m.sub : ''}`,
-    '————————————'
-  ];
-  list.forEach(x => {
+function copyQuote(list, total){
+  const groups = cartGroups(list);
+  const lines = ['郝金彪的理想车库 · 报价单'];
+  const rowLines = x => {
     lines.push(`${x.k}　${x.v}　${x.free ? '赠品（不另计价）' : x.tbd ? '价格到店核' : fmt(x.p)}`);
     /* 脚垫的件数、毯面跟着「选中的那一档」走，单据上写清楚，老板交车时才不用再问一遍 */
     if (x.footSet){
       const f = x.footSet;
       lines.push(`　　配 ${f.mats ? f.mats + (f.yr ? ' · ' + f.yr : '') + '　' : ''}${f.n ? f.n + ' 件套' : '整车全包'}`);
     }
-    /* 赠品写实：件数按当前车型、颜色按当前选的那一色，老板照单配货不会配错 */
+    /* 赠品写实：件数按该车型、颜色按该车型选的那一色，老板照单配货不会配错 */
     if (x.gift){
       lines.push(`　　赠 全车硅胶 ${x.gift.n} 件套${x.gift.color ? ' · ' + x.gift.color : ''}`);
     }
-  });
-  lines.push('————————————');
-  lines.push(`合计　${fmt(total)}`);
+  };
+
+  if (groups.length > 1){
+    lines.push(`共 ${groups.length} 个车型 · ${list.length} 项`);
+    groups.forEach(g => {
+      lines.push('————————————');
+      lines.push(`【${g.name}】${g.sub ? g.sub + ' · ' : ''}${g.rows.length} 项`);
+      g.rows.forEach(rowLines);
+      lines.push(`小计　${fmt(g.sum)}`);
+    });
+    lines.push('————————————');
+    lines.push(`合计　${fmt(total)}`);
+  } else {
+    lines.push(`车型：${groups[0].name}${groups[0].sub ? ' · ' + groups[0].sub : ''}`);
+    lines.push('————————————');
+    groups[0].rows.forEach(rowLines);
+    lines.push('————————————');
+    lines.push(`合计　${fmt(total)}`);
+  }
   lines.push('不含施工 · 到店免费实测');
   lines.push('SolarGard 圣佳授权店');
 
@@ -5030,20 +5187,81 @@ function setModel(id){
   const m = MODELS.find(x => x.id === id);
   /* 没价目的车型不给切，避免出现推算出来的假价格 */
   if (!m || m.ready === false || state.model === id) return;
+  const from = curModel();
+  /* 切之前停在哪一区：切完会跳回这台车的开头，得留一条「回到刚才那一段」的路，
+     否则在玻璃膜那边比价的人被弹回顶部，还得自己滑下来 */
+  const backTo = currentSection();
   state.model = id;
-  /* 每个车型默认落到它自己的第一种颜色（就是老板截图里选中的那色），
-     避免带着上一款的色号过来，出现「选的是白色但这款没白色」的错位 */
-  const g = m.gift;
-  if (g && g.sets && g.sets.length) state.silColor = g.sets[0].k;
   renderModelBar();
   renderScreen(); renderFilm(); renderSil(); renderAcc();
   refresh();
-  toast(`已切换到 ${curModel().name} · 价格按车型重算`, 'ok');
+  modelSwitchFx(m, from, backTo);
 }
+
+/* 当前在哪个分区：用「视口上方 40%」当分界，比固定 px 稳——
+   页面里 html 有 scroll-padding，吸顶导航高度也随断点变，钉死一条线会判错 */
+function currentSection(){
+  const line = window.innerHeight * 0.4;
+  let cur = '';
+  SEC_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= line) cur = id;
+  });
+  return cur;
+}
+
+const SEC_NAME = { 's-screen':'屏幕保护', 's-coat':'隐形车衣', 's-film':'玻璃膜', 's-acc':'配件' };
+let msbTimer;
+
+/* 换车型的三件事：跳到这台车的开头 / 内容整体换一遍 / 顶部留一条「已切换」的回执 */
+function modelSwitchFx(m, from, backTo){
+  document.body.classList.remove('model-swap');
+  void document.body.offsetWidth;
+  document.body.classList.add('model-swap');
+  setTimeout(() => document.body.classList.remove('model-swap'), 760);
+
+  /* 原地不动地换价格，客人根本看不出换了车（玻璃膜四档价各车型一样）；
+     直接回到这台车的开头，hero 图、车型名、座舱数一起换，一眼就知道自己换车了 */
+  window.scrollTo({ top:0, behavior:'smooth' });
+
+  const chip = document.querySelector(`.mchip[data-m="${m.id}"]`);
+  if (chip){ chip.classList.remove('tap'); void chip.offsetWidth; chip.classList.add('tap'); }
+
+  showModelBanner(m, from, backTo);
+}
+
+function showModelBanner(m, from, backTo){
+  const bar = $('#msb');
+  if (!bar) return;
+  const mb = $('#modelBar');
+  if (mb) bar.style.top = Math.round(mb.getBoundingClientRect().bottom + 8) + 'px';
+  const backName = SEC_NAME[backTo] || '';
+  bar.innerHTML = `
+    <span class="msb-ic">✓</span>
+    <div class="msb-t">
+      <b>已切换到 ${m.name}</b>
+      <span>${m.body} · 全车价格按 ${m.name} 重算</span>
+    </div>
+    ${backName && backTo ? `<button class="msb-back" data-msb="${backTo}">回到${backName} ↑</button>` : ''}`;
+  bar.classList.add('on');
+  clearTimeout(msbTimer);
+  msbTimer = setTimeout(() => bar.classList.remove('on'), 5600);
+}
+
+/* 颜色不用再重置：每台车各存一个 silColor（默认 'w'），
+   该车型没有这个色时 curSilSet 会自动落回它的第一色，不会再出现「带上一款的色号过来」 */
 
 document.addEventListener('click', e => {
   const mc = e.target.closest('[data-m]');
-  if (mc) setModel(mc.dataset.m);
+  if (mc){ setModel(mc.dataset.m); return; }
+  /* 切换回执上的「回到刚才那一段」 */
+  const mb = e.target.closest('[data-msb]');
+  if (mb){
+    const el = document.getElementById(mb.dataset.msb);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+    const bar = $('#msb');
+    if (bar) bar.classList.remove('on');
+  }
 });
 
 /* ========================= 启动 ========================= */
