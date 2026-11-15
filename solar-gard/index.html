@@ -4238,11 +4238,14 @@ function renderSil(animate){
       <span class="se-d">无线充垫 / 水杯套 / 扶手箱储物盒 / 中控下储物盒 / 车门按键垫 / 门碗贴 / 安全带套 / OBD 保护盖 等按座舱逐项配齐，件数以实车核对为准。</span>
     </div>`;
   } else if (set){
-    /* 一张官方整套图 + 逐件名称，手机上比 21 张缩略图更好认 */
+    /* 一张官方整套图 + 逐件名称，手机上比 21 张缩略图更好认。
+       这张图现在长在内页浮层里：浮层一打开它往往在视口外，
+       loading="lazy" 会一直不加载，滚下去只看到一片空白框 —— 直接 eager。
+       只有点开内页才创建它，等于按需加载，不浪费首屏流量。 */
     grid.innerHTML = `
       <figure class="gk-pic">
         <img src="${set.img}" alt="${curModel().name} ${g.n} 件全车硅胶套装实拍 · ${set.n}"
-             style="aspect-ratio:${(GKSIZE[set.img] || [4,3])[0]}/${(GKSIZE[set.img] || [4,3])[1]}" decoding="async" loading="lazy" decoding="async">
+             style="aspect-ratio:${(GKSIZE[set.img] || [4,3])[0]}/${(GKSIZE[set.img] || [4,3])[1]}" decoding="async" loading="eager">
         <span class="gk-tag">整套实拍</span>
       </figure>
       <div class="gk-chips">${g.items.map(it =>
