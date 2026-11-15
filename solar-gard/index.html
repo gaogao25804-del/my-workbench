@@ -1588,6 +1588,21 @@ body.model-swap .sec{ animation-delay:.05s; }
   transition:background .2s, border-color .2s;
 }
 .msb-back:hover{ background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.55); }
+/* 桌面端挂在右侧空白处：居中会压住 hero 的「SAINT-GOBAIN」小字，
+   而 hero 右边本来就是空的，落那儿不挡任何东西 */
+@media (min-width:760px){
+  .msb{ left:auto; right:26px; width:396px; transform:translateY(-10px) scale(.98); }
+  .msb.on{ transform:none; }
+}
+/* 手机上回执条只留一行：两行会盖住 hero 里那个「理想 i8」大字，
+   而那个大字本身就是「换车了」最直接的确认，不能被挡 */
+@media (max-width:759px){
+  .msb{ padding:10px 11px 10px 10px; gap:10px; border-radius:13px; }
+  .msb-ic{ width:22px; height:22px; font-size:11px; }
+  .msb-t b{ font-size:12.5px; }
+  .msb-t span{ display:none; }
+  .msb-back{ height:30px; padding:0 11px; font-size:11px; }
+}
 
 /* 全系同价角标 */
 .sec-h .same{
@@ -5240,7 +5255,7 @@ function showModelBanner(m, from, backTo){
     <span class="msb-ic">✓</span>
     <div class="msb-t">
       <b>已切换到 ${m.name}</b>
-      <span>${m.body} · 全车价格按 ${m.name} 重算</span>
+      <span>${m.body} · 价格已按 ${m.name.replace('理想 ', '')} 重算</span>
     </div>
     ${backName && backTo ? `<button class="msb-back" data-msb="${backTo}">回到${backName} ↑</button>` : ''}`;
   bar.classList.add('on');
