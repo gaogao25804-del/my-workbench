@@ -558,7 +558,10 @@ a{ color:inherit; text-decoration:none; }
 
 /* 四图 / 三图 */
 .fit-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:26px; }
-.fit-item .pframe{ aspect-ratio:1/1; overflow:hidden; background:#fff; }
+/* 四张实拍源图是 588×640 竖构图，脚垫上下顶到边；
+   以前给 1:1 / 4:3 / 16:9 都靠 object-fit:cover 填满，等于把脚垫的边裁掉，
+   框子照源图比例走，图就一张不裁地全露出来 */
+.fit-item .pframe{ aspect-ratio:588/640; overflow:hidden; background:#fff; }
 .fit-item img{ width:100%; height:100%; object-fit:cover; }
 .trio{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:26px; }
 .trio .pframe{ aspect-ratio:1/1; overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center; padding:10px; }
@@ -1082,16 +1085,12 @@ a{ color:inherit; text-decoration:none; }
   .gift-set small{ margin:0; font-size:10px; }
 
   .fit-row{ grid-template-columns:repeat(2,1fr); gap:8px; margin-top:18px; }
-  /* 实车铺装手机端横着一排滑，四张图铺成两行会白白多占 200px */
-  .fit-strip .fit-row{
-    display:flex; gap:9px; overflow-x:auto; overscroll-behavior-x:contain;
-    -webkit-overflow-scrolling:touch; scrollbar-width:none;
-    scroll-snap-type:x mandatory; padding-bottom:3px;
-  }
-  .fit-strip .fit-row::-webkit-scrollbar{ display:none; }
-  .fit-strip .fit-item{ flex:0 0 62%; scroll-snap-align:start; }
-  .fit-strip .fit-item .pframe{ aspect-ratio:16/10; }
-  .fit-strip .fit-cap{ font-size:10px; margin-top:5px; }
+  /* 实车铺装手机端：四张铺成 2×2，一屏看全四种毯面。
+     以前是横滑条，边上那张永远被切一半，客人以为图没显示全；
+     而且横滑要一张张划才能比，比不了。这条只在脚垫内页里，页面高度不受影响。 */
+  .fit-strip .fit-row{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px 8px; }
+  .fit-strip .fit-item .pframe{ aspect-ratio:588/640; }
+  .fit-strip .fit-cap{ font-size:10.5px; margin-top:6px; }
   .trio{ gap:8px; margin-top:18px; }
   /* 座椅垫三款对照手机端：胶囊缩一号，MEGA 这类长名也不会被截 */
   .sk-wrap{ margin-top:20px; }
@@ -2291,9 +2290,10 @@ body.pmodal-open{ overflow:hidden; }
 .fs-hd b{ font-size:13px; font-weight:600; letter-spacing:.04em; }
 .fs-hd span{ font-size:11px; color:var(--sub); }
 .fit-strip .fit-row{ grid-template-columns:repeat(4,1fr); gap:10px; margin-top:0; }
-.fit-strip .fit-item .pframe{ aspect-ratio:4/3; }
+.fit-strip .fit-item .pframe{ aspect-ratio:588/640; }
+/* 图注是四种毯面的名字，是全块唯一的功能文字；--sub2 在 10px 下几乎看不见，提到 --sub */
 .fit-strip .fit-cap{
-  font-size:10.5px; color:var(--sub2); margin-top:7px; letter-spacing:.02em;
+  font-size:11px; color:var(--sub); margin-top:7px; letter-spacing:.02em;
 }
 /* ---------- ④ 坐垫卡：跟脚垫同一副骨架 ---------- */
 .addon-card--seat .addon-pic{ background:#fff; }
@@ -2532,8 +2532,8 @@ body.pmodal-open{ overflow:hidden; }
   /* 实车铺装四图：1:1 → 16:9，一整条从 289 压到约 240 */
   .fit-strip{ padding:15px 26px 18px; }
   .fit-strip .fit-row{ gap:10px; margin-top:13px; }
-  .fit-strip .fit-item .pframe{ aspect-ratio:16/9; }
-  .fit-strip .fit-cap{ font-size:10px; margin-top:5px; }
+  .fit-strip .fit-item .pframe{ aspect-ratio:588/640; }
+  .fit-strip .fit-cap{ font-size:10.5px; margin-top:6px; }
   /* 赠品条跟着瘦一圈 */
   .gift-bar{ padding:13px 26px; gap:16px; }
   .gift-set{ padding-left:18px; }
