@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-14 10:20",
+ "updated": "2026-11-15 10:20",
  "stats": {
   "抖音": 50,
-  "快手": 48,
+  "快手": 50,
   "头条": 50,
   "B站": 50,
   "百度": 51,
@@ -10,33 +10,42 @@
  },
  "picks": [
   {
-   "title": "CNET 耐久测试：苹果首款折叠 iPhone Duo 撑过 45.7 万次开合，铰链磨损变松 / 屏幕未见裂纹",
+   "title": "华为 Mate X8 折叠屏手机外观公布，余承东宣布屏幕、拍照、性能又有新突破",
    "source": "IT之家",
    "kind": "新品",
-   "score": 8,
+   "score": 7,
    "why": [
-    "+5 iphone duo",
-    "+3 裂"
+    "+5 mate x8",
+    "+2 折叠屏"
    ],
-   "hooks": [
-    "冲突"
-   ],
+   "hooks": [],
    "hot": "",
-   "url": "https://www.ithome.com/1/027/046.htm"
+   "url": "https://www.ithome.com/1/027/274.htm"
   },
   {
-   "title": "再次延期：华为 HarmonyOS 7 小艺 AI 快捷栏 11 月中旬开推，首批含 Pura X View 等",
+   "title": "华为 Mate X 系列折叠屏走过第八年，余承东官宣 Mate X8 新机“就要来了”",
    "source": "IT之家",
+   "kind": "新品",
+   "score": 7,
+   "why": [
+    "+5 mate x8",
+    "+2 折叠屏"
+   ],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/272.htm"
+  },
+  {
+   "title": "Hands-on: ESR’s MagSafe kickstand charger solves two key iPhone Duo shortcomings",
+   "source": "9to5Mac",
    "kind": "新品",
    "score": 5,
    "why": [
-    "+5 pura x"
+    "+5 iphone duo"
    ],
-   "hooks": [
-    "冲突"
-   ],
+   "hooks": [],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/962.htm"
+   "url": "https://9to5mac.com/2026/11/14/hands-on-esrs-magsafe-kickstand-charger-solves-two-key-iphone-duo-shortcomings/"
   },
   {
    "title": "9to5Mac Overtime 090: iPhone Duo honeymoon",
@@ -51,19 +60,7 @@
    "url": "https://9to5mac.com/2026/11/13/9to5mac-overtime-090-iphone-duo-honeymoon/"
   },
   {
-   "title": "苹果首款智能家居中枢 HomeView 开售：戴墨镜可能认不出你",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 3,
-   "why": [
-    "+3 开售"
-   ],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/027/043.htm"
-  },
-  {
-   "title": "宁德时代发布巧克力电池管家，2027 年预计建成 6000 座换电站、覆盖 297 座城市",
+   "title": "OPPO 展示 Reno17 系列手机洛天依联动定制主题，11 月 16 日发布",
    "source": "IT之家",
    "kind": "新品",
    "score": 3,
@@ -72,7 +69,21 @@
    ],
    "hooks": [],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/956.htm"
+   "url": "https://www.ithome.com/1/027/243.htm"
+  },
+  {
+   "title": "早报｜英伟达员工请愿黄仁勋回归/余承东重申华为与赛力斯分工/Microsoft 365故障延续至48小时",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "why": [
+    "+3 故障"
+   ],
+   "hooks": [
+    "冲突"
+   ],
+   "hot": "",
+   "url": "https://www.ifanr.com/1689450?utm_source=rss&utm_medium=rss&utm_campaign="
   },
   {
    "title": "折叠屏手机的转身｜明日后视镜",
@@ -87,22 +98,67 @@
    "url": "https://www.ifanr.com/1689097?utm_source=rss&utm_medium=rss&utm_campaign="
   },
   {
-   "title": "iPhone销量为何能逆势领跑",
-   "source": "B站",
-   "kind": "热榜",
-   "score": 2,
-   "why": [
-    "+2 销量"
-   ],
-   "hooks": [
-    "量",
-    "反差"
-   ],
+   "title": "日本制造商 Kyodo 推出 Myofree 护眼平板，号称能让 40cm 近距离观看等效 5m 远距离眺望",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
    "hot": "",
-   "url": "https://search.bilibili.com/all?keyword=iPhone%E9%94%80%E9%87%8F%E4%B8%BA%E4%BD%95%E8%83%BD%E9%80%86%E5%8A%BF%E9%A2%86%E8%B7%91"
+   "url": "https://www.ithome.com/1/027/269.htm"
   },
   {
-   "title": "消息称某厂 6.3 英寸 1.5K 小屏机立项，预计小米 REDMI 旗下",
+   "title": "华为：智能车灯原车拨杆闪灯为独立功能，不会被高精 ADB 主动控制干预，随时可用",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/264.htm"
+  },
+  {
+   "title": "华为首款鸿蒙小折叠电脑 MateBook Fold S 现身官网：至高 32GB/1TB 规格，可选黑白蓝三色",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/263.htm"
+  },
+  {
+   "title": "国产算力巨头超聚变创业板 IPO 过会，前身是华为 X86 服务器业务",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/255.htm"
+  },
+  {
+   "title": "中国车企首家：小米泰坦合金 2.0 与新一代 SU7 从材料到整车通过国际 EPD 体系认证",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/249.htm"
+  },
+  {
+   "title": "“黑苹果”有望卷土重来，新项目探索将 macOS 搬上骁龙和 x86 架构电脑",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/244.htm"
+  },
+  {
+   "title": "曝小米与“AMG 之父”创办的 HWA 秘密合作，希望打造“载入史册”新车",
    "source": "IT之家",
    "kind": "新品",
    "score": 0,
@@ -111,67 +167,10 @@
     "爆料"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/027/048.htm"
+   "url": "https://www.ithome.com/1/027/240.htm"
   },
   {
-   "title": "Epic 指责苹果以 27% 佣金规避法院禁令：增聘最高法院资深律师，双方诉讼将于明年 1 月继续",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [
-    "反差"
-   ],
-   "hot": "",
-   "url": "https://www.ithome.com/1/027/006.htm"
-  },
-  {
-   "title": "NearLink E1.0 也有新特性！华为 MatePad Pro 13.2 2023 等平板获推支持星闪电竞专链功能",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/995.htm"
-  },
-  {
-   "title": "华为麒麟 9050 系列芯片新一代灵犀 CPU 详细信息公开：9 核 16 线程并行调度，支持内存压缩加速",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/993.htm"
-  },
-  {
-   "title": "麒麟 8000 系也有份：华为更多机型更新 HarmonyOS 7 系统后补齐沉浸光感粒子动效",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/991.htm"
-  },
-  {
-   "title": "苹果股价升至 360 美元 / 股、再创新高，总市值超英伟达 1.3 万亿美元",
-   "source": "IT之家",
-   "kind": "新品",
-   "score": 0,
-   "why": [
-    "+3 元",
-    "+-3 股价"
-   ],
-   "hooks": [
-    "钱"
-   ],
-   "hot": "",
-   "url": "https://www.ithome.com/1/026/964.htm"
-  },
-  {
-   "title": "AI 助力复活尘封 15 年废案，iOS 4 时代苹果卡片后台界面曝光",
+   "title": "荷兰皇家航空前 CEO 被曝机上违规使用充电宝引发火情，公司提请指控",
    "source": "IT之家",
    "kind": "新品",
    "score": 0,
@@ -180,7 +179,27 @@
     "爆料"
    ],
    "hot": "",
-   "url": "https://www.ithome.com/1/026/959.htm"
+   "url": "https://www.ithome.com/1/027/231.htm"
+  },
+  {
+   "title": "苹果重申对 visionOS 平台的长期投入，仍看好空间计算发展前景",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/223.htm"
+  },
+  {
+   "title": "星闪智能家电 OpenLab 实验室正式投运：九方共建，覆盖芯片到整机全链条",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://www.ithome.com/1/027/209.htm"
   },
   {
    "title": "iPhone 20 爆料汇总：一整块玻璃，藏着苹果下一个十年",
@@ -218,6 +237,16 @@
    "url": "https://www.ifanr.com/1689051?utm_source=rss&utm_medium=rss&utm_campaign="
   },
   {
+   "title": "Indie App Spotlight: ‘Milton’ lets you turn your old iPad into a home dashboard",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "why": [],
+   "hooks": [],
+   "hot": "",
+   "url": "https://9to5mac.com/2026/11/14/indie-app-spotlight-milton-lets-you-turn-your-old-ipad-into-a-home-dashboard/"
+  },
+  {
    "title": "Deals: HomeView discount, M5 iPad Pro $300 off, Magic Keyboard, AirTag 2 all-time low, more",
    "source": "9to5Mac",
    "kind": "新品",
@@ -246,70 +275,30 @@
    "hooks": [],
    "hot": "",
    "url": "https://9to5mac.com/2026/11/12/apple-adjusts-iphone-and-apple-watch-trade-in-values-adds-samsung-foldables/"
-  },
-  {
-   "title": "Binance warns iPhone crypto holders of security flaw researchers say remains unpatched",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/11/binance-warns-iphone-crypto-holders-of-security-flaw-researchers-say-remains-unpatched/"
-  },
-  {
-   "title": "iPhone is the winner of new battery test, topping all Androids",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/11/iphone-is-the-winner-of-new-battery-test-topping-all-androids/"
-  },
-  {
-   "title": "Apple to investigate accident that killed three workers at iPhone parts factory in India",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/10/apple-to-investigate-accident-that-killed-three-workers-at-iphone-parts-factory-in-india/"
-  },
-  {
-   "title": "iOS 27.2 adds new features in six iPhone apps, details here",
-   "source": "9to5Mac",
-   "kind": "新品",
-   "score": 0,
-   "why": [],
-   "hooks": [],
-   "hot": "",
-   "url": "https://9to5mac.com/2026/11/10/ios-27-2-adds-new-features-in-six-iphone-apps-details-here/"
   }
  ],
  "meme": [
-  "阿根廷1:2乌拉圭",
-  "课本里的逍遥游有画面了",
-  "用一次旅行来敬重自己",
-  "手工敲虾到底有多好吃",
-  "上抖音看阿图什杯",
-  "以我之名为LPL加油",
-  "芬兰证实俄军舰在芬兰湾遇袭",
-  "本周谣言鉴赏",
-  "我们再发光开播啦",
-  "烂奇迹手势舞挑战",
-  "覆面系转场挑战",
-  "蒋一帆沈阳为爱而歌歌友会",
-  "当你被选中和吴彦祖一起嗦粉",
-  "停车楼飘移帅炸了",
-  "高校学子为BLG助威",
-  "和范丞丞一起看昊天武道会"
+  "BLG夺冠",
+  "Knight夺得FMVP",
+  "葡萄牙不敌丹麦终结四连胜",
+  "Bin夺冠后晒与奖杯合影",
+  "请选择你的秋假遛娃地",
+  "温柔白月光冬季穿搭",
+  "BLG夺冠恰逢联盟重大更新",
+  "BLG夺冠了你们知道吗",
+  "高铁为什么完全密封",
+  "把这份庆祝送给BLG",
+  "慌啥子嘛配什么都好治愈",
+  "Tim变装变上瘾了",
+  "最有安全感的覆面系出现了",
+  "我的BLG夺冠时刻",
+  "谷雨背后保护伞太敢拍了",
+  "我的S16决赛观赛日记"
  ],
  "resonance": [],
  "counts": {
-  "picks": 29,
-  "shootable": 3,
+  "picks": 31,
+  "shootable": 4,
   "meme": 16
  }
 }
