@@ -3900,6 +3900,7 @@ function openPick(kind){
     bd.scrollTop += (r.top - br.top) - (bd.clientHeight - r.height) / 2;
   }
   pickFocus = document.activeElement;
+  hideMsb();
   const pm = $('#pmodal');
   pm.classList.add('on');
   pm.setAttribute('aria-hidden', 'false');
@@ -3920,6 +3921,7 @@ function openKit(src, name, n){
   ft.textContent = '整车这一套到底有哪几件 · 点右上角 × 退回，页面停在原处';
   bd.scrollTop = 0;
   pickFocus = document.activeElement;
+  hideMsb();
   const pm = $('#pmodal');
   pm.classList.add('on');
   pm.setAttribute('aria-hidden', 'false');
@@ -3959,6 +3961,7 @@ function openDetail(id){
     </div>`;
   syncDetailBtn();
   pickFocus = document.activeElement;
+  hideMsb();
   const pm = $('#pmodal');
   pm.classList.add('on');
   pm.setAttribute('aria-hidden', 'false');
@@ -4862,6 +4865,7 @@ function toast(msg, type){
 }
 
 function openSheet(){
+  hideMsb();          /* 回执条还在飘的话会压在半透明遮罩上显脏 */
   $('#mask').classList.add('on');
   $('#sheet').classList.add('on');
   document.body.classList.add('sheet-open');
@@ -5254,6 +5258,11 @@ function modelSwitchFx(m, from, backTo){
   if (chip){ chip.classList.remove('tap'); void chip.offsetWidth; chip.classList.add('tap'); }
 
   showModelBanner(m, from, backTo);
+}
+
+function hideMsb(){
+  const bar = $('#msb');
+  if (bar) bar.classList.remove('on');
 }
 
 function showModelBanner(m, from, backTo){
