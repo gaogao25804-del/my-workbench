@@ -5266,6 +5266,9 @@ function showModelBanner(m, from, backTo){
 /* 换车型会直接跳到 hero，hero 图还没下来的话，客人先看到一块深色底。
    六张方图一共 380KB，等页面闲下来再预取，换来切换时一瞬间到位 */
 function prefetchHero(){
+  /* 省流 / 2G 网络就别抢带宽了：换车时多等半秒，比整页卡住强 */
+  const conn = navigator.connection || {};
+  if (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) return;
   Object.keys(HERO).forEach(id => {
     const src = HERO[id];
     if (!src || id === state.model) return;
@@ -5274,8 +5277,8 @@ function prefetchHero(){
     im.src = src;
   });
 }
-if ('requestIdleCallback' in window) requestIdleCallback(prefetchHero, { timeout: 2600 });
-else setTimeout(prefetchHero, 1800);
+if ('requestIdleCallback' in window) requestIdleCallback(prefetchHero, { timeout: 4200 });
+else setTimeout(prefetchHero, 3000);
 
 /* 颜色不用再重置：每台车各存一个 silColor（默认 'w'），
    该车型没有这个色时 curSilSet 会自动落回它的第一色，不会再出现「带上一款的色号过来」 */
