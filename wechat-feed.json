@@ -1,42 +1,11 @@
 {
- "updated": "2026-11-15 10:20",
+ "updated": "2026-11-16 10:20",
  "source": "搜狗微信搜索",
  "counts": {
   "抓取": 70,
-  "入选": 10
+  "入选": 9
  },
  "picks": [
-  {
-   "title": "iphoneDuo首销10天销量为26.38万台,华为阔",
-   "summary": "大家好,我是春哥iPhone Duo 首销 10 天销量出炉,和华为阔折叠旗鼓相当,后续想反超不容易.    最近不少人都在关注两款热门阔折...",
-   "account": "春哥爱讲车",
-   "date": "11-14 22:22",
-   "score": 11,
-   "why": [
-    "折叠屏",
-    "有数据",
-    "有数据",
-    "iPhone",
-    "华为"
-   ],
-   "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3294wXR3xlcqmUZ-MegEwlqBVqXa8Fplpd9BWQtiebhP10ntZqFVAbZerM101RPehGS4cEhtInsd2Rjf6gnrRhpaaoWptO794GGGNeScUhbSwM4WFx7wFuYBepp2-xxW1eJgX9eVUwaR-MbE3OI-eUJAYN6q_2-DGta85pc5r2li9RwKpjjmcBoEEtwSM8e4F-A9CXqhdtW_nNhWLv6O878UA..&type=2&query=iPhone Duo&token=7860A00E5821DB186264022559B3DBBA636D70146AF915BA"
-  },
-  {
-   "title": "苹果iPhone Duo实测:近50万次折叠开合 屏幕未见裂纹但铰链已磨损",
-   "summary": "iPhone Duo的耐用性表现一直是外界热议的焦点,但此前网传大面积出现的内屏爆裂问题,实际传播的严重程度远高于真实发生的比例...",
-   "account": "安兔兔",
-   "date": "11-14 22:03",
-   "score": 10,
-   "why": [
-    "折叠屏",
-    "铰链",
-    "实测",
-    "iPhone"
-   ],
-   "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3294wXR3xlcqmUZ-MegEwlqBVqXa8Fplpd9Srxvwk_2j1iHgjiUDMOFIvnY1atFWK8XJVw11V9dUWkubTWM7keSZt8g19qZ_uwypGbKwqyuk8pJdAM5OP_bPwENT9-MKkxBI_i1PHPTAHDIsYy1I7Qi9O3JB506K8n7VEfLZw83mEtwT4JU4WrI8LEQ546DvSl4xtdyCbIrYXy54z_tGSZTqA..&type=2&query=iPhone Duo&token=7860A00E5821DB186264022559B3DBBA636D70146AF915BA"
-  },
   {
    "title": "iPhone Duo 上市三周,调查显示 30%买家已退货",
    "summary": "苹果的首款折叠屏 iPhone Duo 现在已经上市 3 周了.但你现在去官网看的话,依然要等到明年 1 月 23 号才会到货.想现在买到现货...",
@@ -50,13 +19,13 @@
     "iPhone"
    ],
    "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3294wXR3xlcqmUZ-MegEwlqBVqXa8Fplpd9ZKNHjRjuAWLUUtdWLfbhsmRnt9OzO9cnZ5Wd9h_J2cuDBV0BIX3ls-7qHGuw5yFdTl0X-kYQfInFPZjLHfBliCUvQiFNctk21F76ssKtWCrW9zfkbKCO_oGVpwBsvtKmiLbGBHtLS-j0giPEoo4Jl4C6CEr2mnos9ftqrNyFacsGX_iHL9MadA..&type=2&query=iPhone Duo&token=7860A00E5821DB186264022559B3DBBA636D70146AF915BA"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329Ru3eqxu2fKN0v8e-sR9qRVqXa8Fplpd9ua4I-75f5RAoohPPeGo6HrppuYVnxuflt860_Kq3p64W5Qwqs3zphoxIggqlwyW11RAJgWNtc3wEroDXnuMOG4uZExDQ8XY3VgQlfnMaLZ22PBdWE-4kZZIbn35qdIfPY3a_oGWkJh8SsCZei1f7ciyBSpkC77K8AJcSM0MyRjLdrgozfSg6bw..&type=2&query=iPhone Duo&token=82546BAF92EB11D2A8AEC8F3F0F6BB08A98070DE6AFA6735"
   },
   {
-   "title": "iPhone Duo折45万次后展不平了",
-   "summary": "日起,用自制的折叠测试机 Fold-a-Phone 每天开合苹果 iPhone Duo 约 2 万次;三周、超过 45.1 万次之后,这台手机的铰链开始出问...",
-   "account": "造物次元",
-   "date": "11-14 23:48",
+   "title": "iPhone Duo的屏幕碎裂问题依然存在,铰链在测试中磨损",
+   "summary": "苹果首款折叠屏手机 iPhone Duo 被放到CNET专门定制的测试机器上,连续开合三个星期、超过四十五万次之后,机器没有坏,铰链...",
+   "account": "壹瞬科技",
+   "date": "11-15 12:35",
    "score": 8,
    "why": [
     "折叠屏",
@@ -64,7 +33,7 @@
     "iPhone"
    ],
    "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3294wXR3xlcqmUZ-MegEwlqBVqXa8Fplpd9T4Vy2lEG5kRRL46reg9OE5LWuMKhqE7S2obuK2T4veaiL2r96FqLIkbWfxzbzkI70XcbKqawl1teiByD1o9lymXSGapHLoWkCjYOW6iINfLsnfy2dNF44nzv4EcSHLggnnAJ4MupWmSt_jfdl2ynlx-x2LapQXHLaMheHAr2jlPzAjcIGepUqA..&type=2&query=iPhone Duo&token=7860A00E5821DB186264022559B3DBBA636D70146AF915BA"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329Ru3eqxu2fKN0v8e-sR9qRVqXa8Fplpd9ILZf2bTgkrpVx-RfvGE7zrahhtRGB7g5CrrwMZjni4zO-pxLSE19mwiEMXdBPE-kv_CSgwp7pi97IX6JkqspIK4Gcjv67svb7pTtFPwFLVnwziPhyYvHKvCBwTtQ-8KnPxS_wD3eyO0NRkQ2m43n0MGLD1EeHmVysz5bhbAguef1AfaFW2DefQ..&type=2&query=iPhone Duo&token=82546BAF92EB11D2A8AEC8F3F0F6BB08A98070DE6AFA6735"
   },
   {
    "title": "iPhone Duo 被连折 45 万次:铰链开始＂松劲＂了,但屏幕还很能打",
@@ -78,7 +47,7 @@
     "iPhone"
    ],
    "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3294wXR3xlcqmUZ-MegEwlqBVqXa8Fplpd9I0iYKg0cX2nKR1H263buPU5QNSBq-shr1O970lgHf_ZOjpw1uWkTu4HGBsNqHk5QiEcuBbzXlPkXIEeR59jqrRfufNVRkymWjikD6SzsCWsd4gAYTKfHQK_wS5SpTRYdODA3L4Co7g00wHRtD9dPu0wFHU2XOzNh4Th3M_FmtpJ5Nu7CnoSqqg..&type=2&query=iPhone Duo&token=7860A00E5821DB186264022559B3DBBA636D70146AF915BA"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329Ru3eqxu2fKN0v8e-sR9qRVqXa8Fplpd9HweiaDFk98sS-gFG7xwrxON9sHpMEZThX2QCE7ATld4bTWRdwCRl3geSq1rnJeDvGszH_BtPMOl0XFaGT_5UqDwEzba4qznZo9FFvZqRMA6_LdZfQoi8V2g507xLtcbsmGTVhUKY61uULetzK8nDw2P4CgY9_PL-ESbfAqft6pn0OK9DLfgmPA..&type=2&query=iPhone Duo&token=82546BAF92EB11D2A8AEC8F3F0F6BB08A98070DE6AFA6735"
   },
   {
    "title": "iPhone Duo「翻车」,退货超三成?",
@@ -93,21 +62,21 @@
     "iPhone"
    ],
    "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3294wXR3xlcqmUZ-MegEwlqBVqXa8Fplpd94mTpEZsDvnnNDBzVoIq3O3eChkGwEpSBAhfU0cywN80HXgTxG0DNRg2Fa3vkCE3K1bo66pTBCokEkzJWmo8vn_4fUQTgGNSs1kDCyZhiDo8pICOcUot8bL7Czgw2YM7z1to7AxvbQtHiyy5r_bNk4sFLWEk6Zm_EujcA14BOX-sCn9lOoZLP2Q..&type=2&query=iPhone Duo&token=7860A00E5821DB186264022559B3DBBA636D70146AF915BA"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329Ru3eqxu2fKN0v8e-sR9qRVqXa8Fplpd9-nCuty4jFZ_NNBpADxtvCH96XvZaG9XgnlazgiV1bNDIfELDoH5fvziqhWEVi1DdV92VJwNn0dWGFBLjfmDRAcHDTQF7IsOqC5d0fyoa4PWiHCSU6CQT3rvPQ70JAxURH19yr4MVabbs0cuHMzZbo9F4oKJqeXVBYDDQJIMHVz8tPujwwRB2Pw..&type=2&query=iPhone Duo&token=82546BAF92EB11D2A8AEC8F3F0F6BB08A98070DE6AFA6735"
   },
   {
-   "title": "iPhone Duo 退货率高达 30%?为什么有人买完就后悔",
-   "summary": "据科技媒体 9to5Mac 11 月 12 日报道,该媒体针对首批 iPhone Duo 用户发起了一项调查,共有近 6000 人参与投票,其中约 30% 的...",
-   "account": "快捷指令",
-   "date": "11-14 20:48",
+   "title": "如何评价iPhone Duo?",
+   "summary": "大家好,我是不想上班的小怪兽(๑╹◡╹)ﾉ看完苹果的iPhone Duo折叠屏的首批实测和用户反馈,我只能说这玩意简直是一场灾难...",
+   "account": "不想上班的小怪兽",
+   "date": "11-15 17:21",
    "score": 7,
    "why": [
-    "退货",
-    "有数据",
+    "折叠屏",
+    "实测",
     "iPhone"
    ],
    "kw": "iPhone Duo",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3294wXR3xlcqmUZ-MegEwlqBVqXa8Fplpd96r1PfTBiQyHF59agqmwv6JSBmRmJGNp8zd4L52x34R5ZrcdcleS_u3n9X5a8CJLZbHzNSdbU2acokBieuhDwpMg3Dy6_0P2Cd5hP72qxDounDZrWdwQDhx3X08c0EhexrW5J-6hLyo7DY4MmH7LwSAn8AgGiKcVSKBo-ChByChX1AfaFW2DefQ..&type=2&query=iPhone Duo&token=7860A00E5821DB186264022559B3DBBA636D70146AF915BA"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329Ru3eqxu2fKN0v8e-sR9qRVqXa8Fplpd9MssxFSkv5TvkcqtjImv9JKN40TaF6A05FK4oPOmJ0c8Y4Gyj8_uLhBI4iXZpno-6zT22yyDAzIiRP8JUCPbEyGgOFJIugXu_G4TjHy1LKj6ZxJjboW24klRddNWI0PkTuLfBNB-1O7LCVzM7SFnfc4Jm21G19Qgpl2kdb9wTu_7wdVqCwyPdzA..&type=2&query=iPhone Duo&token=82546BAF92EB11D2A8AEC8F3F0F6BB08A98070DE6AFA6735"
   },
   {
    "title": "手机炒股适合商务人士吗?华为Mate XT 2 非凡大师大屏盯盘实测思路",
@@ -121,21 +90,35 @@
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329_-nwzoSfaZ8Z-MegEwlqBVqXa8Fplpd99gUP3LHNmQGT1wvB4clwGyTTFrFLKsANeCHXb9nLNlKcIUIDNI7TZkqjTq2XY5OvMZSre37NEuAvHzM98-tfkLrb584SvZmPEffApGV4jjwS-nuIL678yaP4b_-DmylzNs_EwH3deQOPyQ9IA55-R9QG8hozG3VGnxRXQ3kloRHzAjcIGepUqA..&type=2&query=Mate XT&token=7860E1C52B52A96A111671562D49503811C4BB4D6AF915C3"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3292pEwYBBt5aB0v8e-sR9qRVqXa8Fplpd9B-mjRnTd3AHhXMW7zKxQ437j07nTfZ8hJXEi2WDh27nIPrq8K6OUHnJ1tu6hTwktPya850ZGPbddqSqrISgNGy41HhyBvMofyQNvOjA1oWHQPD6vophjBg2voeG6lBDkYK3bpkAlsWgHVoCYZMSq0LyW9ofK2JdM6Imm0PzA-Fj2CsG6-xMgzQ..&type=2&query=Mate XT&token=8254AA2BE09B62A2DADCBA818331153ADADFAF8D6AFA673F"
   },
   {
-   "title": "华为Mate XT 2非凡大师三折叠上新:16GB+512GB灵盾防窥屏版本,定价22999元,今日开售!",
-   "summary": "11月13日,华为带来Mate XT 2非凡大师三折叠全新配置版本,16GB+512GB灵盾防窥屏版本正式官宣,定价22999元,开售时间为当...",
-   "account": "手机数码抢先知",
-   "date": "11-13 09:31",
-   "score": 6,
+   "title": "iPhone Duo翻车背后,苹果最擅长的那件事失效了",
+   "summary": "上市前折了上万次都完好的内屏,为什么到了用户手里,二十次就裂了?这是 iPhone Duo 留给整个折叠屏行业最刺人的一道题,苹果...",
+   "account": "飞象网",
+   "date": "11-13 17:06",
+   "score": 7,
    "why": [
     "折叠屏",
-    "开售",
+    "翻车",
+    "iPhone"
+   ],
+   "kw": "iPhone Duo",
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329Ru3eqxu2fKN0v8e-sR9qRVqXa8Fplpd9b0Whruv9xwucb56wMNUUvrg_5UPyqxNdT6ekx1NR9H7jDXvgU1NHge2tspqEQ0ckv-5EsRqoGok9hua8y403sqeI-ax2vxVtJXqw1YjG9I-nZwPgfrLj_d6VEHAwat5sii15oxRUjzcvgRo5gzdFtNSugQFsR8Nq9dDmkgVdflruL0unUdKkuw..&type=2&query=iPhone Duo&token=82546BAF92EB11D2A8AEC8F3F0F6BB08A98070DE6AFA6735"
+  },
+  {
+   "title": "华为Mate XT渠道价差引热议,三折叠降价七千多值得买吗",
+   "summary": "Mate XT真正让人着迷的地方就是它的独特屏幕形状了.“合”起来是6.4寸,“展”的话能有7.9英寸显示区域能够用到一部分平板的...",
+   "account": "普朗特ovo",
+   "date": "11-12 00:03",
+   "score": 7,
+   "why": [
+    "折叠屏",
+    "降价",
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329_-nwzoSfaZ8Z-MegEwlqBVqXa8Fplpd9gaiBtb3ctBKgCkkvrO9w_h71dXm0Wa4RL2NVzMA4s3bIrbhT_R04WDulsJSFFn83CeuzGFPKyEldxqW8irdrw8bT_UZuwplF3c8hkI2ZYjDS_wAWf882PIIVcDNO_DmVr6mAXu8ntIs1P5M-2MOTXEB-IXvANsv141GDlnwkPVaq3X8EKMKOIA..&type=2&query=Mate XT&token=7860E1C52B52A96A111671562D49503811C4BB4D6AF915C3"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3292pEwYBBt5aB0v8e-sR9qRVqXa8Fplpd9oDLcq3MLhw5H5aiovw3QYejPrtxI3XbOrtipqxkAyq86m4m8NeoUhNGai14Ls8ymtedBIMpZyT7ze_K7SORdpcGnnT_AGG3XFigC06RtozTki0hlWP6XyJVOxiIP10wxT2GEOXm3u9qLU42kuiv5QVODD1QY9aqp6o76Ny-IKz9OJBjQH7pCxQ..&type=2&query=Mate XT&token=8254AA2BE09B62A2DADCBA818331153ADADFAF8D6AFA673F"
   },
   {
    "title": "Mate XT 一周年:从抢不到到随时买",
@@ -149,7 +132,7 @@
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV329_-nwzoSfaZ8Z-MegEwlqBVqXa8Fplpd9UflUfeYeAqxCFdL-Qr4TEZ3ns2fwHrzZ8sNBX7E2NpHAqO52UL111W-CJFCsg_EUwe-YWAU7KW8PjrSE0EibA0x-Q0Can3yM5OGLGWd5O_Qa7YWpTnwxJeSAFX5fvdKdjx_F8xlqhWhGCjHZ96P9sV9Cm_Zi04pbkdhvwWvkwMCAFV_3u-a3OQ..&type=2&query=Mate XT&token=7860E1C52B52A96A111671562D49503811C4BB4D6AF915C3"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2yAWDmgV3292pEwYBBt5aB0v8e-sR9qRVqXa8Fplpd9TJqU5D5Td509BUcOTrKT6VPNmLzhkLbRlFBotRm17JGvFi8pDFkIsMAqlXqdVbE1qYwROKIqeoDqpqoTbbIjFXR3F-WXOSteCenv1Bpt2Qk1DHI6vdBKazv1-SmcrNtIGcdbMYBI4BHgQrablqR2aZTuSxQsOFNVPDvCfOVzsXL6zvkPgoArRQ..&type=2&query=Mate XT&token=8254AA2BE09B62A2DADCBA818331153ADADFAF8D6AFA673F"
   }
  ]
 }
