@@ -35,7 +35,10 @@ const ICON_PATHS = {
   mic: '<rect x="9" y="2.8" width="6" height="10.4" rx="3"/><path d="M5.6 11.2a6.4 6.4 0 0 0 12.8 0"/><path d="M12 17.6V21"/><path d="M8.6 21h6.8"/>',
   bolt: '<path d="M13.2 2.6 5.4 13.4h5.2L10.2 21.4 18.6 10.2h-5.4z"/>',
   chart: '<path d="M4 20.2h16"/><rect x="5.4" y="11" width="3.4" height="6.2" rx="1"/><rect x="10.3" y="6.6" width="3.4" height="10.6" rx="1"/><rect x="15.2" y="13.4" width="3.4" height="3.8" rx="1"/>',
-  lang: '<circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2"/><path d="M12 3.4a13.2 13.2 0 0 1 0 17.2a13.2 13.2 0 0 1 0-17.2"/>'
+  lang: '<circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2"/><path d="M12 3.4a13.2 13.2 0 0 1 0 17.2a13.2 13.2 0 0 1 0-17.2"/>',
+  bookmark: '<path d="M6 3.5h12v17l-6-4.2-6 4.2z"/>',
+  film: '<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7.5 4.5v15M16.5 4.5v15M3 12h18M3 8.2h4.5M3 15.8h4.5M16.5 8.2H21M16.5 15.8H21"/>',
+  spark: '<path d="M12 3v4M12 17v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M3 12h4M17 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/>'
 };
 
 function ic(name, cls) {
@@ -52,7 +55,10 @@ const PAGES = {
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
   trans:   { title: '英文翻译',   desc: '中文翻英文 · 本地模型优先，失败自动走在线' },
   report:  { title: '战报',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
-  radar:   { title: '今日雷达',   desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' }
+  radar:   { title: '今日雷达',   desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' },
+  topics:  { title: '选题池',     desc: '所有候选选题 · 看板拖动改状态 · 一键生成口播稿' },
+  videos:  { title: '视频档案',   desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
+  ai:      { title: 'AI 中心',    desc: '拆解 · 评论分析 · 选题策划 · 复盘，走提示词，不假装接通' }
 };
 
 const PAGE_SIZE = { task: 20 };
@@ -965,6 +971,7 @@ function kbEditorHtml(d) {
     (wait
       ? '<div class="kb-ed-wait">正在取原稿…</div>'
       : '<textarea class="kb-ed-b" data-kb-field="body" spellcheck="false" placeholder="直接往这儿写。一整段别分，像说话那样。">' + esc(d.body || '') + '</textarea>') +
+    (window.CWB3 ? CWB3.kouboPanel(d) : '') +
     '<div class="kb-ed-bar">' +
       '<label class="kb-ed-d" title="补录旧稿：把这篇归到别的那天"><span>归档</span>' +
         '<input type="date" data-kb-date="1" max="' + kbToday() + '" value="' + esc(String(d.date || '').slice(0, 10)) + '">' +
@@ -3399,9 +3406,12 @@ function mountTrans() {
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 /* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
-  { key: 'radar', cat: 'create', title: '今日雷达', desc: '每天 10:20 抓一遍 · 一天存一份 · 挑一条直接开稿' },
-  { key: 'koubo', cat: 'create', title: '口播工坊', desc: '自己写 · 自己改 · 定稿得你自己点' },
-  { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 照老板的表搬上来' },
+  { key: 'radar', cat: 'create', title: '今日雷达', desc: '每天 10:20 抓一遍 · 一天存一份 · 分类 / 收藏 / 转选题' },
+  { key: 'topics', cat: 'create', title: '选题池', desc: '所有候选选题 · 看板拖动改状态 · 一键生成口播稿' },
+  { key: 'koubo', cat: 'create', title: '口播工坊', desc: '文案 · 拍摄方案 · 剪辑方案 · 定稿得你自己点' },
+  { key: 'videos', cat: 'create', title: '视频档案', desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
+  { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10 / 排行' },
+  { key: 'ai', cat: 'create', title: 'AI 中心', desc: '拆解 · 评论分析 · 选题策划 · 复盘，走提示词，不假装接通' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
   { key: 'trans', cat: 'tool', title: '英文翻译', desc: '中文翻英文 · 一句一段都行' },
@@ -3448,6 +3458,9 @@ function renderView(keepScroll) {
     if (s.key === 'draw') return renderDrawPage();
     if (s.key === 'report') return renderReportPage();
     if (s.key === 'radar') return renderRadarPage();
+    if (s.key === 'topics' && window.CWB) return CWB.renderTopics();
+    if (s.key === 'videos' && window.CWB2) return CWB2.renderVideos();
+    if (s.key === 'ai' && window.CWB4) return CWB4.renderAI();
     return '';
   };
 
@@ -3486,6 +3499,9 @@ function renderView(keepScroll) {
 
   // 重排后按真实滚动位置校正侧栏高亮
   syncActiveSection();
+
+  // 创作线升级模块挂载（选题池 / 视频档案 / AI / 口播面板 / 战报扩展）
+  if (window.CWB_PAGE) { try { CWB_PAGE.attach(st.tab); } catch (e) { console.warn('[cw] attach', e); } }
 }
 
 function updateChrome() {
@@ -3865,5 +3881,21 @@ function init() {
     if (h && PAGES[h]) switchTab(h);
   });
 }
+
+/* ---------------- 对创作线升级模块（assets/create*.js）暴露的桥 ----------------
+   只读 + 少量动作，不改原有渲染流程。 */
+window.CW_BRIDGE = {
+  radarList: function () { return (RDR.view || []).slice(); },
+  kbStartFrom: kbStartFrom,
+  kbDocs: function () { return kbDocs(); },
+  kbGet: kbGet,
+  kbOpen: function () { return KB.open; },
+  report: function () { return st.report; },
+  toast: toast,
+  render: function (keep) { renderView(keep); },
+  switchTab: switchTab,
+  copyText: copyText,
+  st: st, KB: KB, RDR: RDR
+};
 
 document.addEventListener('DOMContentLoaded', init);
