@@ -209,6 +209,7 @@
           '<button class="cw-btn is-sm" data-cw-cpaste="1">批量粘贴导入</button>' +
           '<label class="cw-btn is-sm" style="cursor:pointer">CSV<input type="file" accept=".csv,.txt" data-cw-cfile="1" style="display:none"></label>' +
         '</div>' +
+        '<div id="cwPasteWrap"></div>' +
         '<div id="cwCmtBox">' + cm + '</div>' +
       '</div>' +
 
@@ -353,7 +354,7 @@
   function commentsHtml(vid) {
     var list = C.commentsOf(vid);
     if (!list.length) {
-      return '<div class="cw-note">还没导评论。点「批量粘贴导入」，一行一条，直接粘抖音评论区复制的文本就行。</div>';
+      return '<div class="cw-note">还没导评论。点「批量粘贴导入」，把抖音评论区整段复制粘进来就行，昵称、时间、点赞会自动拆开。</div>';
     }
     var byType = {};
     list.forEach(function (c) { byType[c.ctype || '其他'] = (byType[c.ctype || '其他'] || 0) + 1; });
@@ -405,30 +406,150 @@
     if (box) box.innerHTML = list.length ? commentRows(list) : '<div class="cw-note">这个词一条都没搜到</div>';
   }
 
-  /* 批量粘贴：一行一条；支持「昵称<Tab>内容」「内容<Tab>点赞数」两种顺序靠猜 */
-  function pasteComments(v) {
-    var txt = prompt('把评论整段粘进来，一行一条。\n（浏览器弹框里粘完按确定，太长的建议用 CSV）');
-    if (!txt) return;
-    var lines = String(txt).split(/\r?\n/).map(function (x) { return x.trim(); }).filter(Boolean);
-    var d = C.D();
-    var n = 0;
+  /* ---------------- 粘贴导入评论区 ----------------
+     抖音评论区复制出来不是「一行一条」，是「昵称 / 内容 / 时间·地区 / 赞数 / 回复」
+     一段一段堆着的，按行切只会切成一堆碎片。所以拿「时间行」当锚点，一条一条切。 */
+  var DY_NOISE = /^(回复|回复\s*\d+|展开\s*\d*\s*条回复|展开更多|收起|收起回复|作者|置顶|已置顶|分享|收藏|举报|删除|更多|查看翻译|翻译|展开)$/;
+  var DY_TIME = /^(刚刚|刚才|昨天|前天|\d+\s*(秒|分钟|分|小时|天|周|星期|个月|月|年)前|\d{4}[-./]\d{1,2}[-./]\d{1,2}|\d{1,2}[-./]\d{1,2})(\s*[·•・]\s*[\u4e00-\u9fa5A-Za-z]{1,10})?$/;
+  var DY_LIKE = /^\d+(\.\d+)?万?$/;
+
+  function parseDouyinText(raw) {
+    var lines = String(raw || '').replace(/\u00a0/g, ' ').split(/\r?\n/)
+      .map(function (x) { return x.trim(); }).filter(Boolean);
+    if (!lines.length) return [];
+
+    var timeHits = 0;
+    lines.forEach(function (l) { if (DY_TIME.test(l)) timeHits++; });
+    // 一条时间行都没有，说明他是自己整理成一行一条的，按行来
+    if (!timeHits) return oneLineEach(lines);
+
+    var out = [], buf = [], pendLike = '';
+    function settle(t) {
+      var rows = buf.slice();
+      var like = pendLike;
+      buf = []; pendLike = '';
+      var user = '';
+      // 昵称短、不像句子：满足就当第一行是昵称吃掉，剩下的是内容
+      if (rows.length >= 2 && rows[0].length <= 16 && !/[。！？，；：、]/.test(rows[0])) user = rows.shift();
+      var text = rows.join(' ').trim();
+      if (text) out.push({ user: user, text: text, time: t || '', like: like });
+    }
     lines.forEach(function (ln) {
-      var parts = ln.split(/\t|\s{3,}/).map(function (x) { return x.trim(); }).filter(Boolean);
-      var text = ln, user = '', like = '';
+      if (DY_NOISE.test(ln)) return;
+      if (DY_TIME.test(ln)) { settle(ln); return; }
+      if (DY_LIKE.test(ln)) {
+        if (buf.length) pendLike = ln;                                        // 赞数在内容后、时间前
+        else if (out.length && !out[out.length - 1].like) out[out.length - 1].like = ln;  // 赞数在时间后
+        return;
+      }
+      buf.push(ln);
+    });
+    settle('');
+    return out;
+  }
+
+  /* 已经整理成一行一条的，或者从表格里复制出来的，走这个 */
+  function oneLineEach(lines) {
+    var out = [];
+    lines.forEach(function (ln) {
+      if (DY_NOISE.test(ln) || DY_TIME.test(ln) || DY_LIKE.test(ln)) return;
+      var parts = ln.split(/\t+|\s{3,}/).map(function (x) { return x.trim(); }).filter(Boolean);
+      var user = '', like = '', text = ln;
       if (parts.length >= 2) {
-        if (/^\d+$/.test(parts[parts.length - 1])) { like = parts.pop(); }
-        if (parts.length >= 2 && parts[0].length <= 16) { user = parts.shift(); }
+        if (DY_LIKE.test(parts[parts.length - 1])) like = parts.pop();
+        if (parts.length >= 2 && parts[0].length <= 16) user = parts.shift();
         text = parts.join(' ');
       }
+      if (text) out.push({ user: user, text: text, time: '', like: like });
+    });
+    return out;
+  }
+
+  var pvList = [];
+
+  function pastePanel() {
+    return '<div class="cw-paste" id="cwPastePanel">' +
+        '<div class="cw-paste-h"><b>粘贴抖音评论</b><span class="cw-grow"></span>' +
+          '<button class="cw-btn is-sm is-ghost" data-cw-paste-close="1">收起</button></div>' +
+        '<div class="cw-note" style="margin:0 0 9px">在抖音评论区按 Ctrl+A 全选、Ctrl+C 复制，整段粘到下面就行。昵称、时间、点赞会自动拆出来，不用你先整理。</div>' +
+        '<textarea class="cw-ta" id="cwPasteTa" spellcheck="false" placeholder="粘到这里…" style="min-height:150px"></textarea>' +
+        '<div id="cwPastePrev" class="cw-paste-prev"></div>' +
+        '<div class="cw-actions" style="margin-top:10px">' +
+          '<button class="cw-btn is-primary" data-cw-paste-ok="1">导入这些</button>' +
+          '<span class="cw-note" id="cwPasteCnt"></span>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function pvRow(c, i) {
+    return '<div class="cw-pv">' +
+        '<div class="cw-pv-a">' +
+          '<div class="cw-pv-t">' + esc(c.text) + '</div>' +
+          '<div class="cw-pv-m">' +
+            (c.user ? '<span>' + esc(c.user) + '</span>' : '<span style="color:var(--cw-ink3)">无昵称</span>') +
+            (c.like ? '<span>赞 ' + esc(c.like) + '</span>' : '') +
+            (c.time ? '<span>' + esc(c.time) + '</span>' : '') +
+            '<span class="cw-tag">' + esc(guessType(c.text)) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<button class="cw-shot-x" data-pv-del="' + i + '" title="这条不要">✕</button>' +
+      '</div>';
+  }
+
+  function renderPv() {
+    var box = document.getElementById('cwPastePrev');
+    var cnt = document.getElementById('cwPasteCnt');
+    if (!box) return;
+    box.innerHTML = pvList.map(pvRow).join('');
+    if (cnt) cnt.textContent = pvList.length ? '认出 ' + pvList.length + ' 条' : '';
+  }
+
+  function pasteComments(v) {
+    var wrap = document.getElementById('cwPasteWrap');
+    if (!wrap) return;
+    if (wrap.innerHTML) { wrap.innerHTML = ''; pvList = []; return; }   // 再点一下收起
+    wrap.innerHTML = pastePanel();
+    pvList = [];
+    var ta = document.getElementById('cwPasteTa');
+    if (ta) {
+      ta.addEventListener('input', function () {
+        pvList = parseDouyinText(ta.value);
+        renderPv();
+      });
+      ta.focus();
+    }
+    wrap.onclick = function (e) {
+      if (e.target.closest('[data-cw-paste-close]')) { wrap.innerHTML = ''; pvList = []; return; }
+      var del = e.target.closest('[data-pv-del]');
+      if (del) { pvList.splice(Number(del.getAttribute('data-pv-del')), 1); renderPv(); return; }
+      if (e.target.closest('[data-cw-paste-ok]')) { importParsed(v.id); return; }
+    };
+  }
+
+  function importParsed(vid) {
+    if (!pvList.length) { toast('还没认出评论，先把文本粘进去', 'err'); return; }
+    var d = C.D();
+    var seen = {};
+    C.commentsOf(vid).forEach(function (c) { seen[String(c.text).trim()] = 1; });
+    var n = 0, dup = 0;
+    pvList.forEach(function (c) {
+      var t = String(c.text || '').trim();
+      if (!t) return;
+      if (seen[t]) { dup++; return; }
+      seen[t] = 1;
       d.comments.push({
-        id: C.uid('c-'), videoId: v.id, text: text, user: user, like: like,
-        time: '', ctype: guessType(text), hi: false, note: '', createdAt: today()
+        id: C.uid('c-'), videoId: vid, text: t,
+        user: c.user || '', like: c.like || '', time: c.time || '',
+        ctype: guessType(t), hi: false, note: '', createdAt: today()
       });
       n++;
     });
     C.save(true);
-    refreshComments(v.id);
-    toast('导进 ' + n + ' 条评论', 'ok');
+    refreshComments(vid);
+    var wrap = document.getElementById('cwPasteWrap');
+    if (wrap) wrap.innerHTML = '';
+    pvList = [];
+    toast('导入 ' + n + ' 条' + (dup ? '，跳过重复 ' + dup + ' 条' : ''), 'ok');
   }
 
   function importCSV(v, file) {
