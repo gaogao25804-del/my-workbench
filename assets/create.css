@@ -171,6 +171,16 @@
 .cw-kv dt{ color:var(--cw-ink3); font-size:11.5px; }
 .cw-kv dd{ margin:0; }
 
+/* ---------- 评论粘贴导入 ---------- */
+.cw-paste{ border:1px solid var(--cw-line); border-radius:11px; padding:12px; background:#fcfcfd; margin-bottom:11px; }
+.cw-paste-h{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.cw-paste-h b{ font-size:12.5px; }
+.cw-paste-prev{ max-height:300px; overflow:auto; margin-top:9px; display:flex; flex-direction:column; gap:6px; }
+.cw-pv{ display:flex; align-items:flex-start; gap:8px; padding:7px 9px; border:1px solid var(--cw-line); border-radius:8px; background:#fff; }
+.cw-pv-a{ flex:1 1 auto; min-width:0; }
+.cw-pv-t{ font-size:12.5px; line-height:1.5; word-break:break-word; }
+.cw-pv-m{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:3px; font-size:10.5px; color:var(--cw-ink3); }
+
 /* ---------- 分块折叠 ---------- */
 .cw-fold{ border:1px solid var(--cw-line); border-radius:11px; overflow:hidden; }
 .cw-fold-h{ display:flex; align-items:center; gap:8px; padding:9px 12px; background:#fafbfc; cursor:pointer; }
