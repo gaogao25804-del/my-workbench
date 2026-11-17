@@ -62,14 +62,22 @@ const PAGES = {
   sop:     { title: 'SOP 库',     desc: '能重复执行的流程 · 适用条件 · 验证结果' },
   topics:  { title: '选题池',     desc: '所有候选选题 · 看板拖动改状态 · 一键生成口播稿' },
   videos:  { title: '视频档案',   desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
-  ai:      { title: 'AI 中心',    desc: '拆解 · 评论分析 · 选题策划 · 复盘，走提示词，不假装接通' }
+  ai:      { title: 'AI 中心',    desc: '拆解 · 评论分析 · 选题策划 · 复盘，走提示词，不假装接通' },
+
+  /* 数码内容策划台 · 六模块（2026-11-17 上，工具箱一个字不动） */
+  dash:    { title: '工作驾驶舱',     desc: '今天干什么 · 卡在哪 · 各号状态' },
+  plan:    { title: '选题策划中心',   desc: '热点 · 选题库 · 创意 · 竞品分析' },
+  copy:    { title: '文案生产中心',   desc: '脚本 · 字数自查 · 素材 · 优秀文案对照' },
+  prod:    { title: '视频生产中心',   desc: '拍摄计划 · 剪辑任务 · 发布排期' },
+  data:    { title: '数据分析中心',   desc: '播放量 · 类型对比 · 爆款分析 · 复盘' },
+  know:    { title: 'AI 与知识库',    desc: 'AI 工作流 · SOP · 案例沉淀' }
 };
 
 const PAGE_SIZE = { task: 20 };
 
 /* ---------------- 全局状态 ---------------- */
 const st = {
-  tab: 'radar',
+  tab: 'dash',
   group: 'create',
   feishu: null,
   library: null,
@@ -3410,12 +3418,21 @@ function mountTrans() {
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 /* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
+  /* ---- 数码内容策划台：六模块 + 旧页面全部保留（旧 key 一个没删） ---- */
+  { key: 'dash', cat: 'create', title: '工作驾驶舱', desc: '今天干什么 · 卡在哪 · 各号状态' },
+  { key: 'plan', cat: 'create', title: '选题策划中心', desc: '四个选题入口 · 生命周期 · 判断标准' },
   { key: 'radar', cat: 'create', title: '今日雷达', desc: '每天 10:20 抓一遍 · 一天存一份 · 分类 / 收藏 / 转选题' },
-  { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10 / 排行' },
-  { key: 'account', cat: 'create', title: '账号拆解', desc: '拆对标账号 · 生成可复制指令 · 只认事实不编数据' },
   { key: 'trends', cat: 'create', title: '热门选题', desc: '只收录有来源的信号 · 来源必填 · 播放量可空' },
+  { key: 'account', cat: 'create', title: '账号拆解', desc: '拆对标账号 · 生成可复制指令 · 只认事实不编数据' },
   { key: 'hooks', cat: 'create', title: '五秒开头', desc: '存验证过的开场 · 适用场景 · 验证状态' },
+  { key: 'copy', cat: 'create', title: '文案生产中心', desc: '脚本 · 字数自查 · 素材库 · 写稿铁律' },
+  { key: 'prod', cat: 'create', title: '视频生产中心', desc: '六道工序 · 拍摄剪辑排期 · 负责人与验收' },
+  { key: 'data', cat: 'create', title: '数据分析中心', desc: '播放量 · 类型中位 · 爆款率 · 反向关联' },
+  { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10 / 排行' },
+  { key: 'know', cat: 'create', title: 'AI 与知识库', desc: '六条 AI 工作流 · SOP · 经验沉淀' },
   { key: 'sop', cat: 'create', title: 'SOP 库', desc: '能重复执行的流程 · 适用条件 · 验证结果' },
+
+  /* ---- 工具箱：五项原样，一个不动 ---- */
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
   { key: 'trans', cat: 'tool', title: '英文翻译', desc: '中文翻英文 · 一句一段都行' },
@@ -3424,8 +3441,8 @@ const SECTIONS = [
 ];
 
 const CATS = {
-  create: { name: '创作线', desc: '找选题 · 拍口播 · 看战报' },
-  tool:   { name: '工具箱', desc: '日历 · 图书馆 · 像素 · 画板' }
+  create: { name: '策划台', desc: '驾驶舱 · 选题 · 文案 · 视频 · 数据 · 知识' },
+  tool:   { name: '工具箱', desc: '日历 · 图书馆 · 翻译 · 像素 · 画板' }
 };
 
 function secOf(key) {
@@ -3454,6 +3471,13 @@ function renderView(keepScroll) {
   const list = SECTIONS.filter(function (s) { return s.cat === st.group; });
 
   const bodyOf = function (s) {
+    /* 策划台六模块：交给 planner.js 渲染，内部调用的还是原来那些函数 */
+    if (s.key === 'dash' && window.PLNR) return PLNR.renderDash();
+    if (s.key === 'plan' && window.PLNR) return PLNR.renderPlan();
+    if (s.key === 'copy' && window.PLNR) return PLNR.renderCopy();
+    if (s.key === 'prod' && window.PLNR) return PLNR.renderProd();
+    if (s.key === 'data' && window.PLNR) return PLNR.renderData();
+    if (s.key === 'know' && window.PLNR) return PLNR.renderKnow();
     if (s.key === 'tasks') return renderTasksPage();
     if (s.key === 'library') return renderLibraryPage();
     if (s.key === 'trans') return renderTransPage();
