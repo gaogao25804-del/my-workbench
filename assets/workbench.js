@@ -48,36 +48,43 @@ function ic(name, cls) {
 
 /* ---------------- 页面配置 ---------------- */
 const PAGES = {
+  /* ---- 决策台：四个一级模块 ---- */
+  home:    { title: '首页总览',       desc: '最近什么值得做 · 哪个号好 · 下一步研究什么' },
+  ideas:   { title: '选题研究中心',   desc: '灵感库 · 角度拆解 · 评分 · 复用案例' },
+  pool:    { title: '选题灵感库',     desc: '来源必填 · 状态可改 · 搜得到' },
+  angles:  { title: '选题角度拆解',   desc: '一个产品拆 14 个角度，再往下填创意' },
+  score:   { title: '评分与优先级',   desc: '8 个维度 · 权重公开可改 · 改完即重算' },
+  reuse:   { title: '复用与案例库',   desc: '爆款背后的结构，迁到新产品上' },
+  perf:    { title: '账号与平台表现', desc: '发布量 · 播放 · 互动 · 完播 · 留存' },
+  types:   { title: '内容类型对比',   desc: '中位优先 · 均值会被爆款拉偏' },
+  hits:    { title: '爆款视频库',     desc: '可搜可筛 · 带完播与留存' },
+  trend:   { title: '趋势对比',       desc: '月度折线 · 本月对上月' },
+  insight: { title: '数据反哺选题',   desc: '结论带样本量，样本少只当参考' },
+  tools:   { title: '研究与工具中心', desc: '热点 · 对标 · 开头 · SOP · AI 工作流' },
+
+  /* ---- 复用旧页面：渲染函数一个字没改，只换了归属 ---- */
+  radar:   { title: '今日热点',       desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' },
+  report:  { title: '战报明细',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
+  account: { title: '对标账号研究',   desc: '拆对标账号 · 生成可复制指令 · 只认事实不编数据' },
+  trends:  { title: '热门选题信号',   desc: '只收录有来源的信号 · 来源必填 · 播放量可空' },
+  hooks:   { title: '五秒开头案例库', desc: '存验证过的开场 · 适用场景 · 验证状态' },
+  sop:     { title: 'SOP 知识库',     desc: '能重复执行的流程 · 适用条件 · 验证结果' },
+  videos:  { title: '视频档案',       desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
+  ai:      { title: 'AI 选题工作流',  desc: '拆解 · 选题策划 · 复盘，走提示词，不假装接通' },
+
+  /* ---- 工具箱：五项原样，一个不动 ---- */
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 点日期看当日清单', actions: ['refresh'] },
   library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
-  koubo:   { title: '口播工坊',   desc: '自己写 · 自己改 · 定稿得你自己点' },
-  pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
-  draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' },
   trans:   { title: '英文翻译',   desc: '中文翻英文 · 本地模型优先，失败自动走在线' },
-  report:  { title: '战报',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
-  radar:   { title: '今日雷达',   desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' },
-  account: { title: '账号拆解',   desc: '拆对标账号 · 生成可复制指令 · 只认事实不编数据' },
-  trends:  { title: '热门选题',   desc: '只收录有来源的信号 · 来源必填 · 播放量可空' },
-  hooks:   { title: '五秒开头',   desc: '存验证过的开场 · 适用场景 · 验证状态' },
-  sop:     { title: 'SOP 库',     desc: '能重复执行的流程 · 适用条件 · 验证结果' },
-  topics:  { title: '选题池',     desc: '所有候选选题 · 看板拖动改状态 · 一键生成口播稿' },
-  videos:  { title: '视频档案',   desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
-  ai:      { title: 'AI 中心',    desc: '拆解 · 评论分析 · 选题策划 · 复盘，走提示词，不假装接通' },
-
-  /* 数码内容策划台 · 六模块（2026-11-17 上，工具箱一个字不动） */
-  dash:    { title: '工作驾驶舱',     desc: '今天干什么 · 卡在哪 · 各号状态' },
-  plan:    { title: '选题策划中心',   desc: '热点 · 选题库 · 创意 · 竞品分析' },
-  copy:    { title: '文案生产中心',   desc: '脚本 · 字数自查 · 素材 · 优秀文案对照' },
-  prod:    { title: '视频生产中心',   desc: '拍摄计划 · 剪辑任务 · 发布排期' },
-  data:    { title: '数据分析中心',   desc: '播放量 · 类型对比 · 爆款分析 · 复盘' },
-  know:    { title: 'AI 与知识库',    desc: 'AI 工作流 · SOP · 案例沉淀' }
+  pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
+  draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' }
 };
 
 const PAGE_SIZE = { task: 20 };
 
 /* ---------------- 全局状态 ---------------- */
 const st = {
-  tab: 'dash',
+  tab: 'home',
   group: 'create',
   feishu: null,
   library: null,
@@ -3418,30 +3425,44 @@ function mountTrans() {
 /* ---------------- 视图渲染（一页到底，各区块纵向串联） ---------------- */
 /* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
-  /* ---- 数码内容策划台：六模块 + 旧页面全部保留（旧 key 一个没删） ---- */
-  { key: 'dash', cat: 'create', title: '工作驾驶舱', desc: '今天干什么 · 卡在哪 · 各号状态' },
-  { key: 'plan', cat: 'create', title: '选题策划中心', desc: '四个选题入口 · 生命周期 · 判断标准' },
-  { key: 'radar', cat: 'create', title: '今日雷达', desc: '每天 10:20 抓一遍 · 一天存一份 · 分类 / 收藏 / 转选题' },
-  { key: 'trends', cat: 'create', title: '热门选题', desc: '只收录有来源的信号 · 来源必填 · 播放量可空' },
-  { key: 'account', cat: 'create', title: '账号拆解', desc: '拆对标账号 · 生成可复制指令 · 只认事实不编数据' },
-  { key: 'hooks', cat: 'create', title: '五秒开头', desc: '存验证过的开场 · 适用场景 · 验证状态' },
-  { key: 'copy', cat: 'create', title: '文案生产中心', desc: '脚本 · 字数自查 · 素材库 · 写稿铁律' },
-  { key: 'prod', cat: 'create', title: '视频生产中心', desc: '六道工序 · 拍摄剪辑排期 · 负责人与验收' },
-  { key: 'data', cat: 'create', title: '数据分析中心', desc: '播放量 · 类型中位 · 爆款率 · 反向关联' },
-  { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10 / 排行' },
-  { key: 'know', cat: 'create', title: 'AI 与知识库', desc: '六条 AI 工作流 · SOP · 经验沉淀' },
-  { key: 'sop', cat: 'create', title: 'SOP 库', desc: '能重复执行的流程 · 适用条件 · 验证结果' },
+  /* ---- 01 首页 ---- */
+  { key: 'home', cat: 'create', no: '01', title: '首页总览', desc: '最近什么值得做 · 哪个号好 · 下一步研究什么' },
+
+  /* ---- 02 选题研究中心 ---- */
+  { key: 'ideas', cat: 'create', no: '02', title: '选题研究中心', desc: '灵感库 · 角度拆解 · 评分 · 复用案例' },
+  { key: 'pool', cat: 'create', no: '02', title: '选题灵感库', desc: '来源必填 · 状态可改 · 搜得到' },
+  { key: 'angles', cat: 'create', no: '02', title: '选题角度拆解', desc: '一个产品拆 14 个角度，再往下填创意' },
+  { key: 'score', cat: 'create', no: '02', title: '评分与优先级', desc: '8 个维度 · 权重公开可改' },
+  { key: 'reuse', cat: 'create', no: '02', title: '复用与案例库', desc: '爆款背后的结构，迁到新产品上' },
+
+  /* ---- 03 平台数据分析中心 ---- */
+  { key: 'perf', cat: 'create', no: '03', title: '账号与平台表现', desc: '发布量 · 播放 · 互动 · 完播 · 留存' },
+  { key: 'types', cat: 'create', no: '03', title: '内容类型对比', desc: '中位优先 · 均值会被爆款拉偏' },
+  { key: 'hits', cat: 'create', no: '03', title: '爆款视频库', desc: '可搜可筛 · 带完播与留存' },
+  { key: 'trend', cat: 'create', no: '03', title: '趋势对比', desc: '月度折线 · 本月对上月' },
+  { key: 'insight', cat: 'create', no: '03', title: '数据反哺选题', desc: '结论带样本量，样本少只当参考' },
+  { key: 'report', cat: 'create', no: '03', title: '战报明细', desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
+
+  /* ---- 04 研究与工具中心 ---- */
+  { key: 'tools', cat: 'create', no: '04', title: '研究与工具中心', desc: '热点 · 对标 · 开头 · 档案 · SOP · AI' },
+  { key: 'radar', cat: 'create', no: '04', title: '今日热点', desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' },
+  { key: 'account', cat: 'create', no: '04', title: '对标账号研究', desc: '拆对标账号 · 只认事实不编数据' },
+  { key: 'trends', cat: 'create', no: '04', title: '热门选题信号', desc: '只收录有来源的信号 · 来源必填' },
+  { key: 'hooks', cat: 'create', no: '04', title: '五秒开头案例库', desc: '存验证过的开场 · 适用场景' },
+  { key: 'videos', cat: 'create', no: '04', title: '视频档案', desc: '每条一条档案 · 数据 / 评论 / 复盘' },
+  { key: 'ai', cat: 'create', no: '04', title: 'AI 选题工作流', desc: '走提示词，不假装接通' },
+  { key: 'sop', cat: 'create', no: '04', title: 'SOP 知识库', desc: '能重复执行的流程 · 验证结果' },
 
   /* ---- 工具箱：五项原样，一个不动 ---- */
-  { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
-  { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
-  { key: 'trans', cat: 'tool', title: '英文翻译', desc: '中文翻英文 · 一句一段都行' },
-  { key: 'pixel', cat: 'tool', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
-  { key: 'draw', cat: 'tool', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
+  { key: 'tasks', cat: 'tool', no: '05', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
+  { key: 'library', cat: 'tool', no: '05', title: '图书馆', desc: '藏书、书摘与思考' },
+  { key: 'trans', cat: 'tool', no: '05', title: '英文翻译', desc: '中文翻英文 · 一句一段都行' },
+  { key: 'pixel', cat: 'tool', no: '05', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
+  { key: 'draw', cat: 'tool', no: '05', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
 ];
 
 const CATS = {
-  create: { name: '策划台', desc: '驾驶舱 · 选题 · 文案 · 视频 · 数据 · 知识' },
+  create: { name: '决策台', desc: '首页 · 选题 · 数据 · 研究' },
   tool:   { name: '工具箱', desc: '日历 · 图书馆 · 翻译 · 像素 · 画板' }
 };
 
@@ -3471,17 +3492,25 @@ function renderView(keepScroll) {
   const list = SECTIONS.filter(function (s) { return s.cat === st.group; });
 
   const bodyOf = function (s) {
-    /* 策划台六模块：交给 planner.js 渲染，内部调用的还是原来那些函数 */
-    if (s.key === 'dash' && window.PLNR) return PLNR.renderDash();
-    if (s.key === 'plan' && window.PLNR) return PLNR.renderPlan();
-    if (s.key === 'copy' && window.PLNR) return PLNR.renderCopy();
-    if (s.key === 'prod' && window.PLNR) return PLNR.renderProd();
-    if (s.key === 'data' && window.PLNR) return PLNR.renderData();
-    if (s.key === 'know' && window.PLNR) return PLNR.renderKnow();
+    /* 决策台四模块：studio.js / studio2.js 渲染 */
+    const ST = window.STU;
+    if (ST) {
+      if (s.key === 'home') return ST.renderHome();
+      if (s.key === 'ideas') return ST.renderIdeas();
+      if (s.key === 'pool') return ST.renderPool();
+      if (s.key === 'angles') return ST.renderAngles();
+      if (s.key === 'score') return ST.renderScore();
+      if (s.key === 'reuse') return ST.renderReuse();
+      if (s.key === 'perf') return ST.renderPerf();
+      if (s.key === 'types') return ST.renderTypes();
+      if (s.key === 'hits') return ST.renderHits();
+      if (s.key === 'trend') return ST.renderTrend();
+      if (s.key === 'insight') return ST.renderInsight();
+      if (s.key === 'tools') return ST.renderTools();
+    }
     if (s.key === 'tasks') return renderTasksPage();
     if (s.key === 'library') return renderLibraryPage();
     if (s.key === 'trans') return renderTransPage();
-    if (s.key === 'koubo') return renderKouboPage();
     if (s.key === 'pixel') return renderPixelPage();
     if (s.key === 'draw') return renderDrawPage();
     if (s.key === 'report') return renderReportPage();
@@ -3490,7 +3519,6 @@ function renderView(keepScroll) {
     if (s.key === 'trends' && window.CWB5) return CWB5.renderTrends();
     if (s.key === 'hooks' && window.CWB5) return CWB5.renderHooks();
     if (s.key === 'sop' && window.CWB5) return CWB5.renderSop();
-    if (s.key === 'topics' && window.CWB) return CWB.renderTopics();
     if (s.key === 'videos' && window.CWB2) return CWB2.renderVideos();
     if (s.key === 'ai' && window.CWB4) return CWB4.renderAI();
     return '';
@@ -3498,7 +3526,7 @@ function renderView(keepScroll) {
 
   const s = secOf(st.tab) || list[0];
   const html = '<section class="page-sec" id="sec-' + s.key + '">' +
-    secHead({ no: '01', title: s.title, desc: s.desc }) + bodyOf(s) + '</section>';
+    secHead({ no: s.no || '01', title: s.title, desc: s.desc }) + bodyOf(s) + '</section>';
 
   view.innerHTML = html;
 
@@ -3534,6 +3562,11 @@ function renderView(keepScroll) {
 
   // 创作线升级模块挂载（选题池 / 视频档案 / AI / 口播面板 / 战报扩展）
   if (window.CWB_PAGE) { try { CWB_PAGE.attach(st.tab); } catch (e) { console.warn('[cw] attach', e); } }
+
+  // 「今天卡在哪」是旧的任务流概览（待策划/待写文案/待拍摄/待剪辑），
+  // 跟新结构无关，而且它跳的是已经下线的选题池。渲染后清掉。
+  var oldOv = document.querySelector('#view [data-cw-overview]');
+  if (oldOv && oldOv.parentNode) oldOv.parentNode.removeChild(oldOv);
 }
 
 function updateChrome() {
