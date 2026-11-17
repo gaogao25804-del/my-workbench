@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f5f5f7">
-<title>个人工作台</title>
+<title>内容决策台 · 短视频选题与数据分析</title>
 <link rel="stylesheet" href="assets/workbench.css?v=1816">
 <link rel="stylesheet" href="assets/create.css?v=1116b">
+<link rel="stylesheet" href="assets/studio.css?v=1117d">
 </head>
 <body>
 
@@ -17,16 +18,16 @@
     <div class="side-brand">
       <div class="side-brand-row">
         <div class="side-logo" aria-hidden="true"><svg viewBox="0 0 16 16"><g fill="#ff8b55"><rect x="6" y="0" width="4" height="3"/><rect x="6" y="13" width="4" height="3"/><rect x="0" y="6" width="3" height="4"/><rect x="13" y="6" width="3" height="4"/><rect x="2" y="2" width="3" height="3"/><rect x="11" y="2" width="3" height="3"/><rect x="2" y="11" width="3" height="3"/><rect x="11" y="11" width="3" height="3"/></g><rect x="6" y="6" width="4" height="4" fill="#ff6a2f"/></svg></div>
-        <div class="side-name">个人工作台</div>
+        <div class="side-name">内容决策台</div>
         <button class="icon-btn side-close" id="sideClose" aria-label="关闭导航"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-      <div class="side-sub">数码内容策划台 · 工具箱 · 两个大类分开看</div>
+      <div class="side-sub">找选题 · 研究方向 · 看数据 · 找规律</div>
     </div>
 
     <div class="side-switch" id="sideSwitch" role="tablist" aria-label="切换大类">
       <button class="sw-btn active" type="button" data-cat="create" role="tab" aria-selected="true">
-        <span class="sw-k">策划台</span>
-        <span class="sw-v">驾驶舱·选题·文案·视频·数据·知识</span>
+        <span class="sw-k">决策台</span>
+        <span class="sw-v">首页·选题·数据·研究</span>
       </button>
       <button class="sw-btn" type="button" data-cat="tool" role="tab" aria-selected="false">
         <span class="sw-k">工具箱</span>
@@ -35,50 +36,72 @@
     </div>
 
     <nav class="side-nav" id="sideNav" data-cat="create">
-      <div class="side-label" data-cat="create">数码内容策划台</div>
+      <div class="side-label" data-cat="create">内容决策台</div>
 
-      <div class="nav-item" data-nav="dash" data-cat="create">
-        <span data-icon="home"></span><span>01 工作驾驶舱</span>
-      </div>
-
-      <div class="nav-item" data-nav="plan" data-cat="create">
-        <span data-icon="spark"></span><span>02 选题策划</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="radar" data-cat="create">
-        <span>今日雷达</span>
-        <span class="nav-count" id="navRadarCount">—</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="trends" data-cat="create">
-        <span>热门选题</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="account" data-cat="create">
-        <span>账号拆解</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="hooks" data-cat="create">
-        <span>五秒开头</span>
+      <div class="nav-item" data-nav="home" data-cat="create">
+        <span data-icon="home"></span><span>首页总览</span>
       </div>
 
-      <div class="nav-item" data-nav="copy" data-cat="create">
-        <span data-icon="pen"></span><span>03 文案生产</span>
+      <div class="nav-item" data-nav="ideas" data-cat="create">
+        <span data-icon="spark"></span><span>选题研究中心</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="pool" data-cat="create">
+        <span>灵感库</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="angles" data-cat="create">
+        <span>角度拆解</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="score" data-cat="create">
+        <span>评分与优先级</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="reuse" data-cat="create">
+        <span>复用与案例库</span>
       </div>
 
-      <div class="nav-item" data-nav="prod" data-cat="create">
-        <span data-icon="film"></span><span>04 视频生产</span>
+      <div class="nav-item" data-nav="perf" data-cat="create">
+        <span data-icon="chart"></span><span>平台数据分析中心</span>
       </div>
-
-      <div class="nav-item" data-nav="data" data-cat="create">
-        <span data-icon="chart"></span><span>05 数据分析</span>
+      <div class="nav-item is-sub" data-nav="types" data-cat="create">
+        <span>内容类型对比</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="hits" data-cat="create">
+        <span>爆款视频库</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="trend" data-cat="create">
+        <span>趋势对比</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="insight" data-cat="create">
+        <span>数据反哺选题</span>
       </div>
       <div class="nav-item is-sub" data-nav="report" data-cat="create">
         <span>战报明细</span>
         <span class="nav-count" id="navReportCount">—</span>
       </div>
 
-      <div class="nav-item" data-nav="know" data-cat="create">
-        <span data-icon="bookmark"></span><span>06 AI 与知识库</span>
+      <div class="nav-item" data-nav="tools" data-cat="create">
+        <span data-icon="bookmark"></span><span>研究与工具中心</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="radar" data-cat="create">
+        <span>今日热点</span>
+        <span class="nav-count" id="navRadarCount">—</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="account" data-cat="create">
+        <span>对标账号研究</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="trends" data-cat="create">
+        <span>热门选题信号</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="hooks" data-cat="create">
+        <span>五秒开头库</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="videos" data-cat="create">
+        <span>视频档案</span>
+      </div>
+      <div class="nav-item is-sub" data-nav="ai" data-cat="create">
+        <span>AI 选题工作流</span>
       </div>
       <div class="nav-item is-sub" data-nav="sop" data-cat="create">
-        <span>SOP 库</span>
+        <span>SOP 知识库</span>
       </div>
 
       <div class="side-label" data-cat="tool">工具箱</div>
@@ -114,8 +137,8 @@
     <header class="topbar">
       <button class="icon-btn menu-btn" id="menuBtn" aria-label="打开导航"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       <div class="topbar-main">
-        <div class="topbar-title" id="pageTitle">创作线 · 今日雷达</div>
-        <div class="topbar-desc" id="pageDesc">每天抓一遍 · 一天存一份</div>
+        <div class="topbar-title" id="pageTitle">决策台 · 首页总览</div>
+        <div class="topbar-desc" id="pageDesc">最近什么值得做 · 哪个号好 · 下一步研究什么</div>
       </div>
       <div class="topbar-actions" id="pageActions"></div>
     </header>
@@ -123,7 +146,7 @@
     <div class="content" id="view"></div>
 
     <footer class="foot">
-      飞书数据来自本地同步快照 · 文案文件保存在本机仓库
+      数据来自本地快照：videos-data.json / content/report/index.json / radar-data.json · 日常任务与文案在飞书
     </footer>
   </main>
 </div>
@@ -132,13 +155,13 @@
 <button class="fab" id="fabTop" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"/><path d="M5.6 12.4 12 6l6.4 6.4"/></svg></button>
 <div id="modalRoot"></div>
 
-<script src="assets/workbench.js?v=1117b"></script>
+<script src="assets/workbench.js?v=1117d"></script>
 <script src="assets/create.js?v=1116a"></script>
 <script src="assets/create2.js?v=1116b"></script>
 <script src="assets/create3.js?v=1116a"></script>
 <script src="assets/create4.js?v=1116b"></script>
 <script src="assets/create5.js?v=1117a"></script>
-<script src="assets/planner-seed.js?v=1117c"></script>
-<script src="assets/planner.js?v=1117c"></script>
+<script src="assets/studio.js?v=1117d"></script>
+<script src="assets/studio2.js?v=1117d"></script>
 </body>
 </html>
