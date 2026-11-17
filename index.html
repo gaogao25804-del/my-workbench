@@ -21,13 +21,12 @@
         <button class="icon-btn side-close" id="sideClose" aria-label="关闭导航"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
       <div class="side-sub">创作线 · 工具箱 · 两个大类分开看</div>
-      <a href="new.html" style="display:block;margin:9px 12px 0;padding:8px 10px;border-radius:9px;background:#fff1e9;color:#a8431b;font-size:12px;text-decoration:none;text-align:center">→ 新版 5 模块工作台</a>
     </div>
 
     <div class="side-switch" id="sideSwitch" role="tablist" aria-label="切换大类">
       <button class="sw-btn active" type="button" data-cat="create" role="tab" aria-selected="true">
         <span class="sw-k">创作线</span>
-        <span class="sw-v">雷达·选题·口播·档案·战报</span>
+        <span class="sw-v">雷达·战报·拆解·选题·开头·SOP</span>
       </button>
       <button class="sw-btn" type="button" data-cat="tool" role="tab" aria-selected="false">
         <span class="sw-k">工具箱</span>
@@ -41,24 +40,21 @@
         <span data-icon="bolt"></span><span>今日雷达</span>
         <span class="nav-count" id="navRadarCount">—</span>
       </div>
-      <div class="nav-item" data-nav="topics" data-cat="create">
-        <span data-icon="bookmark"></span><span>选题池</span>
-        <span class="nav-count" id="navTopicCount">—</span>
-      </div>
-      <div class="nav-item" data-nav="koubo" data-cat="create">
-        <span data-icon="mic"></span><span>口播工坊</span>
-        <span class="nav-count" id="navKouboCount">—</span>
-      </div>
-      <div class="nav-item" data-nav="videos" data-cat="create">
-        <span data-icon="film"></span><span>视频档案</span>
-        <span class="nav-count" id="navVideoCount">—</span>
-      </div>
       <div class="nav-item" data-nav="report" data-cat="create">
         <span data-icon="chart"></span><span>战报</span>
         <span class="nav-count" id="navReportCount">—</span>
       </div>
-      <div class="nav-item" data-nav="ai" data-cat="create">
-        <span data-icon="spark"></span><span>AI 中心</span>
+      <div class="nav-item" data-nav="account" data-cat="create">
+        <span data-icon="search"></span><span>账号拆解</span>
+      </div>
+      <div class="nav-item" data-nav="trends" data-cat="create">
+        <span data-icon="inbox"></span><span>热门选题</span>
+      </div>
+      <div class="nav-item" data-nav="hooks" data-cat="create">
+        <span data-icon="pen"></span><span>五秒开头</span>
+      </div>
+      <div class="nav-item" data-nav="sop" data-cat="create">
+        <span data-icon="book"></span><span>SOP 库</span>
       </div>
 
       <div class="side-label" data-cat="tool">工具箱</div>
@@ -112,10 +108,11 @@
 <button class="fab" id="fabTop" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"/><path d="M5.6 12.4 12 6l6.4 6.4"/></svg></button>
 <div id="modalRoot"></div>
 
-<script src="assets/workbench.js?v=1116a"></script>
+<script src="assets/workbench.js?v=1117a"></script>
 <script src="assets/create.js?v=1116a"></script>
 <script src="assets/create2.js?v=1116b"></script>
 <script src="assets/create3.js?v=1116a"></script>
 <script src="assets/create4.js?v=1116b"></script>
+<script src="assets/create5.js?v=1117a"></script>
 </body>
 </html>
