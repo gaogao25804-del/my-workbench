@@ -56,6 +56,10 @@ const PAGES = {
   trans:   { title: '英文翻译',   desc: '中文翻英文 · 本地模型优先，失败自动走在线' },
   report:  { title: '战报',       desc: '每月视频数据 · 大盘 / 明细 / TOP10' },
   radar:   { title: '今日雷达',   desc: '每天抓一遍 · 一天存一份 · 挑一条直接开稿' },
+  account: { title: '账号拆解',   desc: '拆对标账号 · 生成可复制指令 · 只认事实不编数据' },
+  trends:  { title: '热门选题',   desc: '只收录有来源的信号 · 来源必填 · 播放量可空' },
+  hooks:   { title: '五秒开头',   desc: '存验证过的开场 · 适用场景 · 验证状态' },
+  sop:     { title: 'SOP 库',     desc: '能重复执行的流程 · 适用条件 · 验证结果' },
   topics:  { title: '选题池',     desc: '所有候选选题 · 看板拖动改状态 · 一键生成口播稿' },
   videos:  { title: '视频档案',   desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
   ai:      { title: 'AI 中心',    desc: '拆解 · 评论分析 · 选题策划 · 复盘，走提示词，不假装接通' }
@@ -3407,11 +3411,11 @@ function mountTrans() {
 /* 两个大类：create 创作线 / tool 工具箱。区块按大类分组，一次只渲染一组 */
 const SECTIONS = [
   { key: 'radar', cat: 'create', title: '今日雷达', desc: '每天 10:20 抓一遍 · 一天存一份 · 分类 / 收藏 / 转选题' },
-  { key: 'topics', cat: 'create', title: '选题池', desc: '所有候选选题 · 看板拖动改状态 · 一键生成口播稿' },
-  { key: 'koubo', cat: 'create', title: '口播工坊', desc: '文案 · 拍摄方案 · 剪辑方案 · 定稿得你自己点' },
-  { key: 'videos', cat: 'create', title: '视频档案', desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
   { key: 'report', cat: 'create', title: '战报', desc: '每月视频数据 · 大盘 / 明细 / TOP10 / 排行' },
-  { key: 'ai', cat: 'create', title: 'AI 中心', desc: '拆解 · 评论分析 · 选题策划 · 复盘，走提示词，不假装接通' },
+  { key: 'account', cat: 'create', title: '账号拆解', desc: '拆对标账号 · 生成可复制指令 · 只认事实不编数据' },
+  { key: 'trends', cat: 'create', title: '热门选题', desc: '只收录有来源的信号 · 来源必填 · 播放量可空' },
+  { key: 'hooks', cat: 'create', title: '五秒开头', desc: '存验证过的开场 · 适用场景 · 验证状态' },
+  { key: 'sop', cat: 'create', title: 'SOP 库', desc: '能重复执行的流程 · 适用条件 · 验证结果' },
   { key: 'tasks', cat: 'tool', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
   { key: 'library', cat: 'tool', title: '图书馆', desc: '藏书、书摘与思考' },
   { key: 'trans', cat: 'tool', title: '英文翻译', desc: '中文翻英文 · 一句一段都行' },
@@ -3458,6 +3462,10 @@ function renderView(keepScroll) {
     if (s.key === 'draw') return renderDrawPage();
     if (s.key === 'report') return renderReportPage();
     if (s.key === 'radar') return renderRadarPage();
+    if (s.key === 'account' && window.CWB5) return CWB5.renderAccount();
+    if (s.key === 'trends' && window.CWB5) return CWB5.renderTrends();
+    if (s.key === 'hooks' && window.CWB5) return CWB5.renderHooks();
+    if (s.key === 'sop' && window.CWB5) return CWB5.renderSop();
     if (s.key === 'topics' && window.CWB) return CWB.renderTopics();
     if (s.key === 'videos' && window.CWB2) return CWB2.renderVideos();
     if (s.key === 'ai' && window.CWB4) return CWB4.renderAI();
