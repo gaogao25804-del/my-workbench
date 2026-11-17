@@ -89,7 +89,32 @@
     if (!Array.isArray(d.pipe)) d.pipe = [];
     if (!Array.isArray(d.assets)) d.assets = [];
     if (!Array.isArray(d.accounts) || !d.accounts.length) d.accounts = DEFAULT_ACCOUNTS.slice();
+    if (!d.seeded) seedOnce(d);
     return d;
+  }
+
+  /* 首次打开填一次预置数据（planner-seed.js）。
+     规则：当前列表有内容就不动它。他手填的一条都不会被冲掉。 */
+  function seedOnce(d) {
+    var s = global.PLNR_SEED;
+    if (!s) return;
+    if (!d.pipe.length && Array.isArray(s.pipe)) d.pipe = s.pipe.slice();
+    if (!d.assets.length && Array.isArray(s.assets)) d.assets = s.assets.slice();
+    d.seeded = s.version || '1';
+    save(d);
+    if (s.dcw) {
+      var DK = 'wb.dcw.v1', raw = null;
+      try { raw = JSON.parse(localStorage.getItem(DK) || 'null'); } catch (e) { raw = null; }
+      if (!raw || typeof raw !== 'object') raw = {};
+      var hit = false;
+      Object.keys(s.dcw).forEach(function (k) {
+        if (!Array.isArray(raw[k])) raw[k] = [];
+        if (!raw[k].length && Array.isArray(s.dcw[k]) && s.dcw[k].length) {
+          raw[k] = s.dcw[k].slice(); hit = true;
+        }
+      });
+      if (hit) { try { localStorage.setItem(DK, JSON.stringify(raw)); } catch (e) {} }
+    }
   }
   function save(d) {
     try { localStorage.setItem(KEY, JSON.stringify(d)); }
@@ -254,7 +279,9 @@
       var list = pipe.filter(function (t) { return t.stage === stage.k; });
       var body = list.length ? list.map(function (t) {
         var dd = dayDiff(t.due);
-        var dueTxt = t.due ? (dd < 0 ? '超期 ' + (-dd) + ' 天' : dd === 0 ? '今天' : dd + ' 天后') : '';
+        var dueTxt = stage.k === 'done'
+          ? (t.due ? String(t.due).slice(5).replace('-', '/') + ' 发布' : '')
+          : (!t.due ? '' : (dd < 0 ? '超期 ' + (-dd) + ' 天' : dd === 0 ? '今天' : dd + ' 天后'));
         return '<div class="pl-task' + (t.blocked ? ' is-blocked' : '') + '">' +
             '<div class="pl-task-t">' + esc(t.title) + '</div>' +
             '<div class="pl-task-m">' +
@@ -263,6 +290,7 @@
             '</div>' +
             (t.blocked ? '<div class="pl-task-block">卡在：' + esc(t.blockReason || '未填原因') + '</div>' : '') +
             (dueTxt ? '<div class="pl-task-due' + (dd < 0 && stage.k !== 'done' ? ' is-over' : '') + '">' + esc(dueTxt) + '</div>' : '') +
+            (t.note ? '<div class="pl-task-note">' + esc(t.note) + '</div>' : '') +
             '<div class="pl-task-act">' +
               (stage.k !== 'done'
                 ? '<button class="pl-mini" data-plnr="adv" data-id="' + esc(t.id) + '" title="推进到下一阶段">下一步</button>'
@@ -683,6 +711,10 @@
      ============================================================ */
   function renderKnow() {
     var d = load();
+    /* 顺手把 SOP / 开头库的条数带出来，省得还要点进去看 */
+    var dcw = null;
+    try { dcw = JSON.parse(localStorage.getItem('wb.dcw.v1') || 'null') || {}; } catch (e) { dcw = {}; }
+    var nSop = (dcw.sops || []).length, nHook = (dcw.hooks || []).length;
     var flowCards = '<div class="pl-ai">' + AIFLOW.map(function (f, i) {
       return '<div class="pl-ai-i">' +
           '<div class="pl-ai-h"><b>' + esc(f.t) + '</b><span>' + pad(i + 1) + '</span></div>' +
@@ -702,8 +734,8 @@
         ) +
         panel('知识库入口', '已经在用的东西，别另起一套',
           '<div class="pl-jumps">' +
-            jump('sop', '01', 'SOP 库', '能重复执行的流程 · 适用条件 · 验证结果', '') +
-            jump('hooks', '02', '五秒开头', '验证过的开场，按场景检索', '') +
+            jump('sop', '01', 'SOP 库', '能重复执行的流程 · 适用条件 · 验证结果', nSop ? nSop + ' 条' : '') +
+            jump('hooks', '02', '五秒开头', '验证过的开场，按场景检索', nHook ? nHook + ' 条' : '') +
             jump('account', '03', '账号拆解', '拆对标账号的结构与打法', '') +
             jump('copy', '04', '文案生产', '素材库和写稿铁律都在那', d.assets.length ? d.assets.length + ' 条素材' : '') +
           '</div>'
@@ -965,7 +997,7 @@
       '.pl-kpi.is-ok{border-color:rgba(30,140,80,.22);background:#f3faf6}',
       '.pl-kpi.is-ok .pl-kpi-v{color:#1a7a48}',
       '.pl-kpis-sm .pl-kpi-v{font-size:18px}',
-      '.pl-board{display:grid;grid-template-columns:repeat(6,minmax(148px,1fr));gap:10px;overflow-x:auto;padding-bottom:4px}',
+      '.pl-board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding-bottom:4px}',
       '.pl-col{background:#faf9f7;border:1px solid rgba(0,0,0,.055);border-radius:11px;padding:10px 9px;min-width:0}',
       '.pl-col-h{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#4a4a4f;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid rgba(0,0,0,.05)}',
       '.pl-col-n{background:#ecebe7;border-radius:20px;padding:1px 7px;font-size:11px;color:#5f5f63}',
@@ -978,6 +1010,7 @@
       '.pl-task-block{font-size:11px;color:#b3261e;margin-top:6px;line-height:1.5}',
       '.pl-task-due{font-size:11px;color:#8a8a8e;margin-top:5px}',
       '.pl-task-due.is-over{color:#b3261e;font-weight:500}',
+      '.pl-task-note{font-size:11px;color:#6b6259;margin-top:5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}',
       '.pl-task-act{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}',
       '.pl-mini{font:inherit;font-size:11px;line-height:1;padding:5px 8px;border-radius:6px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#4a4a4f;cursor:pointer}',
       '.pl-mini:hover{background:#f4f3f0}',
