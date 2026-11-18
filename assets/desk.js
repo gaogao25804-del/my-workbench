@@ -141,7 +141,7 @@
         x: Math.round(w.x), y: Math.round(w.y),
         w: Math.round(w.w), h: Math.round(w.h),
         z: w.z, scroll: Math.round(w.scroll || 0),
-        sk: w.sk || null
+        sk: w.sk || null, lock: w.lock ? 1 : 0
       };
     });
     return { v: 2, theme: theme, wins: list, at: Date.now() };
@@ -188,11 +188,25 @@
     } catch (e) {}
   }
 
+  /* 这张卡锁没锁：整块画布锁了算锁，自己单独锁了也算 */
+  function isWinLocked(st) {
+    return locked || !!(st && st.lock);
+  }
+
+  function toggleWinLock(st) {
+    if (locked) { toast('整块画布都锁着，先点顶栏「已锁定」解开'); return; }
+    st.lock = st.lock ? 0 : 1;
+    var el = elOf(st);
+    if (el) el.classList.toggle('is-locked', !!st.lock);
+    scheduleSave();
+    toast(st.lock ? ('这张卡锁住了 · 位置不会再动') : '这张卡解锁了，可以拖了');
+  }
+
   function paintLock() {
     document.documentElement.setAttribute('data-locked', locked ? '1' : '0');
     Object.keys(wins).forEach(function (id) {
       var e = elOf(wins[id]);
-      if (e) e.classList.toggle('is-locked', locked);
+      if (e) e.classList.toggle('is-locked', isWinLocked(wins[id]));
     });
     var b = $('btnLock');
     if (!b) return;
@@ -315,6 +329,12 @@
         '<span class="dk-win-t" title="' + esc(st.name) + '">' + esc(st.name) + '</span>' +
         '<span class="dk-win-meta">' + (st.kind === 'web' ? hostOf(st.url) : fmtSize(st.size)) + '</span>' +
         '<div class="dk-win-a">' +
+          '<button type="button" data-act="lock" title="单独锁住这张卡片的位置（不影响别张）">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' +
+              '<rect x="5" y="10.6" width="14" height="8.9" rx="2.1"/>' +
+              '<path class="lk-o" d="M8.7 10.6V7.9a3.3 3.3 0 0 1 6.5-1"/>' +
+              '<path class="lk-c" d="M8.7 10.6V7.9a3.3 3.3 0 0 1 6.6 0v2.7"/>' +
+            '</svg></button>' +
           '<button type="button" data-act="reload" title="重新导入这个文件的新版本">' + SVG.reload + '</button>' +
           '<button type="button" data-act="max" title="最大化 / 还原">' + SVG.max + '</button>' +
           '<button type="button" data-act="close" title="从画布移除（不动本地原文件）">' + SVG.close + '</button>' +
@@ -485,14 +505,63 @@
       : '有些站点禁止被别的页面嵌套，空白就是被拦了';
     return '<div class="dk-web">' +
       '<div class="dk-web-bar">' +
-        '<span class="dk-web-u" title="' + esc(st.url) + '">' + esc(hostOf(st.url)) + '</span>' +
+        '<button type="button" class="dk-web-u" data-act="url" ' +
+          'title="点这里换地址。想看固定的一屏：在飞书里把视图切好，复制地址栏整串（带 table= 和 view=）贴进来，以后每次打开都是这一屏">' +
+          esc(hostOf(st.url)) +
+        '</button>' +
         '<button type="button" data-act="open" title="在新标签页打开">在新标签打开</button>' +
       '</div>' +
       '<div class="dk-web-f">' +
         '<iframe src="' + esc(st.url) + '" referrerpolicy="no-referrer" allow="clipboard-read; clipboard-write; fullscreen"></iframe>' +
+        '<div class="dk-web-load"><span class="dk-spin"></span><i>正在打开 ' + esc(hostOf(st.url)) + '</i></div>' +
         '<div class="dk-web-tip">' + esc(tip) + '</div>' +
       '</div>' +
       '</div>';
+  }
+
+  /* 点地址栏改链接：飞书切好的视图地址粘进来，下次打开就固定在这一屏 */
+  function editUrl(st) {
+    var el = elOf(st);
+    if (!el) return;
+    var u = el.querySelector('.dk-web-u');
+    if (!u || u.querySelector('input')) return;
+    var old = st.url;
+    u.innerHTML = '<input class="dk-web-in" type="text" spellcheck="false" value="' + esc(old) + '">';
+    var inp = u.querySelector('input');
+    var done = false;
+    inp.focus();
+    inp.select();
+    if (/feishu|larksuite/.test(old)) {
+      toast('把浏览器地址栏那一整串贴进来（带 table= 和 view= 才会停在那一屏）', 6000);
+    }
+
+    function cancel() {
+      if (done) return;
+      done = true;
+      u.textContent = hostOf(old);
+    }
+    function commit() {
+      if (done) return;
+      var v = normalizeUrl(inp.value);
+      if (!v) { toast('这个地址不对，要 https:// 开头'); inp.focus(); return; }
+      done = true;
+      st.url = v;
+      st.name = nameOfUrl(v);
+      refreshHead(st);
+      u.textContent = hostOf(v);
+      u.title = v;
+      renderBody(st, null);
+      scheduleSave();
+      toast(v === old ? '地址没变' : '地址已更新 · 以后打开就是这一页', 3200);
+    }
+
+    inp.addEventListener('keydown', function (e) {
+      e.stopPropagation();
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+      else if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+    });
+    inp.addEventListener('blur', function () { setTimeout(commit, 120); });
+    inp.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
   }
 
   function addUrl(raw) {
@@ -508,7 +577,11 @@
     scheduleSave();
     growStage();
     updateEmpty();
-    toast('已放进画布 · ' + hostOf(url));
+    if (/feishu|larksuite/.test(url) && !/[?&]view=/.test(url)) {
+      toast('已放进画布 · 飞书想停在哪一屏：在新标签里把视图切好，复制地址栏整串（带 view=）点窗口上的域名贴进来', 7600);
+    } else {
+      toast('已放进画布 · ' + hostOf(url));
+    }
     return true;
   }
 
@@ -526,8 +599,16 @@
       box.innerHTML = webFrame(st);
       var tipEl = box.querySelector('.dk-web-tip');
       var late = setTimeout(function () { if (tipEl) tipEl.classList.add('is-on'); }, 9000);
+      var ld = box.querySelector('.dk-web-load');
       var fr = box.querySelector('iframe');
-      if (fr) fr.addEventListener('load', function () { clearTimeout(late); });
+      var off = function () {
+        clearTimeout(late);
+        if (!ld) return;
+        ld.classList.add('is-off');
+        setTimeout(function () { if (ld.parentNode) ld.parentNode.removeChild(ld); }, 420);
+      };
+      if (fr) fr.addEventListener('load', off);
+      setTimeout(function () { if (ld && !ld.classList.contains('is-off')) off(); }, 14000);
       return;
     }
 
@@ -628,6 +709,7 @@
       x: pos.x, y: pos.y, w: w, h: h,
       z: ++zTop, maxed: false, prev: null, scroll: (box && box.scroll) || 0,
       sk: (box && box.sk) || null,
+      lock: (box && box.lock) ? 1 : 0,
       autofit: !box && rec.kind !== 'web'
     };
     wins[st.id] = st;
@@ -640,7 +722,7 @@
     });
     var el = elOf(st);
     if (el) {
-      if (locked) el.classList.add('is-locked');
+      if (isWinLocked(st)) el.classList.add('is-locked');
       el.classList.add('is-active');
       /* 落下来的小动画：从下方 10px 轻轻归位 */
       el.classList.add('is-in');
@@ -653,7 +735,7 @@
 
   /* ---------------- 拖拽 ---------------- */
   function startDrag(e, st, el) {
-    if (locked) return;
+    if (isWinLocked(st)) return;
     if (e.button != null && e.button !== 0) return;
     e.preventDefault();
     var sx = e.clientX, sy = e.clientY, ox = st.x, oy = st.y;
@@ -684,7 +766,7 @@
 
   /* ---------------- 缩放 ---------------- */
   function startResize(e, st, el, dir) {
-    if (locked) return;
+    if (isWinLocked(st)) return;
     if (e.button != null && e.button !== 0) return;
     e.preventDefault();
     var sx = e.clientX, sy = e.clientY;
@@ -727,7 +809,7 @@
 
   /* ---------------- 窗口操作 ---------------- */
   function toggleMax(st) {
-    if (locked) { toast('布局已锁定，先解锁再改大小'); return; }
+    if (isWinLocked(st)) { toast('这张卡锁着，先解锁再改大小'); return; }
     var el = elOf(st);
     if (!el) return;
     if (st.maxed && st.prev) {
@@ -749,7 +831,7 @@
   }
 
   function closeWin(st) {
-    if (locked) { toast('布局已锁定，先解锁再把卡片移走'); return; }
+    if (isWinLocked(st)) { toast('这张卡锁着，先解锁再把卡片移走'); return; }
     var el = elOf(st);
     var shared = Object.keys(wins).some(function (id) {
       return id !== st.id && wins[id].fileId === st.fileId;
@@ -862,7 +944,7 @@
         var box = {
           id: w.id, x: Math.max(0, w.x | 0), y: Math.max(0, w.y | 0),
           w: Math.max(MINW, w.w | 0), h: Math.max(MINH, w.h | 0), scroll: w.scroll || 0,
-          sk: w.sk || null
+          sk: w.sk || null, lock: w.lock ? 1 : 0
         };
 
         /* 网页 / 飞书链接窗口：不存文件，只存链接，直接按链接重建 */
@@ -1082,13 +1164,20 @@
         if (ow && ow.url) window.open(ow.url, '_blank', 'noopener');
         return;
       }
+      var ub = e.target.closest('.dk-web-u');
+      if (ub) {
+        var uw = wins[ub.closest('.dk-win').dataset.id];
+        if (uw) editUrl(uw);
+        return;
+      }
       var btn = e.target.closest('.dk-win-a button');
       if (!btn) return;
       var el = btn.closest('.dk-win');
       var st = wins[el.dataset.id];
       if (!st) return;
       var act = btn.dataset.act;
-      if (act === 'close') closeWin(st);
+      if (act === 'lock') toggleWinLock(st);
+      else if (act === 'close') closeWin(st);
       else if (act === 'max') toggleMax(st);
       else if (act === 'reload') reloadWin(st);
     });
