@@ -854,6 +854,7 @@
     scheduleSave();
     var el = elOf(st);
     if (el) el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    if (locked) toast('画布锁着呢：卡片能放上来，但改不了字。点顶栏「已锁定」解开就能写', 5200);
     return st;
   }
 
