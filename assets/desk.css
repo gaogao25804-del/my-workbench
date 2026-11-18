@@ -714,13 +714,10 @@ html, body {
 .dk-modal-hint b { color: var(--dk-tx2); font-weight: 600; }
 .dk-modal-a { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
-/* ---------- 瀑布流重排动画 ---------- */
+/* ---------- 瀑布流重排动画 ----------
+   宽高不能做过渡：排布时要先按最终列宽量内容高度，过渡中量到的是旧宽度的值 */
 .dk-stage.is-mason .dk-win {
-  transition:
-    left .46s cubic-bezier(.22, .61, .36, 1),
-    top .46s cubic-bezier(.22, .61, .36, 1),
-    width .46s cubic-bezier(.22, .61, .36, 1),
-    height .46s cubic-bezier(.22, .61, .36, 1);
+  transition: left .46s cubic-bezier(.22, .61, .36, 1), top .46s cubic-bezier(.22, .61, .36, 1);
 }
 .dk-stage.is-mason .dk-web-f iframe { pointer-events: none; }
 .dk-stage.is-mason .dk-win-b { overflow-anchor: none; }

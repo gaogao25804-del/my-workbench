@@ -145,7 +145,7 @@
         z: w.z, scroll: Math.round(w.scroll || 0)
       };
     });
-    return { v: 1, theme: theme, wins: list, at: Date.now() };
+    return { v: 2, theme: theme, wins: list, at: Date.now() };
   }
 
   function scheduleSave() {
@@ -320,10 +320,20 @@
   }
 
   /* 整画布重排成瀑布流：按视觉顺序依次丢进当前最短的那一列 */
-  function masonLayout(silent) {
+  function masonLayout(silent, retry) {
     var ids = Object.keys(wins);
     if (!ids.length) { if (!silent) toast('画布是空的，先拖几个文件进来'); return; }
     if (ids.length === 1) { if (!silent) toast('只有一张卡片，多放几个再排'); return; }
+
+    /* 还有窗口在解析：等它出内容再量，不然高度是瞎猜的 */
+    var busy = ids.some(function (id) {
+      var e0 = elOf(wins[id]);
+      return e0 && e0.querySelector('.dk-state');
+    });
+    if (busy && (retry || 0) < 8) {
+      setTimeout(function () { masonLayout(silent, (retry || 0) + 1); }, 320);
+      return;
+    }
     var g = gridOf();
 
     ids.sort(function (a, b) {
@@ -821,7 +831,10 @@
       if (missing) {
         toast('有 ' + missing + ' 个文件在本机浏览器里找不到了（可能清过缓存），重新添加一次就行', 5200);
       }
-      return Promise.all(jobs);
+      return Promise.all(jobs).then(function () {
+        /* 老版本（v1 网格）的布局：自动排一次瀑布流，之后拖乱不再自动覆盖 */
+        if ((raw.v || 1) < 2) setTimeout(function () { masonLayout(true); }, 280);
+      });
     }).catch(function (e) {
       toast('读取本地文件失败：' + ((e && e.message) || e), 4800);
     });
