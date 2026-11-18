@@ -29,6 +29,37 @@
     return v ? 'var(' + v + ')' : '';
   }
 
+  /* 摆位置：一律飘在卡片外侧——上面放得下就放上面，否则放卡片下面 */
+  function place() {
+    if (!ed || !range) { hide(); return; }
+    var r = range.getBoundingClientRect();
+    if (!r || (!r.width && !r.height)) { hide(); return; }
+
+    bar.hidden = false;
+    var bw = bar.offsetWidth || 230;
+    var bh = bar.offsetHeight || 34;
+    var cx = r.left + r.width / 2;
+    var x = Math.max(bw / 2 + 10, Math.min(window.innerWidth - bw / 2 - 10, cx));
+    var wrap = ed.closest('.dk-win');
+    var wr = wrap ? wrap.getBoundingClientRect() : null;
+
+    var y, above = false;
+    if (wr && wr.top - bh - 10 >= 52) { y = wr.top - bh - 10; above = true; }
+    else if (wr && wr.bottom + bh + 12 <= window.innerHeight) y = wr.bottom + 8;
+    else y = 52;
+    bar.setAttribute('data-side', above ? 'top' : 'bottom');
+
+    /* 选区在视口外就别飘着 */
+    if (r.bottom < 0 || r.top > window.innerHeight) { hide(); return; }
+
+    /* 水平方向别飘出卡片 */
+    if (wr && wr.width > bw + 24) {
+      x = Math.max(wr.left + bw / 2 + 6, Math.min(wr.right - bw / 2 - 6, x));
+    }
+    bar.style.left = Math.round(x) + 'px';
+    bar.style.top = Math.round(y) + 'px';
+  }
+
   document.addEventListener('selectionchange', function () {
     var host = edOfSel();
     var sel = window.getSelection();
@@ -37,30 +68,12 @@
     if (!ok) { ed = host || null; hide(); return; }
     ed = host;
     try { range = sel.getRangeAt(0).cloneRange(); } catch (e) { range = null; }
-    var r = range ? range.getBoundingClientRect() : null;
-    if (!r || (!r.width && !r.height)) { hide(); return; }
-
-    bar.hidden = false;
-    var bw = bar.offsetWidth || 230;
-    var cx = r.left + r.width / 2;
-    var x = Math.max(bw / 2 + 10, Math.min(window.innerWidth - bw / 2 - 10, cx));
-    var wrap = host.closest('.dk-win');
-    var wr = wrap ? wrap.getBoundingClientRect() : null;
-
-    /* 一律飘在卡片外侧：上面放得下就放上面，否则放下面 */
-    var y, above = false;
-    if (wr && wr.top - 44 >= 52) { y = wr.top - 44; above = true; }
-    else if (wr && wr.bottom + 46 <= window.innerHeight) y = wr.bottom + 8;
-    else y = 52;
-    bar.setAttribute('data-side', above ? 'top' : 'bottom');
-
-    /* 水平方向别飘出卡片 */
-    if (wr && wr.width > bw + 24) {
-      x = Math.max(wr.left + bw / 2 + 6, Math.min(wr.right - bw / 2 - 6, x));
-    }
-    bar.style.left = Math.round(x) + 'px';
-    bar.style.top = Math.round(y) + 'px';
+    place();
   });
+
+  /* 页面一滚，位置就变了，跟着挪，不然会压在别的东西上 */
+  window.addEventListener('scroll', function () { if (!bar.hidden) place(); }, true);
+  window.addEventListener('resize', function () { if (!bar.hidden) place(); });
 
   /* 按在工具条上不能把输入框里的选区抢走 */
   bar.addEventListener('mousedown', function (e) { e.preventDefault(); });
