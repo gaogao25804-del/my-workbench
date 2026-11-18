@@ -72,11 +72,8 @@ const PAGES = {
   videos:  { title: '视频档案',       desc: '发过的每条一条档案 · 数据 / 评论 / 复盘' },
   ai:      { title: 'AI 选题工作流',  desc: '拆解 · 选题策划 · 复盘，走提示词，不假装接通' },
 
-  /* ---- 工具箱：五项原样，一个不动 ---- */
+  /* ---- 工具箱：任务与日历 + 画板 ---- */
   tasks:   { title: '任务与日历', desc: '飞书任务月历视图 · 点日期看当日清单', actions: ['refresh'] },
-  library: { title: '图书馆',     desc: '藏书浏览 · 搜索与分页查看书摘和思考' },
-  trans:   { title: '英文翻译',   desc: '中文翻英文 · 本地模型优先，失败自动走在线' },
-  pixel:   { title: '像素工坊',   desc: '图片转像素风 · 去背导出透明 PNG' },
   draw:    { title: '画板',       desc: '随手画 · 导出 PNG / JPG 到本地' }
 };
 
@@ -3453,17 +3450,14 @@ const SECTIONS = [
   { key: 'ai', cat: 'create', no: '04', title: 'AI 选题工作流', desc: '走提示词，不假装接通' },
   { key: 'sop', cat: 'create', no: '04', title: 'SOP 知识库', desc: '能重复执行的流程 · 验证结果' },
 
-  /* ---- 工具箱：五项原样，一个不动 ---- */
+  /* ---- 工具箱：任务与日历 + 画板 ---- */
   { key: 'tasks', cat: 'tool', no: '05', title: '任务与日历', desc: '飞书任务月历 · 按日期筛选查看' },
-  { key: 'library', cat: 'tool', no: '05', title: '图书馆', desc: '藏书、书摘与思考' },
-  { key: 'trans', cat: 'tool', no: '05', title: '英文翻译', desc: '中文翻英文 · 一句一段都行' },
-  { key: 'pixel', cat: 'tool', no: '05', title: '像素工坊', desc: '图片转像素风 · 自动去背导出透明 PNG' },
   { key: 'draw', cat: 'tool', no: '05', title: '画板', desc: '随手画 · 一键保存 PNG / JPG' }
 ];
 
 const CATS = {
   create: { name: '决策台', desc: '首页 · 选题 · 数据 · 研究' },
-  tool:   { name: '工具箱', desc: '日历 · 图书馆 · 翻译 · 像素 · 画板' }
+  tool:   { name: '工具箱', desc: '日历 · 画板' }
 };
 
 function secOf(key) {
@@ -3509,9 +3503,6 @@ function renderView(keepScroll) {
       if (s.key === 'tools') return ST.renderTools();
     }
     if (s.key === 'tasks') return renderTasksPage();
-    if (s.key === 'library') return renderLibraryPage();
-    if (s.key === 'trans') return renderTransPage();
-    if (s.key === 'pixel') return renderPixelPage();
     if (s.key === 'draw') return renderDrawPage();
     if (s.key === 'report') return renderReportPage();
     if (s.key === 'radar') return renderRadarPage();
@@ -3551,8 +3542,7 @@ function renderView(keepScroll) {
   mountKoubo();
   mountTrans();
 
-  // 懒加载：图书馆 / 作品数据按需请求
-  if (st.load.library === 'idle') loadLibrary();
+  // 懒加载：作品数据按需请求
   if (st.load.report === 'idle') loadReport();
   if (st.load.radar === 'idle') loadRadar();
   if (st.load.drafts === 'idle') loadDrafts();
