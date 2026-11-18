@@ -4,6 +4,12 @@
    ========================================================== */
 
 :root {
+  /* 卡片里选字用的颜色，写在 span 上的 var() 会跟着主题换 */
+  --fg-red: #c9301f;
+  --fg-orange: #b0480a;
+  --fg-green: #078577;
+  --fg-blue: #2560bd;
+  --fg-purple: #5d40cc;
   --dk-bar: #fbfbfd;
   --dk-bar-bd: rgba(0, 0, 0, .09);
   --dk-canvas: #ececf0;
@@ -39,6 +45,11 @@
 }
 
 [data-theme="dark"] {
+  --fg-red: #ff8471;
+  --fg-orange: #ffa862;
+  --fg-green: #3ad9c2;
+  --fg-blue: #79acff;
+  --fg-purple: #bda6ff;
   --dk-bar: #1c1c1e;
   --dk-bar-bd: rgba(255, 255, 255, .1);
   --dk-canvas: #121214;
@@ -1327,7 +1338,17 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 }
 
 /* ---------- 卡面内容 ---------- */
-.dk-note.dk-tk { padding: 0; display: block; }
+.dk-note.dk-tk {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.dk-tk > .tk-top,
+.dk-tk > .tk-halo,
+.dk-tk > .tk-name,
+.dk-tk > .tk-quota,
+.dk-tk > .tk-stub { flex: 0 0 auto; }
 
 .tk-top {
   display: flex;
@@ -1430,25 +1451,39 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 }
 
 .tk-box {
-  margin: 12px 14px 0;
-  padding: 10px 11px 11px;
+  margin: 14px 14px 0;
+  padding: 12px 13px 14px;
   border: 1px solid var(--tk-line);
-  border-radius: 10px;
+  border-radius: 11px;
   background: var(--tk-panel);
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
 }
 .tk-k {
   font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
   font-size: 9px; letter-spacing: .1em; color: var(--tk-tx3); text-transform: uppercase;
 }
+/* 没有 01/02/03 小标题了，这三块就是纯写字的地方，越长越舒服 */
 .tk-v {
-  margin-top: 5px;
-  font-size: 12px;
-  line-height: 1.66;
+  font-size: 13px;
+  line-height: 1.72;
   color: var(--tk-tx2);
   outline: none;
+  word-break: break-word;
 }
-.tk-hr { height: 1px; margin: 9px 0; background: var(--tk-line); }
-.tk-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.tk-box > .tk-v { flex: 1 0 auto; min-height: 96px; }
+.tk-hr { flex: 0 0 auto; height: 1px; margin: 12px 0; background: var(--tk-line); }
+.tk-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1 0 auto;
+  min-height: 84px;
+}
+.tk-2 > div { display: flex; flex-direction: column; }
+.tk-2 > div + div { padding-left: 14px; border-left: 1px dashed var(--tk-line); }
+.tk-2 .tk-v { flex: 1 0 auto; }
 
 .tk-tags {
   margin: 11px 14px 0;
@@ -1546,7 +1581,18 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, .12);
 }
+.nt-bar button.nt-fg {
+  min-width: 22px;
+  padding: 0 3px;
+}
+.nt-bar button.nt-fg span {
+  font-family: Georgia, "Songti SC", "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
 .nt-bar-hr { width: 1px; height: 16px; margin: 0 3px; background: rgba(255, 255, 255, .22); }
+
 
 /* ---------- 选择卡片样式的弹窗 ---------- */
 .dk-modal-c.is-wide { width: min(660px, calc(100vw - 32px)); }

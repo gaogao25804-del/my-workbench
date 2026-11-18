@@ -45,18 +45,37 @@
     var d = new Date();
     return (d.getMonth() + 1) + '月' + d.getDate() + '日';
   }
-  /* 编号一路往下发，像票根存根那样 NO.001、NO.002… */
+  /* 编号：删掉一张之后重新排成连续的，下一张接着最大的往后发
+     以前是「只增不减」，删了 001/002/003 之后新卡直接从 008 开始，中间全是空号 */
   var SEQKEY = 'wb.desk.seq.v1';
+  function renumber() {
+    if (window.TK_RENUM) window.TK_RENUM(wins);
+  }
   function nextNo() {
+    renumber();
     var n = 0;
-    try { n = parseInt(localStorage.getItem(SEQKEY), 10) || 0; } catch (e) {}
     Object.keys(wins).forEach(function (k) {
       var v = wins[k];
-      if (v.kind === 'note' && v.note && v.note.no > n) n = v.note.no | 0;
+      if (v.kind === 'note' && v.note && (v.note.no | 0) > n) n = v.note.no | 0;
     });
     n += 1;
     try { localStorage.setItem(SEQKEY, String(n)); } catch (e) {}
     return n;
+  }
+  /* 重排之后，卡上那几个 NO.xxx 得跟着改，不然屏幕上还是旧号 */
+  function repaintNos() {
+    Object.keys(wins).forEach(function (k) {
+      var w = wins[k];
+      if (!w || w.kind !== 'note' || !w.note || !w.note.no) return;
+      var el = elOf(w);
+      if (!el) return;
+      var no = padNo(w.note.no);
+      var d = TK[w.note.style] || {};
+      var t = el.querySelector('.tk-no');
+      if (t) t.textContent = 'NO.' + no + (d.tag ? ' · ' + d.tag : '');
+      var q = el.querySelector('.tk-stub-no');
+      if (q) q.textContent = no;
+    });
   }
   function padNo(n) {
     var s = String(n || 1);
@@ -882,6 +901,7 @@
   /* 票根卡：一块一块写，点哪块改哪块 */
   function mountTk(st, box) {
     var s = ntStyle(st), d = TK[s] || TK.sop, f = tkFields(st);
+    var ph = d.ph || { name: '给它起个名', big: '一句数字', a: '写在这里……', b: '', c: '' };
     var ce = isWinLocked(st) ? 'false' : 'true';
     if (!st.note.no) st.note.no = nextNo();
     if (!st.note.date) st.note.date = mdToday();
@@ -899,18 +919,17 @@
           '<span class="tk-no">NO.' + no + ' · ' + d.tag + '</span>' +
         '</div>' +
         '<div class="tk-halo">' + d.icon + '</div>' +
-        fld('name', 'tk-name', '给它起个名') +
+        fld('name', 'tk-name', ph.name) +
         '<div class="tk-quota">' +
           '<div class="tk-lab">' + d.lab + '</div>' +
-          fld('big', 'tk-big', '一句数字') +
+          fld('big', 'tk-big', ph.big) +
         '</div>' +
         '<div class="tk-box">' +
-          '<div class="tk-k">' + d.k1 + '</div>' +
-          fld('a', 'tk-v', '写在这里……') +
+          fld('a', 'tk-v', ph.a) +
           '<div class="tk-hr"></div>' +
           '<div class="tk-2">' +
-            '<div><div class="tk-k">' + d.k2 + '</div>' + fld('b', 'tk-v', '') + '</div>' +
-            '<div><div class="tk-k">' + d.k3 + '</div>' + fld('c', 'tk-v', '') + '</div>' +
+            '<div>' + fld('b', 'tk-v', ph.b) + '</div>' +
+            '<div>' + fld('c', 'tk-v', ph.c) + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="tk-stub">' +
@@ -984,6 +1003,7 @@
     }
     var want = Math.round(Math.min(MAH_MAX, Math.max(118, headH + bodyH + 2)));
     if (Math.abs(want - st.h) < 6) return;
+    if (isTk(st) && want < st.h) return;   /* 票根卡是长条，只往长长，绝不自己缩回去 */
     if (want > st.h) {
       var ids = Object.keys(wins), hit = false, b, i;
       for (i = 0; i < ids.length; i++) {
@@ -1046,7 +1066,7 @@
   /* 新建一张便签：落在空地上，光标直接进去 */
   function newNote(style) {
     var tk = !!TK[style];
-    var w = tk ? 344 : 380, h = tk ? 412 : 300;
+    var w = tk ? 344 : 380, h = tk ? 640 : 300;
     var pos = nextSpot(w, h);
     var note = { style: style || 'plain', html: '' };
     if (tk) { note.no = nextNo(); note.date = mdToday(); }
@@ -1234,7 +1254,10 @@
     scheduleSave();
     if (st.kind === 'note') {
       pushTrash(st);
-      toast('卡片放进回收站了 · 在卡片库页面右上角能找回来', 4200);
+      renumber();
+      repaintNos();
+      scheduleSave();
+      toast('卡片放进回收站了 · 编号已经重排 · 在卡片库页面右上角能找回来', 4200);
       return;
     }
     toast(st.kind === 'web' ? '已移出画布' : '已移出画布 · 你本地的原文件没动');
@@ -1342,6 +1365,8 @@
         if (w.kind === 'note') {
           box.note = w.note || { style: 'plain', html: '' };
           box.kind = 'note';
+          /* 票根卡是长条票根，老数据里那批矮的（470 上下）顺手拉长，别看着短粗胖 */
+          if (window.TK && TK[box.note.style] && box.h < 640) box.h = 640;
           var sn = makeWindow({ id: w.fileId || w.id, name: w.name, kind: 'note', size: 0, note: box.note }, box);
           sn.z = w.z || ++zTop;
           var en = elOf(sn);
@@ -1390,6 +1415,10 @@
 
       growStage();
       updateEmpty();
+      /* 老数据里删过卡的编号是断的（比如 008 前面空了三个），开页先排成连续的 */
+      renumber();
+      repaintNos();
+      scheduleSave();
       if (saveEl) saveEl.textContent = '已恢复';
       if (missing) {
         toast('有 ' + missing + ' 个文件在本机浏览器里找不到了（可能清过缓存），重新添加一次就行', 5200);
@@ -1502,81 +1531,7 @@
       });
     }
 
-    /* 选中文字浮出的工具条：加粗 / 荧光笔 / 清格式 */
-    var ntBar = $('noteBar');
-    var ntEd = null, ntRange = null;
-    function edOfSel() {
-      var sel = window.getSelection();
-      if (!sel || !sel.rangeCount) return null;
-      var n = sel.anchorNode;
-      var el = n && (n.nodeType === 1 ? n : n.parentElement);
-      return el && el.closest ? el.closest('.dk-note') : null;
-    }
-    function hideNtBar() { if (ntBar) ntBar.hidden = true; }
-    document.addEventListener('selectionchange', function () {
-      if (!ntBar) return;
-      var ed = edOfSel();
-      var sel = window.getSelection();
-      var okSel = ed && ed.getAttribute('contenteditable') !== 'false' && sel && !sel.isCollapsed && String(sel).trim();
-      if (!okSel) { ntEd = ed || null; hideNtBar(); return; }
-      ntEd = ed;
-      try { ntRange = sel.getRangeAt(0).cloneRange(); } catch (e) { ntRange = null; }
-      var r = ntRange ? ntRange.getBoundingClientRect() : null;
-      if (!r || (!r.width && !r.height)) { hideNtBar(); return; }
-      ntBar.hidden = false;
-      var bw = ntBar.offsetWidth || 210;
-      var cx = r.left + r.width / 2;
-      var x = Math.max(bw / 2 + 10, Math.min(window.innerWidth - bw / 2 - 10, cx));
-      var wrap = ed.closest('.dk-win');
-      var wr = wrap ? wrap.getBoundingClientRect() : null;
-      /* 工具条一律飘在卡片外面：卡片上方放得下就放上方，否则放下面。
-         贴在选区上方会盖住上一行的字，一张小卡片上看着就像坏了。 */
-      var y, above = false;
-      if (wr && wr.top - 44 >= 52) { y = wr.top - 44; above = true; }
-      else if (wr && wr.bottom + 46 <= window.innerHeight) y = wr.bottom + 8;
-      else y = 52;
-      ntBar.setAttribute('data-side', above ? 'top' : 'bottom');
-      /* 水平方向也别飘到卡片外面去，看着像卡片自己的工具条 */
-      if (wr && wr.width > bw + 24) {
-        x = Math.max(wr.left + bw / 2 + 6, Math.min(wr.right - bw / 2 - 6, x));
-      }
-      ntBar.style.left = Math.round(x) + 'px';
-      ntBar.style.top = Math.round(y) + 'px';
-    });
-    if (ntBar) {
-      /* 按在工具条上不能把输入框里的选区抢走 */
-      ntBar.addEventListener('mousedown', function (e) { e.preventDefault(); });
-      ntBar.addEventListener('click', function (e) {
-        var b3 = e.target.closest('[data-nt2]');
-        if (!b3 || !ntEd) return;
-        var k = b3.dataset.nt2;
-        var ed = ntEd;
-        try { ed.focus({ preventScroll: true }); } catch (err) { ed.focus(); }
-        if (ntRange) {
-          var s2 = window.getSelection();
-          s2.removeAllRanges();
-          s2.addRange(ntRange);
-        }
-        if (k === 'b') {
-          document.execCommand('bold');
-        } else if (k === 'clear') {
-          try { document.execCommand('hiliteColor', false, 'transparent'); } catch (e2) {}
-          document.execCommand('removeFormat');
-        } else if (k.indexOf('hl:') === 0) {
-          var color = 'rgb(' + k.slice(3) + ')';
-          var done = false;
-          try { done = document.execCommand('hiliteColor', false, color); } catch (e3) { done = false; }
-          if (!done) { try { document.execCommand('backColor', false, color); } catch (e4) {} }
-        }
-        ed.dispatchEvent(new Event('input', { bubbles: true }));
-        setTimeout(function () {
-          var s3 = window.getSelection();
-          if (s3 && s3.rangeCount && !s3.isCollapsed) {
-            try { ntRange = s3.getRangeAt(0).cloneRange(); } catch (e5) {}
-          }
-        }, 0);
-      });
-    }
+    /* 选中文字的浮动工具条在 assets/ntbar.js，画布和卡片库共用一份 */
 
     // 贴链接（飞书文档 / 任意网页）
     var linkBox = $('linkModal'), linkIn = $('linkInput');

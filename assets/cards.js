@@ -78,14 +78,15 @@
       return w && w.kind === 'note' && w.note && w.note.style === s;
     }).sort(function (a, b) { return (a.note.no || 0) - (b.note.no || 0); });
   }
+  /* 删一张就重排成连续号，不留空；下一张接着最大的往后发 */
+  function renumber() {
+    if (window.TK_RENUM) window.TK_RENUM(desk().wins);
+  }
   function nextNo() {
+    renumber();
     var n = 0;
-    try { n = parseInt(localStorage.getItem(SKEY), 10) || 0; } catch (e) {}
     desk().wins.forEach(function (w) {
       if (w.kind === 'note' && w.note && (w.note.no | 0) > n) n = w.note.no | 0;
-    });
-    readTrash().forEach(function (w) {
-      if (w.note && (w.note.no | 0) > n) n = w.note.no | 0;
     });
     n += 1;
     try { localStorage.setItem(SKEY, String(n)); } catch (e) {}
@@ -123,6 +124,7 @@
 
   function cardHTML(w) {
     var s = w.note.style, d = TK[s], no = padNo(w.note.no);
+    var ph = d.ph || { name: '给它起个名', big: '一句数字', a: '写在这里……', b: '', c: '' };
     return '<div class="dk-win cd-card" data-kind="note" data-nt="' + s + '" data-id="' + w.id + '">' +
       '<button class="cd-del" type="button" data-del="' + w.id + '" title="扔进回收站">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>' +
@@ -133,18 +135,17 @@
           '<span class="tk-no">NO.' + no + ' · ' + d.tag + '</span>' +
         '</div>' +
         '<div class="tk-halo">' + d.icon + '</div>' +
-        fld(w, 'name', 'tk-name', '给它起个名') +
+        fld(w, 'name', 'tk-name', ph.name) +
         '<div class="tk-quota">' +
           '<div class="tk-lab">' + d.lab + '</div>' +
-          fld(w, 'big', 'tk-big', '一句数字') +
+          fld(w, 'big', 'tk-big', ph.big) +
         '</div>' +
         '<div class="tk-box">' +
-          '<div class="tk-k">' + d.k1 + '</div>' +
-          fld(w, 'a', 'tk-v', '写在这里……') +
+          fld(w, 'a', 'tk-v', ph.a) +
           '<div class="tk-hr"></div>' +
           '<div class="tk-2">' +
-            '<div><div class="tk-k">' + d.k2 + '</div>' + fld(w, 'b', 'tk-v', '') + '</div>' +
-            '<div><div class="tk-k">' + d.k3 + '</div>' + fld(w, 'c', 'tk-v', '') + '</div>' +
+            '<div>' + fld(w, 'b', 'tk-v', ph.b) + '</div>' +
+            '<div>' + fld(w, 'c', 'tk-v', ph.c) + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="tk-stub">' +
@@ -155,6 +156,7 @@
   }
 
   function render() {
+    renumber();          /* 每次画之前先把编号排成连续的，删过的空号自动补上 */
     ORDER.forEach(function (s) {
       if (!TK[s]) return;
       var sec = document.querySelector('.cd-sec[data-tk="' + s + '"]');
@@ -204,7 +206,7 @@
     var no = nextNo();
     var w = {
       id: uid(), fileId: uid(), name: d.name, kind: 'note', size: 0,
-      url: '', x: 60, y: lowestY() + 40, w: 344, h: 470,
+      url: '', x: 60, y: lowestY() + 40, w: 344, h: 640,
       z: 120, scroll: 0, sk: null, lock: 0,
       note: {
         style: s, html: '', no: no, date: today(),
@@ -248,9 +250,10 @@
     for (var i = 0; i < list.length; i++) {
       if (list[i].id === id) { list.splice(i, 1); break; }
     }
+    renumber();          /* 删掉这张，后面的号往前顶，不留空号 */
     saveNow();
     render();
-    toast('扔进回收站了 · 右上角能捡回来');
+    toast('扔进回收站了 · 编号已重排 · 右上角能捡回来');
   }
 
   function restore(id) {
@@ -264,12 +267,13 @@
     it.note = it.note || { style: 'sop', f: {} };
     desk().wins.push({
       id: it.id, fileId: it.id, name: it.name, kind: 'note', size: 0,
-      url: '', x: 60, y: lowestY() + 40, w: 344, h: 470,
+      url: '', x: 60, y: lowestY() + 40, w: 344, h: 640,
       z: 120, scroll: 0, sk: null, lock: 0, note: it.note
     });
+    renumber();          /* 捡回来的按原编号插回队里，后面的顺延，不留空号 */
     saveNow();
     render();
-    toast('捡回来了，回画布也能看到');
+    toast('捡回来了，编号也重排好了');
   }
 
   function kill(id) {
