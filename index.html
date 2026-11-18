@@ -5,27 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbfbfd">
 <title>我的工作台 · 文档桌面</title>
-<link rel="stylesheet" href="assets/desk.css?v=1118b">
-<style>
-  /* 顶栏里的工具箱入口：只用画布这套样式，不引外部 css */
-  .dk-link {
-    display: inline-flex; align-items: center; gap: 6px;
-    height: 34px; padding: 0 13px;
-    border: 1px solid var(--dk-line, #e5e5ea); border-radius: 9px;
-    background: transparent; color: var(--dk-fg, #1d1d1f);
-    font-size: 13px; font-weight: 500; text-decoration: none;
-    transition: background .16s ease, border-color .16s ease;
-  }
-  .dk-link:hover { background: var(--dk-hover, rgba(0,0,0,.05)); border-color: var(--dk-line2, #d6d6db); }
-  .dk-link svg { width: 15px; height: 15px; opacity: .72; }
-  @media (max-width: 560px) {
-    .dk-link .lbl2 { display: none; }
-    .dk-link { padding: 0 9px; }
-  }
-  body[data-theme="dark"] .dk-link, html[data-theme="dark"] .dk-link {
-    border-color: #3a3a3e; color: #f2f2f7;
-  }
-</style>
+<link rel="stylesheet" href="assets/desk.css?v=1118d">
 </head>
 <body>
 
@@ -48,6 +28,24 @@
 
   <div class="dk-actions">
     <span class="dk-save" id="saveState">—</span>
+    <button class="dk-link" id="btnMason" type="button" title="把画布上的窗口按内容高低排成瀑布流">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <rect x="3" y="3.4" width="5" height="8.6" rx="1.3"/>
+        <rect x="3" y="14" width="5" height="6.6" rx="1.3"/>
+        <rect x="9.5" y="3.4" width="5" height="5.2" rx="1.3"/>
+        <rect x="9.5" y="10.6" width="5" height="10" rx="1.3"/>
+        <rect x="16" y="3.4" width="5" height="12.4" rx="1.3"/>
+        <rect x="16" y="17.8" width="5" height="2.8" rx="1.2"/>
+      </svg>
+      <span class="lbl2">瀑布流</span>
+    </button>
+    <button class="dk-link" id="btnLink" type="button" title="贴飞书文档 / 任意网页链接，直接摆在画布上">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.6 13.4a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 1 0-5.7-5.7l-1.5 1.5"/>
+        <path d="M13.4 10.6a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 1 0 5.7 5.7l1.5-1.5"/>
+      </svg>
+      <span class="lbl2">贴链接</span>
+    </button>
     <a class="dk-link" href="workbench.html" title="任务与日历 / 图书馆 / 英文翻译 / 像素工坊 / 画板">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="7.5" width="18" height="12.5" rx="2.4"/><path d="M8.4 7.5V6a2 2 0 0 1 2-2h3.2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.4h18"/>
@@ -84,13 +82,30 @@
 <div class="dk-drop" id="drop"><div class="box">松手，放进画布</div></div>
 <div class="dk-toast" id="toast"></div>
 
+<!-- 贴链接 -->
+<div class="dk-modal" id="linkModal">
+  <div class="dk-modal-c">
+    <div class="dk-modal-t">贴个链接放上来</div>
+    <input class="dk-input" id="linkInput" type="text" spellcheck="false"
+           placeholder="https://xxx.feishu.cn/docx/xxxx  或任意网页地址">
+    <div class="dk-modal-hint">
+      飞书文档要先在右上角「分享」里把权限改成 <b>互联网上获得链接的人可阅读</b>，否则窗口里会是空白。<br>
+      空白不代表坏了：有些站点不允许被嵌，点窗口里「在新标签打开」照样能看。
+    </div>
+    <div class="dk-modal-a">
+      <button class="dk-btn" type="button" data-lk="no">算了</button>
+      <button class="dk-btn is-primary" type="button" data-lk="ok">放到画布</button>
+    </div>
+  </div>
+</div>
+
 <input type="file" id="fpick" multiple accept=".docx,.xlsx,.xls,.pdf,.txt" hidden>
 <input type="file" id="freplace" accept=".docx,.xlsx,.xls,.pdf,.txt" hidden>
 
 <script src="assets/vendor/mammoth.browser.min.js"></script>
 <script src="assets/vendor/xlsx.full.min.js"></script>
 <script src="assets/vendor/pdf.min.js"></script>
-<script src="assets/desk-parse.js?v=1118b"></script>
-<script src="assets/desk.js?v=1118b"></script>
+<script src="assets/desk-parse.js?v=1118d"></script>
+<script src="assets/desk.js?v=1118d"></script>
 </body>
 </html>
