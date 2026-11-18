@@ -1040,6 +1040,12 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
   background: transparent;
   color: inherit;
 }
+/* 单卡锁按钮：没锁是开着的锁（虚），锁上是合上的锁（实心橙） */
+.dk-win-a button[data-act="lock"] .lk-c { display: none; }
+.dk-win.is-locked .dk-win-a button[data-act="lock"] { opacity: 1; color: #e2501a; }
+.dk-win.is-locked .dk-win-a button[data-act="lock"] .lk-c { display: block; }
+.dk-win.is-locked .dk-win-a button[data-act="lock"] .lk-o { display: none; }
+[data-theme="dark"] .dk-win.is-locked .dk-win-a button[data-act="lock"] { color: #ff9d72; }
 
 /* 锁菜单 */
 .dk-lockmenu {
@@ -1070,3 +1076,56 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 .dk-lockmenu button:disabled { color: var(--dk-tx3); cursor: default; background: transparent; }
 .dk-lockmenu button[hidden] { display: none; }
 .lk-hr { height: 1px; margin: 6px 4px; background: var(--dk-bd2); }
+
+/* ---------- 网页窗口：地址可点、加载遮罩 ---------- */
+.dk-web-bar .dk-web-u {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 19px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--dk-tx3);
+  font: inherit;
+  font-size: 11px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: text;
+}
+.dk-web-bar .dk-web-u:hover {
+  background: rgba(0, 0, 0, .05);
+  border-color: var(--dk-bd2);
+  color: var(--dk-tx);
+}
+[data-theme="dark"] .dk-web-bar .dk-web-u:hover { background: rgba(255, 255, 255, .08); }
+.dk-web-bar .dk-web-u .dk-web-in {
+  width: 100%;
+  height: 17px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--dk-tx);
+  font: inherit;
+  font-size: 11px;
+}
+
+.dk-web-load {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--dk-win);
+  color: var(--dk-tx3);
+  font-size: 12px;
+  transition: opacity .34s ease;
+}
+.dk-web-load i { font-style: normal; }
+.dk-web-load.is-off { opacity: 0; pointer-events: none; }
