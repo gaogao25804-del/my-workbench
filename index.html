@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbfbfd">
 <title>我的工作台 · 文档桌面</title>
-<link rel="stylesheet" href="assets/desk.css?v=1118g">
+<link rel="stylesheet" href="assets/desk.css?v=1118h">
 </head>
 <body>
 
@@ -36,6 +36,13 @@
         <circle cx="16.2" cy="9.8" r="1.15" fill="currentColor" stroke="none"/>
       </svg>
       <span class="lbl2">外观</span>
+    </button>
+    <button class="dk-link" id="btnLock" type="button" title="把当前布局固定住：锁上以后卡片不会被动到（右键看备份）">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.2"/>
+        <path d="M8.3 10.4V7.7a3.7 3.7 0 0 1 7.4 0v2.7"/>
+      </svg>
+      <span class="lbl2">锁定</span>
     </button>
     <button class="dk-link" id="btnLink" type="button" title="贴飞书文档 / 任意网页链接，直接摆在画布上">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -91,14 +98,25 @@
   </div>
 </div>
 
+<div class="dk-lockmenu" id="lockMenu" hidden>
+  <div class="lk-t">布局</div>
+  <button type="button" data-lk2="toggle">锁定当前布局</button>
+  <button type="button" data-lk2="back">还没锁定过</button>
+  <button type="button" data-lk2="prev" hidden>回到上一版</button>
+  <div class="lk-hr"></div>
+  <button type="button" data-lk2="export">导出一份备份（.json）</button>
+  <button type="button" data-lk2="import">从备份恢复…</button>
+</div>
+<input type="file" id="fjson" accept=".json" hidden>
+
 <input type="file" id="fpick" multiple accept=".docx,.xlsx,.xls,.pdf,.txt" hidden>
 <input type="file" id="freplace" accept=".docx,.xlsx,.xls,.pdf,.txt" hidden>
 
 <script src="assets/vendor/mammoth.browser.min.js"></script>
 <script src="assets/vendor/xlsx.full.min.js"></script>
 <script src="assets/vendor/pdf.min.js"></script>
-<script src="assets/desk-parse.js?v=1118g"></script>
-<script src="assets/desk.js?v=1118g"></script>
-<script src="assets/desk-skin.js?v=1118g"></script>
+<script src="assets/desk-parse.js?v=1118h"></script>
+<script src="assets/desk.js?v=1118h"></script>
+<script src="assets/desk-skin.js?v=1118h"></script>
 </body>
 </html>

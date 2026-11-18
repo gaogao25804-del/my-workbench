@@ -1011,3 +1011,62 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
     radial-gradient(ellipse 52% 46% at 50% 44%, rgba(140, 255, 236, var(--gl-c)), transparent 72%);
   background-size: 100% 100%, 100% 100%, 100% 100%;
 }
+
+/* ==========================================================
+   布局锁定：把排好的一版固定住
+   ========================================================== */
+.dk-link.is-on {
+  background: rgba(255, 106, 47, .09);
+  border-color: rgba(255, 106, 47, .42);
+  color: #e2501a;
+}
+.dk-link.is-on svg { opacity: 1; }
+.dk-link.is-on:hover { background: rgba(255, 106, 47, .14); border-color: rgba(255, 106, 47, .55); }
+[data-theme="dark"] .dk-link.is-on {
+  background: rgba(255, 122, 69, .16);
+  border-color: rgba(255, 122, 69, .44);
+  color: #ff9d72;
+}
+[data-theme="dark"] .dk-link.is-on:hover { background: rgba(255, 122, 69, .22); }
+
+/* 锁住的卡片：标题栏不再出现抓手，四周的缩放手柄也不给碰 */
+.dk-win.is-locked .dk-win-h { cursor: default; }
+.dk-win.is-locked.is-drag .dk-win-h { cursor: default; }
+.dk-win.is-locked .dk-h { display: none; }
+.dk-win.is-locked .dk-win-a button[data-act="close"],
+.dk-win.is-locked .dk-win-a button[data-act="max"] {
+  opacity: .26;
+  cursor: not-allowed;
+  background: transparent;
+  color: inherit;
+}
+
+/* 锁菜单 */
+.dk-lockmenu {
+  position: fixed;
+  z-index: 9600;
+  min-width: 218px;
+  padding: 6px;
+  background: var(--dk-win);
+  border: 1px solid var(--dk-bd);
+  border-radius: 12px;
+  box-shadow: 0 20px 48px -18px rgba(0, 0, 0, .34), 0 2px 8px rgba(0, 0, 0, .07);
+}
+.dk-lockmenu[hidden] { display: none; }
+.lk-t {
+  font-size: 10.5px; font-weight: 600; letter-spacing: .07em;
+  color: var(--dk-tx3); text-transform: uppercase;
+  padding: 5px 9px 7px;
+}
+.dk-lockmenu button {
+  display: block; width: 100%; text-align: left;
+  height: 32px; padding: 0 9px;
+  border: 0; border-radius: 7px;
+  background: transparent; color: var(--dk-tx);
+  font: inherit; font-size: 12.5px; cursor: pointer;
+  white-space: nowrap;
+}
+.dk-lockmenu button:hover { background: var(--dk-win-h); }
+.dk-lockmenu button:disabled { color: var(--dk-tx3); cursor: default; background: transparent; }
+.dk-lockmenu button[hidden] { display: none; }
+.lk-hr { height: 1px; margin: 6px 4px; background: var(--dk-bd2); }

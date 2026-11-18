@@ -161,6 +161,142 @@
     }, 380);
   }
 
+  /* ---------------- 锁定布局：把排好的一版固定住 ---------------- */
+  var LOCK_KEY = 'wb.desk.lock.v1';
+  var locked = false, anchor = null, prevAnchor = null;
+
+  /* 布局指纹：谁在哪儿、多大 —— 用来判断「这一版有没有变过」 */
+  function layoutKeyOf(snap) {
+    return ((snap && snap.wins) || []).map(function (w) {
+      return w.id + '|' + w.x + ',' + w.y + ',' + w.w + ',' + w.h;
+    }).sort().join(';');
+  }
+
+  function loadLock() {
+    try {
+      var r = JSON.parse(localStorage.getItem(LOCK_KEY) || 'null');
+      if (!r) return;
+      locked = !!r.on;
+      anchor = r.anchor || null;
+      prevAnchor = r.prev || null;
+    } catch (e) {}
+  }
+
+  function saveLock() {
+    try {
+      localStorage.setItem(LOCK_KEY, JSON.stringify({ on: locked, anchor: anchor, prev: prevAnchor, at: Date.now() }));
+    } catch (e) {}
+  }
+
+  function paintLock() {
+    document.documentElement.setAttribute('data-locked', locked ? '1' : '0');
+    Object.keys(wins).forEach(function (id) {
+      var e = elOf(wins[id]);
+      if (e) e.classList.toggle('is-locked', locked);
+    });
+    var b = $('btnLock');
+    if (!b) return;
+    b.classList.toggle('is-on', locked);
+    var lb = b.querySelector('.lbl2');
+    if (lb) lb.textContent = locked ? '已锁定' : '锁定';
+    b.title = locked
+      ? '布局已锁定：卡片不能拖动、缩放、关掉。右键这个按钮可以回到锁定时那一版、导出备份'
+      : '把当前布局固定住：锁上以后卡片不会被动到（右键看备份）';
+  }
+
+  function setLock(on) {
+    if (on) {
+      var cur = snapshot();
+      if (!anchor || layoutKeyOf(anchor) !== layoutKeyOf(cur)) {
+        prevAnchor = anchor;
+        anchor = cur;
+      }
+      locked = true;
+      saveLock();
+      paintLock();
+      toast('布局已锁定 · ' + cur.wins.length + ' 张卡片不会再被挪动（右键「已锁定」可回到这一版或导出备份）', 4600);
+    } else {
+      locked = false;
+      saveLock();
+      paintLock();
+      toast('已解锁，卡片可以拖动、缩放了');
+    }
+  }
+
+  function restoreLayout(snap, label) {
+    if (!snap || !snap.wins || !snap.wins.length) { toast('还没有可恢复的布局'); return; }
+    var n = 0, miss = 0;
+    snap.wins.forEach(function (w) {
+      var st = wins[w.id];
+      if (!st) { miss++; return; }
+      st.x = w.x; st.y = w.y; st.w = w.w; st.h = w.h;
+      st.maxed = false; st.prev = null;
+      if (w.sk) st.sk = w.sk;
+      applyBox(st);
+      n++;
+    });
+    growStage();
+    scheduleSave();
+    toast(n
+      ? ('已回到' + label + ' · ' + n + ' 张卡片归位' + (miss ? '，另有 ' + miss + ' 张已不在画布上' : ''))
+      : '那一版里的卡片现在都不在画布上了', 4200);
+  }
+
+  function exportLayout() {
+    try {
+      var data = { kind: 'wb-desk-layout', v: 2, at: new Date().toISOString(), layout: snapshot() };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = '工作台布局-' + new Date().toISOString().slice(0, 10) + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+      toast('布局备份已下载 · 换电脑或清缓存以后用它恢复');
+    } catch (e) { toast('导出失败：' + ((e && e.message) || e)); }
+  }
+
+  function importLayout(file) {
+    var fr = new FileReader();
+    fr.onload = function () {
+      try {
+        var d = JSON.parse(String(fr.result));
+        var snap = (d && d.layout) || d;
+        if (!snap || !Array.isArray(snap.wins) || !snap.wins.length) throw new Error('里面没有布局数据');
+        localStorage.setItem(LKEY, JSON.stringify(snap));
+        toast('布局已导入，正在重载…');
+        setTimeout(function () { location.reload(); }, 800);
+      } catch (e) { toast('这个文件不是布局备份：' + ((e && e.message) || e)); }
+    };
+    fr.readAsText(file);
+  }
+
+  function openLockMenu() {
+    var m = $('lockMenu'), b = $('btnLock');
+    if (!m || !b) return;
+    var t = m.querySelector('[data-lk2="toggle"]');
+    if (t) t.textContent = locked ? '解锁（卡片可以拖动了）' : '锁定当前布局';
+    var bk = m.querySelector('[data-lk2="back"]');
+    if (bk) {
+      bk.disabled = !anchor;
+      bk.textContent = anchor ? ('回到锁定时那一版（' + anchor.wins.length + ' 张）') : '还没锁定过';
+    }
+    var pv = m.querySelector('[data-lk2="prev"]');
+    if (pv) { pv.hidden = !prevAnchor; pv.disabled = !prevAnchor; }
+
+    var r = b.getBoundingClientRect();
+    m.hidden = false;
+    var mw = m.offsetWidth || 216;
+    m.style.left = Math.max(8, Math.min(window.innerWidth - mw - 8, r.right - mw)) + 'px';
+    m.style.top = Math.round(r.bottom + 8) + 'px';
+  }
+
+  function closeLockMenu() {
+    var m = $('lockMenu');
+    if (m) m.hidden = true;
+  }
+
   /* ---------------- 主题 ---------------- */
   function applyTheme(t) {
     theme = t === 'dark' ? 'dark' : 'light';
@@ -504,6 +640,7 @@
     });
     var el = elOf(st);
     if (el) {
+      if (locked) el.classList.add('is-locked');
       el.classList.add('is-active');
       /* 落下来的小动画：从下方 10px 轻轻归位 */
       el.classList.add('is-in');
@@ -516,6 +653,7 @@
 
   /* ---------------- 拖拽 ---------------- */
   function startDrag(e, st, el) {
+    if (locked) return;
     if (e.button != null && e.button !== 0) return;
     e.preventDefault();
     var sx = e.clientX, sy = e.clientY, ox = st.x, oy = st.y;
@@ -546,6 +684,7 @@
 
   /* ---------------- 缩放 ---------------- */
   function startResize(e, st, el, dir) {
+    if (locked) return;
     if (e.button != null && e.button !== 0) return;
     e.preventDefault();
     var sx = e.clientX, sy = e.clientY;
@@ -588,6 +727,7 @@
 
   /* ---------------- 窗口操作 ---------------- */
   function toggleMax(st) {
+    if (locked) { toast('布局已锁定，先解锁再改大小'); return; }
     var el = elOf(st);
     if (!el) return;
     if (st.maxed && st.prev) {
@@ -609,6 +749,7 @@
   }
 
   function closeWin(st) {
+    if (locked) { toast('布局已锁定，先解锁再把卡片移走'); return; }
     var el = elOf(st);
     var shared = Object.keys(wins).some(function (id) {
       return id !== st.id && wins[id].fileId === st.fileId;
@@ -694,6 +835,8 @@
 
   /* ---------------- 恢复 ---------------- */
   function boot() {
+    loadLock();
+    paintLock();
     var raw = null;
     try { raw = JSON.parse(localStorage.getItem(LKEY) || 'null'); } catch (e) { raw = null; }
 
@@ -804,6 +947,55 @@
       applyTheme(theme === 'dark' ? 'light' : 'dark');
       scheduleSave();
     });
+
+    /* 锁定：点一下锁 / 解锁；右键或长按出菜单（备份与回滚） */
+    var btnLock = $('btnLock'), lockMenu = $('lockMenu');
+    if (btnLock) {
+      btnLock.addEventListener('click', function (e) {
+        e.preventDefault();
+        setLock(!locked);
+      });
+      btnLock.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        openLockMenu();
+      });
+      var holdT = null;
+      btnLock.addEventListener('pointerdown', function (e) {
+        if (e.pointerType === 'mouse') return;
+        holdT = setTimeout(function () { holdT = null; openLockMenu(); }, 480);
+      });
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (t) {
+        btnLock.addEventListener(t, function () { clearTimeout(holdT); });
+      });
+    }
+    if (lockMenu) {
+      lockMenu.addEventListener('click', function (e) {
+        var b2 = e.target.closest('[data-lk2]');
+        if (!b2 || b2.disabled) return;
+        var k = b2.dataset.lk2;
+        closeLockMenu();
+        if (k === 'toggle') setLock(!locked);
+        else if (k === 'back') restoreLayout(anchor, '锁定时那一版');
+        else if (k === 'prev') restoreLayout(prevAnchor, '上一版布局');
+        else if (k === 'export') exportLayout();
+        else if (k === 'import') { var fj = $('fjson'); if (fj) fj.click(); }
+      });
+      document.addEventListener('pointerdown', function (e) {
+        if (lockMenu.hidden) return;
+        if (e.target.closest('#lockMenu') || e.target.closest('#btnLock')) return;
+        closeLockMenu();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeLockMenu();
+      });
+    }
+    var fjson = $('fjson');
+    if (fjson) {
+      fjson.addEventListener('change', function () {
+        if (this.files && this.files[0]) importLayout(this.files[0]);
+        this.value = '';
+      });
+    }
 
     // 贴链接（飞书文档 / 任意网页）
     var linkBox = $('linkModal'), linkIn = $('linkInput');
