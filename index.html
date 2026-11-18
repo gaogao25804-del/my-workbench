@@ -1,167 +1,96 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f5f5f7">
-<title>内容决策台 · 短视频选题与数据分析</title>
-<link rel="stylesheet" href="assets/workbench.css?v=1816">
-<link rel="stylesheet" href="assets/create.css?v=1116b">
-<link rel="stylesheet" href="assets/studio.css?v=1117d">
+<meta name="theme-color" content="#fbfbfd">
+<title>我的工作台 · 文档桌面</title>
+<link rel="stylesheet" href="assets/desk.css?v=1118b">
+<style>
+  /* 顶栏里的工具箱入口：只用画布这套样式，不引外部 css */
+  .dk-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 34px; padding: 0 13px;
+    border: 1px solid var(--dk-line, #e5e5ea); border-radius: 9px;
+    background: transparent; color: var(--dk-fg, #1d1d1f);
+    font-size: 13px; font-weight: 500; text-decoration: none;
+    transition: background .16s ease, border-color .16s ease;
+  }
+  .dk-link:hover { background: var(--dk-hover, rgba(0,0,0,.05)); border-color: var(--dk-line2, #d6d6db); }
+  .dk-link svg { width: 15px; height: 15px; opacity: .72; }
+  @media (max-width: 560px) {
+    .dk-link .lbl2 { display: none; }
+    .dk-link { padding: 0 9px; }
+  }
+  body[data-theme="dark"] .dk-link, html[data-theme="dark"] .dk-link {
+    border-color: #3a3a3e; color: #f2f2f7;
+  }
+</style>
 </head>
 <body>
 
-<div class="app">
+<header class="dk-bar">
+  <div class="dk-brand">
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <g fill="#ff8b55">
+        <rect x="6" y="0" width="4" height="3"/><rect x="6" y="13" width="4" height="3"/>
+        <rect x="0" y="6" width="3" height="4"/><rect x="13" y="6" width="3" height="4"/>
+        <rect x="2" y="2" width="3" height="3"/><rect x="11" y="2" width="3" height="3"/>
+        <rect x="2" y="11" width="3" height="3"/><rect x="11" y="11" width="3" height="3"/>
+      </g>
+      <rect x="6" y="6" width="4" height="4" fill="#ff6a2f"/>
+    </svg>
+    我的工作台
+    <span class="dk-brand-sub">文档摆一块儿，不用来回切</span>
+  </div>
 
-  <!-- 侧边栏 -->
-  <aside class="sidebar" id="sidebar">
-    <div class="side-brand">
-      <div class="side-brand-row">
-        <div class="side-logo" aria-hidden="true"><svg viewBox="0 0 16 16"><g fill="#ff8b55"><rect x="6" y="0" width="4" height="3"/><rect x="6" y="13" width="4" height="3"/><rect x="0" y="6" width="3" height="4"/><rect x="13" y="6" width="3" height="4"/><rect x="2" y="2" width="3" height="3"/><rect x="11" y="2" width="3" height="3"/><rect x="2" y="11" width="3" height="3"/><rect x="11" y="11" width="3" height="3"/></g><rect x="6" y="6" width="4" height="4" fill="#ff6a2f"/></svg></div>
-        <div class="side-name">内容决策台</div>
-        <button class="icon-btn side-close" id="sideClose" aria-label="关闭导航"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      </div>
-      <div class="side-sub">找选题 · 研究方向 · 看数据 · 找规律</div>
-    </div>
+  <div class="grow"></div>
 
-    <div class="side-switch" id="sideSwitch" role="tablist" aria-label="切换大类">
-      <button class="sw-btn active" type="button" data-cat="create" role="tab" aria-selected="true">
-        <span class="sw-k">决策台</span>
-        <span class="sw-v">首页·选题·数据·研究</span>
-      </button>
-      <button class="sw-btn" type="button" data-cat="tool" role="tab" aria-selected="false">
-        <span class="sw-k">工具箱</span>
-        <span class="sw-v">日历·藏书·翻译·像素·画板</span>
-      </button>
-    </div>
+  <div class="dk-actions">
+    <span class="dk-save" id="saveState">—</span>
+    <a class="dk-link" href="workbench.html" title="任务与日历 / 图书馆 / 英文翻译 / 像素工坊 / 画板">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="7.5" width="18" height="12.5" rx="2.4"/><path d="M8.4 7.5V6a2 2 0 0 1 2-2h3.2a2 2 0 0 1 2 2v1.5"/><path d="M3 12.4h18"/>
+      </svg>
+      <span class="lbl2">工具箱</span>
+    </a>
+    <button class="dk-btn is-icon" id="btnTheme" type="button" title="切换浅色 / 深色" aria-label="切换主题">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2.6v2.2M12 19.2v2.2M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.4 19.6L6 18M18 6l1.6-1.6"/>
+      </svg>
+    </button>
+    <button class="dk-btn is-primary" id="btnAdd" type="button" title="添加 Word / Excel / PDF / TXT">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <path d="M12 5.5v13M5.5 12h13"/>
+      </svg>
+      <span class="lbl">添加文件</span>
+    </button>
+  </div>
+</header>
 
-    <nav class="side-nav" id="sideNav" data-cat="create">
-      <div class="side-label" data-cat="create">内容决策台</div>
+<main class="dk-canvas" id="canvas">
+  <div class="dk-stage" id="stage"></div>
+</main>
 
-      <div class="nav-item" data-nav="home" data-cat="create">
-        <span data-icon="home"></span><span>首页总览</span>
-      </div>
-
-      <div class="nav-item" data-nav="ideas" data-cat="create">
-        <span data-icon="spark"></span><span>选题研究中心</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="pool" data-cat="create">
-        <span>灵感库</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="angles" data-cat="create">
-        <span>角度拆解</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="score" data-cat="create">
-        <span>评分与优先级</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="reuse" data-cat="create">
-        <span>复用与案例库</span>
-      </div>
-
-      <div class="nav-item" data-nav="perf" data-cat="create">
-        <span data-icon="chart"></span><span>平台数据分析中心</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="types" data-cat="create">
-        <span>内容类型对比</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="hits" data-cat="create">
-        <span>爆款视频库</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="trend" data-cat="create">
-        <span>趋势对比</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="insight" data-cat="create">
-        <span>数据反哺选题</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="report" data-cat="create">
-        <span>战报明细</span>
-        <span class="nav-count" id="navReportCount">—</span>
-      </div>
-
-      <div class="nav-item" data-nav="tools" data-cat="create">
-        <span data-icon="bookmark"></span><span>研究与工具中心</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="radar" data-cat="create">
-        <span>今日热点</span>
-        <span class="nav-count" id="navRadarCount">—</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="account" data-cat="create">
-        <span>对标账号研究</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="trends" data-cat="create">
-        <span>热门选题信号</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="hooks" data-cat="create">
-        <span>五秒开头库</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="videos" data-cat="create">
-        <span>视频档案</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="ai" data-cat="create">
-        <span>AI 选题工作流</span>
-      </div>
-      <div class="nav-item is-sub" data-nav="sop" data-cat="create">
-        <span>SOP 知识库</span>
-      </div>
-
-      <div class="side-label" data-cat="tool">工具箱</div>
-      <div class="nav-item" data-nav="tasks" data-cat="tool">
-        <span data-icon="calendar"></span><span>任务与日历</span>
-        <span class="nav-count" id="navTaskCount">—</span>
-      </div>
-      <div class="nav-item" data-nav="library" data-cat="tool">
-        <span data-icon="book"></span><span>图书馆</span>
-        <span class="nav-count" id="navLibCount">—</span>
-      </div>
-      <div class="nav-item" data-nav="trans" data-cat="tool">
-        <span data-icon="lang"></span><span>英文翻译</span>
-      </div>
-      <div class="nav-item" data-nav="pixel" data-cat="tool">
-        <span data-icon="pixel"></span><span>像素工坊</span>
-      </div>
-      <div class="nav-item" data-nav="draw" data-cat="tool">
-        <span data-icon="palette"></span><span>画板</span>
-      </div>
-    </nav>
-
-    <div class="side-foot">
-      数据为本地快照<br>
-      <span id="sideUpdated">—</span>
-    </div>
-  </aside>
-
-  <div class="sidebar-mask" id="sidebarMask"></div>
-
-  <!-- 主区域 -->
-  <main class="main">
-    <header class="topbar">
-      <button class="icon-btn menu-btn" id="menuBtn" aria-label="打开导航"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      <div class="topbar-main">
-        <div class="topbar-title" id="pageTitle">决策台 · 首页总览</div>
-        <div class="topbar-desc" id="pageDesc">最近什么值得做 · 哪个号好 · 下一步研究什么</div>
-      </div>
-      <div class="topbar-actions" id="pageActions"></div>
-    </header>
-
-    <div class="content" id="view"></div>
-
-    <footer class="foot">
-      数据来自本地快照：videos-data.json / content/report/index.json / radar-data.json · 日常任务与文案在飞书
-    </footer>
-  </main>
+<div class="dk-empty" id="empty">
+  <div class="big">画布是空的</div>
+  <div class="small">
+    把 DOCX / XLSX / XLS / PDF / TXT 直接拖进这个页面<br>
+    或者点右上角 <kbd>添加文件</kbd>，一个个放进来，随便摆
+  </div>
 </div>
 
-<div class="toast-wrap" id="toastWrap"></div>
-<button class="fab" id="fabTop" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"/><path d="M5.6 12.4 12 6l6.4 6.4"/></svg></button>
-<div id="modalRoot"></div>
+<div class="dk-drop" id="drop"><div class="box">松手，放进画布</div></div>
+<div class="dk-toast" id="toast"></div>
 
-<script src="assets/workbench.js?v=1117d"></script>
-<script src="assets/create.js?v=1116a"></script>
-<script src="assets/create2.js?v=1116b"></script>
-<script src="assets/create3.js?v=1116a"></script>
-<script src="assets/create4.js?v=1116b"></script>
-<script src="assets/create5.js?v=1117a"></script>
-<script src="assets/studio.js?v=1117d"></script>
-<script src="assets/studio2.js?v=1117d"></script>
+<input type="file" id="fpick" multiple accept=".docx,.xlsx,.xls,.pdf,.txt" hidden>
+<input type="file" id="freplace" accept=".docx,.xlsx,.xls,.pdf,.txt" hidden>
+
+<script src="assets/vendor/mammoth.browser.min.js"></script>
+<script src="assets/vendor/xlsx.full.min.js"></script>
+<script src="assets/vendor/pdf.min.js"></script>
+<script src="assets/desk-parse.js?v=1118b"></script>
+<script src="assets/desk.js?v=1118b"></script>
 </body>
 </html>

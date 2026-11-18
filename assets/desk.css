@@ -1,0 +1,632 @@
+/* ==========================================================
+   自由布局工作台 · desk.css
+   独立于工作台 SPA，只服务 desk.html
+   ========================================================== */
+
+:root {
+  --dk-bar: #fbfbfd;
+  --dk-bar-bd: rgba(0, 0, 0, .09);
+  --dk-canvas: #ececf0;
+  --dk-grid: rgba(0, 0, 0, .045);
+  --dk-win: #ffffff;
+  --dk-win-h: #f7f7f9;
+  --dk-tx: #1d1d1f;
+  --dk-tx2: #6e6e73;
+  --dk-tx3: #a1a1a6;
+  --dk-bd: rgba(0, 0, 0, .1);
+  --dk-bd2: rgba(0, 0, 0, .06);
+  --dk-acc: #ff6a2f;
+  --dk-acc-s: rgba(255, 106, 47, .1);
+  --dk-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 8px 24px -8px rgba(0, 0, 0, .14);
+  --dk-shadow-a: 0 2px 6px rgba(0, 0, 0, .07), 0 18px 44px -12px rgba(0, 0, 0, .24);
+  --dk-r: 10px;
+  --dk-bar-h: 48px;
+}
+
+[data-theme="dark"] {
+  --dk-bar: #1c1c1e;
+  --dk-bar-bd: rgba(255, 255, 255, .1);
+  --dk-canvas: #121214;
+  --dk-grid: rgba(255, 255, 255, .045);
+  --dk-win: #1f1f22;
+  --dk-win-h: #26262a;
+  --dk-tx: #f5f5f7;
+  --dk-tx2: #a1a1a6;
+  --dk-tx3: #6e6e73;
+  --dk-bd: rgba(255, 255, 255, .13);
+  --dk-bd2: rgba(255, 255, 255, .07);
+  --dk-acc: #ff7d47;
+  --dk-acc-s: rgba(255, 125, 71, .14);
+  --dk-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px -10px rgba(0, 0, 0, .7);
+  --dk-shadow-a: 0 2px 8px rgba(0, 0, 0, .5), 0 22px 50px -14px rgba(0, 0, 0, .85);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--dk-canvas);
+  color: var(--dk-tx);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC",
+               "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+
+/* ---------------- 顶栏 ---------------- */
+.dk-bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 9000;
+  height: var(--dk-bar-h);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  background: var(--dk-bar);
+  border-bottom: 1px solid var(--dk-bar-bd);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+.dk-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.dk-brand svg { width: 15px; height: 15px; display: block; }
+.dk-brand-sub {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--dk-tx3);
+  margin-left: 2px;
+}
+
+.dk-bar .grow { flex: 1 1 auto; min-width: 0; }
+
+.dk-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+}
+
+.dk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 11px;
+  border: 1px solid var(--dk-bd);
+  border-radius: 7px;
+  background: var(--dk-win);
+  color: var(--dk-tx);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .12s, border-color .12s, transform .08s;
+}
+.dk-btn:hover { background: var(--dk-win-h); border-color: rgba(0, 0, 0, .16); }
+[data-theme="dark"] .dk-btn:hover { border-color: rgba(255, 255, 255, .2); }
+.dk-btn:active { transform: scale(.98); }
+.dk-btn svg { width: 13px; height: 13px; flex: 0 0 auto; }
+
+.dk-btn.is-primary {
+  background: var(--dk-acc);
+  border-color: var(--dk-acc);
+  color: #fff;
+  font-weight: 500;
+}
+.dk-btn.is-primary:hover { background: #f25c1f; border-color: #f25c1f; }
+
+.dk-btn.is-icon { width: 30px; padding: 0; justify-content: center; }
+
+.dk-save {
+  font-size: 11.5px;
+  color: var(--dk-tx3);
+  white-space: nowrap;
+  min-width: 46px;
+  text-align: right;
+  transition: color .2s;
+}
+.dk-save.is-dirty { color: var(--dk-acc); }
+
+/* ---------------- 画布 ---------------- */
+.dk-canvas {
+  position: fixed;
+  inset: var(--dk-bar-h) 0 0 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background-color: var(--dk-canvas);
+  background-image:
+    linear-gradient(var(--dk-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--dk-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0;
+}
+.dk-canvas.is-panning { cursor: grabbing; }
+.dk-canvas.is-panning * { pointer-events: none; }
+
+.dk-stage {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+  /* 尺寸由 JS 动态撑开 */
+}
+
+/* ---------------- 窗口 ---------------- */
+.dk-win {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  min-height: 150px;
+  background: var(--dk-win);
+  border: 1px solid var(--dk-bd);
+  border-radius: var(--dk-r);
+  box-shadow: var(--dk-shadow);
+  overflow: hidden;
+  contain: layout style;
+}
+.dk-win.is-active {
+  box-shadow: var(--dk-shadow-a);
+  border-color: rgba(255, 106, 47, .45);
+}
+.dk-win.is-drag { box-shadow: var(--dk-shadow-a); will-change: left, top; }
+.dk-win.is-resizing { will-change: width, height; }
+.dk-win.is-drag .dk-win-b,
+.dk-win.is-resizing .dk-win-b { pointer-events: none; }
+
+.dk-win-h {
+  flex: 0 0 auto;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 5px 0 9px;
+  background: var(--dk-win-h);
+  border-bottom: 1px solid var(--dk-bd2);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.dk-win.is-drag .dk-win-h { cursor: grabbing; }
+
+.dk-ico {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.02em;
+}
+.dk-ico[data-k="docx"] { background: #2b579a; }
+.dk-ico[data-k="xlsx"] { background: #217346; }
+.dk-ico[data-k="pdf"]  { background: #d33a2c; }
+.dk-ico[data-k="txt"]  { background: #767680; }
+
+.dk-win-t {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--dk-tx);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dk-win-meta {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  color: var(--dk-tx3);
+  padding-right: 2px;
+  white-space: nowrap;
+}
+
+.dk-win-a {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 1px;
+}
+.dk-win-a button {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--dk-tx2);
+  cursor: pointer;
+  padding: 0;
+  transition: background .12s, color .12s;
+}
+.dk-win-a button:hover { background: rgba(0, 0, 0, .07); color: var(--dk-tx); }
+[data-theme="dark"] .dk-win-a button:hover { background: rgba(255, 255, 255, .1); }
+.dk-win-a button[data-act="close"]:hover { background: #e5484d; color: #fff; }
+.dk-win-a svg { width: 13px; height: 13px; }
+
+.dk-win-b {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  position: relative;
+}
+
+/* ---------------- 缩放把手 ---------------- */
+.dk-h {
+  position: absolute;
+  z-index: 5;
+  touch-action: none;
+}
+.dk-h[data-d="n"]  { top: -3px; left: 8px; right: 8px; height: 8px; cursor: ns-resize; }
+.dk-h[data-d="s"]  { bottom: -3px; left: 8px; right: 8px; height: 8px; cursor: ns-resize; }
+.dk-h[data-d="w"]  { left: -3px; top: 8px; bottom: 8px; width: 8px; cursor: ew-resize; }
+.dk-h[data-d="e"]  { right: -3px; top: 8px; bottom: 8px; width: 8px; cursor: ew-resize; }
+.dk-h[data-d="nw"] { top: -3px; left: -3px; width: 14px; height: 14px; cursor: nwse-resize; }
+.dk-h[data-d="ne"] { top: -3px; right: -3px; width: 14px; height: 14px; cursor: nesw-resize; }
+.dk-h[data-d="sw"] { bottom: -3px; left: -3px; width: 14px; height: 14px; cursor: nesw-resize; }
+.dk-h[data-d="se"] { bottom: -3px; right: -3px; width: 14px; height: 14px; cursor: nwse-resize; }
+
+/* 右下角视觉提示 */
+.dk-win::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 9px;
+  height: 9px;
+  border-right: 1.5px solid var(--dk-tx3);
+  border-bottom: 1.5px solid var(--dk-tx3);
+  border-radius: 0 0 3px 0;
+  opacity: .32;
+  pointer-events: none;
+}
+.dk-win.is-active::after { opacity: .6; }
+
+/* ---------------- 内容：DOCX ---------------- */
+.dk-doc {
+  padding: 30px 34px 44px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--dk-tx);
+  word-wrap: break-word;
+  max-width: 900px;
+}
+.dk-doc > *:first-child { margin-top: 0; }
+.dk-doc h1, .dk-doc h2, .dk-doc h3, .dk-doc h4 {
+  line-height: 1.35;
+  margin: 1.5em 0 .6em;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+.dk-doc h1 { font-size: 1.6em; }
+.dk-doc h2 { font-size: 1.32em; }
+.dk-doc h3 { font-size: 1.12em; }
+.dk-doc h4 { font-size: 1em; }
+.dk-doc p { margin: 0 0 .85em; }
+.dk-doc ul, .dk-doc ol { margin: 0 0 .9em; padding-left: 1.5em; }
+.dk-doc li { margin: .25em 0; }
+.dk-doc table {
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: .92em;
+  max-width: 100%;
+}
+.dk-doc th, .dk-doc td {
+  border: 1px solid var(--dk-bd);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.dk-doc th { background: var(--dk-win-h); font-weight: 600; }
+.dk-doc img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em 0;
+  border-radius: 5px;
+}
+.dk-doc blockquote {
+  margin: 1em 0;
+  padding: .2em 0 .2em 1em;
+  border-left: 3px solid var(--dk-bd);
+  color: var(--dk-tx2);
+}
+.dk-doc strong { font-weight: 650; }
+.dk-doc a { color: var(--dk-acc); }
+
+/* ---------------- 内容：XLSX ---------------- */
+.dk-xls { display: flex; flex-direction: column; height: 100%; }
+
+.dk-tabs {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: var(--dk-win-h);
+  border-bottom: 1px solid var(--dk-bd2);
+}
+.dk-tabs::-webkit-scrollbar { display: none; }
+.dk-tab {
+  flex: 0 0 auto;
+  height: 26px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  color: var(--dk-tx2);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dk-tab:hover { background: rgba(0, 0, 0, .05); color: var(--dk-tx); }
+[data-theme="dark"] .dk-tab:hover { background: rgba(255, 255, 255, .07); }
+.dk-tab.is-on {
+  background: var(--dk-win);
+  border-color: var(--dk-bd2);
+  color: var(--dk-tx);
+  font-weight: 600;
+  margin-bottom: -1px;
+}
+
+.dk-sheet {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.dk-sheet table {
+  border-collapse: collapse;
+  font-size: 12.5px;
+  color: var(--dk-tx);
+  font-variant-numeric: tabular-nums;
+}
+.dk-sheet th, .dk-sheet td {
+  border: 1px solid var(--dk-bd2);
+  padding: 4px 9px;
+  text-align: left;
+  vertical-align: top;
+  max-width: 380px;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+.dk-sheet thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--dk-win-h);
+  font-weight: 600;
+  color: var(--dk-tx2);
+  white-space: nowrap;
+}
+.dk-sheet tbody tr:hover td { background: var(--dk-acc-s); }
+.dk-sheet .dk-rowno {
+  background: var(--dk-win-h);
+  color: var(--dk-tx3);
+  font-size: 11px;
+  text-align: right;
+  user-select: none;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.dk-sheet thead .dk-rowno { z-index: 3; }
+
+/* ---------------- 内容：PDF ---------------- */
+.dk-pdf {
+  background: #525659;
+  min-height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.dk-pdf-pg {
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+  max-width: 100%;
+  line-height: 0;
+}
+.dk-pdf-pg canvas { display: block; max-width: 100%; height: auto; }
+.dk-pdf-bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  margin: -10px -10px 0;
+  background: rgba(30, 30, 32, .9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+.dk-pdf-bar button {
+  height: 22px;
+  min-width: 22px;
+  padding: 0 7px;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 5px;
+  background: transparent;
+  color: #e8e8ea;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.dk-pdf-bar button:hover { background: rgba(255, 255, 255, .14); }
+.dk-pdf-bar .pg {
+  font-size: 11px;
+  color: #c9c9cd;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------- 内容：TXT ---------------- */
+.dk-txt {
+  margin: 0;
+  padding: 24px 28px 40px;
+  font-family: "SF Mono", "JetBrains Mono", Consolas, "Microsoft YaHei", monospace;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--dk-tx);
+  white-space: pre-wrap;
+  word-break: break-word;
+  tab-size: 4;
+}
+
+/* ---------------- 状态块 ---------------- */
+.dk-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 34px 20px;
+  text-align: center;
+  color: var(--dk-tx2);
+  font-size: 12.5px;
+  min-height: 100%;
+}
+.dk-state svg { width: 26px; height: 26px; opacity: .35; }
+.dk-state b { font-size: 13px; color: var(--dk-tx); font-weight: 600; }
+.dk-state .sub { font-size: 11.5px; color: var(--dk-tx3); max-width: 300px; line-height: 1.6; }
+.dk-state .dk-btn { margin-top: 4px; }
+
+.dk-spin {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--dk-bd);
+  border-top-color: var(--dk-acc);
+  border-radius: 50%;
+  animation: dkspin .7s linear infinite;
+}
+@keyframes dkspin { to { transform: rotate(360deg); } }
+
+/* ---------------- 空状态 ---------------- */
+.dk-empty {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  text-align: center;
+  color: var(--dk-tx3);
+  pointer-events: none;
+  user-select: none;
+  transition: opacity .2s;
+}
+.dk-empty.is-hide { opacity: 0; visibility: hidden; }
+.dk-empty .big {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--dk-tx2);
+  margin-bottom: 8px;
+}
+.dk-empty .small { font-size: 12.5px; line-height: 1.8; }
+.dk-empty kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--dk-bd);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--dk-win);
+  font: inherit;
+  font-size: 11.5px;
+  color: var(--dk-tx2);
+}
+
+/* ---------------- 拖放遮罩 ---------------- */
+.dk-drop {
+  position: fixed;
+  inset: var(--dk-bar-h) 0 0 0;
+  z-index: 9500;
+  display: none;
+  place-items: center;
+  background: rgba(255, 106, 47, .08);
+  backdrop-filter: blur(2px);
+  border: 2px dashed var(--dk-acc);
+  pointer-events: none;
+}
+.dk-drop.is-on { display: grid; }
+.dk-drop .box {
+  padding: 22px 34px;
+  border-radius: 12px;
+  background: var(--dk-win);
+  box-shadow: var(--dk-shadow-a);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dk-tx);
+}
+
+/* ---------------- 提示 ---------------- */
+.dk-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translate(-50%, 12px);
+  z-index: 9800;
+  max-width: min(84vw, 440px);
+  padding: 9px 15px;
+  border-radius: 8px;
+  background: rgba(30, 30, 32, .93);
+  color: #f2f2f4;
+  font-size: 12.5px;
+  line-height: 1.5;
+  box-shadow: 0 8px 26px -6px rgba(0, 0, 0, .5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s, transform .18s;
+  text-align: center;
+}
+.dk-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------------- 手机端 ---------------- */
+@media (max-width: 720px) {
+  :root { --dk-bar-h: 44px; }
+  .dk-brand-sub { display: none; }
+  .dk-bar { padding: 0 9px; gap: 8px; }
+  .dk-btn span.lbl { display: none; }
+  .dk-btn { padding: 0 9px; }
+  .dk-btn.is-primary span.lbl { display: inline; }
+  .dk-win { min-width: 200px; min-height: 120px; }
+  .dk-win-h { height: 32px; }
+  .dk-win-meta { display: none; }
+  .dk-doc { padding: 18px 16px 30px; }
+  .dk-txt { padding: 16px 14px 28px; font-size: 12.5px; }
+  .dk-pdf { padding: 6px; }
+  /* 手机端把手加大，好点 */
+  .dk-h[data-d="se"], .dk-h[data-d="sw"],
+  .dk-h[data-d="ne"], .dk-h[data-d="nw"] { width: 20px; height: 20px; }
+}
+
+/* 滚动条 */
+.dk-win-b::-webkit-scrollbar, .dk-sheet::-webkit-scrollbar,
+.dk-canvas::-webkit-scrollbar, .dk-tabs::-webkit-scrollbar { width: 9px; height: 9px; }
+.dk-win-b::-webkit-scrollbar-thumb, .dk-sheet::-webkit-scrollbar-thumb,
+.dk-canvas::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, .18); border-radius: 6px; border: 2px solid transparent; background-clip: content-box; }
+[data-theme="dark"] .dk-win-b::-webkit-scrollbar-thumb,
+[data-theme="dark"] .dk-sheet::-webkit-scrollbar-thumb,
+[data-theme="dark"] .dk-canvas::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .2); background-clip: content-box; }
