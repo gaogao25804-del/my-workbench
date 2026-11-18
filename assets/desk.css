@@ -1214,7 +1214,7 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 [data-theme="dark"] .dk-note a { color: #6fa8ff; }
 
 /* 荧光笔：选中后 execCommand 会生成 span，这里兜住观感 */
-.dk-note span[style*="background-color"] { border-radius: 3px; padding: 0 1px; }
+.dk-note span[style*="background-color"] { border-radius: 3px; padding: 1px 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .dk-note ::selection, .dk-note::selection { background: rgba(255, 214, 82, .5); }
 
 /* 锁定后便签不给改字 */
