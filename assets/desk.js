@@ -17,8 +17,6 @@
   var theme = 'light';
   var saveTimer = null;
   var pendingReplace = null;
-  var masonT = null;
-  var reflowT = null;
 
   var ICO = { docx: 'W', xlsx: 'X', pdf: 'P', txt: 'T', web: '↗' };
 
@@ -218,46 +216,13 @@
     scheduleSave();
   }
 
-  /* ---------------- 瀑布流：列宽一致，高度随内容参差 ---------------- */
+  /* ---------------- 自动高度：只作用于新放进来的卡片，不动已有布局 ---------------- */
   var MAH_MIN = 260, MAH_MAX = 1200;
 
   /* 单张卡片：内容多高就给多高，超长的收到上限、窗口内滚动 */
   function soloH(contentH) {
     if (!contentH) return MAH_MIN;
     return Math.round(Math.max(190, Math.min(MAH_MAX, contentH)));
-  }
-
-  /* 一批卡片：按这批内容的长短把高度铺开。
-     最短那张按真实高度完整显示（不超过 700），最长那张收到 1200，中间按长短插值。
-     不做这一步，几个长文档会全挤在上限附近，瀑布流就退化成等高网格了。 */
-  function batchH(raw) {
-    var ids = Object.keys(raw);
-    if (!ids.length) return {};
-    var vals = ids.map(function (id) { return raw[id]; });
-    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
-    var spread = mx - mn, out = {};
-
-    if (ids.length < 3 || spread < 300) {
-      ids.forEach(function (id) { out[id] = soloH(raw[id]); });
-      return out;
-    }
-    var base = Math.max(MAH_MIN, Math.min(700, mn));
-    ids.forEach(function (id) {
-      var t = Math.pow((raw[id] - mn) / spread, 0.85);
-      out[id] = Math.round(base + (MAH_MAX - base) * t);
-    });
-    return out;
-  }
-
-  /* 按画布宽度切 4 / 3 / 2 / 1 列，列宽等分铺满 */
-  function gridOf() {
-    var cw = canvas ? (canvas.clientWidth || document.documentElement.clientWidth) : 1200;
-    var pad = 20, gap = 16;
-    var avail = Math.max(280, cw - pad * 2);
-    var cols = avail >= 1560 ? 4 : avail >= 1100 ? 3 : avail >= 680 ? 2 : 1;
-    var colW = Math.floor((avail - gap * (cols - 1)) / cols);
-    if (cols === 1) colW = Math.min(colW, 760);
-    return { pad: pad, gap: gap, cols: cols, colW: colW };
   }
 
   /* 读一张卡片的内容真实高度（含标题栏），测不到就沿用现在的 */
@@ -287,114 +252,66 @@
     return Math.round(headH + bh + 2);
   }
 
-  /* 新放进来的一张卡片：高度收到刚好装下内容，跟瀑布流一个节奏 */
+  /* 跟别人的卡片压上了没有 */
+  function hits(st) {
+    var ids = Object.keys(wins);
+    for (var i = 0; i < ids.length; i++) {
+      if (ids[i] === st.id) continue;
+      var b = wins[ids[i]];
+      if (st.x < b.x + b.w && st.x + st.w > b.x &&
+          st.y < b.y + b.h && st.y + st.h > b.y) return true;
+    }
+    return false;
+  }
+
+  /* 新放进来的一张卡片：高度收到刚好装下内容（只改它自己，不碰别的卡）。
+     变高之后要是压住别人，就自己再挪一次，绝不推开已有的布局。 */
   function fitHeight(st) {
     if (st.maxed) return;
     var h = soloH(rawH(st));
     if (!h || Math.abs(h - st.h) < 8) return;
     st.h = h;
-    stage.classList.add('is-mason');
+    if (hits(st)) {
+      var pos = nextSpot(st.w, st.h, st.id);
+      st.x = pos.x;
+      st.y = pos.y;
+    }
     applyBox(st);
     growStage();
     scheduleSave();
-    clearTimeout(masonT);
-    masonT = setTimeout(function () { stage.classList.remove('is-mason'); }, 520);
-    scheduleReflow();
   }
 
-  /* 自动定高之后整批可能得重排一次，否则前后两张会叠在一起。
-     只在「窗口都已落在瀑布流列宽上」时做，用户手动摆的布局一律不碰。 */
-  function inMasonMode() {
-    var g = gridOf();
-    return Object.keys(wins).every(function (id) {
-      var st = wins[id];
-      var c = (st.x - g.pad) / (g.colW + g.gap);
-      return Math.abs(c - Math.round(c)) < 0.02 && Math.abs(st.w - g.colW) <= 1;
-    });
-  }
+  /* 新窗口落位：从左上往右下扫，找第一块不压住任何已有卡片的空地。
+     完全按用户自己摆的位置来找空，不做任何整体重排。 */
+  function nextSpot(w, h, skipId) {
+    var pad = 22, gap = 16;
+    var ids = Object.keys(wins).filter(function (id) { return id !== skipId; });
+    if (!ids.length) return { x: pad, y: pad };
 
-  function scheduleReflow() {
-    clearTimeout(reflowT);
-    reflowT = setTimeout(function () {
-      if (inMasonMode()) masonLayout(true);
-    }, 420);
-  }
+    w = Math.max(280, w || 460);
+    h = Math.max(220, h || 360);
 
-  /* 整画布重排成瀑布流：按视觉顺序依次丢进当前最短的那一列 */
-  function masonLayout(silent, retry) {
-    var ids = Object.keys(wins);
-    if (!ids.length) { if (!silent) toast('画布是空的，先拖几个文件进来'); return; }
-    if (ids.length === 1) { if (!silent) toast('只有一张卡片，多放几个再排'); return; }
+    var maxB = pad, i;
+    var boxes = ids.map(function (id) { return wins[id]; });
+    boxes.forEach(function (b) { maxB = Math.max(maxB, b.y + b.h); });
 
-    /* 还有窗口在解析：等它出内容再量，不然高度是瞎猜的 */
-    var busy = ids.some(function (id) {
-      var e0 = elOf(wins[id]);
-      return e0 && e0.querySelector('.dk-state');
-    });
-    if (busy && (retry || 0) < 8) {
-      setTimeout(function () { masonLayout(silent, (retry || 0) + 1); }, 320);
-      return;
+    function free(x, y) {
+      for (var k = 0; k < boxes.length; k++) {
+        var b = boxes[k];
+        if (x < b.x + b.w + gap && x + w + gap > b.x &&
+            y < b.y + b.h + gap && y + h + gap > b.y) return false;
+      }
+      return true;
     }
-    var g = gridOf();
 
-    ids.sort(function (a, b) {
-      var A = wins[a], B = wins[b];
-      return (Math.round(A.y / 48) - Math.round(B.y / 48)) || (A.x - B.x);
-    });
-
-    stage.classList.add('is-mason');
-    clearTimeout(masonT);
-
-    /* ① 统一列宽（内容按新宽度折行），② 再统一量高，③ 最后落位 —— 只触发一次重排 */
-    ids.forEach(function (id) {
-      var st = wins[id];
-      st.w = g.colW;
-      st.maxed = false;
-      st.prev = null;
-      elOf(st) && applyBox(st);
-    });
-
-    var raw = {};
-    ids.forEach(function (id) { raw[id] = rawH(wins[id]); });
-    var hs = batchH(raw);
-
-    var colY = [], i;
-    for (i = 0; i < g.cols; i++) colY.push(g.pad);
-
-    ids.forEach(function (id) {
-      var st = wins[id], h = hs[id], c = 0;
-      for (i = 1; i < g.cols; i++) if (colY[i] < colY[c] - 1) c = i;
-      st.x = Math.round(g.pad + c * (g.colW + g.gap));
-      st.y = Math.round(colY[c]);
-      st.h = h;
-      applyBox(st);
-      colY[c] += h + g.gap;
-    });
-
-    growStage();
-    scheduleSave();
-    masonT = setTimeout(function () { stage.classList.remove('is-mason'); }, 520);
-    if (!silent) toast('已排成 ' + g.cols + ' 列瀑布流 · 高度按内容来，拖乱了再点一次');
-  }
-
-  /* 新窗口落位：追加到当前最短那一列的最底下，天然接在瀑布流末尾 */
-  function nextSpot() {
-    var g = gridOf();
-    var ids = Object.keys(wins);
-    if (!ids.length) return { x: g.pad, y: g.pad };
-
-    var bottoms = [], i;
-    for (i = 0; i < g.cols; i++) bottoms.push(g.pad);
-    ids.forEach(function (id) {
-      var st = wins[id];
-      var c = Math.round((st.x - g.pad) / (g.colW + g.gap));
-      c = Math.max(0, Math.min(g.cols - 1, c));
-      bottoms[c] = Math.max(bottoms[c], st.y + st.h + g.gap);
-    });
-
-    var pick = 0;
-    for (i = 1; i < g.cols; i++) if (bottoms[i] < bottoms[pick] - 1) pick = i;
-    return { x: Math.round(g.pad + pick * (g.colW + g.gap)), y: Math.round(bottoms[pick]) };
+    var cw = Math.max(canvas.clientWidth || 0, 720);
+    var step = 40, x, y;
+    for (y = pad; y <= maxB + gap; y += step) {
+      for (x = pad; x + w <= cw - pad; x += step) {
+        if (free(x, y)) return { x: x, y: y };
+      }
+    }
+    return { x: pad, y: maxB + gap };
   }
 
   /* ---------------- 内容渲染 ---------------- */
@@ -455,7 +372,6 @@
     scheduleSave();
     growStage();
     updateEmpty();
-    scheduleReflow();
     toast('已放进画布 · ' + hostOf(url));
     return true;
   }
@@ -561,10 +477,10 @@
   /* ---------------- 新建窗口 ---------------- */
   function makeWindow(rec, box) {
     var ch = canvas.clientHeight || 640;
-    var g = gridOf();
-    var w = box ? box.w : g.colW;
+    var cw = canvas.clientWidth || 1200;
+    var w = box ? box.w : Math.min(560, Math.max(360, Math.round(cw * 0.42)));
     var h = box ? box.h : Math.min(680, Math.max(300, Math.round(ch * 0.62)));
-    var pos = (box && box.x != null) ? { x: box.x, y: box.y } : nextSpot();
+    var pos = (box && box.x != null) ? { x: box.x, y: box.y } : nextSpot(w, h);
 
     var st = {
       id: box && box.id ? box.id : uid(),
@@ -849,10 +765,7 @@
       if (missing) {
         toast('有 ' + missing + ' 个文件在本机浏览器里找不到了（可能清过缓存），重新添加一次就行', 5200);
       }
-      return Promise.all(jobs).then(function () {
-        /* 老版本（v1 网格）的布局：自动排一次瀑布流，之后拖乱不再自动覆盖 */
-        if ((raw.v || 1) < 2) setTimeout(function () { masonLayout(true); }, 280);
-      });
+      return Promise.all(jobs);
     }).catch(function (e) {
       toast('读取本地文件失败：' + ((e && e.message) || e), 4800);
     });
@@ -887,8 +800,6 @@
 
     // 顶栏
     $('btnAdd').addEventListener('click', function () { pickEl.click(); });
-    var btnMason = $('btnMason');
-    if (btnMason) btnMason.addEventListener('click', masonLayout);
     $('btnTheme').addEventListener('click', function () {
       applyTheme(theme === 'dark' ? 'light' : 'dark');
       scheduleSave();
