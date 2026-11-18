@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbfbfd">
+<title>卡片库 · 选题 / 卡点 / 开头</title>
+<link rel="stylesheet" href="assets/desk.css?v=1118m">
+<link rel="stylesheet" href="assets/cards.css?v=1118m">
+</head>
+<body class="cd-page">
+
+<header class="cd-bar">
+  <a class="cd-back" href="index.html" title="回画布">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.5 5.5 8 12l6.5 6.5"/>
+    </svg>
+    画布
+  </a>
+  <b class="cd-title">卡片库</b>
+  <span class="cd-sub">选题能复用 · 坑能翻 · 开头能抄</span>
+  <div class="grow"></div>
+  <button class="cd-btn" id="btnTheme" type="button" title="切换深浅色">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="12" cy="12" r="4.2"/>
+      <path d="M12 2.6v2.2M12 19.2v2.2M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.4 19.6L6 18M18 6l1.6-1.6"/>
+    </svg>
+  </button>
+  <button class="cd-btn" id="btnTrash" type="button" title="删掉的卡片都在这儿，能捡回来">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.5 6.8h15M9.4 6.8V5.2a1.4 1.4 0 0 1 1.4-1.4h2.4a1.4 1.4 0 0 1 1.4 1.4v1.6"/>
+      <path d="M6.4 6.8 7.3 19a1.6 1.6 0 0 0 1.6 1.5h6.2a1.6 1.6 0 0 0 1.6-1.5l.9-12.2"/>
+    </svg>
+    回收站<i id="trashN">0</i>
+  </button>
+</header>
+
+<main class="cd-wrap">
+
+  <section class="cd-sec" data-tk="sop">
+    <div class="cd-hd">
+      <h2>SOP 卡<em>选题复用 · 一个选题能套多台机器</em></h2>
+      <span class="cd-cnt"></span>
+      <button class="cd-add" type="button" data-new="sop">＋ 新建</button>
+    </div>
+    <div class="cd-grid"></div>
+  </section>
+
+  <section class="cd-sec" data-tk="hard">
+    <div class="cd-hd">
+      <h2>困难卡<em>我干了什么 · 被什么卡住 · 后来怎么解的</em></h2>
+      <span class="cd-cnt"></span>
+      <button class="cd-add" type="button" data-new="hard">＋ 新建</button>
+    </div>
+    <div class="cd-grid"></div>
+  </section>
+
+  <section class="cd-sec" data-tk="hook">
+    <div class="cd-hd">
+      <h2>前五秒卡<em>什么样的视频 · 用什么样的开头</em></h2>
+      <span class="cd-cnt"></span>
+      <button class="cd-add" type="button" data-new="hook">＋ 新建</button>
+    </div>
+    <div class="cd-grid"></div>
+  </section>
+
+  <div class="cd-foot">卡片和画布上是同一份数据：这里改完，回画布就是改过的样子。</div>
+</main>
+
+<aside class="cd-drawer" id="drawer">
+  <div class="cd-dw-hd">
+    <b>回收站</b>
+    <span id="dwSub">删掉的卡片都在这儿</span>
+    <button class="cd-dw-x" type="button" id="dwClose" title="关上">✕</button>
+  </div>
+  <div class="cd-dw-list" id="dwList"></div>
+  <div class="cd-dw-ft">
+    <button class="cd-btn is-danger" type="button" id="dwEmpty">清空回收站</button>
+  </div>
+</aside>
+
+<div class="cd-toast" id="toast"></div>
+
+<script src="assets/tk.js?v=1118m"></script>
+<script src="assets/cards.js?v=1118m"></script>
+</body>
+</html>
