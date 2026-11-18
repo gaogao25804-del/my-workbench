@@ -28,8 +28,120 @@
     mark: '这条要记住的事……',
     quote: '别人说过的一句……'
   };
+
+  /* 票根卡：SOP / 困难 / 开场五秒。一张卡就是一张能存档的凭证 */
+  var TK_ORDER = ['sop', 'hard', 'hook'];
+  var TK = {
+    sop: {
+      name: 'SOP 卡',
+      brand: 'SOP',
+      tag: 'DAILY',
+      lab: '流程步数 · 每天',
+      k1: '01 // 适用场景',
+      k2: '02 // 关键动作',
+      k3: '03 // 别踩的坑',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h8.4M4 12h10.6M4 16.5h6.2"/><path d="M15.2 15.4l2 2 3.9-4.2"/></svg>',
+      f: {
+        name: '拍一条主视频的流程',
+        big: '5 步',
+        sub: '从选题到 19:00 发出，我一个人走完',
+        a: '每天 19:00 那条主视频，从选题到出片',
+        b: '先想画面，再定机型，最后落稿',
+        c: '不写分镜、不写拍摄指导、不分段不编号',
+        tags: '流程 / 可复用 / 19:00'
+      }
+    },
+    hard: {
+      name: '困难卡',
+      brand: 'HARD',
+      tag: 'OPEN',
+      lab: '卡住的地方 · 待解',
+      k1: '01 // 卡在哪',
+      k2: '02 // 真实原因',
+      k3: '03 // 怎么破',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 21.2 19.4H2.8z"/><path d="M12 9.2v4.5M12 16.5v.1"/></svg>',
+      f: {
+        name: '折叠态太宽，膜压不出边',
+        big: '卡了 3 天',
+        sub: '客户明天要取，我这边还压不住边',
+        a: 'Mate X8 折叠态 84mm 宽，膜裁好一贴就是白边',
+        b: '弧边收得太急，机器压不出这个角度',
+        c: '先用热压二次收边，实在不行跟客户改时间'
+      }
+    },
+    hook: {
+      name: '前五秒卡',
+      brand: 'HOOK',
+      tag: '0–5S',
+      lab: '开场五秒 · 每天',
+      k1: '01 // 第一句话',
+      k2: '02 // 配什么画面',
+      k3: '03 // 为什么留人',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M10.2 8.9l5.4 3.1-5.4 3.1z"/></svg>',
+      f: {
+        name: '折叠屏被我掰成个方钱包',
+        big: '0–5 秒',
+        sub: '一句话把人钉在屏幕上',
+        a: '华为这次把折叠屏做成了个方形钱包',
+        b: '手里掰开合上，镜头怼近铰链',
+        c: '先给一个反常识的形状，人才会留下来'
+      }
+    }
+  };
   function ntStyle(st) {
     return (st && st.note && st.note.style) || 'plain';
+  }
+  function isTk(st) {
+    return !!(st && st.kind === 'note' && TK[ntStyle(st)]);
+  }
+  function tkName(s) {
+    return (TK[s] && TK[s].name) || NT_NAME[s] || '卡片';
+  }
+  function mdToday() {
+    var d = new Date();
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+  /* 编号一路往下发，像票根存根那样 NO.001、NO.002… */
+  var SEQKEY = 'wb.desk.seq.v1';
+  function nextNo() {
+    var n = 0;
+    try { n = parseInt(localStorage.getItem(SEQKEY), 10) || 0; } catch (e) {}
+    Object.keys(wins).forEach(function (k) {
+      var v = wins[k];
+      if (v.kind === 'note' && v.note && v.note.no > n) n = v.note.no | 0;
+    });
+    n += 1;
+    try { localStorage.setItem(SEQKEY, String(n)); } catch (e) {}
+    return n;
+  }
+  function padNo(n) {
+    var s = String(n || 1);
+    while (s.length < 3) s = '0' + s;
+    return s;
+  }
+  function packNote(n) {
+    if (!n) return null;
+    var o = { style: n.style || 'plain', html: n.html || '' };
+    if (n.f) {
+      o.f = {};
+      Object.keys(n.f).forEach(function (k) { o.f[k] = n.f[k]; });
+    }
+    if (n.no) o.no = n.no;
+    if (n.date) o.date = n.date;
+    return o;
+  }
+  function tkFields(st) {
+    var d = TK[ntStyle(st)] || TK.sop;
+    if (!st.note) st.note = { style: 'sop', html: '' };
+    if (!st.note.f) st.note.f = {};
+    var f = st.note.f;
+    Object.keys(d.f).forEach(function (k) { if (f[k] == null) f[k] = d.f[k]; });
+    return f;
+  }
+  function paintField(n) {
+    if (!n) return;
+    var t = String(n.innerText || '').replace(/\s+/g, '');
+    n.setAttribute('data-empty', t ? '0' : '1');
   }
 
   var SVG = {
@@ -155,7 +267,7 @@
         w: Math.round(w.w), h: Math.round(w.h),
         z: w.z, scroll: Math.round(w.scroll || 0),
         sk: w.sk || null, lock: w.lock ? 1 : 0,
-        note: w.kind === 'note' ? { style: ntStyle(w), html: (w.note && w.note.html) || '' } : null
+        note: w.kind === 'note' ? packNote(w.note || { style: ntStyle(w) }) : null
       };
     });
     return { v: 2, theme: theme, wins: list, at: Date.now() };
@@ -224,6 +336,9 @@
       e.classList.toggle('is-locked', on);
       var ed = e.querySelector('.dk-note');
       if (ed) ed.setAttribute('contenteditable', on ? 'false' : 'true');
+      Array.prototype.forEach.call(e.querySelectorAll('[data-f]'), function (n) {
+        n.setAttribute('contenteditable', on ? 'false' : 'true');
+      });
     });
     var b = $('btnLock');
     if (!b) return;
@@ -356,7 +471,7 @@
               '<path class="lk-c" d="M8.7 10.6V7.9a3.3 3.3 0 0 1 6.6 0v2.7"/>' +
             '</svg></button>' +
           (isNote
-            ? '<button type="button" data-act="nt" title="换一种样子（白卡 / 重点卡 / 引用卡）">' + SVG.nt + '</button>'
+            ? '<button type="button" data-act="nt" title="换一种卡片（SOP / 困难 / 开场五秒）">' + SVG.nt + '</button>'
             : '<button type="button" data-act="reload" title="重新导入这个文件的新版本">' + SVG.reload + '</button>') +
           '<button type="button" data-act="max" title="最大化 / 还原">' + SVG.max + '</button>' +
           '<button type="button" data-act="close" title="从画布移除（不动本地原文件）">' + SVG.close + '</button>' +
@@ -706,6 +821,13 @@
 
   /* ---------------- 便签小卡片 ---------------- */
   function noteText(st) {
+    if (isTk(st)) {
+      var f0 = (st.note && st.note.f) || {}, buf = [];
+      Object.keys(f0).forEach(function (k) {
+        buf.push(String(f0[k] || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+      });
+      return buf.join(' ');
+    }
     var el = elOf(st);
     var ed = el && el.querySelector('.dk-note');
     if (ed) return String(ed.innerText || '');
@@ -734,6 +856,13 @@
 
   /* 窗口标题 = 便签正文的第一行，写什么就是什么 */
   function syncNoteName(st) {
+    if (isTk(st)) {
+      var fn = String(((st.note.f || {}).name) || '').replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ').trim();
+      var nm2 = fn ? (fn.length > 18 ? fn.slice(0, 18) + '…' : fn) : tkName(ntStyle(st));
+      if (st.name !== nm2) { st.name = nm2; refreshHead(st); }
+      return;
+    }
     var txt = noteText(st);
     var line = '';
     txt.split(/\n/).some(function (l) {
@@ -748,6 +877,7 @@
 
   function mountNote(st, box) {
     if (!st.note) st.note = { style: 'plain', html: '' };
+    if (isTk(st)) { mountTk(st, box); return; }
     var lockedNow = isWinLocked(st);
     box.innerHTML = '<div class="dk-note is-' + ntStyle(st) + '" spellcheck="false"' +
       ' contenteditable="' + (lockedNow ? 'false' : 'true') + '"' +
@@ -787,6 +917,93 @@
     if (!st.ntManual) setTimeout(function () { autoFitNote(st); }, 180);
   }
 
+  /* 票根卡：一块一块写，点哪块改哪块 */
+  function mountTk(st, box) {
+    var s = ntStyle(st), d = TK[s] || TK.sop, f = tkFields(st);
+    var ce = isWinLocked(st) ? 'false' : 'true';
+    if (!st.note.no) st.note.no = nextNo();
+    if (!st.note.date) st.note.date = mdToday();
+    var no = padNo(st.note.no);
+
+    function fld(key, cls, ph) {
+      return '<div class="' + cls + '" contenteditable="' + ce + '" spellcheck="false"' +
+        ' data-f="' + key + '" data-ph="' + esc(ph) + '">' + (f[key] || '') + '</div>';
+    }
+
+    box.innerHTML =
+      '<div class="dk-note dk-tk" spellcheck="false">' +
+        '<div class="tk-top">' +
+          '<span class="tk-brand"><i></i><b>' + d.brand + '</b></span>' +
+          '<span class="tk-no">NO.' + no + ' · ' + d.tag + '</span>' +
+        '</div>' +
+        '<div class="tk-halo">' + d.icon + '</div>' +
+        fld('name', 'tk-name', '给它起个名') +
+        '<div class="tk-quota">' +
+          '<div class="tk-lab">' + d.lab + '</div>' +
+          fld('big', 'tk-big', '一句数字') +
+          fld('sub', 'tk-sub', '一句话说清这是什么') +
+        '</div>' +
+        '<div class="tk-box">' +
+          '<div class="tk-k">' + d.k1 + '</div>' +
+          fld('a', 'tk-v', '写在这里……') +
+          '<div class="tk-hr"></div>' +
+          '<div class="tk-2">' +
+            '<div><div class="tk-k">' + d.k2 + '</div>' + fld('b', 'tk-v', '') + '</div>' +
+            '<div><div class="tk-k">' + d.k3 + '</div>' + fld('c', 'tk-v', '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        fld('tags', 'tk-tags', '标签 / 用斜杠隔开') +
+        '<div class="tk-stub">' +
+          '<div class="tk-stub-l"><b>ADMIT ONE // 存档凭证</b>' + st.note.date + '</div>' +
+          '<div class="tk-stub-no">' + no + '</div>' +
+        '</div>' +
+      '</div>';
+
+    var root = box.querySelector('.dk-tk');
+    Array.prototype.forEach.call(root.querySelectorAll('[data-f]'), paintField);
+
+    function keyOf(t) {
+      while (t && t !== root && !(t.getAttribute && t.getAttribute('data-f'))) t = t.parentElement;
+      return (t && t !== root && t.getAttribute) ? t.getAttribute('data-f') : null;
+    }
+
+    root.addEventListener('input', function (e) {
+      var k = keyOf(e.target);
+      if (!k) return;
+      f[k] = e.target.innerHTML;
+      paintField(e.target);
+      if (k === 'name') syncNoteName(st);
+      scheduleSave();
+      queueFitNote(st);
+    });
+    root.addEventListener('blur', function (e) {
+      var k = keyOf(e.target);
+      if (k) f[k] = e.target.innerHTML;
+      scheduleSave();
+    }, true);
+    root.addEventListener('paste', function (e) {
+      if (!e.clipboardData) return;
+      var t = e.clipboardData.getData('text/plain');
+      if (t == null) return;
+      e.preventDefault();
+      document.execCommand('insertText', false, t);
+    });
+    /* Tab 跳下一格，Shift+Tab 往回，写到一半不用摸鼠标 */
+    root.addEventListener('keydown', function (e) {
+      e.stopPropagation();
+      if (e.key !== 'Tab') return;
+      e.preventDefault();
+      var list = Array.prototype.slice.call(root.querySelectorAll('[data-f]'));
+      var i = list.indexOf(e.target);
+      var nx = list[i + (e.shiftKey ? -1 : 1)];
+      if (nx) { try { nx.focus(); } catch (err) {} }
+    });
+
+    st.autofit = false;
+    syncNoteName(st);
+    if (!st.ntManual) setTimeout(function () { autoFitNote(st); }, 160);
+  }
+
   /* 便签自己贴合内容：短了就收（不挪位置），长出来才长（压到别人就不长） */
   var ntFitT = null;
   function autoFitNote(st) {
@@ -795,7 +1012,7 @@
     if (!el) return;
     var ed = el.querySelector('.dk-note');
     if (!ed) return;
-    var headH = (el.querySelector('.dk-win-h') || {}).offsetHeight || 34;
+    var headH = isTk(st) ? 0 : ((el.querySelector('.dk-win-h') || {}).offsetHeight || 34);
     var want = Math.round(Math.min(MAH_MAX, Math.max(118, headH + ed.scrollHeight + 2)));
     if (Math.abs(want - st.h) < 12) return;
     if (want > st.h) {
@@ -822,31 +1039,50 @@
   /* 换样式：白卡 → 重点卡 → 引用卡 → 白卡 */
   function setNoteStyle(st, which) {
     if (!st.note) st.note = { style: 'plain', html: '' };
+    var wasTk = isTk(st), willTk = !!TK[which];
     st.note.style = which;
+    if (willTk) {
+      if (!st.note.no) st.note.no = nextNo();
+      if (!st.note.date) st.note.date = mdToday();
+    }
     var el = elOf(st);
     if (el) el.setAttribute('data-nt', which);
-    var ed = el && el.querySelector('.dk-note');
-    if (ed) {
-      ed.className = 'dk-note is-' + which;
-      ed.setAttribute('data-ph', NT_PH[which]);
+    var box = el && el.querySelector('.dk-win-b');
+    if (wasTk || willTk) {
+      if (box) mountNote(st, box);
+    } else if (box) {
+      var ed = box.querySelector('.dk-note');
+      if (ed) {
+        ed.className = 'dk-note is-' + which;
+        ed.setAttribute('data-ph', NT_PH[which]);
+      }
     }
-    if (!noteCount(st)) { st.name = NT_NAME[which]; refreshHead(st); }
+    if (!wasTk && !willTk && !noteCount(st)) {
+      st.name = NT_NAME[which] || '卡片';
+      refreshHead(st);
+    }
     scheduleSave();
-    toast('换成' + NT_NAME[which] + '了');
+    toast('换成' + tkName(which) + '了');
   }
 
   function cycleNote(st) {
     var cur = ntStyle(st);
-    setNoteStyle(st, NT_ORDER[(NT_ORDER.indexOf(cur) + 1) % NT_ORDER.length]);
+    if (TK[cur]) {
+      setNoteStyle(st, TK_ORDER[(TK_ORDER.indexOf(cur) + 1) % TK_ORDER.length]);
+    } else {
+      setNoteStyle(st, NT_ORDER[(NT_ORDER.indexOf(cur) + 1) % NT_ORDER.length]);
+    }
   }
 
   /* 新建一张便签：落在空地上，光标直接进去 */
   function newNote(style) {
-    var w = 380, h = 300;
+    var tk = !!TK[style];
+    var w = tk ? 344 : 380, h = tk ? 430 : 300;
     var pos = nextSpot(w, h);
+    var note = { style: style || 'plain', html: '' };
+    if (tk) { note.no = nextNo(); note.date = mdToday(); }
     var st = makeWindow({
-      id: uid(), name: NT_NAME[style] || '卡片', kind: 'note', size: 0,
-      note: { style: style || 'plain', html: '' }
+      id: uid(), name: tkName(style), kind: 'note', size: 0, note: note
     }, { x: pos.x, y: pos.y, w: w, h: h });
     renderBody(st, null);
     growStage();
@@ -884,7 +1120,7 @@
       kind: rec.kind,
       url: rec.url || '',
       size: rec.size || 0,
-      note: rec.note ? { style: rec.note.style || 'plain', html: rec.note.html || '' } : null,
+      note: rec.note ? packNote(rec.note) : null,
       x: pos.x, y: pos.y, w: w, h: h,
       z: ++zTop, maxed: false, prev: null, scroll: (box && box.scroll) || 0,
       sk: (box && box.sk) || null,
@@ -1441,7 +1677,7 @@
       var hd = e.target.closest('.dk-h');
       if (hd) { startResize(e, st, el, hd.dataset.d); return; }
       if (e.target.closest('.dk-win-a')) return;
-      var bar = e.target.closest('.dk-win-h');
+      var bar = e.target.closest('.dk-win-h') || e.target.closest('.tk-top');
       if (bar) { startDrag(e, st, el); return; }
     }, { passive: false });
 

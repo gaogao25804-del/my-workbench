@@ -1220,6 +1220,293 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 /* 锁定后便签不给改字 */
 .dk-win.is-locked[data-kind="note"] .dk-note { cursor: default; }
 
+/* ==========================================================
+   票根卡 · SOP / 困难 / 开场五秒
+   一张卡＝一张存档凭证：彩色光环、等宽小字、撕票虚线
+   ========================================================== */
+.dk-win[data-kind="note"][data-nt="sop"],
+.dk-win[data-kind="note"][data-nt="hard"],
+.dk-win[data-kind="note"][data-nt="hook"] {
+  --tk-bg: #fbfbfa;
+  --tk-tx: #17171a;
+  --tk-tx2: #56565e;
+  --tk-tx3: #93939c;
+  --tk-line: rgba(0, 0, 0, .12);
+  --tk-panel: rgba(0, 0, 0, .022);
+  --tk-dot: rgba(0, 0, 0, .085);
+  --tk-acc: #0b9488;
+  --tk-acc2: #46cfa9;
+  --tk-dot: rgba(0, 0, 0, .046);
+  --tk-holo: linear-gradient(135deg, #ff93bd 0%, #ffd074 20%, #63e6b6 42%, #6bbcff 64%, #bf98ff 84%, #ff93bd 100%);
+  --tk-halo: conic-gradient(from 0deg, #ff8fb8, #ffd06e, #63e6b6, #6bbcff, #bf98ff, #ff8fb8);
+}
+.dk-win[data-kind="note"][data-nt="hard"] { --tk-acc: #cc4a17; --tk-acc2: #f08a42; }
+.dk-win[data-kind="note"][data-nt="hook"] { --tk-acc: #6b4fd6; --tk-acc2: #a184f7; }
+
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="sop"],
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="hard"],
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="hook"] {
+  --tk-bg: #24242a;
+  --tk-tx: #f2f2f5;
+  --tk-tx2: #b0b0ba;
+  --tk-tx3: #8b8b96;
+  --tk-line: rgba(255, 255, 255, .14);
+  --tk-panel: rgba(255, 255, 255, .035);
+  --tk-dot: rgba(255, 255, 255, .075);
+  --tk-acc: #2fcfb6;
+  --tk-acc2: #8bf0d8;
+  --tk-holo: linear-gradient(135deg, rgba(255, 143, 184, .62), rgba(255, 208, 110, .5), rgba(99, 230, 182, .48), rgba(107, 188, 255, .58), rgba(191, 152, 255, .58));
+  --tk-halo: conic-gradient(from 0deg, rgba(255, 158, 196, .8), rgba(255, 216, 155, .8), rgba(168, 240, 207, .8), rgba(159, 208, 255, .8), rgba(201, 168, 255, .8), rgba(255, 158, 196, .8));
+}
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="hard"] { --tk-acc: #ff7a45; --tk-acc2: #ffb27a; }
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="hook"] { --tk-acc: #9b82ff; --tk-acc2: #c4b0ff; }
+
+/* 卡面：点阵纸 + 一圈全息细边 */
+.dk-win[data-kind="note"][data-nt="sop"],
+.dk-win[data-kind="note"][data-nt="hard"],
+.dk-win[data-kind="note"][data-nt="hook"] {
+  border: 1.5px solid transparent !important;
+  border-radius: 11px !important;
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--tk-dot) 1px, transparent 1.6px),
+    linear-gradient(var(--tk-bg), var(--tk-bg)),
+    var(--tk-holo) !important;
+  background-size: 13px 13px, auto, auto !important;
+  background-origin: padding-box, padding-box, border-box !important;
+  background-clip: padding-box, padding-box, border-box !important;
+  background-repeat: repeat, no-repeat, no-repeat !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 14px 34px -14px rgba(0, 0, 0, .28);
+}
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="sop"],
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="hard"],
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="hook"] {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 18px 40px -16px rgba(0, 0, 0, .9);
+}
+
+/* 卡头改成浮在右上角的一排按钮，不占地方 */
+.dk-win[data-kind="note"][data-nt="sop"] .dk-win-h,
+.dk-win[data-kind="note"][data-nt="hard"] .dk-win-h,
+.dk-win[data-kind="note"][data-nt="hook"] .dk-win-h {
+  position: absolute;
+  top: 0; right: 0; left: auto;
+  width: auto; height: auto;
+  padding: 5px;
+  gap: 0;
+  background: transparent !important;
+  border: 0 !important;
+  z-index: 8;
+  cursor: default;
+}
+.dk-win[data-kind="note"][data-nt="sop"] .dk-ico,
+.dk-win[data-kind="note"][data-nt="hard"] .dk-ico,
+.dk-win[data-kind="note"][data-nt="hook"] .dk-ico,
+.dk-win[data-kind="note"][data-nt="sop"] .dk-win-t,
+.dk-win[data-kind="note"][data-nt="hard"] .dk-win-t,
+.dk-win[data-kind="note"][data-nt="hook"] .dk-win-t,
+.dk-win[data-kind="note"][data-nt="sop"] .dk-win-meta,
+.dk-win[data-kind="note"][data-nt="hard"] .dk-win-meta,
+.dk-win[data-kind="note"][data-nt="hook"] .dk-win-meta { display: none; }
+
+.dk-win[data-kind="note"][data-nt="sop"] .dk-win-a,
+.dk-win[data-kind="note"][data-nt="hard"] .dk-win-a,
+.dk-win[data-kind="note"][data-nt="hook"] .dk-win-a {
+  padding: 1px;
+  border-radius: 8px;
+  background: var(--tk-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .18);
+  opacity: 0;
+  transition: opacity .16s ease;
+}
+.dk-win[data-kind="note"][data-nt="sop"]:hover .dk-win-a,
+.dk-win[data-kind="note"][data-nt="hard"]:hover .dk-win-a,
+.dk-win[data-kind="note"][data-nt="hook"]:hover .dk-win-a { opacity: 1; }
+@media (hover: none) {
+  .dk-win[data-kind="note"][data-nt="sop"] .dk-win-a,
+  .dk-win[data-kind="note"][data-nt="hard"] .dk-win-a,
+  .dk-win[data-kind="note"][data-nt="hook"] .dk-win-a { opacity: 1; }
+}
+
+/* ---------- 卡面内容 ---------- */
+.dk-note.dk-tk { padding: 0; display: block; }
+
+.tk-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 15px 0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.dk-win.is-drag .tk-top { cursor: grabbing; }
+.tk-brand { display: inline-flex; align-items: center; gap: 5px; }
+.tk-brand i { width: 5px; height: 5px; border-radius: 50%; background: var(--tk-tx); }
+.tk-brand b {
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 9px; font-weight: 700; letter-spacing: .13em; color: var(--tk-tx);
+}
+.tk-no {
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 9px; letter-spacing: .1em; color: var(--tk-tx3); white-space: nowrap;
+}
+
+.tk-halo {
+  position: relative;
+  width: 62px; height: 62px;
+  margin: 14px auto 9px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--tk-halo);
+  box-shadow: 0 7px 16px -9px rgba(0, 0, 0, .5);
+}
+.tk-halo::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--tk-bg);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .05);
+}
+/* 外圈那一牙一牙的齿，像票根上的烫金压纹 */
+.tk-halo::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg,
+    color-mix(in srgb, var(--tk-acc) 70%, #fff) 0deg 5deg,
+    transparent 5deg 12deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 69%, #000 71%, #000 96%, transparent 99%);
+  mask: radial-gradient(closest-side, transparent 69%, #000 71%, #000 96%, transparent 99%);
+  opacity: .8;
+}
+.tk-halo svg {
+  position: relative;
+  z-index: 1;
+  width: 25px; height: 25px;
+  color: var(--tk-acc);
+}
+
+.tk-name {
+  padding: 0 16px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.42;
+  letter-spacing: -.015em;
+  color: var(--tk-tx);
+  outline: none;
+}
+
+.tk-quota { padding: 13px 16px 0; }
+.tk-lab {
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 9.5px; letter-spacing: .13em; color: var(--tk-tx3);
+}
+.tk-big {
+  margin-top: 6px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(96deg, var(--tk-acc) 6%, var(--tk-acc2) 82%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  caret-color: var(--tk-acc);
+  outline: none;
+}
+.tk-big:focus { -webkit-text-fill-color: transparent; }
+.tk-sub {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.64;
+  color: var(--tk-tx2);
+  outline: none;
+}
+
+.tk-box {
+  margin: 12px 14px 0;
+  padding: 10px 11px 11px;
+  border: 1px solid var(--tk-line);
+  border-radius: 10px;
+  background: var(--tk-panel);
+}
+.tk-k {
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 9px; letter-spacing: .1em; color: var(--tk-tx3); text-transform: uppercase;
+}
+.tk-v {
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.66;
+  color: var(--tk-tx2);
+  outline: none;
+}
+.tk-hr { height: 1px; margin: 9px 0; background: var(--tk-line); }
+.tk-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+.tk-tags {
+  margin: 11px 14px 0;
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 10px;
+  line-height: 1.55;
+  letter-spacing: .03em;
+  color: var(--tk-tx3);
+  outline: none;
+}
+
+.tk-stub {
+  margin-top: 12px;
+  padding: 8px 15px 11px;
+  border-top: 1px dashed var(--tk-line);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0), var(--tk-panel));
+}
+.tk-stub-l {
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 8.5px; line-height: 1.7; letter-spacing: .1em; color: var(--tk-tx3);
+}
+.tk-stub-l b { display: block; font-weight: 600; letter-spacing: .04em; }
+.tk-stub-no {
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 19px; font-weight: 700; letter-spacing: -.02em;
+  line-height: 1; color: var(--tk-tx);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 空字段给个浅提示 */
+.tk-name[data-empty="1"]::before,
+.tk-sub[data-empty="1"]::before,
+.tk-v[data-empty="1"]::before,
+.tk-tags[data-empty="1"]::before,
+.tk-big[data-empty="1"]::before {
+  content: attr(data-ph);
+  color: var(--tk-tx3);
+  opacity: .62;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.tk-big[data-empty="1"]::before { -webkit-text-fill-color: var(--tk-tx3); color: var(--tk-tx3); }
+
+/* 放大看的时候，底下那张凭证贴着卡底，别吊在半空 */
+.dk-win.is-maxed .dk-tk {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.dk-win.is-maxed .tk-stub { margin-top: auto; }
+
+/* 锁定后不给改字 */
+.dk-win.is-locked[data-kind="note"] .dk-tk [data-f] { cursor: default; }
+
 /* ---------- 选中文字浮出的工具条 ---------- */
 .nt-bar {
   position: fixed;
@@ -1315,6 +1602,74 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 .nt-pv.is-mark b { color: #1d1d1f; }
 .nt-pv.is-quote { background: #fff; border-left: 3px solid #1d1d1f; }
 .nt-pv.is-quote b { padding-left: 6px; }
+
+/* 票根卡缩略：一眼能看出「票根」的形状 */
+.nt-pv.is-tk {
+  min-height: 152px;
+  padding: 9px 11px 11px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background-image:
+    linear-gradient(#fbfbfa, #fbfbfa),
+    linear-gradient(135deg, #ffc8d8, #ffe6b6, #b9f2da, #b2dbff, #dcc6ff, #ffc8d8);
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+}
+.nt-pv.is-tk.is-sop { --p-acc: #0f9e90; --p-acc2: #58d6b6; }
+.nt-pv.is-tk.is-hard { --p-acc: #d4501f; --p-acc2: #f79a5a; }
+.nt-pv.is-tk.is-hook { --p-acc: #6b53d6; --p-acc2: #a98cf5; }
+.pv-top { display: flex; align-items: center; justify-content: space-between; }
+.pv-br {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 8px; font-weight: 700; letter-spacing: .13em; color: #17171a;
+}
+.pv-br i { width: 4px; height: 4px; border-radius: 50%; background: #17171a; }
+.pv-no {
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 8px; letter-spacing: .08em; color: #a8a8b0;
+}
+.pv-halo {
+  display: block;
+  width: 34px; height: 34px;
+  margin: 9px auto 7px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #fbfbfa 0 45%, transparent 46%),
+    repeating-conic-gradient(from 0deg, #ff8fb8 0deg 5deg, #ffe0b8 5deg 10deg,
+      #63e6b6 10deg 15deg, #9fd8ff 15deg 20deg, #c9a8ff 20deg 25deg, #ff8fb8 25deg 30deg);
+}
+.pv-big {
+  display: block;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.03em;
+  background: linear-gradient(96deg, var(--p-acc), var(--p-acc2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.pv-sub {
+  display: block;
+  margin-top: 4px;
+  text-align: center;
+  font-size: 9.5px;
+  line-height: 1.5;
+  color: #6b6b70;
+}
+.pv-line {
+  display: block;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px dashed rgba(0, 0, 0, .16);
+  font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+  font-size: 8.5px;
+  letter-spacing: .05em;
+  color: #a0a0a8;
+}
 .nt-nm {
   display: block;
   padding: 8px 12px;
@@ -1336,6 +1691,9 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 .dk-win[data-kind="note"][data-nt="mark"] .dk-ico[data-k="note"] { background: #f0b429; }
 .dk-win[data-kind="note"][data-nt="quote"] .dk-ico[data-k="note"] { background: #1d1d1f; }
 [data-theme="dark"] .dk-win[data-kind="note"][data-nt="quote"] .dk-ico[data-k="note"] { background: #d8d8dc; color: #1d1d1f; }
+.dk-win[data-kind="note"][data-nt="sop"] .dk-ico[data-k="note"] { background: #0f9e90; }
+.dk-win[data-kind="note"][data-nt="hard"] .dk-ico[data-k="note"] { background: #d4501f; }
+.dk-win[data-kind="note"][data-nt="hook"] .dk-ico[data-k="note"] { background: #6b53d6; }
 
 /* 工具条的小尖角，指向它所属的那张卡片 */
 .nt-bar::after {
