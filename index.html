@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbfbfd">
 <title>我的工作台 · 文档桌面</title>
-<link rel="stylesheet" href="assets/desk.css?v=1118m">
+<link rel="stylesheet" href="assets/desk.css?v=1118n">
 </head>
 <body>
 
@@ -160,7 +160,14 @@
 
 <!-- 便签选中文字时浮出的工具条 -->
 <div class="nt-bar" id="noteBar" hidden>
-  <button type="button" data-nt2="b" title="加粗"><b>B</b></button>
+  <button type="button" data-nt2="b" title="加粗（Ctrl+B）"><b>B</b></button>
+  <span class="nt-bar-hr"></span>
+  <button type="button" class="nt-fg" data-nt2="fg:d" title="恢复默认颜色"><span>A</span></button>
+  <button type="button" class="nt-fg" data-nt2="fg:r" title="红色"><span style="color:var(--fg-red)">A</span></button>
+  <button type="button" class="nt-fg" data-nt2="fg:o" title="橙色"><span style="color:var(--fg-orange)">A</span></button>
+  <button type="button" class="nt-fg" data-nt2="fg:g" title="绿色"><span style="color:var(--fg-green)">A</span></button>
+  <button type="button" class="nt-fg" data-nt2="fg:b" title="蓝色"><span style="color:var(--fg-blue)">A</span></button>
+  <button type="button" class="nt-fg" data-nt2="fg:p" title="紫色"><span style="color:var(--fg-purple)">A</span></button>
   <span class="nt-bar-hr"></span>
   <button type="button" data-nt2="hl:255,232,120" title="黄色荧光笔"><i style="background:#ffe878"></i></button>
   <button type="button" data-nt2="hl:178,240,190" title="绿色荧光笔"><i style="background:#b2f0be"></i></button>
@@ -187,9 +194,10 @@
 <script src="assets/vendor/mammoth.browser.min.js"></script>
 <script src="assets/vendor/xlsx.full.min.js"></script>
 <script src="assets/vendor/pdf.min.js"></script>
-<script src="assets/tk.js?v=1118m"></script>
-<script src="assets/desk-parse.js?v=1118m"></script>
-<script src="assets/desk.js?v=1118m"></script>
-<script src="assets/desk-skin.js?v=1118m"></script>
+<script src="assets/tk.js?v=1118n"></script>
+<script src="assets/desk-parse.js?v=1118n"></script>
+<script src="assets/desk.js?v=1118n"></script>
+<script src="assets/ntbar.js?v=1118n"></script>
+<script src="assets/desk-skin.js?v=1118n"></script>
 </body>
 </html>

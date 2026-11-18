@@ -192,7 +192,7 @@ body.cd-page {
 
 /* ---------------- 卡片在页面里怎么站 ---------------- */
 .cd-card {
-  max-width: 520px;
+  max-width: 460px;
   position: relative;
   left: auto !important;
   top: auto !important;
@@ -207,6 +207,9 @@ body.cd-page {
   min-height: 0;
   overflow: visible;
 }
+/* 页面里也是长条票根：高度跟着宽度按 1:1.86 走，别再被压成方墩 */
+.cd-card .dk-note.dk-tk { min-height: 0; aspect-ratio: 100 / 186; }
+
 /* 页面里不用拖，别给抓手 */
 .cd-card .tk-top { cursor: default; }
 /* 画布里 hover 会把卡片顶到 8500，页面里会盖住顶栏，按住 */
