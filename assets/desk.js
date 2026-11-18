@@ -142,7 +142,8 @@
         url: w.url || '',
         x: Math.round(w.x), y: Math.round(w.y),
         w: Math.round(w.w), h: Math.round(w.h),
-        z: w.z, scroll: Math.round(w.scroll || 0)
+        z: w.z, scroll: Math.round(w.scroll || 0),
+        sk: w.sk || null
       };
     });
     return { v: 2, theme: theme, wins: list, at: Date.now() };
@@ -574,12 +575,26 @@
       size: rec.size || 0,
       x: pos.x, y: pos.y, w: w, h: h,
       z: ++zTop, maxed: false, prev: null, scroll: (box && box.scroll) || 0,
+      sk: (box && box.sk) || null,
       autofit: !box && rec.kind !== 'web'
     };
     wins[st.id] = st;
     stage.insertAdjacentHTML('beforeend', winHTML(st));
+    /* 新窗口上台，旧的取消高亮，保证同时只有一张是「当前卡片」 */
+    Object.keys(wins).forEach(function (oid) {
+      if (oid === st.id) return;
+      var oe = elOf(wins[oid]);
+      if (oe) oe.classList.remove('is-active');
+    });
     var el = elOf(st);
-    if (el) el.classList.add('is-active');
+    if (el) {
+      el.classList.add('is-active');
+      /* 落下来的小动画：从下方 10px 轻轻归位 */
+      el.classList.add('is-in');
+      el.addEventListener('animationend', function () { el.classList.remove('is-in'); }, { once: true });
+      setTimeout(function () { el.classList.remove('is-in'); }, 900);
+    }
+    if (st.sk && window.DESKPaint) window.DESKPaint(st);
     return st;
   }
 
@@ -671,6 +686,8 @@
       st.maxed = true;
     }
     applyBox(st);
+    var e2 = elOf(st);
+    if (e2) e2.classList.toggle('is-maxed', !!st.maxed);
     growStage();
     scheduleSave();
   }
@@ -785,7 +802,8 @@
       raw.wins.slice().sort(function (a, b) { return (a.z || 0) - (b.z || 0); }).forEach(function (w) {
         var box = {
           id: w.id, x: Math.max(0, w.x | 0), y: Math.max(0, w.y | 0),
-          w: Math.max(MINW, w.w | 0), h: Math.max(MINH, w.h | 0), scroll: w.scroll || 0
+          w: Math.max(MINW, w.w | 0), h: Math.max(MINH, w.h | 0), scroll: w.scroll || 0,
+          sk: w.sk || null
         };
 
         /* 网页 / 飞书链接窗口：不存文件，只存链接，直接按链接重建 */
@@ -844,6 +862,22 @@
   function bind() {
     canvas = $('canvas');
     stage = $('stage');
+
+    /* 对外开一个小口子：外观面板要读窗口、改名字、触发保存 */
+    window.DESK = {
+      wins: function () { return wins; },
+      elOf: elOf,
+      save: scheduleSave,
+      rename: function (st) { refreshHead(st); },
+      active: function () {
+        var best = null;
+        Object.keys(wins).forEach(function (id) {
+          var e = elOf(wins[id]);
+          if (e && e.classList.contains('is-active')) best = wins[id];
+        });
+        return best;
+      }
+    };
     emptyEl = $('empty');
     toastEl = $('toast');
     saveEl = $('saveState');
