@@ -29,65 +29,9 @@
     quote: '别人说过的一句……'
   };
 
-  /* 票根卡：SOP / 困难 / 开场五秒。一张卡就是一张能存档的凭证 */
-  var TK_ORDER = ['sop', 'hard', 'hook'];
-  var TK = {
-    sop: {
-      name: 'SOP 卡',
-      brand: 'SOP',
-      tag: 'DAILY',
-      lab: '流程步数 · 每天',
-      k1: '01 // 适用场景',
-      k2: '02 // 关键动作',
-      k3: '03 // 别踩的坑',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h8.4M4 12h10.6M4 16.5h6.2"/><path d="M15.2 15.4l2 2 3.9-4.2"/></svg>',
-      f: {
-        name: '拍一条主视频的流程',
-        big: '5 步',
-        sub: '从选题到 19:00 发出，我一个人走完',
-        a: '每天 19:00 那条主视频，从选题到出片',
-        b: '先想画面，再定机型，最后落稿',
-        c: '不写分镜、不写拍摄指导、不分段不编号',
-        tags: '流程 / 可复用 / 19:00'
-      }
-    },
-    hard: {
-      name: '困难卡',
-      brand: 'HARD',
-      tag: 'OPEN',
-      lab: '卡住的地方 · 待解',
-      k1: '01 // 卡在哪',
-      k2: '02 // 真实原因',
-      k3: '03 // 怎么破',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 21.2 19.4H2.8z"/><path d="M12 9.2v4.5M12 16.5v.1"/></svg>',
-      f: {
-        name: '折叠态太宽，膜压不出边',
-        big: '卡了 3 天',
-        sub: '客户明天要取，我这边还压不住边',
-        a: 'Mate X8 折叠态 84mm 宽，膜裁好一贴就是白边',
-        b: '弧边收得太急，机器压不出这个角度',
-        c: '先用热压二次收边，实在不行跟客户改时间'
-      }
-    },
-    hook: {
-      name: '前五秒卡',
-      brand: 'HOOK',
-      tag: '0–5S',
-      lab: '开场五秒 · 每天',
-      k1: '01 // 第一句话',
-      k2: '02 // 配什么画面',
-      k3: '03 // 为什么留人',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M10.2 8.9l5.4 3.1-5.4 3.1z"/></svg>',
-      f: {
-        name: '折叠屏被我掰成个方钱包',
-        big: '0–5 秒',
-        sub: '一句话把人钉在屏幕上',
-        a: '华为这次把折叠屏做成了个方形钱包',
-        b: '手里掰开合上，镜头怼近铰链',
-        c: '先给一个反常识的形状，人才会留下来'
-      }
-    }
-  };
+  /* 票根卡的数据在 assets/tk.js，画布和卡片库共用一份 */
+  var TK_ORDER = window.TK_ORDER || ['sop', 'hard', 'hook'];
+  var TK = window.TK || {};
   function ntStyle(st) {
     return (st && st.note && st.note.style) || 'plain';
   }
@@ -119,6 +63,24 @@
     while (s.length < 3) s = '0' + s;
     return s;
   }
+  /* ---------------- 回收站 ---------------- */
+  var TRASHKEY = 'wb.desk.trash.v1';
+  function readTrash() {
+    try { return JSON.parse(localStorage.getItem(TRASHKEY) || '[]') || []; } catch (e) { return []; }
+  }
+  function writeTrash(a) {
+    try { localStorage.setItem(TRASHKEY, JSON.stringify(a.slice(0, 60))); } catch (e) {}
+  }
+  function pushTrash(w) {
+    var a = readTrash().filter(function (x) { return x.id !== w.id; });
+    a.unshift({
+      id: w.id, name: w.name, kind: w.kind, size: w.size || 0,
+      note: w.note ? packNote(w.note) : null,
+      at: Date.now()
+    });
+    writeTrash(a);
+  }
+
   function packNote(n) {
     if (!n) return null;
     var o = { style: n.style || 'plain', html: n.html || '' };
@@ -941,7 +903,6 @@
         '<div class="tk-quota">' +
           '<div class="tk-lab">' + d.lab + '</div>' +
           fld('big', 'tk-big', '一句数字') +
-          fld('sub', 'tk-sub', '一句话说清这是什么') +
         '</div>' +
         '<div class="tk-box">' +
           '<div class="tk-k">' + d.k1 + '</div>' +
@@ -952,7 +913,6 @@
             '<div><div class="tk-k">' + d.k3 + '</div>' + fld('c', 'tk-v', '') + '</div>' +
           '</div>' +
         '</div>' +
-        fld('tags', 'tk-tags', '标签 / 用斜杠隔开') +
         '<div class="tk-stub">' +
           '<div class="tk-stub-l"><b>ADMIT ONE // 存档凭证</b>' + st.note.date + '</div>' +
           '<div class="tk-stub-no">' + no + '</div>' +
@@ -1013,8 +973,17 @@
     var ed = el.querySelector('.dk-note');
     if (!ed) return;
     var headH = isTk(st) ? 0 : ((el.querySelector('.dk-win-h') || {}).offsetHeight || 34);
-    var want = Math.round(Math.min(MAH_MAX, Math.max(118, headH + ed.scrollHeight + 2)));
-    if (Math.abs(want - st.h) < 12) return;
+    var bodyH = ed.scrollHeight;
+    if (isTk(st)) {
+      var rt = el.querySelector('.dk-tk');
+      var last = rt && rt.lastElementChild;
+      if (rt && last) {
+        /* 量底栏的底边，量容器会把 flex 撑满的高度也算进来 */
+        bodyH = Math.round(last.getBoundingClientRect().bottom - rt.getBoundingClientRect().top + 1);
+      }
+    }
+    var want = Math.round(Math.min(MAH_MAX, Math.max(118, headH + bodyH + 2)));
+    if (Math.abs(want - st.h) < 6) return;
     if (want > st.h) {
       var ids = Object.keys(wins), hit = false, b, i;
       for (i = 0; i < ids.length; i++) {
@@ -1077,7 +1046,7 @@
   /* 新建一张便签：落在空地上，光标直接进去 */
   function newNote(style) {
     var tk = !!TK[style];
-    var w = tk ? 344 : 380, h = tk ? 430 : 300;
+    var w = tk ? 344 : 380, h = tk ? 412 : 300;
     var pos = nextSpot(w, h);
     var note = { style: style || 'plain', html: '' };
     if (tk) { note.no = nextNo(); note.date = mdToday(); }
@@ -1263,6 +1232,11 @@
     growStage();
     updateEmpty();
     scheduleSave();
+    if (st.kind === 'note') {
+      pushTrash(st);
+      toast('卡片放进回收站了 · 在卡片库页面右上角能找回来', 4200);
+      return;
+    }
     toast(st.kind === 'web' ? '已移出画布' : '已移出画布 · 你本地的原文件没动');
   }
 
