@@ -630,3 +630,100 @@ html, body {
 [data-theme="dark"] .dk-win-b::-webkit-scrollbar-thumb,
 [data-theme="dark"] .dk-sheet::-webkit-scrollbar-thumb,
 [data-theme="dark"] .dk-canvas::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .2); background-clip: content-box; }
+
+/* ---------- 顶栏次级按钮（贴链接 / 工具箱） ---------- */
+.dk-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 11px;
+  border: 1px solid var(--dk-bd); border-radius: 7px;
+  background: var(--dk-win); color: var(--dk-tx);
+  font: inherit; font-size: 12.5px; font-weight: 500;
+  text-decoration: none; cursor: pointer;
+  transition: background .16s ease, border-color .16s ease;
+}
+.dk-link:hover { background: var(--dk-win-h); border-color: rgba(0,0,0,.16); }
+[data-theme="dark"] .dk-link:hover { border-color: rgba(255,255,255,.2); }
+.dk-link:active { transform: scale(.98); }
+.dk-link svg { width: 14px; height: 14px; opacity: .78; flex: 0 0 auto; }
+@media (max-width: 620px) { .dk-link .lbl2 { display: none; } .dk-link { padding: 0 8px; } }
+
+/* ---------- 网页 / 飞书文档窗口 ---------- */
+.dk-web { display: flex; flex-direction: column; height: 100%; background: var(--dk-win); }
+.dk-web-bar {
+  display: flex; align-items: center; gap: 8px;
+  height: 26px; padding: 0 8px; flex: 0 0 auto;
+  background: var(--dk-win-h); border-bottom: 1px solid var(--dk-bd2);
+}
+.dk-web-u {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 11px; color: var(--dk-tx3);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dk-web-bar button {
+  flex: 0 0 auto; height: 19px; padding: 0 7px;
+  border: 1px solid var(--dk-bd2); border-radius: 5px;
+  background: transparent; color: var(--dk-tx2);
+  font: inherit; font-size: 10.5px; cursor: pointer;
+}
+.dk-web-bar button:hover { background: rgba(0,0,0,.05); color: var(--dk-tx); }
+[data-theme="dark"] .dk-web-bar button:hover { background: rgba(255,255,255,.07); }
+
+.dk-web-f { position: relative; flex: 1 1 auto; min-height: 0; background: #fff; }
+.dk-web-f iframe { display: block; width: 100%; height: 100%; border: 0; }
+.dk-web-tip {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+  max-width: 88%; padding: 6px 10px; border-radius: 7px;
+  background: rgba(0,0,0,.78); color: #fff;
+  font-size: 11px; line-height: 1.5; text-align: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s ease;
+}
+.dk-web-tip.is-on { opacity: 1; }
+
+/* 拖 / 缩放的时候别让 iframe 把鼠标事件吃掉 */
+.dk-win.is-drag .dk-web-f iframe,
+.dk-win.is-resizing .dk-web-f iframe { pointer-events: none; }
+
+/* ---------- 贴链接弹层 ---------- */
+.dk-modal {
+  position: fixed; inset: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(0,0,0,.32);
+  opacity: 0; pointer-events: none; transition: opacity .18s ease;
+}
+.dk-modal.is-on { opacity: 1; pointer-events: auto; }
+.dk-modal-c {
+  width: min(460px, 100%);
+  padding: 20px 20px 16px;
+  border-radius: 14px; background: var(--dk-win);
+  box-shadow: 0 24px 60px -18px rgba(0,0,0,.4);
+  border: 1px solid var(--dk-bd2);
+  transform: translateY(8px); transition: transform .2s ease;
+}
+.dk-modal.is-on .dk-modal-c { transform: none; }
+.dk-modal-t { font-size: 14px; font-weight: 600; color: var(--dk-tx); margin-bottom: 12px; }
+.dk-input {
+  width: 100%; height: 38px; padding: 0 11px;
+  border: 1px solid var(--dk-bd); border-radius: 8px;
+  background: var(--dk-canvas); color: var(--dk-tx);
+  font: inherit; font-size: 12.5px; outline: none;
+}
+.dk-input:focus { border-color: var(--dk-acc); background: var(--dk-win); }
+.dk-modal-hint {
+  margin-top: 10px; font-size: 11.5px; line-height: 1.7; color: var(--dk-tx3);
+}
+.dk-modal-hint b { color: var(--dk-tx2); font-weight: 600; }
+.dk-modal-a { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+/* ---------- 瀑布流重排动画 ---------- */
+.dk-stage.is-mason .dk-win {
+  transition:
+    left .46s cubic-bezier(.22, .61, .36, 1),
+    top .46s cubic-bezier(.22, .61, .36, 1),
+    width .46s cubic-bezier(.22, .61, .36, 1),
+    height .46s cubic-bezier(.22, .61, .36, 1);
+}
+.dk-stage.is-mason .dk-web-f iframe { pointer-events: none; }
+.dk-stage.is-mason .dk-win-b { overflow-anchor: none; }
+@media (prefers-reduced-motion: reduce) {
+  .dk-stage.is-mason .dk-win { transition: none; }
+}

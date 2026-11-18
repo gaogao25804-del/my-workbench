@@ -17,8 +17,10 @@
   var theme = 'light';
   var saveTimer = null;
   var pendingReplace = null;
+  var masonT = null;
+  var reflowT = null;
 
-  var ICO = { docx: 'W', xlsx: 'X', pdf: 'P', txt: 'T' };
+  var ICO = { docx: 'W', xlsx: 'X', pdf: 'P', txt: 'T', web: '↗' };
 
   var SVG = {
     reload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6"/><path d="M20.5 4.2V10h-5.6"/></svg>',
@@ -137,6 +139,7 @@
       var w = wins[id];
       return {
         id: w.id, fileId: w.fileId, name: w.name, kind: w.kind, size: w.size,
+        url: w.url || '',
         x: Math.round(w.x), y: Math.round(w.y),
         w: Math.round(w.w), h: Math.round(w.h),
         z: w.z, scroll: Math.round(w.scroll || 0)
@@ -175,7 +178,7 @@
       '<div class="dk-win-h">' +
         '<span class="dk-ico" data-k="' + st.kind + '">' + (ICO[st.kind] || '?') + '</span>' +
         '<span class="dk-win-t" title="' + esc(st.name) + '">' + esc(st.name) + '</span>' +
-        '<span class="dk-win-meta">' + fmtSize(st.size) + '</span>' +
+        '<span class="dk-win-meta">' + (st.kind === 'web' ? hostOf(st.url) : fmtSize(st.size)) + '</span>' +
         '<div class="dk-win-a">' +
           '<button type="button" data-act="reload" title="重新导入这个文件的新版本">' + SVG.reload + '</button>' +
           '<button type="button" data-act="max" title="最大化 / 还原">' + SVG.max + '</button>' +
@@ -214,27 +217,238 @@
     scheduleSave();
   }
 
-  /* 新窗口落位：能并排就并排，排不下才往下换行；窄屏才退回阶梯叠放。
-     目的是新加进来的文件一眼能看见，不用先拖开一堆窗口。 */
-  function nextSpot(w, h) {
-    var n = Object.keys(wins).length;
-    var cw = Math.max(canvas.clientWidth || 0, 360);
-    var pad = 22, gap = 20;
-    var cols = Math.max(1, Math.floor((cw - pad * 2 + gap) / (w + gap)));
+  /* ---------------- 瀑布流：列宽一致，高度随内容参差 ---------------- */
+  var MAH_MIN = 260, MAH_MAX = 1200;
 
-    if (cols < 2) {                       // 手机 / 窄屏：阶梯，露出标题栏
-      var off = (n % 6) * 28;
-      return { x: Math.max(10, pad + off), y: Math.max(10, pad + off) };
+  /* 单张卡片：内容多高就给多高，超长的收到上限、窗口内滚动 */
+  function soloH(contentH) {
+    if (!contentH) return MAH_MIN;
+    return Math.round(Math.max(190, Math.min(MAH_MAX, contentH)));
+  }
+
+  /* 一批卡片：按这批内容的长短把高度铺开。
+     最短那张按真实高度完整显示（不超过 700），最长那张收到 1200，中间按长短插值。
+     不做这一步，几个长文档会全挤在上限附近，瀑布流就退化成等高网格了。 */
+  function batchH(raw) {
+    var ids = Object.keys(raw);
+    if (!ids.length) return {};
+    var vals = ids.map(function (id) { return raw[id]; });
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    var spread = mx - mn, out = {};
+
+    if (ids.length < 3 || spread < 300) {
+      ids.forEach(function (id) { out[id] = soloH(raw[id]); });
+      return out;
     }
+    var base = Math.max(MAH_MIN, Math.min(700, mn));
+    ids.forEach(function (id) {
+      var t = Math.pow((raw[id] - mn) / spread, 0.85);
+      out[id] = Math.round(base + (MAH_MAX - base) * t);
+    });
+    return out;
+  }
 
-    var col = n % cols, row = Math.floor(n / cols);
-    return {
-      x: Math.max(10, pad + col * (w + gap)),
-      y: Math.max(10, pad + row * (h + gap))
-    };
+  /* 按画布宽度切 4 / 3 / 2 / 1 列，列宽等分铺满 */
+  function gridOf() {
+    var cw = canvas ? (canvas.clientWidth || document.documentElement.clientWidth) : 1200;
+    var pad = 20, gap = 16;
+    var avail = Math.max(280, cw - pad * 2);
+    var cols = avail >= 1560 ? 4 : avail >= 1100 ? 3 : avail >= 680 ? 2 : 1;
+    var colW = Math.floor((avail - gap * (cols - 1)) / cols);
+    if (cols === 1) colW = Math.min(colW, 760);
+    return { pad: pad, gap: gap, cols: cols, colW: colW };
+  }
+
+  /* 读一张卡片的内容真实高度（含标题栏），测不到就沿用现在的 */
+  function rawH(st) {
+    var el = elOf(st);
+    if (!el) return st.h;
+    var head = el.querySelector('.dk-win-h');
+    var box = el.querySelector('.dk-win-b');
+    var headH = (head && head.offsetHeight) || 34;
+    var bh = 0, i;
+
+    if (st.kind === 'web') {
+      bh = Math.max(420, st.h - headH);              /* iframe 测不到内容，给个稳的档 */
+    } else if (st.kind === 'pdf') {
+      var cs = box ? box.querySelectorAll('canvas') : [];
+      for (i = 0; i < cs.length; i++) bh += cs[i].offsetHeight + 14;
+      bh = bh ? bh + 20 : (box ? box.scrollHeight : 0);
+    } else if (st.kind === 'xlsx') {
+      var tb = box && box.querySelector('.dk-sheet table');
+      bh = tb ? tb.getBoundingClientRect().height + 36 : 0;   /* 36 = 工作表标签栏 */
+    } else {
+      var inner = box && (box.querySelector('.dk-doc') || box.firstElementChild);
+      bh = inner ? inner.getBoundingClientRect().height : (box ? box.scrollHeight : 0);
+    }
+    /* 还在解析 / 拿不到内容：保持原高度 */
+    if (!bh || (box && box.querySelector('.dk-state'))) bh = st.h - headH;
+    return Math.round(headH + bh + 2);
+  }
+
+  /* 新放进来的一张卡片：高度收到刚好装下内容，跟瀑布流一个节奏 */
+  function fitHeight(st) {
+    if (st.maxed) return;
+    var h = soloH(rawH(st));
+    if (!h || Math.abs(h - st.h) < 8) return;
+    st.h = h;
+    stage.classList.add('is-mason');
+    applyBox(st);
+    growStage();
+    scheduleSave();
+    clearTimeout(masonT);
+    masonT = setTimeout(function () { stage.classList.remove('is-mason'); }, 520);
+    scheduleReflow();
+  }
+
+  /* 自动定高之后整批可能得重排一次，否则前后两张会叠在一起。
+     只在「窗口都已落在瀑布流列宽上」时做，用户手动摆的布局一律不碰。 */
+  function inMasonMode() {
+    var g = gridOf();
+    return Object.keys(wins).every(function (id) {
+      var st = wins[id];
+      var c = (st.x - g.pad) / (g.colW + g.gap);
+      return Math.abs(c - Math.round(c)) < 0.02 && Math.abs(st.w - g.colW) <= 1;
+    });
+  }
+
+  function scheduleReflow() {
+    clearTimeout(reflowT);
+    reflowT = setTimeout(function () {
+      if (inMasonMode()) masonLayout(true);
+    }, 420);
+  }
+
+  /* 整画布重排成瀑布流：按视觉顺序依次丢进当前最短的那一列 */
+  function masonLayout(silent) {
+    var ids = Object.keys(wins);
+    if (!ids.length) { if (!silent) toast('画布是空的，先拖几个文件进来'); return; }
+    if (ids.length === 1) { if (!silent) toast('只有一张卡片，多放几个再排'); return; }
+    var g = gridOf();
+
+    ids.sort(function (a, b) {
+      var A = wins[a], B = wins[b];
+      return (Math.round(A.y / 48) - Math.round(B.y / 48)) || (A.x - B.x);
+    });
+
+    stage.classList.add('is-mason');
+    clearTimeout(masonT);
+
+    /* ① 统一列宽（内容按新宽度折行），② 再统一量高，③ 最后落位 —— 只触发一次重排 */
+    ids.forEach(function (id) {
+      var st = wins[id];
+      st.w = g.colW;
+      st.maxed = false;
+      st.prev = null;
+      elOf(st) && applyBox(st);
+    });
+
+    var raw = {};
+    ids.forEach(function (id) { raw[id] = rawH(wins[id]); });
+    var hs = batchH(raw);
+
+    var colY = [], i;
+    for (i = 0; i < g.cols; i++) colY.push(g.pad);
+
+    ids.forEach(function (id) {
+      var st = wins[id], h = hs[id], c = 0;
+      for (i = 1; i < g.cols; i++) if (colY[i] < colY[c] - 1) c = i;
+      st.x = Math.round(g.pad + c * (g.colW + g.gap));
+      st.y = Math.round(colY[c]);
+      st.h = h;
+      applyBox(st);
+      colY[c] += h + g.gap;
+    });
+
+    growStage();
+    scheduleSave();
+    masonT = setTimeout(function () { stage.classList.remove('is-mason'); }, 520);
+    if (!silent) toast('已排成 ' + g.cols + ' 列瀑布流 · 高度按内容来，拖乱了再点一次');
+  }
+
+  /* 新窗口落位：追加到当前最短那一列的最底下，天然接在瀑布流末尾 */
+  function nextSpot() {
+    var g = gridOf();
+    var ids = Object.keys(wins);
+    if (!ids.length) return { x: g.pad, y: g.pad };
+
+    var bottoms = [], i;
+    for (i = 0; i < g.cols; i++) bottoms.push(g.pad);
+    ids.forEach(function (id) {
+      var st = wins[id];
+      var c = Math.round((st.x - g.pad) / (g.colW + g.gap));
+      c = Math.max(0, Math.min(g.cols - 1, c));
+      bottoms[c] = Math.max(bottoms[c], st.y + st.h + g.gap);
+    });
+
+    var pick = 0;
+    for (i = 1; i < g.cols; i++) if (bottoms[i] < bottoms[pick] - 1) pick = i;
+    return { x: Math.round(g.pad + pick * (g.colW + g.gap)), y: Math.round(bottoms[pick]) };
   }
 
   /* ---------------- 内容渲染 ---------------- */
+  /* ---------------- 网页 / 飞书文档窗口 ---------------- */
+  function normalizeUrl(s) {
+    var t = String(s || '').trim();
+    if (!t) return '';
+    if (!/^https?:\/\//i.test(t)) {
+      if (/^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?([\/?#].*)?$/i.test(t)) t = 'http://' + t;
+      else if (/^[\w.-]+(:\d+)?([\/?#].*)?$/.test(t)) t = 'https://' + t;
+      else return '';
+    }
+    try { new URL(t); } catch (e) { return ''; }
+    return t;
+  }
+
+  function hostOf(url) {
+    try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return '网页'; }
+  }
+
+  /* 飞书 / Lark 文档从链接里认出类型，标题先给个能认的名字，加载后不改 */
+  function nameOfUrl(url) {
+    var h = hostOf(url);
+    var m = /\/(docx|docs|wiki|sheets|base|slides|mindnotes)\/([A-Za-z0-9]+)/.exec(url);
+    if (m && /feishu|larksuite/.test(h)) {
+      var kindMap = { docx: '文档', docs: '文档', wiki: '知识库', sheets: '表格', base: '多维表格', slides: '幻灯片', mindnotes: '思维笔记' };
+      return (kindMap[m[1]] || '飞书') + ' · ' + m[2].slice(0, 8);
+    }
+    return h;
+  }
+
+  function webFrame(st) {
+    var tip = /feishu|larksuite/.test(st.url)
+      ? '飞书文档要先在分享里设成「互联网上获得链接的人可阅读」，否则这里会是空白'
+      : '有些站点禁止被别的页面嵌套，空白就是被拦了';
+    return '<div class="dk-web">' +
+      '<div class="dk-web-bar">' +
+        '<span class="dk-web-u" title="' + esc(st.url) + '">' + esc(hostOf(st.url)) + '</span>' +
+        '<button type="button" data-act="open" title="在新标签页打开">在新标签打开</button>' +
+      '</div>' +
+      '<div class="dk-web-f">' +
+        '<iframe src="' + esc(st.url) + '" referrerpolicy="no-referrer" allow="clipboard-read; clipboard-write; fullscreen"></iframe>' +
+        '<div class="dk-web-tip">' + esc(tip) + '</div>' +
+      '</div>' +
+      '</div>';
+  }
+
+  function addUrl(raw) {
+    var url = normalizeUrl(raw);
+    if (!url) { toast('这个链接不对，要 http:// 或 https:// 开头', 3800); return false; }
+
+    var exists = Object.keys(wins).map(function (id) { return wins[id]; })
+      .filter(function (w) { return w.kind === 'web' && w.url === url; })[0];
+    if (exists) { raise(exists); toast('这个链接已经在画布上了'); return true; }
+
+    var st = makeWindow({ id: 'url|' + url, name: nameOfUrl(url), kind: 'web', size: 0, url: url }, null);
+    renderBody(st, null);
+    scheduleSave();
+    growStage();
+    updateEmpty();
+    scheduleReflow();
+    toast('已放进画布 · ' + hostOf(url));
+    return true;
+  }
+
   function errState(title, sub) {
     return DESKPARSE.fail(title, sub) ;
   }
@@ -245,6 +459,15 @@
     var box = el.querySelector('.dk-win-b');
     if (!box) return;
     if (box._pdfClean) { try { box._pdfClean(); } catch (e) {} box._pdfClean = null; }
+    if (st.kind === 'web') {
+      box.innerHTML = webFrame(st);
+      var tipEl = box.querySelector('.dk-web-tip');
+      var late = setTimeout(function () { if (tipEl) tipEl.classList.add('is-on'); }, 9000);
+      var fr = box.querySelector('iframe');
+      if (fr) fr.addEventListener('load', function () { clearTimeout(late); });
+      return;
+    }
+
     box.innerHTML = '<div class="dk-state"><div class="dk-spin"></div><span>正在解析…</span></div>';
 
     var t0 = Date.now();
@@ -277,6 +500,8 @@
     Promise.resolve(job).then(function () {
       var cost = Date.now() - t0;
       if (cost > 2500 && st.kind !== 'pdf') toast(st.name + ' 有点大，解析用了 ' + (cost / 1000).toFixed(1) + ' 秒');
+      // 新放的卡片自动贴合内容高度
+      if (st.autofit) { st.autofit = false; fitHeight(st); }
       // 恢复滚动位置
       if (st.scroll) { box.scrollTop = st.scroll; }
       box.addEventListener('scroll', function () {
@@ -319,24 +544,27 @@
     var m = el.querySelector('.dk-win-meta');
     if (t) { t.textContent = st.name; t.title = st.name; }
     if (ic) { ic.dataset.k = st.kind; ic.textContent = ICO[st.kind] || '?'; }
-    if (m) m.textContent = fmtSize(st.size);
+    if (m) m.textContent = st.kind === 'web' ? hostOf(st.url) : fmtSize(st.size);
   }
 
   /* ---------------- 新建窗口 ---------------- */
   function makeWindow(rec, box) {
-    var cw = canvas.clientWidth, ch = canvas.clientHeight;
-    var w = box ? box.w : Math.min(760, Math.max(320, Math.round(cw * 0.47)));
-    var h = box ? box.h : Math.min(640, Math.max(250, Math.round(ch * 0.68)));
-    var pos = (box && box.x != null) ? { x: box.x, y: box.y } : nextSpot(w, h);
+    var ch = canvas.clientHeight || 640;
+    var g = gridOf();
+    var w = box ? box.w : g.colW;
+    var h = box ? box.h : Math.min(680, Math.max(300, Math.round(ch * 0.62)));
+    var pos = (box && box.x != null) ? { x: box.x, y: box.y } : nextSpot();
 
     var st = {
       id: box && box.id ? box.id : uid(),
       fileId: rec.id,
       name: rec.name,
       kind: rec.kind,
+      url: rec.url || '',
       size: rec.size || 0,
       x: pos.x, y: pos.y, w: w, h: h,
-      z: ++zTop, maxed: false, prev: null, scroll: (box && box.scroll) || 0
+      z: ++zTop, maxed: false, prev: null, scroll: (box && box.scroll) || 0,
+      autofit: !box && rec.kind !== 'web'
     };
     wins[st.id] = st;
     stage.insertAdjacentHTML('beforeend', winHTML(st));
@@ -452,10 +680,11 @@
     growStage();
     updateEmpty();
     scheduleSave();
-    toast('已移出画布 · 你本地的原文件没动');
+    toast(st.kind === 'web' ? '已移出画布' : '已移出画布 · 你本地的原文件没动');
   }
 
   function reloadWin(st) {
+    if (st.kind === 'web') { renderBody(st, null); toast('已重新加载'); return; }
     pendingReplace = st.id;
     replaceEl.value = '';
     replaceEl.click();
@@ -544,12 +773,25 @@
       var missing = 0, ok = 0;
       var jobs = [];
       raw.wins.slice().sort(function (a, b) { return (a.z || 0) - (b.z || 0); }).forEach(function (w) {
-        var rec = map[w.fileId];
-        if (!rec) { missing++; return; }
-        var st = makeWindow(rec, {
+        var box = {
           id: w.id, x: Math.max(0, w.x | 0), y: Math.max(0, w.y | 0),
           w: Math.max(MINW, w.w | 0), h: Math.max(MINH, w.h | 0), scroll: w.scroll || 0
-        });
+        };
+
+        /* 网页 / 飞书链接窗口：不存文件，只存链接，直接按链接重建 */
+        if (w.kind === 'web' && w.url) {
+          var sw = makeWindow({ id: w.fileId, name: w.name, kind: 'web', size: 0, url: w.url }, box);
+          sw.z = w.z || ++zTop;
+          var ew = elOf(sw);
+          if (ew) ew.style.zIndex = sw.z;
+          ok++;
+          renderBody(sw, null);
+          return;
+        }
+
+        var rec = map[w.fileId];
+        if (!rec) { missing++; return; }
+        var st = makeWindow(rec, box);
         st.z = w.z || ++zTop;
         var el = elOf(st);
         if (el) el.style.zIndex = st.z;
@@ -598,10 +840,40 @@
 
     // 顶栏
     $('btnAdd').addEventListener('click', function () { pickEl.click(); });
+    var btnMason = $('btnMason');
+    if (btnMason) btnMason.addEventListener('click', masonLayout);
     $('btnTheme').addEventListener('click', function () {
       applyTheme(theme === 'dark' ? 'light' : 'dark');
       scheduleSave();
     });
+
+    // 贴链接（飞书文档 / 任意网页）
+    var linkBox = $('linkModal'), linkIn = $('linkInput');
+    function openLink() {
+      if (!linkBox) return;
+      linkBox.classList.add('is-on');
+      if (linkIn) { linkIn.value = ''; setTimeout(function () { linkIn.focus(); }, 60); }
+    }
+    function closeLink() { if (linkBox) linkBox.classList.remove('is-on'); }
+    function submitLink() {
+      if (!linkIn) return;
+      if (addUrl(linkIn.value)) closeLink();
+    }
+    var btnLink = $('btnLink');
+    if (btnLink) btnLink.addEventListener('click', openLink);
+    if (linkBox) {
+      linkBox.addEventListener('click', function (e) {
+        if (e.target === linkBox) closeLink();
+        if (e.target.closest('[data-lk="ok"]')) submitLink();
+        if (e.target.closest('[data-lk="no"]')) closeLink();
+      });
+      if (linkIn) {
+        linkIn.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); submitLink(); }
+          if (e.key === 'Escape') closeLink();
+        });
+      }
+    }
 
     pickEl.addEventListener('change', function () {
       addFiles(this.files);
@@ -653,6 +925,13 @@
     }, { passive: false });
 
     stage.addEventListener('click', function (e) {
+      // 网页窗口：在新标签打开
+      var ob = e.target.closest('.dk-web-bar button[data-act="open"]');
+      if (ob) {
+        var ow = wins[ob.closest('.dk-win').dataset.id];
+        if (ow && ow.url) window.open(ow.url, '_blank', 'noopener');
+        return;
+      }
       var btn = e.target.closest('.dk-win-a button');
       if (!btn) return;
       var el = btn.closest('.dk-win');
