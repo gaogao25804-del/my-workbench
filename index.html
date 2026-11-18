@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbfbfd">
 <title>我的工作台 · 文档桌面</title>
-<link rel="stylesheet" href="assets/desk.css?v=1118i">
+<link rel="stylesheet" href="assets/desk.css?v=1118j">
 </head>
 <body>
 
@@ -43,6 +43,13 @@
         <path d="M8.3 10.4V7.7a3.7 3.7 0 0 1 7.4 0v2.7"/>
       </svg>
       <span class="lbl2">锁定</span>
+    </button>
+    <button class="dk-link" id="btnNote" type="button" title="新建一张小卡片：写字、标重点，随便摆">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3.4" y="4.6" width="17.2" height="14.8" rx="2.6"/>
+        <path d="M7.4 9.6h9.2M7.4 13h6.4"/>
+      </svg>
+      <span class="lbl2">新建卡片</span>
     </button>
     <button class="dk-link" id="btnLink" type="button" title="贴飞书文档 / 任意网页链接，直接摆在画布上">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -98,6 +105,55 @@
   </div>
 </div>
 
+<!-- 新建小卡片：三选一 -->
+<div class="dk-modal" id="noteModal">
+  <div class="dk-modal-c is-wide">
+    <div class="dk-modal-t">要哪种卡片</div>
+    <div class="nt-picks">
+      <button type="button" class="nt-pick" data-nt="plain">
+        <span class="nt-pv is-plain">
+          <b>今天记一笔</b>
+          <i>白底，写字最干净，适合放长一点的东西</i>
+        </span>
+        <span class="nt-nm">白卡</span>
+      </button>
+      <button type="button" class="nt-pick" data-nt="mark">
+        <span class="nt-pv is-mark">
+          <b>这条一定要记住</b>
+          <i>淡黄底，<em>重点能涂荧光笔</em>，适合放规矩、放爆点</i>
+        </span>
+        <span class="nt-nm">重点卡</span>
+      </button>
+      <button type="button" class="nt-pick" data-nt="quote">
+        <span class="nt-pv is-quote">
+          <b>「别人说过的一句」</b>
+          <i>黑边框＋左侧竖线，适合放引用、放对照</i>
+        </span>
+        <span class="nt-nm">引用卡</span>
+      </button>
+    </div>
+    <div class="dk-modal-hint">
+      放到画布后直接打字。选中文字会浮出一条小工具条：加粗、四种荧光笔、清掉格式。<br>
+      卡片右上角有个「换样式」的按钮，随时能在三种之间来回换。
+    </div>
+    <div class="dk-modal-a">
+      <button class="dk-btn" type="button" data-nm="no">算了</button>
+    </div>
+  </div>
+</div>
+
+<!-- 便签选中文字时浮出的工具条 -->
+<div class="nt-bar" id="noteBar" hidden>
+  <button type="button" data-nt2="b" title="加粗"><b>B</b></button>
+  <span class="nt-bar-hr"></span>
+  <button type="button" data-nt2="hl:255,232,120" title="黄色荧光笔"><i style="background:#ffe878"></i></button>
+  <button type="button" data-nt2="hl:178,240,190" title="绿色荧光笔"><i style="background:#b2f0be"></i></button>
+  <button type="button" data-nt2="hl:255,196,214" title="粉色荧光笔"><i style="background:#ffc4d6"></i></button>
+  <button type="button" data-nt2="hl:190,220,255" title="蓝色荧光笔"><i style="background:#bedcff"></i></button>
+  <span class="nt-bar-hr"></span>
+  <button type="button" data-nt2="clear" title="清掉加粗/荧光笔/字号">清</button>
+</div>
+
 <div class="dk-lockmenu" id="lockMenu" hidden>
   <div class="lk-t">布局</div>
   <button type="button" data-lk2="toggle">锁定当前布局</button>
@@ -115,8 +171,8 @@
 <script src="assets/vendor/mammoth.browser.min.js"></script>
 <script src="assets/vendor/xlsx.full.min.js"></script>
 <script src="assets/vendor/pdf.min.js"></script>
-<script src="assets/desk-parse.js?v=1118i"></script>
-<script src="assets/desk.js?v=1118i"></script>
-<script src="assets/desk-skin.js?v=1118i"></script>
+<script src="assets/desk-parse.js?v=1118j"></script>
+<script src="assets/desk.js?v=1118j"></script>
+<script src="assets/desk-skin.js?v=1118j"></script>
 </body>
 </html>

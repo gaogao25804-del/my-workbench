@@ -1129,3 +1129,230 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 }
 .dk-web-load i { font-style: normal; }
 .dk-web-load.is-off { opacity: 0; pointer-events: none; }
+
+/* ==========================================================
+   便签小卡片（新建卡片）
+   ========================================================== */
+.dk-ico[data-k="note"] { background: #ffb02e; color: #fff; }
+
+/* 卡片本体配色：便签是「纸」，不跟外观预设的主题底色走 */
+.dk-win[data-kind="note"] {
+  background: var(--nt-bg);
+  border-color: var(--nt-bd) !important;
+}
+.dk-win[data-kind="note"][data-nt="mark"] { --nt-bg: #fffdf0; --nt-bd: #f0e6c8; }
+.dk-win[data-kind="note"][data-nt="quote"] { --nt-bg: #fff; --nt-bd: #1d1d1f; }
+.dk-win[data-kind="note"] { --nt-bg: #fff; --nt-bd: rgba(0, 0, 0, .12); }
+.dk-win[data-kind="note"][data-nt="quote"] { border-width: 1.5px !important; }
+
+[data-theme="dark"] .dk-win[data-kind="note"] { --nt-bg: #2a2a2c; --nt-bd: rgba(255, 255, 255, .14); }
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="mark"] { --nt-bg: #2f2a1e; --nt-bd: #4a3f26; }
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="quote"] { --nt-bg: #242426; --nt-bd: rgba(255, 255, 255, .62); }
+
+/* 便签的标题栏跟着纸色走，不然上面一块灰、下面一张白 */
+.dk-win[data-kind="note"] .dk-win-h {
+  background: transparent;
+  border-bottom-color: var(--nt-hr);
+}
+.dk-win[data-kind="note"] { --nt-hr: rgba(0, 0, 0, .055); }
+[data-theme="dark"] .dk-win[data-kind="note"] { --nt-hr: rgba(255, 255, 255, .07); }
+.dk-win[data-kind="note"] .dk-win-t { font-weight: 600; }
+.dk-win[data-kind="note"] .dk-win-b { overflow: auto; }
+.dk-win[data-kind="note"] .dk-win-b:focus-within { outline: none; }
+
+/* 编辑区 */
+.dk-note {
+  box-sizing: border-box;
+  padding: 22px 26px 30px;
+  outline: none;
+  font-size: var(--dk-doc-fs);
+  line-height: 1.74;
+  color: var(--nt-tx);
+  caret-color: #ff6a2f;
+  word-break: break-word;
+}
+.dk-note { --nt-tx: #1d1d1f; }
+[data-theme="dark"] .dk-note { --nt-tx: #e8e8ea; }
+
+.dk-note.is-plain { }
+.dk-note.is-mark {
+  background: linear-gradient(180deg, rgba(255, 214, 82, .07), rgba(255, 214, 82, 0) 120px);
+}
+.dk-note.is-quote {
+  border-left: 3px solid var(--nt-q);
+  padding-left: 22px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .022), transparent 62%);
+}
+.dk-note.is-quote { --nt-q: #1d1d1f; }
+[data-theme="dark"] .dk-note.is-quote { --nt-q: rgba(255, 255, 255, .78); }
+[data-theme="dark"] .dk-note.is-quote { background: linear-gradient(90deg, rgba(255, 255, 255, .028), transparent 62%); }
+
+/* 空的时候给个提示字 */
+.dk-note:empty::before,
+.dk-note[data-empty="1"]::before {
+  content: attr(data-ph);
+  color: var(--nt-ph);
+  pointer-events: none;
+}
+.dk-note { --nt-ph: rgba(0, 0, 0, .26); }
+[data-theme="dark"] .dk-note { --nt-ph: rgba(255, 255, 255, .28); }
+
+/* 正文里的小排版 */
+.dk-note h3, .dk-note .nt-h {
+  font-size: 19px;
+  line-height: 1.42;
+  font-weight: 700;
+  letter-spacing: -.012em;
+  margin: 0 0 10px;
+}
+.dk-note p { margin: 0 0 10px; }
+.dk-note p:last-child { margin-bottom: 0; }
+.dk-note ul, .dk-note ol { margin: 0 0 10px; padding-left: 20px; }
+.dk-note li { margin: 0 0 5px; }
+.dk-note b, .dk-note strong { font-weight: 700; }
+.dk-note a { color: #0a66d0; }
+[data-theme="dark"] .dk-note a { color: #6fa8ff; }
+
+/* 荧光笔：选中后 execCommand 会生成 span，这里兜住观感 */
+.dk-note span[style*="background-color"] { border-radius: 3px; padding: 0 1px; }
+.dk-note ::selection, .dk-note::selection { background: rgba(255, 214, 82, .5); }
+
+/* 锁定后便签不给改字 */
+.dk-win.is-locked[data-kind="note"] .dk-note { cursor: default; }
+
+/* ---------- 选中文字浮出的工具条 ---------- */
+.nt-bar {
+  position: fixed;
+  z-index: 9400;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 9px;
+  background: #1d1d1f;
+  box-shadow: 0 10px 28px -10px rgba(0, 0, 0, .5), 0 2px 6px rgba(0, 0, 0, .2);
+  transform: translateX(-50%);
+  animation: nt-bar-in .12s ease both;
+}
+.nt-bar[hidden] { display: none; }
+@keyframes nt-bar-in { from { opacity: 0; transform: translateX(-50%) translateY(3px); } }
+.nt-bar button {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #f2f2f4;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.nt-bar button:hover { background: rgba(255, 255, 255, .16); }
+.nt-bar button b { font-weight: 800; font-size: 12.5px; }
+.nt-bar button i {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, .12);
+}
+.nt-bar-hr { width: 1px; height: 16px; margin: 0 3px; background: rgba(255, 255, 255, .22); }
+
+/* ---------- 选择卡片样式的弹窗 ---------- */
+.dk-modal-c.is-wide { width: min(660px, calc(100vw - 32px)); }
+.nt-picks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.nt-pick {
+  display: block;
+  padding: 0;
+  border: 1px solid var(--dk-bd);
+  border-radius: 12px;
+  background: var(--dk-win-h);
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition: border-color .14s, transform .1s, box-shadow .14s;
+}
+.nt-pick:hover { border-color: #ff6a2f; box-shadow: 0 8px 22px -12px rgba(255, 106, 47, .5); }
+.nt-pick:active { transform: scale(.99); }
+.nt-pv {
+  display: block;
+  min-height: 116px;
+  padding: 14px 14px 16px;
+  position: relative;
+}
+.nt-pv b {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: #1d1d1f;
+  margin-bottom: 7px;
+  line-height: 1.35;
+}
+.nt-pv i {
+  display: block;
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1.62;
+  color: #6b6b70;
+}
+.nt-pv em {
+  font-style: normal;
+  background: #ffe878;
+  border-radius: 2px;
+  padding: 0 2px;
+  color: #1d1d1f;
+}
+.nt-pv.is-plain { background: #fff; }
+.nt-pv.is-mark { background: #fffdf0; }
+.nt-pv.is-mark b { color: #1d1d1f; }
+.nt-pv.is-quote { background: #fff; border-left: 3px solid #1d1d1f; }
+.nt-pv.is-quote b { padding-left: 6px; }
+.nt-nm {
+  display: block;
+  padding: 8px 12px;
+  border-top: 1px solid var(--dk-bd2);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--dk-tx2);
+  background: var(--dk-win);
+}
+
+@media (max-width: 620px) {
+  .nt-picks { grid-template-columns: 1fr; }
+  .nt-pv { min-height: 0; padding: 11px 13px 13px; }
+  .nt-pv i { display: none; }
+}
+
+/* 便签图标跟着样式走：白卡灰、重点卡黄、引用卡黑 */
+.dk-win[data-kind="note"] .dk-ico[data-k="note"] { background: #8e8e93; }
+.dk-win[data-kind="note"][data-nt="mark"] .dk-ico[data-k="note"] { background: #f0b429; }
+.dk-win[data-kind="note"][data-nt="quote"] .dk-ico[data-k="note"] { background: #1d1d1f; }
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="quote"] .dk-ico[data-k="note"] { background: #d8d8dc; color: #1d1d1f; }
+
+/* 工具条的小尖角，指向它所属的那张卡片 */
+.nt-bar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  margin-left: -5px;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+}
+.nt-bar[data-side="bottom"]::after { top: -9px; border-bottom-color: #1d1d1f; }
+.nt-bar[data-side="top"]::after { bottom: -9px; border-top-color: #1d1d1f; }
+
+/* 深色下荧光笔是浅底，字必须跟着变深，否则一片黄块看不见字 */
+[data-theme="dark"] .dk-note span[style*="background-color"]:not([style*="transparent"]):not([style*="rgba(0, 0, 0, 0)"]) {
+  color: #1d1d1f;
+}
+/* 深色引用卡的边框别太亮 */
+[data-theme="dark"] .dk-win[data-kind="note"][data-nt="quote"] { --nt-bd: rgba(255, 255, 255, .42); }

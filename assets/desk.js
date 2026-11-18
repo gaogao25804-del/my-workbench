@@ -18,14 +18,27 @@
   var saveTimer = null;
   var pendingReplace = null;
 
-  var ICO = { docx: 'W', xlsx: 'X', pdf: 'P', txt: 'T', web: '↗' };
+  var ICO = { docx: 'W', xlsx: 'X', pdf: 'P', txt: 'T', web: '↗', note: '✎' };
+
+  /* ---------------- 便签小卡片 ---------------- */
+  var NT_ORDER = ['plain', 'mark', 'quote'];
+  var NT_NAME = { plain: '白卡', mark: '重点卡', quote: '引用卡' };
+  var NT_PH = {
+    plain: '写点什么……',
+    mark: '这条要记住的事……',
+    quote: '别人说过的一句……'
+  };
+  function ntStyle(st) {
+    return (st && st.note && st.note.style) || 'plain';
+  }
 
   var SVG = {
     reload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6"/><path d="M20.5 4.2V10h-5.6"/></svg>',
     max: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4.5" width="15" height="15" rx="2"/></svg>',
     close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
     theme: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.4 19.6L6 18M18 6l1.6-1.6"/></svg>',
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5.5v13M5.5 12h13"/></svg>'
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5.5v13M5.5 12h13"/></svg>',
+    nt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.2" width="13" height="13.6" rx="2.4"/><path d="M8.2 19.4l11.2-.6a1.6 1.6 0 0 0 1.5-1.7l-.5-8.6"/></svg>'
   };
 
   /* ---------------- 小工具 ---------------- */
@@ -141,7 +154,8 @@
         x: Math.round(w.x), y: Math.round(w.y),
         w: Math.round(w.w), h: Math.round(w.h),
         z: w.z, scroll: Math.round(w.scroll || 0),
-        sk: w.sk || null, lock: w.lock ? 1 : 0
+        sk: w.sk || null, lock: w.lock ? 1 : 0,
+        note: w.kind === 'note' ? { style: ntStyle(w), html: (w.note && w.note.html) || '' } : null
       };
     });
     return { v: 2, theme: theme, wins: list, at: Date.now() };
@@ -196,8 +210,7 @@
   function toggleWinLock(st) {
     if (locked) { toast('整块画布都锁着，先点顶栏「已锁定」解开'); return; }
     st.lock = st.lock ? 0 : 1;
-    var el = elOf(st);
-    if (el) el.classList.toggle('is-locked', !!st.lock);
+    paintLock();
     scheduleSave();
     toast(st.lock ? ('这张卡锁住了 · 位置不会再动') : '这张卡解锁了，可以拖了');
   }
@@ -206,7 +219,11 @@
     document.documentElement.setAttribute('data-locked', locked ? '1' : '0');
     Object.keys(wins).forEach(function (id) {
       var e = elOf(wins[id]);
-      if (e) e.classList.toggle('is-locked', isWinLocked(wins[id]));
+      if (!e) return;
+      var on = isWinLocked(wins[id]);
+      e.classList.toggle('is-locked', on);
+      var ed = e.querySelector('.dk-note');
+      if (ed) ed.setAttribute('contenteditable', on ? 'false' : 'true');
     });
     var b = $('btnLock');
     if (!b) return;
@@ -322,12 +339,15 @@
 
   /* ---------------- 窗口 DOM ---------------- */
   function winHTML(st) {
-    return '<div class="dk-win" data-id="' + st.id + '" style="left:' + st.x + 'px;top:' + st.y +
+    var isNote = st.kind === 'note';
+    return '<div class="dk-win" data-id="' + st.id + '" data-kind="' + st.kind + '"' +
+      (isNote ? ' data-nt="' + ntStyle(st) + '"' : '') +
+      ' style="left:' + st.x + 'px;top:' + st.y +
       'px;width:' + st.w + 'px;height:' + st.h + 'px;z-index:' + st.z + '">' +
       '<div class="dk-win-h">' +
         '<span class="dk-ico" data-k="' + st.kind + '">' + (ICO[st.kind] || '?') + '</span>' +
         '<span class="dk-win-t" title="' + esc(st.name) + '">' + esc(st.name) + '</span>' +
-        '<span class="dk-win-meta">' + (st.kind === 'web' ? hostOf(st.url) : fmtSize(st.size)) + '</span>' +
+        '<span class="dk-win-meta">' + metaOf(st) + '</span>' +
         '<div class="dk-win-a">' +
           '<button type="button" data-act="lock" title="单独锁住这张卡片的位置（不影响别张）">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' +
@@ -335,7 +355,9 @@
               '<path class="lk-o" d="M8.7 10.6V7.9a3.3 3.3 0 0 1 6.5-1"/>' +
               '<path class="lk-c" d="M8.7 10.6V7.9a3.3 3.3 0 0 1 6.6 0v2.7"/>' +
             '</svg></button>' +
-          '<button type="button" data-act="reload" title="重新导入这个文件的新版本">' + SVG.reload + '</button>' +
+          (isNote
+            ? '<button type="button" data-act="nt" title="换一种样子（白卡 / 重点卡 / 引用卡）">' + SVG.nt + '</button>'
+            : '<button type="button" data-act="reload" title="重新导入这个文件的新版本">' + SVG.reload + '</button>') +
           '<button type="button" data-act="max" title="最大化 / 还原">' + SVG.max + '</button>' +
           '<button type="button" data-act="close" title="从画布移除（不动本地原文件）">' + SVG.close + '</button>' +
         '</div>' +
@@ -595,6 +617,8 @@
     var box = el.querySelector('.dk-win-b');
     if (!box) return;
     if (box._pdfClean) { try { box._pdfClean(); } catch (e) {} box._pdfClean = null; }
+    if (st.kind === 'note') { mountNote(st, box); return; }
+
     if (st.kind === 'web') {
       box.innerHTML = webFrame(st);
       var tipEl = box.querySelector('.dk-web-tip');
@@ -680,6 +704,159 @@
     });
   }
 
+  /* ---------------- 便签小卡片 ---------------- */
+  function noteText(st) {
+    var el = elOf(st);
+    var ed = el && el.querySelector('.dk-note');
+    if (ed) return String(ed.innerText || '');
+    return String((st.note && st.note.html) || '').replace(/<[^>]+>/g, ' ');
+  }
+
+  function noteCount(st) {
+    var t = noteText(st).replace(/\s+/g, '');
+    return t.length;
+  }
+
+  function metaOf(st) {
+    if (st.kind === 'note') {
+      var n = noteCount(st);
+      return n ? (n + ' 字') : '';
+    }
+    if (st.kind === 'web') return hostOf(st.url);
+    return fmtSize(st.size);
+  }
+
+  function paintEmpty(ed) {
+    if (!ed) return;
+    var t = String(ed.innerText || '').replace(/\s+/g, '');
+    ed.setAttribute('data-empty', t ? '0' : '1');
+  }
+
+  /* 窗口标题 = 便签正文的第一行，写什么就是什么 */
+  function syncNoteName(st) {
+    var txt = noteText(st);
+    var line = '';
+    txt.split(/\n/).some(function (l) {
+      if (l.replace(/\s+/g, '')) { line = l.trim(); return true; }
+      return false;
+    });
+    var nm = line ? (line.length > 20 ? line.slice(0, 20) + '…' : line) : (NT_NAME[ntStyle(st)] || '卡片');
+    if (st.name === nm) return;
+    st.name = nm;
+    refreshHead(st);
+  }
+
+  function mountNote(st, box) {
+    if (!st.note) st.note = { style: 'plain', html: '' };
+    var lockedNow = isWinLocked(st);
+    box.innerHTML = '<div class="dk-note is-' + ntStyle(st) + '" spellcheck="false"' +
+      ' contenteditable="' + (lockedNow ? 'false' : 'true') + '"' +
+      ' data-ph="' + esc(NT_PH[ntStyle(st)]) + '">' + (st.note.html || '') + '</div>';
+    var ed = box.querySelector('.dk-note');
+    paintEmpty(ed);
+
+    /* 打字就存，不用按保存 */
+    ed.addEventListener('input', function () {
+      st.note.html = ed.innerHTML;
+      paintEmpty(ed);
+      syncNoteName(st);
+      var m = elOf(st) && elOf(st).querySelector('.dk-win-meta');
+      if (m) m.textContent = metaOf(st);
+      scheduleSave();
+      queueFitNote(st);
+    });
+    ed.addEventListener('blur', function () {
+      st.note.html = ed.innerHTML;
+      scheduleSave();
+    });
+    /* 粘进来的东西只留纯文字，别把一堆网页样式带进来 */
+    ed.addEventListener('paste', function (e) {
+      if (!e.clipboardData) return;
+      var t = e.clipboardData.getData('text/plain');
+      if (t == null) return;
+      e.preventDefault();
+      document.execCommand('insertText', false, t);
+    });
+    ed.addEventListener('keydown', function (e) {
+      e.stopPropagation();
+    });
+
+    st.autofit = false;
+    if (!st.note.html) setTimeout(function () { try { ed.focus(); } catch (err) {} }, 140);
+    syncNoteName(st);
+    if (!st.ntManual) setTimeout(function () { autoFitNote(st); }, 180);
+  }
+
+  /* 便签自己贴合内容：短了就收（不挪位置），长出来才长（压到别人就不长） */
+  var ntFitT = null;
+  function autoFitNote(st) {
+    if (!st || st.maxed || st.ntManual || st.kind !== 'note') return;
+    var el = elOf(st);
+    if (!el) return;
+    var ed = el.querySelector('.dk-note');
+    if (!ed) return;
+    var headH = (el.querySelector('.dk-win-h') || {}).offsetHeight || 34;
+    var want = Math.round(Math.min(MAH_MAX, Math.max(118, headH + ed.scrollHeight + 2)));
+    if (Math.abs(want - st.h) < 12) return;
+    if (want > st.h) {
+      var ids = Object.keys(wins), hit = false, b, i;
+      for (i = 0; i < ids.length; i++) {
+        if (ids[i] === st.id) continue;
+        b = wins[ids[i]];
+        if (st.x < b.x + b.w && st.x + st.w > b.x &&
+            st.y < b.y + b.h && st.y + want > b.y) { hit = true; break; }
+      }
+      if (hit) return;     /* 往下长会压到别人，那就不长，让它在卡片里滚 */
+    }
+    st.h = want;
+    applyBox(st);
+    growStage();
+    scheduleSave();
+  }
+
+  function queueFitNote(st) {
+    clearTimeout(ntFitT);
+    ntFitT = setTimeout(function () { autoFitNote(st); }, 420);
+  }
+
+  /* 换样式：白卡 → 重点卡 → 引用卡 → 白卡 */
+  function setNoteStyle(st, which) {
+    if (!st.note) st.note = { style: 'plain', html: '' };
+    st.note.style = which;
+    var el = elOf(st);
+    if (el) el.setAttribute('data-nt', which);
+    var ed = el && el.querySelector('.dk-note');
+    if (ed) {
+      ed.className = 'dk-note is-' + which;
+      ed.setAttribute('data-ph', NT_PH[which]);
+    }
+    if (!noteCount(st)) { st.name = NT_NAME[which]; refreshHead(st); }
+    scheduleSave();
+    toast('换成' + NT_NAME[which] + '了');
+  }
+
+  function cycleNote(st) {
+    var cur = ntStyle(st);
+    setNoteStyle(st, NT_ORDER[(NT_ORDER.indexOf(cur) + 1) % NT_ORDER.length]);
+  }
+
+  /* 新建一张便签：落在空地上，光标直接进去 */
+  function newNote(style) {
+    var w = 380, h = 300;
+    var pos = nextSpot(w, h);
+    var st = makeWindow({
+      id: uid(), name: NT_NAME[style] || '卡片', kind: 'note', size: 0,
+      note: { style: style || 'plain', html: '' }
+    }, { x: pos.x, y: pos.y, w: w, h: h });
+    renderBody(st, null);
+    growStage();
+    updateEmpty();
+    scheduleSave();
+    var el = elOf(st);
+    if (el) el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    return st;
+  }
+
   function refreshHead(st) {
     var el = elOf(st);
     if (!el) return;
@@ -688,7 +865,7 @@
     var m = el.querySelector('.dk-win-meta');
     if (t) { t.textContent = st.name; t.title = st.name; }
     if (ic) { ic.dataset.k = st.kind; ic.textContent = ICO[st.kind] || '?'; }
-    if (m) m.textContent = st.kind === 'web' ? hostOf(st.url) : fmtSize(st.size);
+    if (m) m.textContent = metaOf(st);
   }
 
   /* ---------------- 新建窗口 ---------------- */
@@ -706,11 +883,12 @@
       kind: rec.kind,
       url: rec.url || '',
       size: rec.size || 0,
+      note: rec.note ? { style: rec.note.style || 'plain', html: rec.note.html || '' } : null,
       x: pos.x, y: pos.y, w: w, h: h,
       z: ++zTop, maxed: false, prev: null, scroll: (box && box.scroll) || 0,
       sk: (box && box.sk) || null,
       lock: (box && box.lock) ? 1 : 0,
-      autofit: !box && rec.kind !== 'web'
+      autofit: !box && rec.kind !== 'web' && rec.kind !== 'note'
     };
     wins[st.id] = st;
     stage.insertAdjacentHTML('beforeend', winHTML(st));
@@ -799,6 +977,8 @@
       document.removeEventListener('pointerup', up);
       document.removeEventListener('pointercancel', up);
       el.classList.remove('is-resizing');
+      /* 便签一旦被手动拉过，就不再自动收放，免得跟人抢 */
+      if (st.kind === 'note') st.ntManual = 1;
       growStage();
       scheduleSave();
     }
@@ -947,6 +1127,19 @@
           sk: w.sk || null, lock: w.lock ? 1 : 0
         };
 
+        /* 便签：内容就存在快照里，不需要本地文件 */
+        if (w.kind === 'note') {
+          box.note = w.note || { style: 'plain', html: '' };
+          box.kind = 'note';
+          var sn = makeWindow({ id: w.fileId || w.id, name: w.name, kind: 'note', size: 0, note: box.note }, box);
+          sn.z = w.z || ++zTop;
+          var en = elOf(sn);
+          if (en) en.style.zIndex = sn.z;
+          ok++;
+          renderBody(sn, null);
+          return;
+        }
+
         /* 网页 / 飞书链接窗口：不存文件，只存链接，直接按链接重建 */
         if (w.kind === 'web' && w.url) {
           var sw = makeWindow({ id: w.fileId, name: w.name, kind: 'web', size: 0, url: w.url }, box);
@@ -1079,6 +1272,101 @@
       });
     }
 
+    /* 新建便签卡片：弹窗三选一 */
+    var noteBox = $('noteModal');
+    function closeNoteModal() { if (noteBox) noteBox.classList.remove('is-on'); }
+    var btnNote = $('btnNote');
+    if (btnNote) {
+      btnNote.addEventListener('click', function () {
+        if (!noteBox) return;
+        noteBox.classList.add('is-on');
+      });
+    }
+    if (noteBox) {
+      noteBox.addEventListener('click', function (e) {
+        if (e.target === noteBox) { closeNoteModal(); return; }
+        if (e.target.closest('[data-nm="no"]')) { closeNoteModal(); return; }
+        var pk = e.target.closest('.nt-pick');
+        if (pk) { closeNoteModal(); newNote(pk.dataset.nt); }
+      });
+    }
+
+    /* 选中文字浮出的工具条：加粗 / 荧光笔 / 清格式 */
+    var ntBar = $('noteBar');
+    var ntEd = null, ntRange = null;
+    function edOfSel() {
+      var sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return null;
+      var n = sel.anchorNode;
+      var el = n && (n.nodeType === 1 ? n : n.parentElement);
+      return el && el.closest ? el.closest('.dk-note') : null;
+    }
+    function hideNtBar() { if (ntBar) ntBar.hidden = true; }
+    document.addEventListener('selectionchange', function () {
+      if (!ntBar) return;
+      var ed = edOfSel();
+      var sel = window.getSelection();
+      var okSel = ed && ed.getAttribute('contenteditable') !== 'false' && sel && !sel.isCollapsed && String(sel).trim();
+      if (!okSel) { ntEd = ed || null; hideNtBar(); return; }
+      ntEd = ed;
+      try { ntRange = sel.getRangeAt(0).cloneRange(); } catch (e) { ntRange = null; }
+      var r = ntRange ? ntRange.getBoundingClientRect() : null;
+      if (!r || (!r.width && !r.height)) { hideNtBar(); return; }
+      ntBar.hidden = false;
+      var bw = ntBar.offsetWidth || 210;
+      var cx = r.left + r.width / 2;
+      var x = Math.max(bw / 2 + 10, Math.min(window.innerWidth - bw / 2 - 10, cx));
+      var wrap = ed.closest('.dk-win');
+      var wr = wrap ? wrap.getBoundingClientRect() : null;
+      /* 工具条一律飘在卡片外面：卡片上方放得下就放上方，否则放下面。
+         贴在选区上方会盖住上一行的字，一张小卡片上看着就像坏了。 */
+      var y, above = false;
+      if (wr && wr.top - 44 >= 52) { y = wr.top - 44; above = true; }
+      else if (wr && wr.bottom + 46 <= window.innerHeight) y = wr.bottom + 8;
+      else y = 52;
+      ntBar.setAttribute('data-side', above ? 'top' : 'bottom');
+      /* 水平方向也别飘到卡片外面去，看着像卡片自己的工具条 */
+      if (wr && wr.width > bw + 24) {
+        x = Math.max(wr.left + bw / 2 + 6, Math.min(wr.right - bw / 2 - 6, x));
+      }
+      ntBar.style.left = Math.round(x) + 'px';
+      ntBar.style.top = Math.round(y) + 'px';
+    });
+    if (ntBar) {
+      /* 按在工具条上不能把输入框里的选区抢走 */
+      ntBar.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      ntBar.addEventListener('click', function (e) {
+        var b3 = e.target.closest('[data-nt2]');
+        if (!b3 || !ntEd) return;
+        var k = b3.dataset.nt2;
+        var ed = ntEd;
+        try { ed.focus({ preventScroll: true }); } catch (err) { ed.focus(); }
+        if (ntRange) {
+          var s2 = window.getSelection();
+          s2.removeAllRanges();
+          s2.addRange(ntRange);
+        }
+        if (k === 'b') {
+          document.execCommand('bold');
+        } else if (k === 'clear') {
+          try { document.execCommand('hiliteColor', false, 'transparent'); } catch (e2) {}
+          document.execCommand('removeFormat');
+        } else if (k.indexOf('hl:') === 0) {
+          var color = 'rgb(' + k.slice(3) + ')';
+          var done = false;
+          try { done = document.execCommand('hiliteColor', false, color); } catch (e3) { done = false; }
+          if (!done) { try { document.execCommand('backColor', false, color); } catch (e4) {} }
+        }
+        ed.dispatchEvent(new Event('input', { bubbles: true }));
+        setTimeout(function () {
+          var s3 = window.getSelection();
+          if (s3 && s3.rangeCount && !s3.isCollapsed) {
+            try { ntRange = s3.getRangeAt(0).cloneRange(); } catch (e5) {}
+          }
+        }, 0);
+      });
+    }
+
     // 贴链接（飞书文档 / 任意网页）
     var linkBox = $('linkModal'), linkIn = $('linkInput');
     function openLink() {
@@ -1177,6 +1465,7 @@
       if (!st) return;
       var act = btn.dataset.act;
       if (act === 'lock') toggleWinLock(st);
+      else if (act === 'nt') cycleNote(st);
       else if (act === 'close') closeWin(st);
       else if (act === 'max') toggleMax(st);
       else if (act === 'reload') reloadWin(st);
@@ -1210,7 +1499,10 @@
 
     // 键盘：Esc 收起拖放遮罩
     window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') dropEl.classList.remove('is-on');
+      if (e.key !== 'Escape') return;
+      dropEl.classList.remove('is-on');
+      if (noteBox && noteBox.classList.contains('is-on')) closeNoteModal();
+      hideNtBar();
     });
 
     window.addEventListener('resize', function () { growStage(); });
