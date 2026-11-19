@@ -1,0 +1,675 @@
+{
+ "date": "2026-11-19",
+ "updated": "2026-11-19 10:20",
+ "stats": {
+  "抖音": 50,
+  "快手": 50,
+  "头条": 50,
+  "B站": 50,
+  "百度": 51,
+  "知乎": 30,
+  "微博": 30,
+  "虎扑": 30,
+  "V2EX": 30,
+  "贴吧": 30,
+  "酷安": 20,
+  "掘金": 30,
+  "少数派": 10,
+  "IT之家": 22,
+  "澎湃": 20,
+  "凤凰": 12,
+  "参考": 30,
+  "早报": 30,
+  "见闻": 9,
+  "财联社": 30,
+  "雪球": 8,
+  "格隆汇": 15,
+  "豆瓣": 20,
+  "HN": 30,
+  "GitHub": 30,
+  "PH": 30,
+  "DEV": 30,
+  "SO": 30,
+  "Lobsters": 25,
+  "TC": 20,
+  "Verge": 10,
+  "Ars": 20,
+  "WIRED": 30,
+  "ZDNET": 25,
+  "Krebs on Security": 10,
+  "NPR": 10,
+  "CNBC": 30,
+  "TASS 塔斯社": 30,
+  "France 24": 24,
+  "Yahoo! Japan": 8,
+  "Nature": 30,
+  "New Scientist": 10,
+  "Phys.org": 30,
+  "Quanta": 5,
+  "Steam": 30
+ },
+ "picks": [
+  {
+   "title": "阿里巴巴上这些破烂公模手机壳都能这么暴利，大米评测这种头部带货博主贴牌转身就卖高价，有边框颜色条的卖38，没有边框颜色条的卖28，啧啧啧真暴利，兄弟们醒醒吧，批发的不带磁吸5块一个，带磁吸的7.5一个[墨镜滑稽][墨镜滑稽][墨镜滑稽]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 8,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.coolapk.com/feed/75119963",
+   "from": ""
+  },
+  {
+   "title": "#华为PuraXView#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 8,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75149251",
+   "from": ""
+  },
+  {
+   "title": "苹果20周年iPhone最新爆料：四曲面方案已打样3年",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 8,
+   "hooks": [
+    "爆料",
+    "反差"
+   ],
+   "url": "https://www.coolapk.com/feed/75135043",
+   "from": ""
+  },
+  {
+   "title": "折叠屏的手机壳,能不用其实就尽量别用",
+   "source": "68372",
+   "kind": "公众号",
+   "score": 8,
+   "hooks": [
+    "折叠屏",
+    "贴膜"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFrBP9h4xoAdQ-c_ytzVV8YVqXa8Fplpd9zW-6AEHwYTzfCrINc5l_6BAZlLoJV0FcKH2yPT5q9RbJM7RMQ0CUFcGESp61f4aGUvdcaAmd7E9Nysa3c6Ds7Ot2sCFiRCfPLbHAWP31yOrwc7SVCDQINpBqLhqaAHw626gzp3B4vD_4ArPPXS5ZA67UZCdfXcepCKwwRzIR5JN535pjGOOjYg..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=9C336FCF6119E3205C5A3CCB9D428F535C6B0FD46AFE5CF8",
+   "from": "公众号"
+  },
+  {
+   "title": "苹果首款折叠屏iPhone Duo裂屏,拆解指向铰链而非屏幕",
+   "source": "风吹.落空.",
+   "kind": "公众号",
+   "score": 8,
+   "hooks": [
+    "折叠屏",
+    "铰链"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFOGUhrDy3cHg-c_ytzVV8YVqXa8Fplpd9mutLrM6gA-DvOOzJZ55P6nHkjSulDKJsEX8xQpNLamMguZbTyj5KaGEm_C12e9qKTJEcQ4ZJSHn1KaYjNMMI6oLUAxIwxhNJHkIgCgU38moZdAnmxwhSKJvfJS-U3bg1g_1cYEuB0Soeqx8a6wuyqpG1RFz4_1mTIyERZEWx3Ih5Nu7CnoSqqg..&type=2&query=%E6%8A%98%E5%8F%A0%E5%B1%8F %E5%B1%8F%E5%B9%95&token=9C330747057C86443F395EA9FA3473C63F8E9CD46AFE5CE6",
+   "from": "公众号"
+  },
+  {
+   "title": "华为mate XT 2 把心电筛查装进手机里",
+   "source": "陈娜9407",
+   "kind": "公众号",
+   "score": 8,
+   "hooks": [
+    "折叠屏",
+    "铰链"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9lTr1YL2b6js6Q61V9ap__eADPlsxzns4EJiRIWvOA0grQF2wjQghCisbh76DemrgpnBQ35TkyQ3JekFA0KBQaLevdgw65f918w6j-zTSZh16ZnXtfN0qKu4rQIXqx3DDEf-8hLIhbyTZOM_BcradZ1ZxyJJVLJR__Vuj_ZTsy3jwdVqCwyPdzA..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5",
+   "from": "公众号"
+  },
+  {
+   "title": "手机炒股适合商务人士吗?华为Mate XT 2 非凡大师大屏盯盘实测思路",
+   "source": "优云科技网",
+   "kind": "公众号",
+   "score": 7,
+   "hooks": [
+    "折叠屏",
+    "实测"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9cT-Mch0cTRIt7OhbSZpqVCvC_uJOEJdXxBhs41F-TXqXF4YiwcQWS2E_H6PdtX6_9nAnywSYYfguvuBu9YkyMPdU-kfSVsujeaKTGUBHjkvS8WSzRi-bFhfGhyDKDZWVZ3fJCNUxxPcziK8wT8WF2iHlkMfW8v18pJJR0cDcqirYl_Q5RRZQjg..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5",
+   "from": "公众号"
+  },
+  {
+   "title": "华为Mate XT渠道价差引热议,三折叠降价七千多值得买吗",
+   "source": "普朗特ovo",
+   "kind": "公众号",
+   "score": 7,
+   "hooks": [
+    "折叠屏",
+    "降价"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd97gR2w4dfF1sn4NLEz_mArO-Kcf8bQttlX43Q7ET9XgFiwOlbDyBeBq-nkCPaY3mvelAJwNXyJBVirUiSqS6TnTlilGTvvXY1h8yiTi1gz_wC9EcYtTG5f0jTOFrNf66mCs6L2xemdyJVcygHtv1cpsTAO5tT7frFrj3NIdloX47uL0unUdKkuw..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5",
+   "from": "公众号"
+  },
+  {
+   "title": "华为将发布新款轻薄旗舰手机",
+   "source": "微博",
+   "kind": "热榜",
+   "score": 6,
+   "hooks": [],
+   "url": "https://s.weibo.com/weibo?q=%23%E5%8D%8E%E4%B8%BA%E5%B0%86%E5%8F%91%E5%B8%83%E6%96%B0%E6%AC%BE%E8%BD%BB%E8%96%84%E6%97%97%E8%88%B0%E6%89%8B%E6%9C%BA%23&t=31&band_rank=28&Refer=top",
+   "from": ""
+  },
+  {
+   "title": "华为Mate XT 2非凡大师三折叠上新:16GB+512GB灵盾防窥屏版本,定价22999元,今日开售!",
+   "source": "手机数码抢先知",
+   "kind": "公众号",
+   "score": 6,
+   "hooks": [
+    "折叠屏",
+    "开售"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9_cBsNiFNingY7ttFGnBpHhjMP1F8jjnAYiPV1M71z4EzbE4oyWouayFmL0tFkYmu9v3_s3jqKzOXWAMwawakzUROMiiuIHMYg3yJCQMZI77x0AEt2gHL-T7_XStl6cAXKx9Xte4TWHhdWCl1uqHIfDZxxtOcdNDSqAWGSKBc08zs46dn8Efgxg..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5",
+   "from": "公众号"
+  },
+  {
+   "title": "Mate XT 一周年:从抢不到到随时买",
+   "source": "无为6222",
+   "kind": "公众号",
+   "score": 6,
+   "hooks": [
+    "折叠屏",
+    "开售"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9Xq-iJ73AVuNtYVZugLelYL0t2xqJpTt_giU0HarpPYIAxDn3VB4WSllmKeeR7v24xsfHfQOFqfzdHCTkpwSeNU6XoasBx83aIud20MzYlcRdPa93PZFofg0WTD5c8UZ2oPNuna7V6y6zgM9tulB6mxjDD-WDsZMJr5VcavWCnQ7m0CtGSSkZQQ..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5",
+   "from": "公众号"
+  },
+  {
+   "title": "IT早报 1119：智界获独立造车资质；董明珠称格力利润下降仍不用铝代铜；苹果施压供应商撤回声明 iPhoneDuo 铰链风波升级；华为鸿蒙 7 设备占比突破 82%...",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/142.htm",
+   "from": ""
+  },
+  {
+   "title": "除了人脸解锁，iPhone Duo 2 还值得哪些升级？",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1690009?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "早报｜iPhone Duo新增外屏人脸解锁/曝英伟达董事会无意请回黄仁勋/华为Mate X8定档11月24日",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ifanr.com/1689760?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "小米18曝光：起售价5699元定档12月",
+   "source": "百度",
+   "kind": "热榜",
+   "score": 4,
+   "hooks": [
+    "钱",
+    "爆料"
+   ],
+   "url": "https://www.baidu.com/s?wd=%E5%B0%8F%E7%B1%B318%E6%9B%9D%E5%85%89%EF%BC%9A%E8%B5%B7%E5%94%AE%E4%BB%B75699%E5%85%83%E5%AE%9A%E6%A1%A312%E6%9C%88",
+   "from": ""
+  },
+  {
+   "title": "华为最薄 Mate 直板机来了，Mate90 Air 轻薄旗舰定档 11 月 24 日发布",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.ithome.com/1/029/151.htm",
+   "from": ""
+  },
+  {
+   "title": "OpenAI 发布芯片设计最新成果：AMD 旗舰 GPU PPA 最高提升 14%，自研芯片 Jalapeño 面积最高减少 13%",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.ithome.com/1/029/135.htm",
+   "from": ""
+  },
+  {
+   "title": "非洲加速向 5G-A 网络演进：华为 × Vodacom 联合发布 U6GHz“黄金频段”创新成果",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/123.htm",
+   "from": ""
+  },
+  {
+   "title": "小米 18 标准版手机预计 12 月发布，消息称起售价 5699 元",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱",
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/029/120.htm",
+   "from": ""
+  },
+  {
+   "title": "苹果开发者注意，请在2027年1月31日前完成合规验证，否则中国区可能下架",
+   "source": "掘金",
+   "kind": "热榜",
+   "score": 3,
+   "hooks": [],
+   "url": "https://juejin.cn/post/7709024949851275307",
+   "from": ""
+  },
+  {
+   "title": "Omdia：2026 年 Q3 中东智能手机出货量同比下降 29%，创两年来最大跌幅，入门机型加速萎缩",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 2,
+   "hooks": [
+    "量",
+    "反差"
+   ],
+   "url": "https://www.ithome.com/1/029/136.htm",
+   "from": ""
+  },
+  {
+   "title": "三星首款头戴耳机 Galaxy Studio 曝光：870mAh 电池，支持佩戴检测",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 1,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/029/175.htm",
+   "from": ""
+  },
+  {
+   "title": "华为最薄手表 WATCH Air 更多规格曝光：6.9mm 机身厚度、86% 屏占比",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 1,
+   "hooks": [
+    "爆料",
+    "反差"
+   ],
+   "url": "https://www.ithome.com/1/029/156.htm",
+   "from": ""
+  },
+  {
+   "title": "三星 Galaxy Buds Active 耳挂式耳机曝光，支持 IP68 防水和主动降噪",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 1,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/029/148.htm",
+   "from": ""
+  },
+  {
+   "title": "华为史上最薄智能手表 WATCH Air 官宣，11 月 24 日登场",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.ithome.com/1/029/181.htm",
+   "from": ""
+  },
+  {
+   "title": "韩国首次将“紧急灾难通知”应用于高考防作弊，全国手机响铃 10.5 秒",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/173.htm",
+   "from": ""
+  },
+  {
+   "title": "陈立武：英特尔 18A 芯片制造工艺已签下首家外部客户",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/172.htm",
+   "from": ""
+  },
+  {
+   "title": "福特正式进军电池业务，首批宁德时代技术授权 LFP 电池下线",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/167.htm",
+   "from": ""
+  },
+  {
+   "title": "从“S 级客户”到全系自研：曝理想 i6 押宝宁德时代电池惨遭断供后决心自研",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/029/159.htm",
+   "from": ""
+  },
+  {
+   "title": "微信鸿蒙版 App 获 8.0.23.46 邀测升级",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/153.htm",
+   "from": ""
+  },
+  {
+   "title": "吉利银河首款旗舰大五座 SUV，银河 M8 五款车色首发亮相",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/146.htm",
+   "from": ""
+  },
+  {
+   "title": "2GB 内存的手机也能流畅用 AI，谷歌降低安卓 Gemini App 使用门槛",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/141.htm",
+   "from": ""
+  },
+  {
+   "title": "华为 WATCH 5 智能手表重启鸿蒙 HarmonyOS 7 花粉 Beta 版升级，新增地震预警消息等功能",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/128.htm",
+   "from": ""
+  },
+  {
+   "title": "华为 Mate 90 系列手机推 HarmonyOS 7.0.0.115 升级，“悄悄”上线完全体 3D 空间壁纸功能",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/029/125.htm",
+   "from": ""
+  },
+  {
+   "title": "这届高校学生，为何选择用鸿蒙创新？",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.ifanr.com/1690168?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "Mac 收紧权限，苹果开始防着 AI 了",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1689832?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "这手机12➕256，5499，国补后4999[受虐滑稽]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75141270",
+   "from": ""
+  },
+  {
+   "title": "买了之后会不会在地铁被别人认为是杂牌啊[流汗滑稽]，毕竟真正天天关注手机的人不多。[受虐滑稽]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75142846",
+   "from": ""
+  },
+  {
+   "title": "前一段儿时间有机会摸了一下小米18，实话说超出我的预期，整机质感很棒，至少我摸到深色的是相当好看，作为小米15，小米17的机主，我觉得这应该算是最好的一代产品了，实话说，自从小米15之后，感觉小屏旗舰风头一下子就过了，很希望小米18这一代能再来一次高光时刻，发自肺腑的。",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.coolapk.com/feed/75139362",
+   "from": ""
+  },
+  {
+   "title": "时间会证明，小米13熏黑deco设计是正确的[受虐滑稽] #小米18# #HyperOS4# #小米18ProMax#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75141385",
+   "from": ""
+  },
+  {
+   "title": "各位机油，还记得第一次使用旗舰超大杯长焦拍照的震撼吗？[受虐滑稽]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.coolapk.com/feed/75137685",
+   "from": ""
+  },
+  {
+   "title": "又在这制造焦虑了，这砂🐶，双11和618这些厂商该降不还得降#小米17ProMax#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75151301",
+   "from": ""
+  },
+  {
+   "title": "#徕卡一瞬##谷歌相机##手机摄影#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75132776",
+   "from": ""
+  },
+  {
+   "title": "黄循财：中国与亚细安可探索自动驾驶等AI合作新机",
+   "source": "早报",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.zaochenbao.com/news/world/202611/1985794.html",
+   "from": ""
+  },
+  {
+   "title": "算力芯片概念震荡下挫 天普股份跌停",
+   "source": "财联社",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.cls.cn/detail/2538546",
+   "from": ""
+  },
+  {
+   "title": "英特尔18A芯片制造工艺签下首家外部客户",
+   "source": "财联社",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.cls.cn/detail/2538541",
+   "from": ""
+  },
+  {
+   "title": "The MacBook Neo Is on Sale Ahead of Black Friday (2026)",
+   "source": "WIRED",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.wired.com/story/macbook-neo-deal-november-2026/",
+   "from": ""
+  },
+  {
+   "title": "Exclusive: Germ DM Is a Signal Alternative That’s Now on Android",
+   "source": "WIRED",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.wired.com/story/germ-dm-is-now-available-on-android/",
+   "from": ""
+  },
+  {
+   "title": "Google Wallet comes to your iPhone – but without this feature",
+   "source": "ZDNET",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.zdnet.com/tech/google-wallet-iphone-ios-no-tap-to-pay/",
+   "from": ""
+  },
+  {
+   "title": "Own 2 Android phones? Google may let you switch service fast – like iPhone Handoff",
+   "source": "ZDNET",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.zdnet.com/tech/android-fast-switch-like-iphone-handoff/",
+   "from": ""
+  },
+  {
+   "title": "Your Samsung phone could soon get a personal AI agent – what we know about Galaxy Claw",
+   "source": "ZDNET",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.zdnet.com/innovation/samsung-galaxy-claw-ai-cross-app-upgrade/",
+   "from": ""
+  },
+  {
+   "title": "外媒相聚深圳共探科创合作新机遇",
+   "source": "快手",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.kuaishou.com/search/video?searchKey=%E5%A4%96%E5%AA%92%E7%9B%B8%E8%81%9A%E6%B7%B1%E5%9C%B3%E5%85%B1%E6%8E%A2%E7%A7%91%E5%88%9B%E5%90%88%E4%BD%9C%E6%96%B0%E6%9C%BA%E9%81%87",
+   "from": ""
+  },
+  {
+   "title": "中方回应英伟达停止向华供应H200芯片",
+   "source": "头条",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://so.toutiao.com/search?keyword=%E4%B8%AD%E6%96%B9%E5%9B%9E%E5%BA%94%E8%8B%B1%E4%BC%9F%E8%BE%BE%E5%81%9C%E6%AD%A2%E5%90%91%E5%8D%8E%E4%BE%9B%E5%BA%94H200%E8%8A%AF%E7%89%87",
+   "from": ""
+  },
+  {
+   "title": "理想i6押宝宁德电池惨遭断供",
+   "source": "微博",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://s.weibo.com/weibo?q=%23%E7%90%86%E6%83%B3i6%E6%8A%BC%E5%AE%9D%E5%AE%81%E5%BE%B7%E7%94%B5%E6%B1%A0%E6%83%A8%E9%81%AD%E6%96%AD%E4%BE%9B%23&t=31&band_rank=24&Refer=top",
+   "from": ""
+  },
+  {
+   "title": "APEC带给年轻人哪些新机遇",
+   "source": "抖音",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.douyin.com/hot/2753313",
+   "from": ""
+  },
+  {
+   "title": "2026年还在用iPhone 14 Pro的朋友，可能已经发现了这个现实",
+   "source": "虎扑",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://bbs.hupu.com/644020725.html",
+   "from": ""
+  },
+  {
+   "title": "同一个 App，五种手机五种死法：2026 年 Android 五大 ROM 兼容的 8 个真实坑",
+   "source": "掘金",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://juejin.cn/post/7708649352419852339",
+   "from": ""
+  },
+  {
+   "title": "🥳 再也不用拿起手机抄验证码！我做了一个 Android → Mac 的「验证码接力」工具",
+   "source": "掘金",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://juejin.cn/post/7708644807824474148",
+   "from": ""
+  },
+  {
+   "title": "Cuttlefish on Mac: Android's Virtual Device Framework on Apple Silicon",
+   "source": "HN",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://engineering.fb.com/2026/11/13/android/cuttlefish-on-mac/",
+   "from": ""
+  },
+  {
+   "title": "rddmwmddr/android-ad-cleaner",
+   "source": "GitHub",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://github.com/rddmwmddr/android-ad-cleaner",
+   "from": ""
+  }
+ ],
+ "meme": [
+  "普京特朗普欢迎晚宴互动握手",
+  "深圳科创吸引世界目光",
+  "普京到访深圳高校发表演讲",
+  "APEC美食硬控各国来宾",
+  "贵南像是一本摊开的地理书",
+  "普京在APEC峰会点赞深圳",
+  "俄美专机在深圳机场同框",
+  "一条视频读懂APEC",
+  "特朗普深圳之行有哪些看点",
+  "慌啥子嘛为什么动人",
+  "慌啥子嘛要好好吃饭呀",
+  "忘情牛肉面舞蹈大赛",
+  "76人vs魔术",
+  "成毅新剧叛逆儿子",
+  "GTA6正式上线",
+  "摆摊规矩立住了才能不烧心"
+ ],
+ "counts": {
+  "picks": 60,
+  "shootable": 14,
+  "meme": 16,
+  "wechat": 7
+ }
+}
