@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#fbfbfd">
 <title>卡片库 · 选题 / 卡点 / 开头</title>
 <link rel="stylesheet" href="assets/desk.css?v=1118q">
-<link rel="stylesheet" href="assets/cards.css?v=1118t">
+<link rel="stylesheet" href="assets/cards.css?v=1118u">
 </head>
 <body class="cd-page">
 
@@ -39,34 +39,20 @@
 
 <main class="cd-wrap">
 
-  <section class="cd-sec" data-tk="sop">
-    <div class="cd-hd">
-      <h2>SOP 卡<em>选题复用 · 一个选题能套多台机器</em></h2>
-      <span class="cd-cnt"></span>
-      <button class="cd-add" type="button" data-new="sop">＋ 新建</button>
+  <aside class="cd-tree" id="cdTreeWrap">
+    <div class="cd-find">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="6.6"/><path d="M16.2 16.2 20 20"/>
+      </svg>
+      <input id="cdFind" type="text" placeholder="找一张卡…" autocomplete="off" spellcheck="false">
+      <button class="cd-find-x" type="button" id="cdFindX" title="清掉">✕</button>
     </div>
-    <div class="cd-grid"></div>
-  </section>
+    <div class="cd-tree-body" id="cdTree"></div>
+    <div class="cd-tree-foot" id="cdSum"></div>
+  </aside>
 
-  <section class="cd-sec" data-tk="hard">
-    <div class="cd-hd">
-      <h2>困难卡<em>我干了什么 · 被什么卡住 · 后来怎么解的</em></h2>
-      <span class="cd-cnt"></span>
-      <button class="cd-add" type="button" data-new="hard">＋ 新建</button>
-    </div>
-    <div class="cd-grid"></div>
-  </section>
+  <section class="cd-pane" id="cdPane"></section>
 
-  <section class="cd-sec" data-tk="hook">
-    <div class="cd-hd">
-      <h2>前五秒卡<em>什么样的视频 · 用什么样的开头</em></h2>
-      <span class="cd-cnt"></span>
-      <button class="cd-add" type="button" data-new="hook">＋ 新建</button>
-    </div>
-    <div class="cd-grid"></div>
-  </section>
-
-  <div class="cd-foot">卡片和画布上是同一份数据：这里改完，回画布就是改过的样子。</div>
 </main>
 
 <aside class="cd-drawer" id="drawer">
@@ -114,6 +100,6 @@
 <script src="assets/ntbar.js?v=1118s"></script>
 <script src="assets/mark.js?v=1118s"></script>
 <script src="assets/grid-bg.js?v=1118t"></script>
-<script src="assets/cards.js?v=1118s"></script>
+<script src="assets/cards.js?v=1118u"></script>
 </body>
 </html>

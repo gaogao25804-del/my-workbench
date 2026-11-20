@@ -9,11 +9,16 @@
   var LKEY = 'wb.desk.v1';
   var TKEY = 'wb.desk.trash.v1';
   var SKEY = 'wb.desk.seq.v1';
+  var SELKEY = 'wb.cards.sel.v1';    /* 上次开着的那张 */
+  var FOLDKEY = 'wb.cards.fold.v1';  /* 哪几组是收起来的 */
 
   var TK = window.TK || {};
   var ORDER = window.TK_ORDER || ['sop', 'hard', 'hook'];
 
   var cur = null, saveT = null, toastT = null;
+  var selId = null;                  /* 右栏现在摆的是哪张 */
+  var fold = {};
+  var findTxt = '';
 
   function $(id) { return document.getElementById(id); }
 
@@ -142,16 +147,18 @@
     }).join('<br>');
   }
 
-  /* 只有两样东西：一个大标题，一块写小字的地方 */
-  function cardHTML(w) {
+  /* 只有两样东西：一个大标题，一块写小字的地方
+     bare=true 时不画卡片顶上那行身份信息 —— 右栏上面已经有面包屑了，别重复 */
+  function cardHTML(w, bare) {
     var s = w.note.style, d = TK[s] || {}, ph = d.ph || {};
     var f = w.note.f || {};
     return '<div class="cd-card" data-tk="' + s + '" data-id="' + w.id + '">' +
       '<button class="cd-del" type="button" data-del="' + w.id + '" title="扔进回收站">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>' +
       '</button>' +
-      '<div class="cd-meta"><span>' + esc(d.short || d.name || '卡片') + '</span>' +
-        '<i>' + padNo(w.note.no) + '</i></div>' +
+      (bare ? '' :
+        '<div class="cd-meta"><span>' + esc(d.short || d.name || '卡片') + '</span>' +
+          '<i>' + padNo(w.note.no) + '</i></div>') +
       '<div class="cd-name-wrap">' +
         '<div class="cd-name" contenteditable="true" spellcheck="false"' +
           ' data-w="' + w.id + '" data-f="name" data-ph="' + esc(ph.name || '给它起个名') + '">' +
@@ -236,23 +243,145 @@
     if (!spTimer) spTimer = setInterval(spTick, 900);
   }
 
+  /* ---------------- 树 + 右栏 ---------------- */
+  function saveSel() {
+    try { localStorage.setItem(SELKEY, selId || ''); } catch (e) {}
+  }
+  function saveFold() {
+    try { localStorage.setItem(FOLDKEY, JSON.stringify(fold)); } catch (e) {}
+  }
+  function isCard(w) {
+    return !!(w && w.kind === 'note' && w.note && TK[w.note.style]);
+  }
+  function cardName(w) {
+    var nm = plain((w.note.f || {}).name || '');
+    return nm || '(还没起名)';
+  }
+
+  function fileHTML(w) {
+    return '<div class="cd-fl' + (w.id === selId ? ' is-on' : '') + '"' +
+        ' data-id="' + w.id + '" data-tk="' + w.note.style + '"' +
+        ' title="' + esc(cardName(w)) + '">' +
+      '<span class="cd-fl-no">' + padNo(w.note.no) + '</span>' +
+      '<span class="cd-fl-nm">' + esc(cardName(w)) + '</span>' +
+      '<button class="cd-fl-x" type="button" data-del="' + w.id + '" title="扔进回收站">✕</button>' +
+    '</div>';
+  }
+
+  function treeHTML() {
+    var q = findTxt.trim().toLowerCase();
+    var total = 0, hit = 0;
+
+    var out = ORDER.map(function (s) {
+      var d = TK[s];
+      if (!d) return '';
+      var all = cardsOf(s);
+      total += all.length;
+      var list = !q ? all : all.filter(function (w) {
+        var f = w.note.f || {};
+        var hay = [cardName(w), padNo(w.note.no), plain(bodyOf(f))].join(' ').toLowerCase();
+        return hay.indexOf(q) >= 0;
+      });
+      hit += list.length;
+
+      var open = q ? '1' : (fold[s] ? '0' : '1');
+      var files = list.length
+        ? list.map(fileHTML).join('')
+        : '<div class="cd-fd-empty">' + (q ? '这组没对上' : '空的，点右边 + 加一张') + '</div>';
+
+      return '<div class="cd-fd" data-tk="' + s + '" data-open="' + open + '">' +
+        '<div class="cd-fd-hd">' +
+          '<button class="cd-fd-tog" type="button" data-fold="' + s + '">' +
+            '<svg class="cd-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5.5 15.5 12 9 18.5"/></svg>' +
+            '<span class="cd-dot"></span>' +
+            '<span class="cd-fd-nm">' + esc(d.name) + '</span>' +
+            '<i class="cd-fd-n">' + list.length + '</i>' +
+          '</button>' +
+          '<button class="cd-fd-add" type="button" data-new="' + s + '" title="新建一张' + esc(d.name) + '">+</button>' +
+        '</div>' +
+        '<div class="cd-files">' + files + '</div>' +
+      '</div>';
+    }).join('');
+
+    if (!out) return '<div class="cd-tree-none">还没接上卡片类型。</div>';
+    if (q && !hit) return '<div class="cd-tree-none">没找到「' + esc(findTxt.trim()) + '」。<br>换个词，或者清掉搜索框。</div>';
+    return out;
+  }
+
+  function emptyPane() {
+    var row = ORDER.filter(function (s) { return TK[s]; }).map(function (s) {
+      return '<button type="button" data-new="' + s + '" data-tk="' + s + '">＋ ' + esc(TK[s].short || TK[s].name) + '</button>';
+    }).join('');
+    return '<div class="cd-pane-empty">' +
+      '<b>左边点一张，或者新建一张</b>' +
+      '<span>树上是三组卡，点文件夹名能收起、展开。<br>改完自动存，画布那边看到的是同一份。</span>' +
+      '<div class="row">' + row + '</div>' +
+    '</div>';
+  }
+
+  function renderTree() {
+    var box = $('cdTree');
+    if (box) {
+      box.innerHTML = treeHTML();
+      box.scrollTop = 0;
+    }
+  }
+
+  function renderPane() {
+    var pane = $('cdPane');
+    if (!pane) return;
+    var w = selId ? findWin(selId) : null;
+    if (!isCard(w)) {
+      pane.innerHTML = emptyPane();
+      return;
+    }
+    var s = w.note.style, d = TK[s] || {};
+    var f = w.note.f || {};
+    var n = plain(bodyOf(f)).length;
+    pane.innerHTML =
+      '<div class="cd-crumb">' +
+        '<button class="cd-back-m" type="button" id="cdBack">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg>' +
+          '卡片库</button>' +
+        '<b>' + esc(d.name || '卡片') + '</b>' +
+        '<i>' + padNo(w.note.no) + '</i>' +
+        (w.note.date ? '<span>·</span><span>' + esc(w.note.date) + '</span>' : '') +
+        '<span class="grow"></span>' +
+        '<span class="cd-crumb-n">' + n + ' 字</span>' +
+      '</div>' +
+      cardHTML(w, true);
+
+    Array.prototype.forEach.call(pane.querySelectorAll('[data-f]'), paintField);
+    mountSparks(pane);
+    if (window.Mark) window.Mark.refresh(pane, true);   /* 手绘标记按新位置重画 */
+  }
+
   function render() {
     renumber();          /* 每次画之前先把编号排成连续的，删过的空号自动补上 */
-    ORDER.forEach(function (s) {
-      if (!TK[s]) return;
-      var sec = document.querySelector('.cd-sec[data-tk="' + s + '"]');
-      if (!sec) return;
-      var list = cardsOf(s);
-      var grid = sec.querySelector('.cd-grid');
-      var cnt = sec.querySelector('.cd-cnt');
-      if (cnt) cnt.textContent = list.length ? list.length + ' 张' : '';
-      grid.classList.toggle('is-empty', !list.length);
-      grid.innerHTML = list.map(cardHTML).join('');
-      Array.prototype.forEach.call(grid.querySelectorAll('[data-f]'), paintField);
-      mountSparks(grid);
-      if (window.Mark) window.Mark.refresh(grid, true);   /* 手绘标记按新位置重画 */
-    });
+    renderTree();
+    renderPane();
     renderTrash();
+    var sum = $('cdSum');
+    if (sum) {
+      var all = desk().wins.filter(isCard).length;
+      sum.textContent = all ? ('共 ' + all + ' 张 · 和画布同一份数据') : '一张都还没有';
+    }
+  }
+
+  /* 打开某一张：树里高亮它，右栏换上它 */
+  function openCard(id) {
+    if (!findWin(id)) return;
+    selId = id;
+    saveSel();
+    if (window.innerWidth <= 880) document.body.classList.add('cd-reading');
+    render();
+    if (window.innerWidth > 880) {
+      var pane = $('cdPane');
+      if (pane) {
+        var top = pane.getBoundingClientRect().top;
+        if (top < 60) window.scrollBy({ top: top - 80, behavior: 'smooth' });
+      }
+    }
   }
 
   function renderTrash() {
@@ -299,22 +428,29 @@
     w.fileId = w.id;
     desk().wins.push(w);
     saveNow();
+
+    fold[s] = 0;                    /* 新卡在本组里，这组得开着 */
+    saveFold();
+    selId = w.id;
+    saveSel();
+    findTxt = '';
+    var fi = $('cdFind');
+    if (fi) { fi.value = ''; fi.parentNode.classList.remove('is-full'); }
+
+    if (window.innerWidth <= 880) document.body.classList.add('cd-reading');
     render();
-    var el = document.querySelector('.cd-card[data-id="' + w.id + '"]');
-    if (el) {
-      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      setTimeout(function () {
-        var t = el.querySelector('[data-f="name"]');
-        if (t) {
-          try { t.focus(); } catch (e) {}
-          var r = document.createRange();
-          r.selectNodeContents(t);
-          var sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(r);
-        }
-      }, 260);
-    }
+
+    setTimeout(function () {
+      var t = document.querySelector('#cdPane [data-f="name"]');
+      if (!t) return;
+      try { t.focus(); } catch (e) {}
+      var r = document.createRange();
+      r.selectNodeContents(t);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+    }, 220);
+
     toast('新加了一张 ' + d.name + ' · NO.' + padNo(no));
   }
 
@@ -334,6 +470,16 @@
       if (list[i].id === id) { list.splice(i, 1); break; }
     }
     renumber();          /* 删掉这张，后面的号往前顶，不留空号 */
+
+    /* 删的正好是右栏开着的那张，就顺手挑一张别的顶上，别留个空栏目 */
+    if (selId === id) {
+      var rest = desk().wins.filter(isCard).sort(function (x, y) {
+        return (x.note.no || 0) - (y.note.no || 0);
+      });
+      selId = rest.length ? rest[0].id : null;
+      saveSel();
+    }
+
     saveNow();
     render();
     toast('扔进回收站了 · 编号已重排 · 右上角能捡回来');
@@ -355,6 +501,9 @@
     });
     renumber();          /* 捡回来的按原编号插回队里，后面的顺延，不留空号 */
     saveNow();
+    selId = it.id;
+    saveSel();
+    if (TK[it.note.style]) { fold[it.note.style] = 0; saveFold(); }
     render();
     toast('捡回来了，编号也重排好了');
   }
@@ -387,6 +536,13 @@
     }
     paintField(t);
     if (kk === 'name') {
+      /* 树里那一行的名字跟着改，别整个重画（会丢光标） */
+      var fl = document.querySelector('.cd-fl[data-id="' + w.id + '"]');
+      if (fl) {
+        var nmEl = fl.querySelector('.cd-fl-nm');
+        if (nmEl) nmEl.textContent = (w.name && w.name !== (TK[w.note.style] || {}).name) ? w.name : '(还没起名)';
+        fl.setAttribute('title', plain(t.textContent) || '');
+      }
       var wrap = t.closest('.cd-name-wrap');
       if (wrap) {
         var lyr = wrap.querySelector('.cd-spark');
@@ -397,6 +553,10 @@
           lyr.removeAttribute('data-on');
         }
       }
+    }
+    if (kk === 'a') {
+      var cn = document.querySelector('#cdPane .cd-crumb-n');
+      if (cn) cn.textContent = plain(bodyOf(w.note.f)).length + ' 字';
     }
     markLater(t.closest('.cd-card'));   /* 字挪位置了，手绘标记跟着重画 */
     saveSoon();
@@ -431,6 +591,35 @@
 
     var db = e.target.closest('[data-del]');
     if (db) { delCard(db.getAttribute('data-del')); return; }
+
+    /* 树：文件夹开合 */
+    var ft = e.target.closest('[data-fold]');
+    if (ft) {
+      var s = ft.getAttribute('data-fold');
+      fold[s] = fold[s] ? 0 : 1;
+      saveFold();
+      var fd = ft.closest('.cd-fd');
+      if (fd) fd.setAttribute('data-open', fold[s] ? '0' : '1');
+      return;
+    }
+
+    /* 树：点一行文件，右栏换这张 */
+    var fl = e.target.closest('.cd-fl');
+    if (fl) { openCard(fl.getAttribute('data-id')); return; }
+
+    /* 手机上从内容退回树 */
+    if (e.target.closest('#cdBack')) {
+      document.body.classList.remove('cd-reading');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    if (e.target.closest('#cdFindX')) {
+      var fi = $('cdFind');
+      if (fi) { fi.value = ''; fi.parentNode.classList.remove('is-full'); fi.focus(); }
+      findTxt = '';
+      renderTree();
+      return;
+    }
 
     var ab = e.target.closest('[data-act="back"]');
     if (ab) { restore(ab.closest('.cd-dw-item').getAttribute('data-id')); return; }
@@ -479,6 +668,30 @@
   }
 
   /* ---------------- 起 ---------------- */
+  try {
+    selId = localStorage.getItem(SELKEY) || null;
+    var fj = JSON.parse(localStorage.getItem(FOLDKEY) || '{}');
+    if (fj && typeof fj === 'object') fold = fj;
+  } catch (e) { selId = null; fold = {}; }
+
+  var findBox = $('cdFind');
+  if (findBox) {
+    findBox.addEventListener('input', function () {
+      findTxt = findBox.value;
+      findBox.parentNode.classList.toggle('is-full', !!findTxt);
+      renderTree();
+    });
+    findBox.addEventListener('keydown', function (ev) {
+      if (ev.key !== 'Escape') return;
+      findBox.value = '';
+      findTxt = '';
+      findBox.parentNode.classList.remove('is-full');
+      renderTree();
+    });
+  }
+
+  if (selId && !findWin(selId)) selId = null;
+
   applyTheme(desk().theme === 'dark' ? 'dark' : 'light');
   render();
 
