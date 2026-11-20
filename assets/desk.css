@@ -659,6 +659,44 @@ body[data-grid="off"] .dk-canvas { background-image: none; }
 .dk-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
 
 /* ---------------- 手机端 ---------------- */
+/* 手机上没有「画布」这回事：绝对定位的坐标全是按桌面像素算的，
+   780 宽的卡塞进 390 的屏，右边一半直接没了，第二张卡还飘在屏幕外。
+   所以 <=860px 直接把画布改成一条竖着的流水，卡片按上下顺序排。 */
+@media (max-width: 860px) {
+  .dk-canvas {
+    padding: 12px 12px 44px;
+    overflow-x: hidden;
+  }
+  /* 卡片容器不再按坐标撑开，改成弹性竖排 */
+  body.dk-m .dk-stage {
+    position: static;
+    min-width: 0; min-height: 0;
+    width: auto !important; height: auto !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  body.dk-m .dk-win {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: 66vh !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0;
+    border-radius: 12px;
+  }
+  /* 便签自己撑高，不占一整屏 */
+  body.dk-m .dk-win[data-kind="note"] {
+    height: auto !important;
+    min-height: 240px;
+  }
+  /* 手机上不拖不缩，把角落的把手藏掉，免得挡住内容 */
+  body.dk-m .dk-h { display: none; }
+  body.dk-m .dk-win-h { height: 34px; }
+}
+
 @media (max-width: 720px) {
   :root { --dk-bar-h: 44px; }
   .dk-brand-sub { display: none; }
@@ -675,6 +713,15 @@ body[data-grid="off"] .dk-canvas { background-image: none; }
   /* 手机端把手加大，好点 */
   .dk-h[data-d="se"], .dk-h[data-d="sw"],
   .dk-h[data-d="ne"], .dk-h[data-d="nw"] { width: 20px; height: 20px; }
+}
+
+/* 小屏顶栏：外观 / 锁定 / 贴链接这三样一天用不上一次，先收起来，
+   剩下的按钮才挤不进两行（之前「+ 添加文件」直接被顶出屏幕） */
+@media (max-width: 620px) {
+  #btnSkin, #btnLock, #btnLink { display: none; }
+  .dk-bar { gap: 6px; }
+  .dk-actions { gap: 6px; }
+  .dk-save { font-size: 11px; }
 }
 
 /* 滚动条 */
@@ -1761,3 +1808,74 @@ html[data-skin="glass"] body[data-grid="off"] .dk-canvas {
 }
 /* 深色引用卡的边框别太亮 */
 [data-theme="dark"] .dk-win[data-kind="note"][data-nt="quote"] { --nt-bd: rgba(255, 255, 255, .42); }
+
+/* ---------- 同步按钮（顶栏那朵云） ---------- */
+.dk-cloud {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 30px; padding: 0 10px;
+  border: 1px solid var(--dk-bd); border-radius: 7px;
+  background: var(--dk-win); color: var(--dk-tx2);
+  font: inherit; font-size: 11.5px; font-weight: 500;
+  white-space: nowrap; cursor: pointer;
+  transition: color .16s, border-color .16s;
+}
+.dk-cloud svg { width: 14px; height: 14px; opacity: .8; flex: 0 0 auto; }
+.dk-cloud i { font-style: normal; }
+.dk-cloud:hover { border-color: rgba(0, 0, 0, .16); }
+[data-theme="dark"] .dk-cloud:hover { border-color: rgba(255, 255, 255, .2); }
+.dk-cloud.is-ok { color: #0b9488; border-color: rgba(11, 148, 136, .3); }
+.dk-cloud.is-err { color: #c0392b; border-color: rgba(192, 57, 43, .32); }
+.dk-cloud.is-busy { opacity: .68; }
+
+/* ---------- 同步设置面板 ---------- */
+.sy-mask {
+  position: fixed; inset: 0; z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, .34);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+.sy-box {
+  width: min(432px, 100%);
+  max-height: 88vh; overflow: auto;
+  padding: 20px 20px 16px;
+  border-radius: 14px;
+  background: var(--dk-win);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .5);
+  color: var(--dk-tx);
+  font-size: 13px; line-height: 1.7;
+}
+.sy-t { font-size: 15.5px; font-weight: 700; margin-bottom: 6px; letter-spacing: -.01em; }
+.sy-p { color: var(--dk-tx2); font-size: 12.5px; }
+.sy-how { margin: 10px 0 6px; padding-left: 18px; color: var(--dk-tx2); font-size: 12px; }
+.sy-how li { margin: 3px 0; }
+.sy-how code {
+  padding: 1px 4px; border-radius: 4px;
+  background: var(--dk-bd2); font-size: 11.5px;
+}
+.sy-go { display: inline-block; margin: 2px 0 10px; color: var(--dk-acc); font-size: 12.5px; text-decoration: none; }
+.sy-go:hover { text-decoration: underline; }
+.sy-in {
+  width: 100%; height: 34px; padding: 0 10px;
+  border: 1px solid var(--dk-bd); border-radius: 8px;
+  background: var(--dk-win); color: var(--dk-tx);
+  font: inherit; font-size: 12.5px; outline: none;
+}
+.sy-in:focus { border-color: var(--dk-acc); }
+.sy-row { display: flex; gap: 8px; margin-top: 10px; }
+.sy-btn {
+  height: 30px; padding: 0 12px;
+  border: 1px solid var(--dk-bd); border-radius: 7px;
+  background: var(--dk-win); color: var(--dk-tx);
+  font: inherit; font-size: 12.5px; cursor: pointer;
+}
+.sy-btn.is-main { background: var(--dk-acc); border-color: var(--dk-acc); color: #fff; }
+.sy-btn:active { transform: scale(.98); }
+.sy-btn.is-quiet { color: var(--dk-tx3); margin-left: auto; }
+.sy-note { margin-top: 8px; min-height: 16px; color: var(--dk-tx3); font-size: 11.5px; }
+
+@media (max-width: 620px) {
+  .dk-cloud i { display: none; }
+  .dk-cloud { padding: 0 8px; }
+  .sy-row { flex-wrap: wrap; }
+}

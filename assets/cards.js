@@ -78,8 +78,11 @@
     return cur;
   }
   function saveNow() {
-    try { localStorage.setItem(LKEY, JSON.stringify(desk())); }
+    var d = desk();
+    d.at = Date.now();               /* 同步时靠这个时间比谁更新 */
+    try { localStorage.setItem(LKEY, JSON.stringify(d)); }
     catch (e) { toast('没存上：' + ((e && e.message) || e)); }
+    if (window.WBSync) window.WBSync.pushSoon();
   }
   function saveSoon() {
     clearTimeout(saveT);
@@ -730,6 +733,30 @@
 
   applyTheme(desk().theme === 'dark' ? 'dark' : 'light');
   render();
+
+  /* 同步：和画布共用同一份数据，所以也用同一个模块 */
+  var btnSync2 = $('btnSync');
+  if (btnSync2 && window.WBSync) {
+    btnSync2.addEventListener('click', function () { window.WBSync.panel(); });
+  }
+  if (window.WBSync) {
+    window.WBSync.init({
+      getState: function () { return desk(); },
+      applyRemote: function (state) {
+        try { localStorage.setItem(LKEY, JSON.stringify(state)); } catch (e) {}
+        location.reload();
+      },
+      onStatus: function (kind, text) {
+        var b = $('btnSync');
+        if (!b) return;
+        var i = b.querySelector('i');
+        if (i && text) i.textContent = text;
+        b.classList.toggle('is-ok', kind === 'ok');
+        b.classList.toggle('is-err', kind === 'err');
+        b.classList.toggle('is-busy', kind === 'busy');
+      }
+    });
+  }
 
   /* 从画布切回来的时候，别拿到旧数据 */
   document.addEventListener('visibilitychange', function () {
