@@ -97,12 +97,12 @@ body.cd-page {
   padding: 4px 20px 80px;
 }
 
-.cd-sec { --c: #0b9488; --c2: #38cdab; }
-.cd-sec[data-tk="hard"] { --c: #cc4a17; --c2: #f0914a; }
-.cd-sec[data-tk="hook"] { --c: #6b4fd6; --c2: #a68cf5; }
-[data-theme="dark"] .cd-sec { --c: #3ed3b2; --c2: #86f0cb; }
-[data-theme="dark"] .cd-sec[data-tk="hard"] { --c: #ff8a5c; --c2: #ffbb92; }
-[data-theme="dark"] .cd-sec[data-tk="hook"] { --c: #a98bf5; --c2: #cdb6ff; }
+.cd-sec { --c: #0b9488; --c2: #38cdab; --sp1: #0b9488; --sp2: #4dd8b8; }
+.cd-sec[data-tk="hard"] { --c: #cc4a17; --c2: #f0914a; --sp1: #d1560f; --sp2: #ff9c52; }
+.cd-sec[data-tk="hook"] { --c: #6b4fd6; --c2: #a68cf5; --sp1: #6b4fd6; --sp2: #a98bf5; }
+[data-theme="dark"] .cd-sec { --c: #3ed3b2; --c2: #86f0cb; --sp1: #3ed3b2; --sp2: #93efd6; }
+[data-theme="dark"] .cd-sec[data-tk="hard"] { --c: #ff8a5c; --c2: #ffbb92; --sp1: #ff8a5c; --sp2: #ffc59c; }
+[data-theme="dark"] .cd-sec[data-tk="hook"] { --c: #a98bf5; --c2: #cdb6ff; --sp1: #a98bf5; --sp2: #d1bbff; }
 
 /* 分组那条横杠，就是他画的那个长条 */
 .cd-hd {
@@ -248,6 +248,44 @@ body.cd-page {
 /* 标题是渐变填充的，里面要是被工具条改了色，得让它自己的颜色显出来 */
 .cd-name span[style*="color"] {
   -webkit-text-fill-color: currentColor;
+}
+
+/* ---- 标题上撒的星星（照 sparkles-text 那个组件做的） ---- */
+/* 单独套一层来放星星：星星是绝对定位的装饰，不能混进可编辑的标题里，
+   否则一保存就把 svg 当成正文存下来了 */
+.cd-name-wrap {
+  position: relative;
+  display: inline-block;   /* 收成字的宽度，星星才不会撒到右边空白里 */
+  max-width: 100%;
+  vertical-align: top;
+}
+.cd-name-wrap > .cd-name { position: relative; z-index: 2; }
+.cd-spark {
+  position: absolute;
+  inset: 0 24px 0 0;      /* 右边那 26px 是给 ✕ 留的空白，星星别撒进去 */
+  z-index: 3;
+  pointer-events: none;
+}
+.cd-spark .cd-sp {
+  position: absolute;
+  display: block;
+  margin: -10px 0 0 -10px;      /* 以落点为圆心，别让星星全往右下角偏 */
+  opacity: 0;
+  transform-origin: 50% 50%;
+  animation: cd-twinkle .85s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+.cd-spark .cd-sp.a path { fill: var(--sp1); }
+.cd-spark .cd-sp.b path { fill: var(--sp2); }
+
+@keyframes cd-twinkle {
+  0%   { opacity: 0; transform: rotate(75deg) scale(0); }
+  50%  { opacity: 1; transform: rotate(120deg) scale(var(--s, 1)); }
+  100% { opacity: 0; transform: rotate(150deg) scale(0); }
+}
+/* 系统里关了动画的人就别闪了，留几颗静静的星 */
+@media (prefers-reduced-motion: reduce) {
+  .cd-spark .cd-sp { animation: none; opacity: .75; }
 }
 
 /* 写小字的地方 */
