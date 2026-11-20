@@ -18,6 +18,14 @@
   var TKEY = 'wb.sync.token.v1';
   var TSTAMP = 'wb.sync.at.v1';      /* 上次成功的云端时间戳，用来判断谁新 */
 
+  /* 同域那份：页面和它在一个域名下，手机上一定打得开。
+     raw.githubusercontent 在国内时不时抽风，所以读的时候先找自己家这个。 */
+  var SELF = (function () {
+    try {
+      return location.origin + location.pathname.replace(/[^/]*$/, '') + PATH;
+    } catch (e) { return ''; }
+  })();
+
   var opt = null;                    /* { getState, applyRemote, onStatus } */
   var token = '';
   var pushTimer = null, pushing = false, pulling = false;
@@ -62,32 +70,33 @@
     pulling = true;
     if (!silent) status('busy', '正在取云端的…');
 
-    var url = RAW + '?t=' + Date.now();
-    var hdr = {};
-    if (token) {
-      /* 有令牌就走接口，顺手确认一下这份数据是不是自己的 */
-      url = API + '?ref=' + BRANCH + '&t=' + Date.now();
-      hdr = { Authorization: 'token ' + token, Accept: 'application/vnd.github+json' };
+    /* 先找同域那份（最快、手机上一定通），再退到 raw */
+    var tries = [];
+    if (SELF) tries.push(SELF + '?t=' + Date.now());
+    tries.push(RAW + '?t=' + Date.now());
+
+    function grab(i) {
+      return fetch(tries[i], { cache: 'no-store' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .catch(function (e) {
+          if (i + 1 < tries.length) return grab(i + 1);
+          throw e;
+        });
     }
 
-    return fetch(url, { headers: hdr, cache: 'no-store' })
-      .then(function (r) {
-        if (r.status === 404) return null;          /* 还没推过，正常 */
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
+    return grab(0)
       .then(function (j) {
-        if (!j) { status('local', '云端还没有'); return null; }
-        /* 走接口拿回来的是 {content: base64, sha…}；
-           走 raw 拿回来的直接就是那份数据（raw 是文件原文，没有包装） */
+        /* 同域那份就是数据本身；万一哪次拿到的是接口包装，也认 */
         var remote = null;
-        if (j.content) {
+        if (j && j.content) {
           try { remote = JSON.parse(unb64(j.content)); } catch (e) { remote = null; }
-        } else if (j.wins) {
+        } else if (j && j.wins) {
           remote = j;
         }
         if (!remote || !remote.wins) { status('err', '云端那份读不懂'); return null; }
-        if (j.sha) setStamp(Date.parse(j.commit && j.commit.committer && j.commit.committer.date) || Date.now());
 
         var localAt = 0;
         try {
@@ -109,13 +118,36 @@
       })
       .catch(function (e) {
         lastErr = (e && e.message) || String(e);
-        status('err', '取不到云端');
+        /* 两边都 404 就是还没推过，不算错 */
+        if (lastErr.indexOf('404') >= 0) status('local', '云端还没有');
+        else status('err', '取不到云端');
         return null;
       })
       .then(function (r) { pulling = false; return r; });
   }
 
   /* ---------- 推：只有拿到令牌才推得动 ---------- */
+  /* 一份推到 gh-pages（页面自己在那儿，手机上同域就能读），
+     一份推到 main（源码分支留个底）。两个都写，坏一个还有一个。 */
+  function pushTo(branch, body0, hdr) {
+    var url = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH;
+    return fetch(url + '?ref=' + branch + '&t=' + Date.now(), { headers: hdr, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (meta) {
+        var body = {
+          message: 'workbench sync ' + new Date().toISOString().slice(0, 16).replace('T', ' '),
+          content: b64(body0),
+          branch: branch
+        };
+        if (meta && meta.sha) body.sha = meta.sha;
+        return fetch(url, { method: 'PUT', headers: hdr, body: JSON.stringify(body) });
+      })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return true;
+      });
+  }
+
   function push() {
     if (!token) { status('local', '只在本机'); return Promise.resolve(false); }
     if (pushing) return Promise.resolve(false);
@@ -131,23 +163,15 @@
       'Content-Type': 'application/json'
     };
 
-    return fetch(API + '?ref=' + BRANCH + '&t=' + Date.now(), { headers: hdr, cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (meta) {
-        var body = {
-          message: 'workbench sync ' + new Date().toISOString().slice(0, 16).replace('T', ' '),
-          content: b64(body0),
-          branch: BRANCH
-        };
-        if (meta && meta.sha) body.sha = meta.sha;
-        return fetch(API, {
-          method: 'PUT',
-          headers: hdr,
-          body: JSON.stringify(body)
-        });
+    return pushTo('gh-pages', body0, hdr)
+      .catch(function (e) { lastErr = (e && e.message) || String(e); return false; })
+      .then(function (a) {
+        return pushTo(BRANCH, body0, hdr)
+          .catch(function (e) { lastErr = (e && e.message) || String(e); return false; })
+          .then(function (b) { return a || b; });
       })
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
+      .then(function (ok) {
+        if (!ok) throw new Error(lastErr || 'HTTP 500');
         setStamp(Date.now());
         status('ok', '已同步到云端');
         return true;
