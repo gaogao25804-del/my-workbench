@@ -229,12 +229,50 @@
     });
     stage.style.width = mw + 'px';
     stage.style.height = mh + 'px';
+    applyMobile();
   }
 
   function updateEmpty() {
     if (!emptyEl) return;
     var n = Object.keys(wins).length;
     emptyEl.classList.toggle('is-hide', n > 0);
+  }
+
+  /* ---------------- 手机：把画布竖过来 ----------------
+     桌面那套是按像素摆的，卡片 x 可能是一千多，手机上永远看不见。
+     这里给 body 打上 dk-m，CSS 把定位改成竖向流水，再把卡片按 y 从小到大
+     重新插一遍 —— 顺序已经对了就不动，免得每次 resize 都白抖一下。 */
+  function applyMobile() {
+    var on = window.innerWidth <= 860;
+    document.body.classList.toggle('dk-m', on);
+    if (!on || !stage) return;
+
+    var kids = [];
+    for (var i = 0; i < stage.children.length; i++) {
+      var el = stage.children[i];
+      if (el.classList && el.classList.contains('dk-win')) kids.push(el);
+    }
+    if (kids.length < 2) return;
+
+    var sorted = kids.slice().sort(function (a, b) {
+      var ay = parseFloat(a.style.top) || 0, by = parseFloat(b.style.top) || 0;
+      if (ay !== by) return ay - by;
+      return (parseFloat(a.style.left) || 0) - (parseFloat(b.style.left) || 0);
+    });
+    var same = sorted.every(function (el2, k) { return el2 === kids[k]; });
+    if (same) return;
+    sorted.forEach(function (el3) { stage.appendChild(el3); });
+  }
+
+  /* 云朵按钮上那行小字：只在本机 / 已同步 / 推不上去 */
+  function paintSync(kind, text) {
+    var b = document.getElementById('btnSync');
+    if (!b) return;
+    var i = b.querySelector('i');
+    if (i && text) i.textContent = text;
+    b.classList.toggle('is-ok', kind === 'ok');
+    b.classList.toggle('is-err', kind === 'err');
+    b.classList.toggle('is-busy', kind === 'busy');
   }
 
   /* ---------------- 布局保存 ---------------- */
@@ -261,6 +299,8 @@
       try {
         localStorage.setItem(LKEY, JSON.stringify(snapshot()));
         if (saveEl) { saveEl.textContent = '已保存'; saveEl.classList.remove('is-dirty'); }
+        /* 有令牌的话顺手把这份推到云端，手机上才能看到 */
+        if (window.WBSync) window.WBSync.pushSoon();
       } catch (e) {
         if (saveEl) saveEl.textContent = '保存失败';
         toast('布局没存上：' + ((e && e.message) || e));
@@ -1673,7 +1713,27 @@
 
     window.addEventListener('resize', function () { growStage(); });
 
+    applyMobile();   /* 先按屏幕宽度定好手机还是桌面，再画卡片 */
     boot();
+
+    /* 同步：点那个云朵开设置面板 */
+    var btnSync = $('btnSync');
+    if (btnSync) {
+      btnSync.addEventListener('click', function () {
+        if (window.WBSync) window.WBSync.panel();
+      });
+    }
+    if (window.WBSync) {
+      window.WBSync.init({
+        getState: snapshot,
+        applyRemote: function (state) {
+          /* 云端更新更晚：直接换成本地存的，再刷一次，省得半新半旧 */
+          try { localStorage.setItem(LKEY, JSON.stringify(state)); } catch (e) {}
+          location.reload();
+        },
+        onStatus: paintSync
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
