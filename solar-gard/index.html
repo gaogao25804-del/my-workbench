@@ -492,6 +492,30 @@ a{ color:inherit; text-decoration:none; }
 .addon-top{ display:contents; }
 .addon-pic{ overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center; padding:14px; }
 .addon-pic img{ width:100%; height:100%; object-fit:contain; }
+
+/* ---------- 脚垫内页：毯面款式选择 ---------- */
+.mat-style{ margin:22px 0 0; padding:18px 18px 15px; border:1px solid var(--line); border-radius:10px; background:#FDFCF9; }
+.mat-style .ms-hd{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.mat-style .ms-hd b{ font-size:14px; font-weight:600; letter-spacing:.03em; }
+.mat-style .ms-now{ font-size:11.5px; color:var(--sub); letter-spacing:.03em; }
+.ms-row{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:12px; }
+.ms-chip{
+  display:block; padding:0; border:1px solid var(--line); border-radius:8px; background:#fff;
+  cursor:pointer; overflow:hidden; text-align:center; font:inherit;
+  transition:border-color .18s, box-shadow .18s, transform .12s;
+}
+.ms-chip:hover{ border-color:#CFC9BE; }
+.ms-chip:active{ transform:scale(.985); }
+.ms-chip .ms-th{ display:block; aspect-ratio:3.3/1; background:#F4F2EC; overflow:hidden; }
+.ms-chip .ms-th img{ width:100%; height:100%; object-fit:cover; object-position:center; display:block; transition:transform .3s; }
+.ms-chip:hover .ms-th img{ transform:scale(1.04); }
+.ms-chip .ms-nm{ display:block; font-size:12px; font-weight:500; color:var(--ink); padding:8px 4px 1px; letter-spacing:.02em; }
+.ms-chip .ms-tx{ display:block; font-size:10.5px; color:var(--sub2); padding:0 4px 9px; }
+.ms-chip.on{ border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink); }
+.ms-chip.on .ms-nm::before{ content:"✓ "; color:#8A6A2E; }
+.ms-chip.on .ms-tx{ color:#8A6A2E; }
+.ms-note{ font-size:11.5px; line-height:1.85; color:var(--sub); margin-top:11px; }
+.ms-note b{ color:var(--ink); font-weight:600; }
 .addon-body{ padding:56px 60px; display:flex; flex-direction:column; justify-content:center; }
 .addon-k{ font-family:var(--fn); font-size:10px; letter-spacing:.2em; color:var(--gold); }
 .addon-name{ font-size:26px; font-weight:600; letter-spacing:.02em; margin-top:14px; }
@@ -1085,6 +1109,12 @@ a{ color:inherit; text-decoration:none; }
   .pic-more{ right:9px; bottom:9px; padding:8px 13px; font-size:10.5px; }
   .addon-pic{ aspect-ratio:auto; padding:10px; }
   .addon-pic img{ object-fit:contain; background:#fff; }
+  /* 款式选择：手机两列，缩略图按 3.3:1 走宽，花纹才看得清 */
+  .mat-style{ margin-top:18px; padding:14px 13px 12px; }
+  .ms-row{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:10px; }
+  .ms-chip .ms-nm{ font-size:12px; padding:8px 4px 1px; }
+  .ms-chip .ms-tx{ font-size:10px; padding:0 4px 9px; }
+  .ms-note{ font-size:11px; }
   .addon-body{ padding:26px 22px 28px; }
   .addon-name{ font-size:21px; margin-top:10px; }
   .addon-name u.set-n{ font-size:10.5px; margin-left:8px; padding:3px 8px; }
@@ -2749,9 +2779,9 @@ body.pmodal-open{ overflow:hidden; }
    在内页里它是纯展示，得压住，不然整张内页被一圈黑框框住像选区 */
 .pmodal-bd .addon-card:not(.on):hover,
 .pmodal-bd .addon-card:hover{ box-shadow:none; }
-/* 图给足高度但别占满整屏——下面还有档位、实车、赠品要看 */
+/* 图给足高度但别占满整屏——下面还有款式、档位、实车、赠品要看 */
 .pmodal-bd .addon-card:not(.addon-card--seat) .addon-pic{
-  height:min(40vh,360px); aspect-ratio:auto; padding:8px;
+  height:min(32vh,300px); aspect-ratio:auto; padding:8px;
   border-radius:10px; background:#FBFAF6;
 }
 .pmodal-bd .addon-card--seat .addon-pic{
@@ -3560,6 +3590,56 @@ function tierHasMats(t, mid = state.model){
   return !ms.n || !!ms.mats;
 }
 
+/* 脚垫毯面款式（2026-11-20 从京东固特异旗舰店按车型逐款扒的白底整套图，
+   存在 asset/mats/style/{车型}_{款式}.webp）。四款对应同一套垫体，只换毯面。
+   注意：这里只换款式与图，件数与价格一律不动；换毯面的价差写「到店核」，不编价。 */
+const MAT_STYLES = [
+  { k:'星空年华', sw:'nianhua',  tx:'菱格 · 主推' },
+  { k:'星空丝绒', sw:'sirong',   tx:'星空点阵' },
+  { k:'黛尼斯',   sw:'denis',    tx:'细密网格' },
+  { k:'仿羊绒',   sw:'yangrong', tx:'素绒面' }
+];
+const MAT_STYLE_KEYS = MAT_STYLES.map(s => s.k);
+/* MEGA 没有这套款式图（京东该系列无 MEGA SKU），先不给选，免得点下去换不出图 */
+const MAT_STYLE_MIDS = ['i6','i8','i9','l6','l8','l9'];
+const hasMatStyle = (mid = state.model) => MAT_STYLE_MIDS.includes(mid);
+function matStyleOf(mid = state.model){
+  const want = state.matStyle[mid];
+  return MAT_STYLE_KEYS.includes(want) ? want : '星空年华';
+}
+function matStyleImg(mid = state.model, st = matStyleOf(mid)){
+  return `asset/mats/style/${mid}_${st}.webp`;
+}
+function matStyleTx(st){ const s = MAT_STYLES.find(x => x.k === st); return s ? s.tx : ''; }
+
+/* 内页里点毯面：只换图与选中态，不重画整页 —— 重画会让大图白一下，也丢滚动位置 */
+function pickMatStyle(k){
+  const mid = state.model;
+  if (!MAT_STYLE_KEYS.includes(k) || state.matStyle[mid] === k) return;
+  state.matStyle[mid] = k;
+  const src = matStyleImg(mid, k);
+  const bd  = $('#pmodalBody');
+  const img = bd && bd.querySelector('.addon-card--detail .addon-pic img');
+  if (img){
+    img.src = src;
+    img.alt = `${curModel().name} ${k}毯面整套图`;
+  }
+  if (bd){
+    bd.querySelectorAll('[data-matstyle]').forEach(c => {
+      const on = c.dataset.matstyle === k;
+      c.classList.toggle('on', on);
+      c.setAttribute('aria-pressed', String(on));
+    });
+    const now = bd.querySelector('#msNow');
+    if (now) now.textContent = `${k} · ${matStyleTx(k)}`;
+    const nm = bd.querySelector('.addon-spec .ms-name');
+    if (nm) nm.textContent = `${k}毯面`;
+  }
+  /* 页面里那张卡的主图一起换，退出内页不会又跳回上一款 */
+  const cardImg = document.querySelector('.acc-fold[data-accbox="a1"] .af-media img');
+  if (cardImg) cardImg.src = src;
+}
+
 const ACC_BIG = [
   /* price 只是兜底：脚垫真实价走 MAT_SET，按当前车型取，别拿一款的价套七款 */
   { id:'a1', slot:'foot', brand:'GOODYEAR · 固特异', name:'TPE 脚垫整套', price:810, em:'整套',
@@ -3638,7 +3718,8 @@ const state = {
      互不覆盖。以前只有一个全局 Set，切到 i8 再点一次「加入」，i6 那行就被顶掉了。 */
   cart:{},
   coatOpen:false, filmOpen:false, screenOpen:false,   /* 折叠：默认只看起步价 / 只露一张主卡 */
-  tier:{}, seatKind:{}, seatColor:{}       /* 脚垫看哪一档 / 坐垫选哪款哪色，按车型各记一份 */
+  tier:{}, seatKind:{}, seatColor:{},      /* 脚垫看哪一档 / 坐垫选哪款哪色，按车型各记一份 */
+  matStyle:{}                             /* 脚垫毯面款式，按车型各记一份 */
 };
 
 /* 某台车的配置桶；读的时候顺手建空桶，省掉满屏判空 */
@@ -4046,12 +4127,16 @@ function giftKitHTML(){
 
 function bigCard(a, detail){
   if (a.slot === 'foot'){
+    const mid = curModel().id;
     const ct  = curTier();                    /* 当前在看哪一档：图、价、件数三者一起跟它换 */
-    const ms  = MAT_SET[curModel().id] || MAT_SET.i6;
+    const ms  = MAT_SET[mid] || MAT_SET.i6;
     const megaOnly = !(ms && ms.n);            /* MEGA 官方只出原车毯面，没有件套可分 */
-    const pic = (ct && ct.n)
-      ? (ct.img || `asset/mats/tier/${curModel().id}_${ct.n}.webp`)
-      : ((a.imgs && a.imgs[curModel().id]) || a.img);
+    /* 毯面款式：选了哪款就出哪款的白底整套图；MEGA 没有这套款式图，沿用整车图 */
+    const sty = hasMatStyle(mid) ? matStyleOf(mid) : '';
+    const pic = sty ? matStyleImg(mid, sty)
+      : ((ct && ct.n)
+          ? (ct.img || `asset/mats/tier/${mid}_${ct.n}.webp`)
+          : ((a.imgs && a.imgs[mid]) || a.img));
     /* 主价跟档位走：点 5 件套就 714，不再永远显示整车全套的 1,610 */
     const tPrice  = tierStore(ct, ms);
     const tbd     = tPrice == null;
@@ -4066,16 +4151,33 @@ function bigCard(a, detail){
     const aTags = (ms && ms.tags) || a.tags;
     const aNote = ms && ms.note !== undefined ? ms.note : a.note;
     const aGift = (ms && ms.gift) || a.gift;
+    /* 规格第一行写「本款配什么毯面」：选了款式就跟着款式走，不然写着星空年华、图却换了款 */
+    const matsName = sty ? `${sty}毯面` : ((ms && ms.mats) || '');
     return `
     <div class="addon-card${detail ? ' addon-card--detail' : ' pick pick--lg'}${state.acc.has(a.id)?' on':''}"${detail ? '' : ` data-acc="${a.id}" role="button" tabindex="0" aria-pressed="${state.acc.has(a.id)}"`} aria-label="${aName} ${nTxt}，${tbd?'价格到店核':'¥'+money(px(fp))}">
       <div class="addon-top">
         <div class="addon-pic"><img src="${pic}" alt="${curModel().name} ${aName}实拍 · ${nTxt}" loading="lazy" decoding="async">${ct && ct.n ? `<i class="pic-tier">整车 ${ct.n} 件套</i>` : ''}
         </div>
+        ${detail && sty ? `
+        <div class="mat-style">
+          <div class="ms-hd">
+            <b>毯面款式</b>
+            <span class="ms-now" id="msNow">${sty} · ${matStyleTx(sty)}</span>
+          </div>
+          <div class="ms-row" role="group" aria-label="毯面款式选择">
+            ${MAT_STYLES.map(s => `
+            <button type="button" class="ms-chip${s.k === sty ? ' on' : ''}" data-matstyle="${s.k}" aria-pressed="${s.k === sty}">
+              <span class="ms-th"><img src="asset/mats/style/sw/${s.sw}.webp" alt="${s.k}毯面纹理" loading="eager" decoding="async"></span>
+              <b class="ms-nm">${s.k}</b><span class="ms-tx">${s.tx}</span>
+            </button>`).join('')}
+          </div>
+          <p class="ms-note">四款是同一套垫体换毯面，<b>件数不变</b>；换款式的价差到店按实车核，图上为整车整套。</p>
+        </div>` : ''}
         <div class="addon-body">
           <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送硅胶套装 + 配件</span></div>
           <div class="addon-name">${aName}<u class="set-n">${curModel().name} · ${nTxt}</u></div>
           <div class="addon-spec">${megaOnly || hasMats
-            ? (ms && ms.mats ? `本款配 <b>${ms.mats}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : '')
+            ? (matsName ? `本款配 <b class="ms-name">${matsName}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : '')
             : '<b>本款裸垫 · 不含毯面</b>，加毯面就上一档<br>'}${aSpec}</div>
           ${aTags?`<div class="addon-tags">${aTags.map(t=>`<span>${t}</span>`).join('')}${a.giftCount?`<span class="gtag">赠 全车硅胶${giftN()?' '+giftN()+' 件':'套装'} · 颜色可选</span>`:''}</div>`:''}
           ${aNote?`<div class="addon-note">${aNote}</div>`:''}
@@ -4234,13 +4336,16 @@ function miniCard(a){
   let pic, name, sub, price, tbd, badge;
 
   if (!seat){
+    const mid = curModel().id;
     const ct = curTier();
-    const ms = MAT_SET[curModel().id] || MAT_SET.i6;
+    const ms = MAT_SET[mid] || MAT_SET.i6;
     const nTxt = ct ? (ct.n ? ct.n + ' 件套' : '整车全包')
                     : (ms && ms.n ? ms.n + ' 件套' : '整车全包');
-    pic = (ct && ct.n)
-      ? (ct.img || `asset/mats/tier/${curModel().id}_${ct.n}.webp`)
-      : ((a.imgs && a.imgs[curModel().id]) || a.img);
+    /* 主图跟内页里选的毯面款式一致，退出内页不会突然换成另一张 */
+    pic = hasMatStyle(mid) ? matStyleImg(mid)
+      : ((ct && ct.n)
+          ? (ct.img || `asset/mats/tier/${mid}_${ct.n}.webp`)
+          : ((a.imgs && a.imgs[mid]) || a.img));
     name = (ms && ms.title) || a.name;
     const tPrice = tierStore(ct, ms);
     tbd = tPrice == null;
@@ -5086,6 +5191,12 @@ document.addEventListener('click', e => {
         if (bag[row.k] !== hit.c){ bag[row.k] = hit.c; renderAcc(); refresh(); }
       }
     }
+    return;
+  }
+  const msty = e.target.closest('[data-matstyle]');
+  if (msty){
+    e.stopPropagation();
+    pickMatStyle(msty.dataset.matstyle);
     return;
   }
   const tr = e.target.closest('[data-tier]');
