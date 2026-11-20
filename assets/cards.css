@@ -414,6 +414,22 @@ body.cd-page {
 }
 .cd-dw-ft .cd-btn { width: 100%; justify-content: center; }
 
+/* ---------------- 选字的工具条 ----------------
+   这页是纵向长列表，卡片上面永远压着分组标题条，飘上去必挡字。
+   所以这里不跟卡片跑，固定贴在屏幕底部居中，遮不住任何内容。 */
+.cd-page .nt-bar {
+  top: auto !important;
+  bottom: 26px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  animation: cd-bar-in .14s ease both;
+}
+.cd-page .nt-bar::after { display: none; }
+@keyframes cd-bar-in { from { opacity: 0; transform: translateX(-50%) translateY(6px); } }
+@media (max-width: 790px) {
+  .cd-page .nt-bar { bottom: 18px !important; max-width: calc(100vw - 20px); overflow-x: auto; }
+}
+
 /* ---------------- 小提示 ---------------- */
 .cd-toast {
   position: fixed;
