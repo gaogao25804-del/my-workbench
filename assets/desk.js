@@ -16,6 +16,7 @@
   var zTop = 100;
   var theme = 'light';
   var saveTimer = null;
+  var frozen = false;              /* 云端刚覆盖、正要重载：这期间别把旧数据写回去 */
   var pendingReplace = null;
 
   var ICO = { docx: 'W', xlsx: 'X', pdf: 'P', txt: 'T', web: '↗', note: '✎' };
@@ -296,6 +297,7 @@
     if (saveEl) { saveEl.textContent = '未保存'; saveEl.classList.add('is-dirty'); }
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
+      if (frozen) return;
       try {
         localStorage.setItem(LKEY, JSON.stringify(snapshot()));
         if (saveEl) { saveEl.textContent = '已保存'; saveEl.classList.remove('is-dirty'); }
@@ -432,6 +434,10 @@
         var snap = (d && d.layout) || d;
         if (!snap || !Array.isArray(snap.wins) || !snap.wins.length) throw new Error('里面没有布局数据');
         localStorage.setItem(LKEY, JSON.stringify(snap));
+        /* 备份文件要是老格式（里面混着票根卡），把卡片送回卡片库，别在画布上冒出来 */
+        try {
+          if (window.WBStore) { localStorage.removeItem('wb.cards.migrated.v1'); window.WBStore.migrate(); }
+        } catch (e) {}
         toast('布局已导入，正在重载…');
         setTimeout(function () { location.reload(); }, 800);
       } catch (e) { toast('这个文件不是布局备份：' + ((e && e.message) || e)); }
@@ -1401,20 +1407,9 @@
           sk: w.sk || null, lock: w.lock ? 1 : 0
         };
 
-        /* 便签：内容就存在快照里，不需要本地文件 */
-        if (w.kind === 'note') {
-          box.note = w.note || { style: 'plain', html: '' };
-          box.kind = 'note';
-          /* 票根卡是长条票根，老数据里那批矮的（470 上下）顺手拉长，别看着短粗胖 */
-          if (window.TK && TK[box.note.style] && box.h < 640) box.h = 640;
-          var sn = makeWindow({ id: w.fileId || w.id, name: w.name, kind: 'note', size: 0, note: box.note }, box);
-          sn.z = w.z || ++zTop;
-          var en = elOf(sn);
-          if (en) en.style.zIndex = sn.z;
-          ok++;
-          renderBody(sn, null);
-          return;
-        }
+        /* 票根卡归卡片库（cards.html）管，画布这边不画。
+           assets/store.js 开页前已经把老数据里那批卡搬到 wb.cards.v1 了，这儿只是兜底 */
+        if (w.kind === 'note') return;
 
         /* 网页 / 飞书链接窗口：不存文件，只存链接，直接按链接重建 */
         if (w.kind === 'web' && w.url) {
@@ -1714,6 +1709,8 @@
     window.addEventListener('resize', function () { growStage(); });
 
     applyMobile();   /* 先按屏幕宽度定好手机还是桌面，再画卡片 */
+    /* 老数据里混着的票根卡先搬去卡片库，画布只留链接和文件 */
+    if (window.WBStore) { try { window.WBStore.migrate(); } catch (e) {} }
     boot();
 
     /* 同步：点那个云朵开设置面板 */
@@ -1725,10 +1722,10 @@
     }
     if (window.WBSync) {
       window.WBSync.init({
-        getState: snapshot,
-        applyRemote: function (state) {
-          /* 云端更新更晚：直接换成本地存的，再刷一次，省得半新半旧 */
-          try { localStorage.setItem(LKEY, JSON.stringify(state)); } catch (e) {}
+        onApplied: function () {
+          /* 云端那份更新的部分已经写进 localStorage 了，刷一次让画布按新数据重建 */
+          frozen = true;
+          clearTimeout(saveTimer);
           location.reload();
         },
         onStatus: paintSync
