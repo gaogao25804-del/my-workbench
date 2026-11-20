@@ -1,14 +1,16 @@
 /* ==========================================================
    卡片库 · cards.js
-   跟画布（index.html）共用同一份数据：localStorage 的 wb.desk.v1
-   这里只挑 kind=note 且 style 是 sop/hard/hook 的卡片，按编号排开
+   自己一份数据：localStorage 的 wb.cards.v1
+   画布（index.html）是 wb.desk.v1，两边互不干涉 ——
+   这边删一张，画布上不会少任何东西；那边怎么摆，这边也不跟着动。
+   老版本两页共用一个 key，assets/store.js 负责把卡片搬过来。
    ========================================================== */
 (function () {
   'use strict';
 
-  var LKEY = 'wb.desk.v1';
-  var TKEY = 'wb.desk.trash.v1';
-  var SKEY = 'wb.desk.seq.v1';
+  var LKEY = 'wb.cards.v1';
+  var TKEY = 'wb.cards.trash.v1';
+  var SKEY = 'wb.cards.seq.v1';
   var SELKEY = 'wb.cards.sel.v1';    /* 上次开着的那张 */
   var FOLDKEY = 'wb.cards.fold.v1';  /* 哪几组是收起来的 */
 
@@ -74,10 +76,23 @@
   function desk() {
     if (cur) return cur;
     try { cur = JSON.parse(localStorage.getItem(LKEY) || 'null'); } catch (e) { cur = null; }
-    if (!cur || !Array.isArray(cur.wins)) cur = { v: 2, theme: 'light', wins: [] };
+    if (!cur || !Array.isArray(cur.wins)) {
+      /* 头一次用：主题先跟着画布那份，之后各调各的 */
+      var dt = 'light';
+      try {
+        var dk = JSON.parse(localStorage.getItem('wb.desk.v1') || 'null');
+        if (dk && dk.theme) dt = dk.theme;
+      } catch (e) {}
+      cur = { v: 3, theme: dt, wins: [], at: 0 };
+    }
     return cur;
   }
+  /* 云端刚覆盖了本地、正要重载：这期间的自动保存一律不写，
+     否则内存里那份旧数据会把刚拉下来的卡片盖掉（换设备时最容易踩） */
+  var frozen = false;
+
   function saveNow() {
+    if (frozen) return;
     var d = desk();
     d.at = Date.now();               /* 同步时靠这个时间比谁更新 */
     try { localStorage.setItem(LKEY, JSON.stringify(d)); }
@@ -341,7 +356,7 @@
     }).join('');
     return '<div class="cd-pane-empty">' +
       '<b>左边点一张，或者新建一张</b>' +
-      '<span>树上是四组卡，点文件夹名能收起、展开。<br>改完自动存，画布那边看到的是同一份。</span>' +
+      '<span>树上是四组卡，点文件夹名能收起、展开。<br>改完自动存。这些卡只在卡片库，不会跑到无限画布上去。</span>' +
       '<div class="row">' + row + '</div>' +
     '</div>';
   }
@@ -707,6 +722,9 @@
   }
 
   /* ---------------- 起 ---------------- */
+  /* 老数据里卡片和画布混在一个 key（wb.desk.v1），先搬到卡片库自己这份来 */
+  if (window.WBStore) { try { window.WBStore.migrate(); } catch (e) {} }
+
   try {
     selId = localStorage.getItem(SELKEY) || null;
     var fj = JSON.parse(localStorage.getItem(FOLDKEY) || '{}');
@@ -741,11 +759,7 @@
   }
   if (window.WBSync) {
     window.WBSync.init({
-      getState: function () { return desk(); },
-      applyRemote: function (state) {
-        try { localStorage.setItem(LKEY, JSON.stringify(state)); } catch (e) {}
-        location.reload();
-      },
+      onApplied: function () { frozen = true; location.reload(); },
       onStatus: function (kind, text) {
         var b = $('btnSync');
         if (!b) return;

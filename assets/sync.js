@@ -3,10 +3,13 @@
    数据本来只存在这台电脑的浏览器里（localStorage），换台设备就是空的。
    这里把它推到自己仓库里的一个 JSON 文件，别的设备打开时从那儿拉。
 
-   读：raw.githubusercontent.com，谁都能读，不用令牌
+   读：先读同域那份（手机上一定通），读不到退到 raw.githubusercontent.com
    写：GitHub Contents API，需要一个令牌（只存在本机浏览器里）
 
-   画布（index.html）和卡片库（cards.html）共用同一份数据，两页都引这个文件。
+   画布和卡片库已经是两份互不相干的数据了（wb.desk.v1 / wb.cards.v1），
+   所以云端那个文件里也分两格装：wins（画布）+ notes（卡片库），
+   拉的时候一格一格比时间，谁新换谁 —— 不会因为手机上改了卡片，
+   就把电脑这边画布上的链接窗也换掉。
    ========================================================== */
 (function () {
   var OWNER = 'gaogao25804-del';
@@ -18,6 +21,9 @@
   var TKEY = 'wb.sync.token.v1';
   var TSTAMP = 'wb.sync.at.v1';      /* 上次成功的云端时间戳，用来判断谁新 */
 
+  var DK = 'wb.desk.v1';             /* 画布：链接窗 / 文件窗 */
+  var CK = 'wb.cards.v1';            /* 卡片库：票根卡 */
+
   /* 同域那份：页面和它在一个域名下，手机上一定打得开。
      raw.githubusercontent 在国内时不时抽风，所以读的时候先找自己家这个。 */
   var SELF = (function () {
@@ -26,7 +32,7 @@
     } catch (e) { return ''; }
   })();
 
-  var opt = null;                    /* { getState, applyRemote, onStatus } */
+  var opt = null;                    /* { onApplied, onStatus } */
   var token = '';
   var pushTimer = null, pushing = false, pulling = false;
   var lastErr = '';
@@ -41,11 +47,6 @@
       if (token) localStorage.setItem(TKEY, token);
       else localStorage.removeItem(TKEY);
     } catch (e) {}
-  }
-  function stamp() {
-    var n = 0;
-    try { n = parseInt(localStorage.getItem(TSTAMP) || '0', 10) || 0; } catch (e) {}
-    return n;
   }
   function setStamp(n) {
     try { localStorage.setItem(TSTAMP, String(n || 0)); } catch (e) {}
@@ -62,6 +63,68 @@
     if (opt && opt.onStatus) {
       try { opt.onStatus(kind, text); } catch (e) {}
     }
+  }
+
+  /* ---------- 本地两份 ---------- */
+  function readStore(k, fb) {
+    try {
+      var o = JSON.parse(localStorage.getItem(k) || 'null');
+      if (o && Array.isArray(o.wins)) return o;
+    } catch (e) {}
+    return fb;
+  }
+  function writeStore(k, o) {
+    try { localStorage.setItem(k, JSON.stringify(o)); return true; } catch (e) { return false; }
+  }
+  function localState() {
+    var d = readStore(DK, { v: 3, theme: 'light', wins: [], at: 0 });
+    var c = readStore(CK, { v: 3, theme: 'light', wins: [], at: 0 });
+    return {
+      v: 3,
+      at: Math.max(d.at || 0, c.at || 0),
+      wat: d.at || 0, wins: d.wins,
+      nat: c.at || 0, notes: c.wins
+    };
+  }
+
+  /* 老云端文件（v2）把卡片混在 wins 里，拆出来，不然画布会又冒出卡片 */
+  function splitWins(wins) {
+    var a = [], b = [];
+    (wins || []).forEach(function (w) {
+      if (w && w.kind === 'note') b.push(w); else a.push(w);
+    });
+    return [a, b];
+  }
+
+  /* 一格一格比：哪格云端更新就换哪格，返回换了几格 */
+  function applyRemote(remote) {
+    var rw = remote.wins || [], rn = remote.notes;
+    if (!Array.isArray(rn)) {
+      var sp = splitWins(rw);       /* 老格式：没有 notes 这一格 */
+      rw = sp[0];
+      rn = sp[1];
+    }
+    var rwat = remote.wat || remote.at || 0;
+    var rnat = remote.nat || remote.at || 0;
+    var n = 0;
+
+    var d = readStore(DK, null);
+    var c = readStore(CK, null);
+
+    /* 新设备上这两份可能压根没有（比如手机第一次打开卡片库），缺的现建一个，
+       不然云端的卡片就拉不下来了 */
+    if (!d) d = { v: 3, theme: 'light', wins: [], at: 0 };
+    if (!c) c = { v: 3, theme: 'light', wins: [], at: 0 };
+
+    if (rwat > (d.at || 0) + 800) {
+      d.wins = rw; d.at = rwat; d.v = 3;
+      if (writeStore(DK, d)) n++;
+    }
+    if (rnat > (c.at || 0) + 800) {
+      c.wins = rn; c.at = rnat; c.v = 3;
+      if (writeStore(CK, c)) n++;
+    }
+    return n;
   }
 
   /* ---------- 拉：谁的时间新用谁的 ---------- */
@@ -93,27 +156,25 @@
         var remote = null;
         if (j && j.content) {
           try { remote = JSON.parse(unb64(j.content)); } catch (e) { remote = null; }
-        } else if (j && j.wins) {
+        } else if (j && (j.wins || j.notes)) {
           remote = j;
         }
-        if (!remote || !remote.wins) { status('err', '云端那份读不懂'); return null; }
+        if (!remote || (!remote.wins && !remote.notes)) { status('err', '云端那份读不懂'); return null; }
 
-        var localAt = 0;
-        try {
-          var l = JSON.parse(localStorage.getItem('wb.desk.v1') || 'null');
-          localAt = (l && l.at) || 0;
-        } catch (e) { localAt = 0; }
-        var remoteAt = remote.at || 0;
-
-        if (remoteAt > localAt + 800) {
-          /* 云端更新：换成云端的。正在打字就别动它，提示一下就好 */
-          var busy = document.activeElement && document.activeElement.isContentEditable;
-          if (busy || !opt) { status('local', '云端有更新'); return remote; }
-          opt.applyRemote(remote);
-          status('ok', '已取回云端');
+        /* 正在打字就别动它，提示一下就好 */
+        var busy = document.activeElement && document.activeElement.isContentEditable;
+        if (busy) {
+          status('local', '云端有更新');
           return remote;
         }
-        status('ok', '已是最新');
+
+        var n = applyRemote(remote);
+        if (n) {
+          status('ok', '已取回云端');
+          if (opt && opt.onApplied) { try { opt.onApplied(); } catch (e) {} }
+        } else {
+          status('ok', '已是最新');
+        }
         return remote;
       })
       .catch(function (e) {
@@ -130,7 +191,7 @@
   /* 一份推到 gh-pages（页面自己在那儿，手机上同域就能读），
      一份推到 main（源码分支留个底）。两个都写，坏一个还有一个。 */
   function pushTo(branch, body0, hdr) {
-    var url = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH;
+    var url = API;
     return fetch(url + '?ref=' + branch + '&t=' + Date.now(), { headers: hdr, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (meta) {
@@ -154,9 +215,7 @@
     pushing = true;
     status('busy', '正在同步…');
 
-    var state = opt && opt.getState ? opt.getState() : null;
-    if (!state) { pushing = false; return Promise.resolve(false); }
-    var body0 = JSON.stringify(state);
+    var body0 = JSON.stringify(localState());
     var hdr = {
       Authorization: 'token ' + token,
       Accept: 'application/vnd.github+json',
@@ -212,8 +271,9 @@
     var box = el('div', 'sy-box');
     box.innerHTML =
       '<div class="sy-t">同步到其他设备</div>' +
-      '<div class="sy-p">卡片现在只存在这台设备的浏览器里，换台设备打开就是空的。' +
-        '给一个 GitHub 令牌，我把它推到你自己的仓库，手机打开就能读到同一份。</div>' +
+      '<div class="sy-p">数据现在只存在这台设备的浏览器里，换台设备打开就是空的。' +
+        '给一个 GitHub 令牌，我把它推到你自己的仓库，手机打开就能读到同一份。' +
+        '画布和卡片库分开存，各同步各的。</div>' +
       '<ol class="sy-how">' +
         '<li>点下面的按钮，在新页面里勾选 <code>repo</code>，拉到最底下点 <b>Generate token</b></li>' +
         '<li>复制那串 <code>ghp_</code> 开头的字符，粘回这里</li>' +
