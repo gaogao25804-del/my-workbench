@@ -141,6 +141,7 @@
     if (k === 'b') {
       document.execCommand('bold');
     } else if (k === 'clear') {
+      if (window.Mark) window.Mark.clearInSel();
       try { document.execCommand('hiliteColor', false, 'transparent'); } catch (e2) {}
       document.execCommand('removeFormat');
       stripFg(host);
@@ -158,6 +159,9 @@
       var done = false;
       try { done = document.execCommand('hiliteColor', false, rgb); } catch (e5) { done = false; }
       if (!done) { try { document.execCommand('backColor', false, rgb); } catch (e6) {} }
+    } else if (k.indexOf('mk:') === 0) {
+      /* 手绘标记：包一层 span，交给 mark.js 画；再点一次同一支笔就取消 */
+      if (window.Mark) window.Mark.toggle(k.slice(3));
     }
 
     /* 让页面知道内容变了，好存 */
