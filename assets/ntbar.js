@@ -85,9 +85,12 @@
     var wrap = ed.closest('.dk-win') || ed.closest('.cd-card');
     var wr = wrap ? wrap.getBoundingClientRect() : null;
 
+    /* 卡片贴着顶栏的时候，上面那条位置会正好压住分组标题条，翻到卡片下面去 */
     var y, above = false;
-    if (wr && wr.top - bh - 10 >= 52) { y = wr.top - bh - 10; above = true; }
+    var roomUp = wr ? wr.top - bh - 10 : 0;
+    if (wr && roomUp >= 160) { y = roomUp; above = true; }
     else if (wr && wr.bottom + bh + 12 <= window.innerHeight) y = wr.bottom + 8;
+    else if (wr && roomUp >= 52) { y = roomUp; above = true; }
     else y = 52;
     bar.setAttribute('data-side', above ? 'top' : 'bottom');
 
