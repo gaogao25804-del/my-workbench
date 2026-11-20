@@ -4350,7 +4350,8 @@ function miniCard(a){
     const tPrice = tierStore(ct, ms);
     tbd = tPrice == null;
     price = tbd ? 0 : px(tPrice);
-    sub = `${curModel().name} · ${nTxt} · 含装车`;
+    /* 卡上先写一句「4 款毯面可选」：不然客人不知道点进去能挑款式 */
+    sub = `${curModel().name} · ${nTxt} · 含装车${hasMatStyle(mid) ? ' · 4 款毯面可选' : ''}`;
     badge = nTxt;
   } else {
     const opt = curSeatKind();
