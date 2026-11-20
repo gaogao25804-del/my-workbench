@@ -3,7 +3,7 @@
    SOP = 选题复用卡 / HARD = 困难卡 / HOOK = 前五秒卡
    画布（index.html）和卡片库（cards.html）共用这一份，改文案只改这里
    ========================================================== */
-window.TK_ORDER = ['sop', 'hard', 'hook'];
+window.TK_ORDER = ['sop', 'hard', 'hook', 'tweet'];
 
 /* 三种卡都不带 01/02/03 小标题，整块都留给写字，空的只给一句浅提示 */
 window.TK = {
@@ -53,6 +53,21 @@ window.TK = {
       a: '邮寄贴膜',
       b: '不怕我给你手机卖了？',
       c: '先吓一下，再圆回来讲原因'
+    }
+  },
+  tweet: {
+    name: '推特卡',
+    short: '爆款推文',
+    brand: 'TWEET',
+    tag: '别人的推文',
+    lab: '存了多久',
+    icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2.2h3.5l-7.7 8.8L23.7 22h-7.1l-5.5-7.3L4.7 22H1.2l8.2-9.4L.9 2.2h7.3l5 6.7zM17.7 20h1.9L7.4 4H5.4z"/></svg>',
+    ph: { name: '这条说的是…', au: '作者名', at: '账号', a: '原文粘这儿，或者写我准备怎么用…' },
+    f: {
+      name: '折叠屏缝里进灰不是膜的错',
+      au: 'MKBHD',
+      at: 'mkbhd',
+      a: '原文粘这儿。我准备拆一条反着说的。'
     }
   }
 };

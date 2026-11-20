@@ -128,9 +128,11 @@ body.cd-page {
 [data-tk="sop"]  { --c: #0b9488; --c2: #38cdab; --sp1: #0b9488; --sp2: #4dd8b8; --cw: rgba(11, 148, 136, .11); }
 [data-tk="hard"] { --c: #cc4a17; --c2: #f0914a; --sp1: #d1560f; --sp2: #ff9c52; --cw: rgba(204, 74, 23, .11); }
 [data-tk="hook"] { --c: #6b4fd6; --c2: #a68cf5; --sp1: #6b4fd6; --sp2: #a98bf5; --cw: rgba(107, 79, 214, .11); }
+[data-tk="tweet"] { --c: #111827; --c2: #667788; --sp1: #111827; --sp2: #8395a8; --cw: rgba(17, 24, 39, .09); }
 [data-theme="dark"] [data-tk="sop"]  { --c: #3ed3b2; --c2: #86f0cb; --sp1: #3ed3b2; --sp2: #93efd6; --cw: rgba(62, 211, 178, .16); }
 [data-theme="dark"] [data-tk="hard"] { --c: #ff8a5c; --c2: #ffbb92; --sp1: #ff8a5c; --sp2: #ffc59c; --cw: rgba(255, 138, 92, .16); }
 [data-theme="dark"] [data-tk="hook"] { --c: #a98bf5; --c2: #cdb6ff; --sp1: #a98bf5; --sp2: #d1bbff; --cw: rgba(169, 139, 245, .17); }
+[data-theme="dark"] [data-tk="tweet"] { --c: #e7edf7; --c2: #a3b3c8; --sp1: #e7edf7; --sp2: #aebdd0; --cw: rgba(231, 237, 247, .14); }
 
 /* ---- 树栏 ---- */
 .cd-tree {
@@ -420,6 +422,71 @@ body.cd-page {
   opacity: .8;
 }
 
+/* ---- 推特卡：多一条作者行，其它还是标题 + 写字区 ---- */
+.cd-card[data-tk="tweet"] { border: 1px solid var(--dk-bd); }
+.tw-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1px 0 14px;
+  padding-right: 30px;          /* 右上角那个 ✕ 的地盘，别和 X 标志挤一起 */
+}
+/* 头像：拿名字第一个字当形象，没填名字就是 X 那个标志 */
+.tw-av {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--dk-win);         /* 反色：浅色主题白字、深色主题深字，两边都清楚 */
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+  user-select: none;
+}
+.tw-av .tw-x { width: 18px; height: 18px; color: var(--dk-win); opacity: 1; }
+.tw-id { flex: 1 1 auto; min-width: 0; }
+.tw-nm {
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--dk-tx);
+  outline: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tw-at {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--dk-tx3);
+}
+.tw-at span { outline: none; }
+.tw-nm[data-empty="1"]::before,
+.tw-at span[data-empty="1"]::before {
+  content: attr(data-ph);
+  color: var(--dk-tx3);
+  pointer-events: none;
+}
+.tw-x {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  color: var(--dk-tx3);
+  opacity: .5;
+}
+/* 推文本来就是一行行读的，标题别撑到 30px 那么凶 */
+.cd-card[data-tk="tweet"] .cd-name {
+  font-size: 22px;
+  line-height: 1.46;
+  letter-spacing: -.018em;
+}
+.cd-card[data-tk="tweet"] .cd-body { margin-top: 11px; padding-top: 12px; }
+.cd-card[data-tk="tweet"] .cd-del { top: 7px; right: 9px; }
+
 /* 大标题：原来票根卡上那个字的字体和配色，一个字没改 */
 .cd-name {
   padding-right: 26px;
@@ -608,6 +675,7 @@ body.cd-page {
 .cd-dw-item[data-tk="sop"] i { background: #0b9488; }
 .cd-dw-item[data-tk="hard"] i { background: #cc4a17; }
 .cd-dw-item[data-tk="hook"] i { background: #6b4fd6; }
+.cd-dw-item[data-tk="tweet"] i { background: #111827; }
 .cd-dw-item[data-tk="plain"] i,
 .cd-dw-item[data-tk="mark"] i,
 .cd-dw-item[data-tk="quote"] i { background: #8e8e93; }
