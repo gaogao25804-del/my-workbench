@@ -50,13 +50,6 @@
       </svg>
       <span class="lbl2">锁定</span>
     </button>
-    <button class="dk-link" id="btnNote" type="button" title="新建一张小卡片：写字、标重点，随便摆">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3.4" y="4.6" width="17.2" height="14.8" rx="2.6"/>
-        <path d="M7.4 9.6h9.2M7.4 13h6.4"/>
-      </svg>
-      <span class="lbl2">新建卡片</span>
-    </button>
     <button class="dk-link" id="btnLink" type="button" title="贴飞书文档 / 任意网页链接，直接摆在画布上">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10.6 13.4a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 1 0-5.7-5.7l-1.5 1.5"/>
@@ -86,8 +79,8 @@
 <div class="dk-empty" id="empty">
   <div class="big">画布是空的</div>
   <div class="small">
-    把 DOCX / XLSX / XLS / PDF / TXT 直接拖进这个页面<br>
-    或者点右上角 <kbd>添加文件</kbd>，一个个放进来，随便摆
+    点右上角 <kbd>贴链接</kbd>，把飞书文档地址粘进来就摆上了<br>
+    也能直接拖 DOCX / PDF 进来，随手摆位置
   </div>
 </div>
 
@@ -107,52 +100,6 @@
     <div class="dk-modal-a">
       <button class="dk-btn" type="button" data-lk="no">算了</button>
       <button class="dk-btn is-primary" type="button" data-lk="ok">放到画布</button>
-    </div>
-  </div>
-</div>
-
-<!-- 新建小卡片：三选一 -->
-<div class="dk-modal" id="noteModal">
-  <div class="dk-modal-c is-wide">
-    <div class="dk-modal-t">要哪种卡片</div>
-    <div class="nt-picks">
-      <button type="button" class="nt-pick" data-nt="sop">
-        <span class="nt-pv is-tk is-sop">
-          <span class="pv-top"><span class="pv-br"><i></i>SOP</span><span class="pv-no">NO.001 · DAILY</span></span>
-          <span class="pv-halo"></span>
-          <span class="pv-big">5 步</span>
-          <span class="pv-sub">从选题到 19:00 发出</span>
-          <span class="pv-line">ADMIT ONE // 存档凭证</span>
-        </span>
-        <span class="nt-nm">SOP 卡</span>
-      </button>
-      <button type="button" class="nt-pick" data-nt="hard">
-        <span class="nt-pv is-tk is-hard">
-          <span class="pv-top"><span class="pv-br"><i></i>HARD</span><span class="pv-no">NO.002 · OPEN</span></span>
-          <span class="pv-halo"></span>
-          <span class="pv-big">卡了 3 天</span>
-          <span class="pv-sub">卡在哪 / 为什么 / 怎么破</span>
-          <span class="pv-line">ADMIT ONE // 存档凭证</span>
-        </span>
-        <span class="nt-nm">困难卡</span>
-      </button>
-      <button type="button" class="nt-pick" data-nt="hook">
-        <span class="nt-pv is-tk is-hook">
-          <span class="pv-top"><span class="pv-br"><i></i>HOOK</span><span class="pv-no">NO.003 · 0–5S</span></span>
-          <span class="pv-halo"></span>
-          <span class="pv-big">0–5 秒</span>
-          <span class="pv-sub">第一句话 / 配什么画面 / 为什么留人</span>
-          <span class="pv-line">ADMIT ONE // 存档凭证</span>
-        </span>
-        <span class="nt-nm">前五秒卡</span>
-      </button>
-    </div>
-    <div class="dk-modal-hint">
-      三种都是票根卡：一张卡＝一条能存档的东西。放到画布后<b>点哪块改哪块</b>，Enter 换行，Tab 跳下一格。<br>
-      编号和日期自动带上；鼠标压上去右上角才出按钮，点「换样式」可以在三种之间来回换，内容不丢。
-    </div>
-    <div class="dk-modal-a">
-      <button class="dk-btn" type="button" data-nm="no">算了</button>
     </div>
   </div>
 </div>
