@@ -11,15 +11,57 @@
 
   /* 字色用 CSS 变量存，深浅两套自动换 */
   var FG = { r: '--fg-red', o: '--fg-orange', g: '--fg-green', b: '--fg-blue', p: '--fg-purple' };
+  /* execCommand 不认 var()，会直接吞掉。先写一个没人用的占位色，再改成变量 */
+  var SENT = {
+    r: 'rgb(1, 2, 3)', o: 'rgb(4, 5, 6)', g: 'rgb(7, 8, 9)',
+    b: 'rgb(10, 11, 12)', p: 'rgb(13, 14, 15)'
+  };
+  function norm(c) { return String(c || '').replace(/\s+/g, '').toLowerCase(); }
+
+  /* 把占位色换成 var(--fg-*)，没换到的（浏览器拆成了别的结构）就按色系兜底 */
+  function retag(host, key) {
+    var css = 'var(' + FG[key] + ')';
+    var want = norm(SENT[key]);
+    Array.prototype.forEach.call(host.querySelectorAll('span[style], font[color]'), function (el) {
+      var cur = norm(el.style && el.style.color);
+      if (!cur && el.tagName === 'FONT') cur = norm(el.getAttribute('color'));
+      if (cur === want) {
+        if (el.tagName === 'FONT') {
+          var sp = document.createElement('span');
+          sp.textContent = el.textContent;
+          el.replaceWith(sp);
+          el = sp;
+        }
+        el.style.color = css;
+      }
+    });
+  }
+
+  /* 恢复默认颜色：把这堆变量色摘掉，别的样式（加粗、荧光笔）别动 */
+  function stripFg(host) {
+    Array.prototype.forEach.call(host.querySelectorAll('span[style]'), function (el) {
+      if (/var\(--fg-/.test(String(el.style.color || ''))) {
+        el.style.color = '';
+        if (!el.getAttribute('style')) el.removeAttribute('style');
+        if (el.tagName === 'SPAN' && !el.getAttribute('style') && !el.className) {
+          var p = el.parentNode;
+          while (el.firstChild) p.insertBefore(el.firstChild, el);
+          p.removeChild(el);
+        }
+      }
+    });
+  }
 
   var ed = null, range = null;
 
   function edOfSel() {
     var sel = window.getSelection();
     if (!sel || !sel.rangeCount) return null;
-    var n = sel.anchorNode;
+    var n = sel.anchorNode || sel.focusNode;
     var el = n && (n.nodeType === 1 ? n : n.parentElement);
-    return el && el.closest ? el.closest('.dk-note') : null;
+    if (!el || !el.closest) return null;
+    /* 画布是 .dk-note，卡片库是大标题 / 正文这两块 */
+    return el.closest('.dk-note, .cd-name, .cd-body');
   }
   function hide() { bar.hidden = true; }
 
@@ -40,7 +82,7 @@
     var bh = bar.offsetHeight || 34;
     var cx = r.left + r.width / 2;
     var x = Math.max(bw / 2 + 10, Math.min(window.innerWidth - bw / 2 - 10, cx));
-    var wrap = ed.closest('.dk-win');
+    var wrap = ed.closest('.dk-win') || ed.closest('.cd-card');
     var wr = wrap ? wrap.getBoundingClientRect() : null;
 
     var y, above = false;
@@ -97,13 +139,17 @@
       document.execCommand('bold');
     } else if (k === 'clear') {
       try { document.execCommand('hiliteColor', false, 'transparent'); } catch (e2) {}
-      try { document.execCommand('foreColor', false, 'currentColor'); } catch (e3) {}
       document.execCommand('removeFormat');
+      stripFg(host);
     } else if (k.indexOf('fg:') === 0) {
       var key = k.slice(3);
-      var c = key === 'd' ? 'currentColor' : colorOf(key);
-      if (!c) return;
-      try { document.execCommand('foreColor', false, c); } catch (e4) {}
+      if (key === 'd') {
+        stripFg(host);
+      } else if (SENT[key]) {
+        try { document.execCommand('foreColor', false, SENT[key]); } catch (e4) {}
+        /* 选中的字已经被包进 span 了，把占位色换成变量 */
+        retag(host, key);
+      }
     } else if (k.indexOf('hl:') === 0) {
       var rgb = 'rgb(' + k.slice(3) + ')';
       var done = false;

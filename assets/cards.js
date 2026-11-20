@@ -122,37 +122,31 @@
       (f[k] == null ? '' : f[k]) + '</div>';
   }
 
+  /* 老数据里正文分在 a / b / c 三块，现在合成一整块显示 */
+  function bodyOf(f) {
+    f = f || {};
+    return [f.a, f.b, f.c].filter(function (x) {
+      return x && plain(x);
+    }).join('<br>');
+  }
+
+  /* 只有两样东西：一个大标题，一块写小字的地方 */
   function cardHTML(w) {
-    var s = w.note.style, d = TK[s], no = padNo(w.note.no);
-    var ph = d.ph || { name: '给它起个名', big: '一句数字', a: '写在这里……', b: '', c: '' };
-    return '<div class="dk-win cd-card" data-kind="note" data-nt="' + s + '" data-id="' + w.id + '">' +
+    var s = w.note.style, d = TK[s] || {}, ph = d.ph || {};
+    var f = w.note.f || {};
+    return '<div class="cd-card" data-tk="' + s + '" data-id="' + w.id + '">' +
       '<button class="cd-del" type="button" data-del="' + w.id + '" title="扔进回收站">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>' +
       '</button>' +
-      '<div class="dk-win-b"><div class="dk-note dk-tk">' +
-        '<div class="tk-top">' +
-          '<span class="tk-brand"><i></i><b>' + d.brand + '</b></span>' +
-          '<span class="tk-no">NO.' + no + ' · ' + d.tag + '</span>' +
-        '</div>' +
-        '<div class="tk-halo">' + d.icon + '</div>' +
-        fld(w, 'name', 'tk-name', ph.name) +
-        '<div class="tk-quota">' +
-          '<div class="tk-lab">' + d.lab + '</div>' +
-          fld(w, 'big', 'tk-big', ph.big) +
-        '</div>' +
-        '<div class="tk-box">' +
-          fld(w, 'a', 'tk-v', ph.a) +
-          '<div class="tk-hr"></div>' +
-          '<div class="tk-2">' +
-            '<div>' + fld(w, 'b', 'tk-v', ph.b) + '</div>' +
-            '<div>' + fld(w, 'c', 'tk-v', ph.c) + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="tk-stub">' +
-          '<div class="tk-stub-l"><b>ADMIT ONE // 存档凭证</b>' + (w.note.date || '') + '</div>' +
-          '<div class="tk-stub-no">' + no + '</div>' +
-        '</div>' +
-      '</div></div></div>';
+      '<div class="cd-meta"><span>' + esc(d.short || d.name || '卡片') + '</span>' +
+        '<i>' + padNo(w.note.no) + '</i></div>' +
+      '<div class="cd-name" contenteditable="true" spellcheck="false"' +
+        ' data-w="' + w.id + '" data-f="name" data-ph="' + esc(ph.name || '给它起个名') + '">' +
+        (f.name == null ? '' : f.name) + '</div>' +
+      '<div class="cd-body" contenteditable="true" spellcheck="false"' +
+        ' data-w="' + w.id + '" data-f="a" data-ph="想到什么写什么……">' +
+        bodyOf(f) + '</div>' +
+    '</div>';
   }
 
   function render() {
@@ -210,7 +204,7 @@
       z: 120, scroll: 0, sk: null, lock: 0,
       note: {
         style: s, html: '', no: no, date: today(),
-        f: { name: d.f.name, big: d.f.big, a: d.f.a, b: d.f.b, c: d.f.c }
+        f: { name: d.f.name, big: '', a: d.f.a, b: '', c: '' }
       }
     };
     w.fileId = w.id;
@@ -294,7 +288,10 @@
     var w = findWin(t.getAttribute('data-w'));
     if (!w) return;
     if (!w.note.f) w.note.f = {};
-    w.note.f[t.getAttribute('data-f')] = t.innerHTML;
+    var kk = t.getAttribute('data-f');
+    w.note.f[kk] = t.innerHTML;
+    /* 正文只有一块了，老的 b / c 跟着并进来，别在画布上重复一遍 */
+    if (kk === 'a') { w.note.f.b = ''; w.note.f.c = ''; }
     if (t.getAttribute('data-f') === 'name') {
       var nm = plain(t.innerHTML);
       w.name = nm ? (nm.length > 18 ? nm.slice(0, 18) + '…' : nm) : (TK[w.note.style] || {}).name || '卡片';

@@ -97,9 +97,12 @@ body.cd-page {
   padding: 4px 20px 80px;
 }
 
-.cd-sec { --c: #0b9488; }
-.cd-sec[data-tk="hard"] { --c: #cc4a17; }
-.cd-sec[data-tk="hook"] { --c: #6b4fd6; }
+.cd-sec { --c: #0b9488; --c2: #38cdab; }
+.cd-sec[data-tk="hard"] { --c: #cc4a17; --c2: #f0914a; }
+.cd-sec[data-tk="hook"] { --c: #6b4fd6; --c2: #a68cf5; }
+[data-theme="dark"] .cd-sec { --c: #3ed3b2; --c2: #86f0cb; }
+[data-theme="dark"] .cd-sec[data-tk="hard"] { --c: #ff8a5c; --c2: #ffbb92; }
+[data-theme="dark"] .cd-sec[data-tk="hook"] { --c: #a98bf5; --c2: #cdb6ff; }
 
 /* 分组那条横杠，就是他画的那个长条 */
 .cd-hd {
@@ -175,10 +178,14 @@ body.cd-page {
 @media (max-width: 790px) {
   .cd-grid { grid-template-columns: 1fr; justify-items: center; }
   .cd-card { max-width: 420px; }
-  .cd-hd { height: auto; padding: 11px 14px; flex-wrap: wrap; }
-  .cd-hd h2 { font-size: 17px; }
-  .cd-hd h2 em { display: block; margin: 3px 0 0; }
+  /* 标题占左边一整块，注解换到第二行，「1 张」和「新建」别被挤下去 */
+  .cd-hd { height: auto; padding: 10px 12px 10px 16px; gap: 8px; flex-wrap: nowrap; }
+  .cd-hd h2 { flex: 1 1 auto; min-width: 0; font-size: 16.5px; }
+  .cd-hd h2 em { display: block; margin: 3px 0 0; font-size: 11px; line-height: 1.5; }
+  .cd-cnt, .cd-add { flex: 0 0 auto; }
+  .cd-add { padding: 0 10px; }
   .cd-sub { display: none; }
+  .cd-body { min-height: 180px; }
 }
 
 /* 空的时候给一句话，不要空一块 */
@@ -190,35 +197,87 @@ body.cd-page {
   font-size: 12.5px;
 }
 
-/* ---------------- 卡片在页面里怎么站 ---------------- */
+/* ---------------- 卡片：只有大标题 + 一块写字的地方 ---------------- */
 .cd-card {
-  max-width: 460px;
   position: relative;
-  left: auto !important;
-  top: auto !important;
-  width: 100% !important;
-  height: auto !important;
-  min-width: 0;
-  min-height: 0;
-  contain: none;
+  width: 100%;
+  max-width: 460px;
+  padding: 22px 24px 26px;
+  border-radius: 15px;
+  background: var(--dk-win);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 10px 26px -20px rgba(0, 0, 0, .3);
+  transition: box-shadow .18s ease;
 }
-.cd-card .dk-win-b {
-  flex: 0 0 auto;
-  min-height: 0;
-  overflow: visible;
-}
-/* 页面里也是长条票根：高度跟着宽度按 1:1.86 走，别再被压成方墩 */
-.cd-card .dk-note.dk-tk { min-height: 0; aspect-ratio: 100 / 186; }
+.cd-card:hover { box-shadow: 0 2px 4px rgba(0, 0, 0, .05), 0 14px 34px -18px rgba(0, 0, 0, .32); }
+[data-theme="dark"] .cd-card { box-shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 12px 30px -20px rgba(0, 0, 0, .85); }
 
-/* 页面里不用拖，别给抓手 */
-.cd-card .tk-top { cursor: default; }
-/* 画布里 hover 会把卡片顶到 8500，页面里会盖住顶栏，按住 */
-.cd-card:hover { z-index: auto !important; }
+/* 一点身份信息，做得很淡，不抢标题 */
+.cd-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+  color: var(--dk-tx3);
+  font-size: 10.5px;
+  letter-spacing: .05em;
+}
+.cd-meta i {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .1em;
+  opacity: .8;
+}
+
+/* 大标题：原来票根卡上那个字的字体和配色，一个字没改 */
+.cd-name {
+  padding-right: 26px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.32;
+  letter-spacing: -.032em;
+  background: linear-gradient(96deg, var(--c) 4%, var(--c2) 88%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  caret-color: var(--c);
+  outline: none;
+  word-break: break-word;
+}
+
+/* 标题是渐变填充的，里面要是被工具条改了色，得让它自己的颜色显出来 */
+.cd-name span[style*="color"] {
+  -webkit-text-fill-color: currentColor;
+}
+
+/* 写小字的地方 */
+.cd-body {
+  margin-top: 13px;
+  padding-top: 15px;
+  border-top: 1px solid var(--dk-bd2);
+  min-height: 240px;
+  font-size: 13.5px;
+  line-height: 1.95;
+  color: var(--dk-tx2);
+  outline: none;
+  word-break: break-word;
+}
+
+/* 空的时候给一句浅提示，别留一块白 */
+.cd-name[data-empty="1"]::before,
+.cd-body[data-empty="1"]::before {
+  content: attr(data-ph);
+  color: var(--dk-tx3);
+  -webkit-text-fill-color: var(--dk-tx3);
+  pointer-events: none;
+}
+/* 提示语不能吃掉回车和点击 */
+.cd-name:focus::before, .cd-body:focus::before { opacity: .45; }
 
 .cd-del {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 10px;
+  right: 10px;
   z-index: 9;
   width: 24px;
   height: 24px;
@@ -237,7 +296,6 @@ body.cd-page {
 .cd-card:hover .cd-del { opacity: 1; }
 @media (hover: none) { .cd-del { opacity: 1; } }
 .cd-del:hover { background: #e5484d; color: #fff; }
-.cd-card:hover .tk-no { opacity: 0; transition: opacity .12s ease; }
 
 .cd-foot {
   margin: 34px 0 0;
