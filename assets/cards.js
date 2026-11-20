@@ -140,13 +140,88 @@
       '</button>' +
       '<div class="cd-meta"><span>' + esc(d.short || d.name || '卡片') + '</span>' +
         '<i>' + padNo(w.note.no) + '</i></div>' +
-      '<div class="cd-name" contenteditable="true" spellcheck="false"' +
-        ' data-w="' + w.id + '" data-f="name" data-ph="' + esc(ph.name || '给它起个名') + '">' +
-        (f.name == null ? '' : f.name) + '</div>' +
+      '<div class="cd-name-wrap">' +
+        '<div class="cd-name" contenteditable="true" spellcheck="false"' +
+          ' data-w="' + w.id + '" data-f="name" data-ph="' + esc(ph.name || '给它起个名') + '">' +
+          (f.name == null ? '' : f.name) + '</div>' +
+        '<span class="cd-spark" aria-hidden="true"></span>' +
+      '</div>' +
       '<div class="cd-body" contenteditable="true" spellcheck="false"' +
         ' data-w="' + w.id + '" data-f="a" data-ph="想到什么写什么……">' +
         bodyOf(f) + '</div>' +
     '</div>';
+  }
+
+  /* ---------------- 大标题上撒的那把星星 ----------------
+     照着 sparkles-text 那个组件的效果搬过来的：位置随机、大小随机、
+     0.8 秒一次呼吸（透明度 0→1→0、缩放 0→s→0、转角 75→120→150），
+     每颗星自己一条命，几秒后换个地方重新亮，看起来就是一直有星星在闪。 */
+  var SP_PATH = 'M9.82531 0.843845C10.0553 0.215178 10.9446 0.215178 11.1746 0.843845' +
+    'L11.8618 2.72026C12.4006 4.19229 12.3916 6.39157 13.5 7.5C14.6084 8.60843 ' +
+    '16.8077 8.59935 18.2797 9.13822L20.1561 9.82534C20.7858 10.0553 20.7858 10.9447 ' +
+    '20.1561 11.1747L18.2797 11.8618C16.8077 12.4007 14.6084 12.3916 13.5 13.5C12.3916 ' +
+    '14.6084 12.4006 16.8077 11.8618 18.2798L11.1746 20.1562C10.9446 20.7858 10.0553 ' +
+    '20.7858 9.82531 20.1562L9.13819 18.2798C8.59932 16.8077 8.60843 14.6084 7.5 ' +
+    '13.5C6.39157 12.3916 4.19225 12.4007 2.72023 11.8618L0.843814 11.1747C0.215148 ' +
+    '10.9447 0.215148 10.0553 0.843814 9.82534L2.72023 9.13822C4.19225 8.59935 6.39157 ' +
+    '8.60843 7.5 7.5C8.60843 6.39157 8.59932 4.19229 9.13819 2.72026L9.82531 0.843845Z';
+  var SP_NS = 'http://www.w3.org/2000/svg';
+  var spTimer = null;
+
+  function spRand(a, b) { return a + Math.random() * (b - a); }
+
+  function spMake() {
+    var svg = document.createElementNS(SP_NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 21 21');
+    svg.setAttribute('width', '21');
+    svg.setAttribute('height', '21');
+    svg.setAttribute('aria-hidden', 'true');
+    var p = document.createElementNS(SP_NS, 'path');
+    p.setAttribute('d', SP_PATH);
+    svg.appendChild(p);
+    return svg;
+  }
+
+  /* 给一颗星重新摇一次骰子：位置、大小、颜色、快慢、活多久 */
+  function spPaint(svg) {
+    svg.setAttribute('class', 'cd-sp ' + (Math.random() > 0.5 ? 'a' : 'b'));
+    svg.style.left = spRand(0, 100).toFixed(2) + '%';
+    svg.style.top = spRand(0, 100).toFixed(2) + '%';
+    svg.style.setProperty('--s', spRand(0.34, 0.86).toFixed(2));
+    svg.style.animationDelay = '-' + spRand(0, 2).toFixed(2) + 's';
+    svg.style.animationDuration = spRand(0.72, 1.05).toFixed(2) + 's';
+    svg.setAttribute('data-die', String(Date.now() + spRand(4200, 13000)));
+  }
+
+  function spTick() {
+    var all = document.querySelectorAll('.cd-spark .cd-sp');
+    if (!all.length) { clearInterval(spTimer); spTimer = null; return; }
+    var now = Date.now();
+    Array.prototype.forEach.call(all, function (svg) {
+      if (now >= (+svg.getAttribute('data-die') || 0)) spPaint(svg);
+    });
+  }
+
+  function mountSparks(root) {
+    var wraps = (root && root.classList && root.classList.contains('cd-name-wrap'))
+      ? [root]
+      : (root || document).querySelectorAll('.cd-name-wrap');
+    Array.prototype.forEach.call(wraps, function (wrap) {
+      var layer = wrap.querySelector('.cd-spark');
+      var name = wrap.querySelector('.cd-name');
+      if (!layer || !name) return;
+      if (layer.getAttribute('data-on') === '1') return;   /* 已经撒过了，别每敲一个字重画一遍 */
+      var txt = plain(name.textContent);
+      if (!txt) return;                                    /* 空标题不放星星 */
+      layer.setAttribute('data-on', '1');
+      var n = Math.max(12, Math.min(20, Math.round(txt.length * 1.5)));
+      for (var i = 0; i < n; i++) {
+        var svg = spMake();
+        spPaint(svg);
+        layer.appendChild(svg);
+      }
+    });
+    if (!spTimer) spTimer = setInterval(spTick, 900);
   }
 
   function render() {
@@ -162,6 +237,7 @@
       grid.classList.toggle('is-empty', !list.length);
       grid.innerHTML = list.map(cardHTML).join('');
       Array.prototype.forEach.call(grid.querySelectorAll('[data-f]'), paintField);
+      mountSparks(grid);
     });
     renderTrash();
   }
@@ -297,6 +373,18 @@
       w.name = nm ? (nm.length > 18 ? nm.slice(0, 18) + '…' : nm) : (TK[w.note.style] || {}).name || '卡片';
     }
     paintField(t);
+    if (kk === 'name') {
+      var wrap = t.closest('.cd-name-wrap');
+      if (wrap) {
+        var lyr = wrap.querySelector('.cd-spark');
+        if (plain(t.textContent)) {
+          mountSparks(wrap);   /* 空标题开始打字了，星星跟着亮起来 */
+        } else if (lyr) {
+          lyr.innerHTML = '';  /* 删光了就别让星星飘在空地上 */
+          lyr.removeAttribute('data-on');
+        }
+      }
+    }
     saveSoon();
   });
 
