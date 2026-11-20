@@ -25,6 +25,18 @@
   function plain(h) {
     return String(h == null ? '' : h).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   }
+
+  /* 存之前把画上去的笔摘掉，只留文字和 <span data-mk> 这一层壳 */
+  function htmlOf(el) {
+    return (window.Mark && window.Mark.strip) ? window.Mark.strip(el) : el.innerHTML;
+  }
+
+  var markT = null;
+  function markLater(root, force) {
+    if (!window.Mark) return;
+    clearTimeout(markT);
+    markT = setTimeout(function () { window.Mark.refresh(root || document, force); }, 240);
+  }
   function padNo(n) {
     var s = String(n || 1);
     while (s.length < 3) s = '0' + s;
@@ -238,6 +250,7 @@
       grid.innerHTML = list.map(cardHTML).join('');
       Array.prototype.forEach.call(grid.querySelectorAll('[data-f]'), paintField);
       mountSparks(grid);
+      if (window.Mark) window.Mark.refresh(grid, true);   /* 手绘标记按新位置重画 */
     });
     renderTrash();
   }
@@ -365,7 +378,7 @@
     if (!w) return;
     if (!w.note.f) w.note.f = {};
     var kk = t.getAttribute('data-f');
-    w.note.f[kk] = t.innerHTML;
+    w.note.f[kk] = htmlOf(t);
     /* 正文只有一块了，老的 b / c 跟着并进来，别在画布上重复一遍 */
     if (kk === 'a') { w.note.f.b = ''; w.note.f.c = ''; }
     if (t.getAttribute('data-f') === 'name') {
@@ -385,6 +398,7 @@
         }
       }
     }
+    markLater(t.closest('.cd-card'));   /* 字挪位置了，手绘标记跟着重画 */
     saveSoon();
   });
 
@@ -460,6 +474,7 @@
     var t = desk().theme === 'dark' ? 'light' : 'dark';
     desk().theme = t;
     applyTheme(t);
+    markLater(document, true);   /* 换主题了，手绘标记的颜色跟着换一版 */
     saveNow();
   }
 

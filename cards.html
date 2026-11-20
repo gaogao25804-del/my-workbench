@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#fbfbfd">
 <title>卡片库 · 选题 / 卡点 / 开头</title>
 <link rel="stylesheet" href="assets/desk.css?v=1118q">
-<link rel="stylesheet" href="assets/cards.css?v=1118r">
+<link rel="stylesheet" href="assets/cards.css?v=1118s">
 </head>
 <body class="cd-page">
 
@@ -93,14 +93,24 @@
   <button type="button" data-nt2="hl:178,240,190" title="绿色荧光笔"><i style="background:#b2f0be"></i></button>
   <button type="button" data-nt2="hl:255,196,214" title="粉色荧光笔"><i style="background:#ffc4d6"></i></button>
   <button type="button" data-nt2="hl:190,220,255" title="蓝色荧光笔"><i style="background:#bedcff"></i></button>
+  <span class="nt-grp">
   <span class="nt-bar-hr"></span>
-  <button type="button" data-nt2="clear" title="清掉加粗/颜色/荧光笔">清</button>
+  <button type="button" class="nt-mk hl" data-nt2="mk:highlight" title="手绘高亮（再点一次取消）"><i><em>A</em></i></button>
+  <button type="button" class="nt-mk ul" data-nt2="mk:underline" title="手绘下划线（再点一次取消）"><i><em>A</em></i></button>
+  <button type="button" class="nt-mk bx" data-nt2="mk:box" title="手绘方框（再点一次取消）"><i><em>A</em></i></button>
+  <button type="button" class="nt-mk ci" data-nt2="mk:circle" title="手绘圈（再点一次取消）"><i><em>A</em></i></button>
+  <button type="button" class="nt-mk st" data-nt2="mk:strike-through" title="手绘划线（再点一次取消）"><i><em>A</em></i></button>
+  </span>
+  <span class="nt-bar-hr"></span>
+  <button type="button" data-nt2="clear" title="清掉加粗/颜色/荧光笔/手绘标记">清</button>
 </div>
 
 <div class="cd-toast" id="toast"></div>
 
+<script src="assets/vendor/rough-notation.js?v=1118s"></script>
 <script src="assets/tk.js?v=1118q"></script>
-<script src="assets/ntbar.js?v=1118q"></script>
-<script src="assets/cards.js?v=1118r"></script>
+<script src="assets/ntbar.js?v=1118s"></script>
+<script src="assets/mark.js?v=1118s"></script>
+<script src="assets/cards.js?v=1118s"></script>
 </body>
 </html>
