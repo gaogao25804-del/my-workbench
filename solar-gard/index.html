@@ -511,6 +511,13 @@ a{ color:inherit; text-decoration:none; }
 .ms-chip:hover .ms-th img{ transform:scale(1.04); }
 .ms-chip .ms-nm{ display:block; font-size:12px; font-weight:500; color:var(--ink); padding:8px 4px 1px; letter-spacing:.02em; }
 .ms-chip .ms-tx{ display:block; font-size:10.5px; color:var(--sub2); padding:0 4px 9px; }
+/* 主推款：星空丝绒是老板主推的，chip 上加个小角标，不靠位置说话 */
+.ms-chip.is-main{ background:#FFFDF6; }
+.ms-chip .ms-nm .ms-main{
+  font-style:normal; font-size:9px; font-weight:600; letter-spacing:.06em; line-height:15px;
+  color:#8A6A2E; background:#F4EBD7; border:1px solid #E4D7B7; border-radius:3px;
+  padding:0 4px; margin-left:5px; display:inline-block; vertical-align:1px;
+}
 .ms-chip.on{ border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink); }
 .ms-chip.on .ms-nm::before{ content:"✓ "; color:#8A6A2E; }
 .ms-chip.on .ms-tx{ color:#8A6A2E; }
@@ -3463,17 +3470,17 @@ const MAT_LADDER = {
 const MAT_SET = {
   /* price = 本店整车整套含装车价，直接取上面实测同款市场价，不再统一 */
   i6:  { n:12, mats:'纯 TPE 原色 · 毯面可另配', yr:'26 款', price:1488, ref:'¥1,488' },
-  i8:  { n:11, mats:'星空年华毯 黑', yr:'25–26 款', price:1939, ref:'¥1,939' },
+  i8:  { n:11, mats:'星空丝绒毯 黑', yr:'25–26 款', price:1939, ref:'¥1,939' },
   i9:  { n:13, mats:'纯 TPE 原色 · 毯面可另配', yr:'26 款', price:1692, ref:'¥1,692' },
-  l6:  { n:9,  mats:'星空年华毯 黑', yr:'24–25 款', price:1859, ref:'¥1,859' },
-  l8:  { n:11, mats:'星空年华毯 黑', yr:'23–25 款', price:1959, ref:'¥1,959' },
+  l6:  { n:9,  mats:'星空丝绒毯 黑', yr:'24–25 款', price:1859, ref:'¥1,859' },
+  l8:  { n:11, mats:'星空丝绒毯 黑', yr:'23–25 款', price:1959, ref:'¥1,959' },
   l9:  { n:13, mats:'纯 TPE 原色 · 毯面可另配', yr:'26 款', price:1177, ref:'¥1,177' },
   /* MEGA 26 款：品牌方给的是「全包脚垫」（360 航空软包，整车铺到侧壁与座椅下），
      不是此前误记的「原车专属毯面」—— 2026-11-14 按官方物料更正，价格同步重算 */
   mega:{ n:0,  mats:'360 全包 · 仿羊绒', yr:'26 款', price:3389, ref:'¥3,389',
     title:'全包脚垫',
     spec:'360 航空软包 · 整车一趟铺到侧壁与座椅下<br>原车 3D 扫描开模 · 免拆座椅安装',
-    matsLine:'<b>仿羊绒 / 星空年华 表层 可选</b>',
+    matsLine:'<b>仿羊绒 / 菱格 表层 可选</b>',
     tags:['整车全包 · 无接缝'],
     note:'',
     gift:'买全包脚垫 · 即送全车硅胶套装 + 配件' }
@@ -3594,8 +3601,8 @@ function tierHasMats(t, mid = state.model){
    存在 asset/mats/style/{车型}_{款式}.webp）。四款对应同一套垫体，只换毯面。
    注意：这里只换款式与图，件数与价格一律不动；换毯面的价差写「到店核」，不编价。 */
 const MAT_STYLES = [
-  { k:'星空年华', sw:'nianhua',  tx:'菱格 · 主推' },
-  { k:'星空丝绒', sw:'sirong',   tx:'星空点阵' },
+  { k:'星空丝绒', sw:'sirong',   tx:'星空点阵', m:1 },
+  { k:'星空年华', sw:'nianhua',  tx:'菱格纹' },
   { k:'黛尼斯',   sw:'denis',    tx:'细密网格' },
   { k:'仿羊绒',   sw:'yangrong', tx:'素绒面' }
 ];
@@ -3603,14 +3610,18 @@ const MAT_STYLE_KEYS = MAT_STYLES.map(s => s.k);
 /* MEGA 没有这套款式图（京东该系列无 MEGA SKU），先不给选，免得点下去换不出图 */
 const MAT_STYLE_MIDS = ['i6','i8','i9','l6','l8','l9'];
 const hasMatStyle = (mid = state.model) => MAT_STYLE_MIDS.includes(mid);
+/* 星空丝绒是主推款：没选过的车型一律先出它 */
+const MAT_STYLE_DEFAULT = '星空丝绒';
 function matStyleOf(mid = state.model){
   const want = state.matStyle[mid];
-  return MAT_STYLE_KEYS.includes(want) ? want : '星空年华';
+  return MAT_STYLE_KEYS.includes(want) ? want : MAT_STYLE_DEFAULT;
 }
 function matStyleImg(mid = state.model, st = matStyleOf(mid)){
   return `asset/mats/style/${mid}_${st}.webp`;
 }
 function matStyleTx(st){ const s = MAT_STYLES.find(x => x.k === st); return s ? s.tx : ''; }
+const matStyleMain = st => { const s = MAT_STYLES.find(x => x.k === st); return !!(s && s.m); };
+function matStyleNow(st){ return `${st} · ${matStyleTx(st)}${matStyleMain(st) ? ' · 主推' : ''}`; }
 
 /* 内页里点毯面：只换图与选中态，不重画整页 —— 重画会让大图白一下，也丢滚动位置 */
 function pickMatStyle(k){
@@ -3631,7 +3642,7 @@ function pickMatStyle(k){
       c.setAttribute('aria-pressed', String(on));
     });
     const now = bd.querySelector('#msNow');
-    if (now) now.textContent = `${k} · ${matStyleTx(k)}`;
+    if (now) now.textContent = matStyleNow(k);
     const nm = bd.querySelector('.addon-spec .ms-name');
     if (nm) nm.textContent = `${k}毯面`;
   }
@@ -4162,19 +4173,19 @@ function bigCard(a, detail){
         <div class="mat-style">
           <div class="ms-hd">
             <b>毯面款式</b>
-            <span class="ms-now" id="msNow">${sty} · ${matStyleTx(sty)}</span>
+            <span class="ms-now" id="msNow">${matStyleNow(sty)}</span>
           </div>
           <div class="ms-row" role="group" aria-label="毯面款式选择">
             ${MAT_STYLES.map(s => `
-            <button type="button" class="ms-chip${s.k === sty ? ' on' : ''}" data-matstyle="${s.k}" aria-pressed="${s.k === sty}">
+            <button type="button" class="ms-chip${s.k === sty ? ' on' : ''}${s.m ? ' is-main' : ''}" data-matstyle="${s.k}" aria-pressed="${s.k === sty}">
               <span class="ms-th"><img src="asset/mats/style/sw/${s.sw}.webp" alt="${s.k}毯面纹理" loading="eager" decoding="async"></span>
-              <b class="ms-nm">${s.k}</b><span class="ms-tx">${s.tx}</span>
+              <b class="ms-nm">${s.k}${s.m ? '<i class="ms-main">主推</i>' : ''}</b><span class="ms-tx">${s.tx}</span>
             </button>`).join('')}
           </div>
-          <p class="ms-note">四款是同一套垫体换毯面，<b>件数不变</b>；换款式的价差到店按实车核，图上为整车整套。</p>
+          <p class="ms-note"><b>主推星空丝绒</b>（图上默认这套），另三款是同一套垫体换毯面，<b>件数不变</b>；换款式的价差到店按实车核，图上为整车整套。</p>
         </div>` : ''}
         <div class="addon-body">
-          <div class="addon-k">${a.brand}<span class="hi-tag">主推 · 送硅胶套装 + 配件</span></div>
+          <div class="addon-k">${a.brand}<span class="hi-tag">${hasMatStyle(mid) ? '主推 星空丝绒 · ' : ''}送硅胶套装 + 配件</span></div>
           <div class="addon-name">${aName}<u class="set-n">${curModel().name} · ${nTxt}</u></div>
           <div class="addon-spec">${megaOnly || hasMats
             ? (matsName ? `本款配 <b class="ms-name">${matsName}</b>${ms.yr ? ' · ' + ms.yr : ''}<br>` : '')
@@ -4228,7 +4239,7 @@ function bigCard(a, detail){
           }).join('')}
         </div>
         <p class="mtier-note">${isMats
-          ? '价格为固特异官方在售价；360 全包整车一趟铺到底，表层仿羊绒 / 星空年华可选。本店含装车，并赠全车硅胶套装。'
+          ? '价格为固特异官方在售价；360 全包整车一趟铺到底，表层仿羊绒 / 菱格可选。本店含装车，并赠全车硅胶套装。'
           : `本店只做整车整套：<b>¥${ms && ms.price ? ms.price.toLocaleString('en-US') : '—'}</b> 含装车，赠全车硅胶套装。价格按车型单独核定（同款同件套，各车型实价本来就不一样），不是全系一口价。只做整车整套，不拆件套单卖 —— 拆开就不送配件了。`}</p>
       </div>`;
       })()}
@@ -4351,7 +4362,7 @@ function miniCard(a){
     tbd = tPrice == null;
     price = tbd ? 0 : px(tPrice);
     /* 卡上先写一句「4 款毯面可选」：不然客人不知道点进去能挑款式 */
-    sub = `${curModel().name} · ${nTxt} · 含装车${hasMatStyle(mid) ? ' · 4 款毯面可选' : ''}`;
+    sub = `${curModel().name} · ${nTxt} · 含装车${hasMatStyle(mid) ? ' · 星空丝绒 · 4 款可选' : ''}`;
     badge = nTxt;
   } else {
     const opt = curSeatKind();
