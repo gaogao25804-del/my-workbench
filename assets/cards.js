@@ -147,6 +147,28 @@
     }).join('<br>');
   }
 
+  /* 推特卡多一条作者行：头像 + 名字 + @ + 右边那个 X
+     头像是拿名字头一个字生成的，没填名字就显示 X 那个标志 */
+  var X_SVG = '<svg class="tw-x" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+    '<path d="M18.9 2.2h3.5l-7.7 8.8L23.7 22h-7.1l-5.5-7.3L4.7 22H1.2l8.2-9.4L.9 2.2h7.3l5 6.7zM17.7 20h1.9L7.4 4H5.4z"/></svg>';
+
+  function twHead(w, ph) {
+    var f = w.note.f || {};
+    var av = plain(f.au || '');
+    return '<div class="tw-hd">' +
+      '<span class="tw-av">' + (av ? esc(av.slice(0, 1).toUpperCase()) : X_SVG) + '</span>' +
+      '<div class="tw-id">' +
+        '<div class="tw-nm" contenteditable="true" spellcheck="false"' +
+          ' data-w="' + w.id + '" data-f="au" data-ph="' + esc(ph.au || '作者名') + '">' +
+          (f.au == null ? '' : f.au) + '</div>' +
+        '<div class="tw-at">@<span contenteditable="true" spellcheck="false"' +
+          ' data-w="' + w.id + '" data-f="at" data-ph="' + esc(ph.at || '账号') + '">' +
+          (f.at == null ? '' : f.at) + '</span></div>' +
+      '</div>' +
+      X_SVG +
+    '</div>';
+  }
+
   /* 只有两样东西：一个大标题，一块写小字的地方
      bare=true 时不画卡片顶上那行身份信息 —— 右栏上面已经有面包屑了，别重复 */
   function cardHTML(w, bare) {
@@ -159,6 +181,7 @@
       (bare ? '' :
         '<div class="cd-meta"><span>' + esc(d.short || d.name || '卡片') + '</span>' +
           '<i>' + padNo(w.note.no) + '</i></div>') +
+      (s === 'tweet' ? twHead(w, ph) : '') +
       '<div class="cd-name-wrap">' +
         '<div class="cd-name" contenteditable="true" spellcheck="false"' +
           ' data-w="' + w.id + '" data-f="name" data-ph="' + esc(ph.name || '给它起个名') + '">' +
@@ -279,7 +302,8 @@
       total += all.length;
       var list = !q ? all : all.filter(function (w) {
         var f = w.note.f || {};
-        var hay = [cardName(w), padNo(w.note.no), plain(bodyOf(f))].join(' ').toLowerCase();
+        var hay = [cardName(w), padNo(w.note.no), plain(bodyOf(f)),
+                   plain(f.au || ''), plain(f.at || '')].join(' ').toLowerCase();
         return hay.indexOf(q) >= 0;
       });
       hit += list.length;
@@ -314,7 +338,7 @@
     }).join('');
     return '<div class="cd-pane-empty">' +
       '<b>左边点一张，或者新建一张</b>' +
-      '<span>树上是三组卡，点文件夹名能收起、展开。<br>改完自动存，画布那边看到的是同一份。</span>' +
+      '<span>树上是四组卡，点文件夹名能收起、展开。<br>改完自动存，画布那边看到的是同一份。</span>' +
       '<div class="row">' + row + '</div>' +
     '</div>';
   }
@@ -416,13 +440,16 @@
     var d = TK[s];
     if (!d) return;
     var no = nextNo();
+    var ff = { name: d.f.name, big: '', a: d.f.a, b: '', c: '' };
+    if (d.f.au) ff.au = d.f.au;      /* 推特卡的作者和账号 */
+    if (d.f.at) ff.at = d.f.at;
     var w = {
       id: uid(), fileId: uid(), name: d.name, kind: 'note', size: 0,
       url: '', x: 60, y: lowestY() + 40, w: 344, h: 640,
       z: 120, scroll: 0, sk: null, lock: 0,
       note: {
         style: s, html: '', no: no, date: today(),
-        f: { name: d.f.name, big: '', a: d.f.a, b: '', c: '' }
+        f: ff
       }
     };
     w.fileId = w.id;
@@ -535,6 +562,15 @@
       w.name = nm ? (nm.length > 18 ? nm.slice(0, 18) + '…' : nm) : (TK[w.note.style] || {}).name || '卡片';
     }
     paintField(t);
+    /* 推特卡改作者名，头像那个首字母跟着换（不重绘整张卡，光标不会掉） */
+    if (kk === 'au') {
+      var cw = t.closest('.cd-card');
+      var av = cw && cw.querySelector('.tw-av');
+      if (av) {
+        var avTxt = plain(w.note.f.au);
+        av.innerHTML = avTxt ? esc(avTxt.slice(0, 1).toUpperCase()) : X_SVG;
+      }
+    }
     if (kk === 'name') {
       /* 树里那一行的名字跟着改，别整个重画（会丢光标） */
       var fl = document.querySelector('.cd-fl[data-id="' + w.id + '"]');
