@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>网页矩阵</title>
+<style>
+  :root{
+    --bg:#0d0f12; --panel:#151a21; --line:#232a33; --text:#e8edf4; --dim:#8a95a5;
+    --accent:#ff7a45;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:15px/1.6 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    padding:48px 24px 80px;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  header{margin-bottom:36px}
+  h1{margin:0 0 8px;font-size:26px;letter-spacing:.5px}
+  .sub{color:var(--dim);font-size:13px}
+  .bar{display:flex;gap:8px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .chip{
+    padding:4px 10px;border:1px solid var(--line);border-radius:999px;
+    font-size:12px;color:var(--dim);background:var(--panel)
+  }
+  h2{
+    font-size:13px;font-weight:600;color:var(--dim);letter-spacing:1px;
+    margin:34px 0 14px;text-transform:uppercase
+  }
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px}
+  a.card{
+    display:block;padding:18px;border:1px solid var(--line);border-radius:12px;
+    background:var(--panel);color:inherit;text-decoration:none;
+    transition:transform .18s ease,border-color .18s ease,background .18s ease
+  }
+  a.card:hover{transform:translateY(-3px);border-color:var(--accent);background:#1a2029}
+  .name{font-size:16px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .dot{width:6px;height:6px;border-radius:50%;background:#38d39f;flex:none}
+  .desc{color:var(--dim);font-size:13px;min-height:40px}
+  .path{margin-top:12px;font-size:12px;color:#5f6b7c;font-family:ui-monospace,Consolas,monospace;
+        overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .empty{color:var(--dim);font-size:13px;padding:18px;border:1px dashed var(--line);border-radius:12px}
+  footer{margin-top:56px;color:#5f6b7c;font-size:12px;border-top:1px solid var(--line);padding-top:16px}
+  code{font-family:ui-monospace,Consolas,monospace;color:#9fb0c6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>网页矩阵</h1>
+    <div class="sub">一个入口，看全部网页。新增页面只需在 <code>sites/sites.json</code> 追加一条。</div>
+    <div class="bar">
+      <span class="chip" id="count">加载中…</span>
+      <span class="chip" id="updated"></span>
+    </div>
+  </header>
+  <main id="list"></main>
+  <footer>
+    已上线的老页面路径已冻结：<code>index.html</code> · <code>cards.html</code> · <code>library.html</code> · <code>solar-gard/</code><br>
+    新网页统一放 <code>sites/&lt;slug&gt;/index.html</code>，不要把老文件挪位置。
+  </footer>
+</div>
+<script>
+(function(){
+  var list = document.getElementById('list');
+  fetch('sites.json', {cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error(r.status);
+    return r.json();
+  }).then(render).catch(function(){
+    list.innerHTML = '<div class="empty">读不到 sites.json。请确认和本页在同一目录下。</div>';
+  });
+
+  function render(data){
+    var sites = (data && data.sites) || [];
+    document.getElementById('count').textContent = sites.length + ' 个页面';
+    document.getElementById('updated').textContent = data.updated_at ? '更新于 ' + data.updated_at : '';
+
+    var groups = {};
+    sites.forEach(function(s){ (groups[s.group || '其他'] = groups[s.group || '其他'] || []).push(s); });
+
+    var html = '';
+    Object.keys(groups).forEach(function(g){
+      html += '<h2>' + esc(g) + '</h2><div class="grid">';
+      groups[g].forEach(function(s){
+        html += '<a class="card" href="' + esc(s.url) + '">'
+          + '<div class="name"><span class="dot"></span>' + esc(s.name) + '</div>'
+          + '<div class="desc">' + esc(s.desc || '') + '</div>'
+          + '<div class="path">' + esc(s.url) + '</div>'
+          + '</a>';
+      });
+      html += '</div>';
+    });
+    list.innerHTML = html || '<div class="empty">还没有登记任何页面。</div>';
+  }
+
+  function esc(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+})();
+</script>
+</body>
+</html>
