@@ -1,0 +1,34 @@
+{
+  "updated_at": "2026-11-21",
+  "note": "网页矩阵清单。新增网页只在本文件追加一条，并把页面放进 sites/<slug>/。禁止改动下方 legacy 路径。",
+  "sites": [
+    {
+      "name": "工作台",
+      "url": "../index.html",
+      "desc": "选题雷达 · 口播工坊 · 成品文案 · 战报 · 图书馆",
+      "group": "已上线",
+      "legacy": true
+    },
+    {
+      "name": "卡片",
+      "url": "../cards.html",
+      "desc": "知识卡片与图文排版",
+      "group": "已上线",
+      "legacy": true
+    },
+    {
+      "name": "图书馆",
+      "url": "../library.html",
+      "desc": "读书库与书摘",
+      "group": "已上线",
+      "legacy": true
+    },
+    {
+      "name": "全车配件报价",
+      "url": "../solar-gard/",
+      "desc": "给老板用的报价页 · 请勿改动路径",
+      "group": "已上线",
+      "legacy": true
+    }
+  ]
+}

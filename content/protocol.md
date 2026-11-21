@@ -20,6 +20,7 @@ content/topics.json               Trae 写（雷达打分结果）→ WorkBuddy 
 index.html  assets/               Trae 的地盘
 videos-data.json  feishu-data.json  library-data.json  radar-data.json   Trae 的地盘
 tools/                            Trae 的地盘（publish.py 是两边共用的发布器）
+sites/                            Trae 的地盘（网页矩阵：所有新网页都放这里）
 ```
 
 铁律：**只改自己地盘的文件**。跨界的活由老板决定派给谁。
@@ -263,22 +264,56 @@ py -3 tools/publish.py <你改过的文件...> -m "一句话说明"
 选题池已经不在口播工坊了：雷达候选行右边点「写」，直接开一条空稿跳进编辑器。
 代码归属：`rdc*` 开头的函数与 css 里 `09 · 每日雷达改版` 那一段，归 WorkBuddy。
 
-## 十一、URL 契约（谁都不许改）
+## 十一、URL 契约（红线，谁都不许改）
 
-线上从 `gh-pages` 根目录发布，路径即 URL，改路径等于让已发出去的链接 404。
-以下路径永久冻结，禁止移动、重命名、删除：
+线上从 `gh-pages` 分支根目录发布，**路径就是 URL**，挪一个文件就有一个已发出去的链接变 404。
+GitHub Pages 是纯静态托管，没有 301，只能靠页面里的 meta refresh 补救——所以不要挪。
 
-- index.html      → https://gaogao25804-del.github.io/my-workbench/
-- cards.html      → .../cards.html
-- library.html    → .../library.html
-- solar-gard/     → .../solar-gard/   （只存在于 gh-pages，main 里没有）
+以下路径**永久冻结**，禁止移动、重命名、删除：
 
-根目录的 *-data.json 是页面 fetch 的公开数据，同样不能挪。
-要调整结构，只能在不动上述路径的前提下加新目录。
+| 冻结路径 | 线上地址 | 说明 |
+|---|---|---|
+| `index.html` | `.../my-workbench/` | 工作台首页 |
+| `cards.html` | `.../my-workbench/cards.html` | 卡片 |
+| `library.html` | `.../my-workbench/library.html` | 图书馆 |
+| `solar-gard/` | `.../my-workbench/solar-gard/` | 全车配件报价页，**老板在用**，整目录不许碰 |
 
-**2026-11-21 核对（WorkBuddy）**：`gh-pages` 根目录下 `index.html`、`cards.html`、
-`library.html`、`solar-gard/` 四个路径都在原位；`desk-data.json`、`radar-data.json`、
-`wechat-feed.json`、`library-data.json`、`videos-data.json`、`feishu-*.json`、
-`tasks-raw.json`、`calendar-raw.json` 也都在根目录没挪。`main` 里确实没有 `solar-gard`。
-近期改动只动了文件内容，没动路径，也没新建同名目录。
+另外这些也不能挪，页面在运行时按相对路径直接读它们：
+
+- 根目录的 `*-data.json`（`radar-data.json`、`videos-data.json`、`feishu-data.json`、`library-data.json` 等）
+- `assets/`、`content/`
+- `solar-gard/` **只在 `gh-pages` 分支存在，`main` 里没有**，所以更不能用 main 整树覆盖 gh-pages
+
+要"整理结构"只能加新目录，不能搬老文件。
+
+## 十二、网页矩阵（2026-11-21 起）
+
+老板后续要上很多网页，所以定一个固定扩展位，避免根目录继续变乱。
+
+结构：
+
+```
+my-workbench/
+├─ index.html  cards.html  library.html  solar-gard/   ← 冻结的老入口
+├─ sites/                 ← 新网页全放这里（Trae 的地盘）
+│  ├─ index.html          ← 矩阵导航页，地址 .../my-workbench/sites/
+│  ├─ sites.json          ← 矩阵清单
+│  └─ <slug>/index.html   ← 以后每个新网页一个目录
+├─ assets/  content/  tools/  *-data.json               ← 冻结，保持原路径
+└─ .nojekyll               ← 关掉 Jekyll 构建
+```
+
+新增一个网页的步骤（只有两步）：
+
+1. 页面放进来：`sites/<slug>/index.html`，页面内引用共享资源用 `../../assets/...`
+2. 在 `sites/sites.json` 的 `sites[]` 里追加一条 `{ "name", "url": "<slug>/", "desc", "group" }`
+
+线上地址即 `https://gaogao25804-del.github.io/my-workbench/sites/<slug>/`。
+
+规矩：
+
+- 老入口（表里那四个）不许搬进 `sites/`，发现有人搬了就退回去
+- `sites/` 归 Trae；WorkBuddy 如果要上新页面，跟老板说一声再动手，别直接改 `sites.json`
+- 发布照旧走 `py -3 tools/publish.py <文件...>`，**双分支都要写**
+- `.nojekyll` 不许删，删了 Jekyll 会回来扫全站，构建容易失败
 
