@@ -262,3 +262,23 @@ py -3 tools/publish.py <你改过的文件...> -m "一句话说明"
 
 选题池已经不在口播工坊了：雷达候选行右边点「写」，直接开一条空稿跳进编辑器。
 代码归属：`rdc*` 开头的函数与 css 里 `09 · 每日雷达改版` 那一段，归 WorkBuddy。
+
+## 十一、URL 契约（谁都不许改）
+
+线上从 `gh-pages` 根目录发布，路径即 URL，改路径等于让已发出去的链接 404。
+以下路径永久冻结，禁止移动、重命名、删除：
+
+- index.html      → https://gaogao25804-del.github.io/my-workbench/
+- cards.html      → .../cards.html
+- library.html    → .../library.html
+- solar-gard/     → .../solar-gard/   （只存在于 gh-pages，main 里没有）
+
+根目录的 *-data.json 是页面 fetch 的公开数据，同样不能挪。
+要调整结构，只能在不动上述路径的前提下加新目录。
+
+**2026-11-21 核对（WorkBuddy）**：`gh-pages` 根目录下 `index.html`、`cards.html`、
+`library.html`、`solar-gard/` 四个路径都在原位；`desk-data.json`、`radar-data.json`、
+`wechat-feed.json`、`library-data.json`、`videos-data.json`、`feishu-*.json`、
+`tasks-raw.json`、`calendar-raw.json` 也都在根目录没挪。`main` 里确实没有 `solar-gard`。
+近期改动只动了文件内容，没动路径，也没新建同名目录。
+
