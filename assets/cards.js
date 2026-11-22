@@ -764,7 +764,7 @@
   }
   if (window.WBSync) {
     window.WBSync.init({
-      onApplied: function () { frozen = true; location.reload(); },
+      onApplied: function () { frozen = true; window.__wbReloading = 1; location.reload(); },
       onStatus: function (kind, text) {
         var b = $('btnSync');
         if (!b) return;
@@ -782,4 +782,7 @@
     if (!document.hidden) return;
     saveNow();
   });
+
+  /* 给页签切换用：卡片在隐藏状态下画过一次，亮出来时位置/手绘标记要重算 */
+  window.CDCards = { repaint: function () { renderPane(); } };
 })();

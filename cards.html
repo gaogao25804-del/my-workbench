@@ -4,24 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbfbfd">
-<title>卡片库 · 选题 / 卡点 / 开头</title>
+<title>策划管理 · 这个月要交什么</title>
 <link rel="stylesheet" href="assets/desk.css?v=1118w">
-<link rel="stylesheet" href="assets/cards.css?v=1122b">
+<link rel="stylesheet" href="assets/cards.css?v=1123a">
+<link rel="stylesheet" href="assets/planner.css?v=1123a">
 </head>
-<body class="cd-page">
+<body class="cd-page" data-tab="plan">
 
 <div class="cd-bg" aria-hidden="true"><canvas></canvas></div>
 
 <header class="cd-bar">
-  <b class="cd-title">卡片库</b>
-  <span class="cd-sub">选题能复用 · 坑能翻 · 开头能抄 · 推文能存</span>
-  <a class="cd-btn cd-entry" href="sites/planner/" title="这月五个账号要交什么">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3.6" y="5.2" width="16.8" height="15" rx="2.4"/>
-      <path d="M8 3.4v3.4M16 3.4v3.4M3.6 10.2h16.8"/>
-    </svg>
-    策划
-  </a>
+  <b class="cd-title">策划管理</b>
+  <div class="cd-tabs" id="cdTabs" role="tablist">
+    <button type="button" data-tab="plan" role="tab">策划</button>
+    <button type="button" data-tab="cards" role="tab">卡片库</button>
+  </div>
+  <span class="cd-sub">五个账号这个月要交什么 · 卡也能翻</span>
   <div class="grow"></div>
   <button class="dk-cloud" id="btnSync" type="button" title="同步：手机上打开就能看到同一份">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -44,7 +42,7 @@
   </button>
 </header>
 
-<main class="cd-wrap">
+<main class="cd-wrap" id="cardPane" hidden>
 
   <aside class="cd-tree" id="cdTreeWrap">
     <div class="cd-find">
@@ -59,6 +57,61 @@
   </aside>
 
   <section class="cd-pane" id="cdPane"></section>
+
+</main>
+
+<!-- ================= 策划：一个月一张清单 ================= -->
+<main class="pl-wrap" id="planPane">
+
+  <!-- 月份 + 三个数 -->
+  <section class="pl-card pl-top">
+    <div class="pl-month">
+      <button class="pl-nav" type="button" id="plPrev" title="上个月" aria-label="上个月">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg>
+      </button>
+      <b class="pl-ym" id="plYm">2026 年 11 月</b>
+      <button class="pl-nav" type="button" id="plNext" title="下个月" aria-label="下个月">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg>
+      </button>
+      <label class="pl-pickwrap" title="直接选月份">
+        <input class="pl-pick" id="plPick" type="month" aria-label="选择月份">
+      </label>
+      <button class="cd-btn" type="button" id="plToday">回到本月</button>
+    </div>
+    <div class="pl-stats" id="plStats">
+      <div class="pl-stat"><b id="pTotal">0</b><span>本月计划</span></div>
+      <div class="pl-stat is-doing"><b id="pDoing">0</b><span>正在推进</span></div>
+      <div class="pl-stat is-done"><b id="pDone">0</b><span>已完成</span></div>
+    </div>
+  </section>
+
+  <!-- 加一条 -->
+  <section class="pl-card">
+    <div class="pl-hd"><b>加一条</b><span>名称必填，其他都能空着，回车就加</span></div>
+    <form class="pl-form" id="plForm" autocomplete="off">
+      <input class="pl-in is-name" id="fName" type="text" placeholder="计划名称，比如：iPhone Duo 退货那条口播">
+      <select class="pl-in" id="fAcct"></select>
+      <input class="pl-in is-due" id="fDue" type="date" title="截止日期（不填就排在最后）">
+      <input class="pl-in is-note" id="fNote" type="text" placeholder="备注（可不填）">
+      <select class="pl-in is-st" id="fSt">
+        <option value="todo">未开始</option>
+        <option value="doing">进行中</option>
+        <option value="done">已完成</option>
+      </select>
+      <button class="cd-btn pl-add" type="submit" id="plAdd">加进去</button>
+    </form>
+  </section>
+
+  <!-- 列表 -->
+  <section class="pl-card pl-listcard">
+    <div class="pl-hd">
+      <b>这个月的计划</b>
+      <span id="plSorted">按截止日期排，没日期的垫底</span>
+      <div class="grow"></div>
+      <div class="pl-chips" id="plChips"></div>
+    </div>
+    <div class="pl-rows" id="plRows"></div>
+  </section>
 
 </main>
 
@@ -107,8 +160,47 @@
 <script src="assets/ntbar.js?v=1118s"></script>
 <script src="assets/mark.js?v=1118s"></script>
 <script src="assets/grid-bg.js?v=1118t"></script>
-<script src="assets/sync.js?v=1122a"></script>
+<script src="assets/sync.js?v=1123a"></script>
 <script src="assets/store.js?v=1120a"></script>
-<script src="assets/cards.js?v=1122b"></script>
+<script src="assets/cards.js?v=1123a"></script>
+<script>window.CDSHARED = 1;   /* 同一个页面里，主题/同步/顶栏按钮都归 cards.js 管，策划只管自己的清单 */</script>
+<script src="assets/planner.js?v=1123a"></script>
+<script>
+/* 顶部两个页签：策划 / 卡片库。记住上次停在哪一页，?tab=cards 也能直接进 */
+(function () {
+  var K = 'wb.tab.v1';
+  var bar = document.getElementById('cdTabs');
+  var plan = document.getElementById('planPane');
+  var card = document.getElementById('cardPane');
+  if (!bar || !plan || !card) return;
+
+  function go(t, remember) {
+    var isPlan = t !== 'cards';
+    document.body.setAttribute('data-tab', isPlan ? 'plan' : 'cards');
+    plan.hidden = !isPlan;
+    card.hidden = isPlan;
+    Array.prototype.forEach.call(bar.children, function (b) {
+      var on = (b.getAttribute('data-tab') === 'cards') === (t === 'cards');
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    if (remember) { try { localStorage.setItem(K, t); } catch (e) {} }
+    /* 卡片那边是在隐藏状态下画的，手绘标记算不到位置，亮出来时重画一遍 */
+    if (!isPlan && window.CDCards) window.CDCards.repaint();
+  }
+
+  bar.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tab]');
+    if (b) go(b.getAttribute('data-tab'), 1);
+  });
+
+  var t = '';
+  try {
+    var m = location.search.match(/[?&]tab=(cards|plan)/);
+    t = (m && m[1]) || localStorage.getItem(K) || '';
+  } catch (e) {}
+  go(t === 'cards' ? 'cards' : 'plan', 0);
+})();
+</script>
 </body>
 </html>
