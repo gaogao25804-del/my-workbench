@@ -73,9 +73,55 @@ body.cd-page {
 .cd-back:hover { background: var(--dk-win-h); border-color: rgba(0, 0, 0, .18); }
 [data-theme="dark"] .cd-back:hover { border-color: rgba(255, 255, 255, .22); }
 
-.cd-title { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.cd-title { font-size: 15px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
 .cd-sub { font-size: 11.5px; color: var(--dk-tx3); }
 .cd-bar .grow { flex: 1 1 auto; }
+
+/* 顶栏两个页签：策划 / 卡片库 */
+.cd-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  margin-left: 4px;
+  border: 1px solid var(--dk-bd2);
+  border-radius: 8px;
+  background: var(--dk-win-h);
+}
+.cd-tabs button {
+  height: 25px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dk-tx2);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cd-tabs button:hover { color: var(--dk-tx); }
+.cd-tabs button.is-on {
+  background: var(--dk-win);
+  color: var(--dk-tx);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .09);
+}
+[data-theme="dark"] .cd-tabs button.is-on { box-shadow: 0 1px 2px rgba(0, 0, 0, .55); }
+
+/* 回收站是卡片库的东西，切到策划就收起来 */
+body[data-tab="plan"] #btnTrash { display: none; }
+
+/* 小屏顶栏：标题让位给页签，回收站只留图标 */
+@media (max-width: 660px) {
+  .cd-bar { gap: 7px; padding: 0 14px; }
+  .cd-bar .cd-title { display: none; }
+  .cd-tabs { margin-left: 0; }
+  #btnTrash { padding: 0 8px; font-size: 0; gap: 4px; }
+  #btnTrash svg { width: 15px; height: 15px; }
+}
+
+/* 两个页签各是一整块，切换时整块亮/灭 */
+[hidden] { display: none !important; }
 
 .cd-btn {
   display: inline-flex;

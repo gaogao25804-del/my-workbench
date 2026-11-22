@@ -14,6 +14,11 @@
   var ACCTS = ['数码大号', '数码小号', '理想账号', '丹姐账号', '洗车账号', '临时项目'];
   var ST = { todo: '未开始', doing: '进行中', done: '已完成' };
 
+  /* 合并进 cards.html 之后，主题、同步、顶栏按钮都归 cards.js，
+     这边只管清单本身，别去抢那几件事（抢了会互相打架：主题被切两下等于没切、
+     WBSync 被 init 两次、重载时把云端刚拉下来的计划又写回旧的） */
+  var SHARED = !!window.CDSHARED;
+
   var D = null;
   var ym = '';            /* 当前看的月份 'YYYY-MM' */
   var filter = 'all';     /* all / todo / doing / done */
@@ -56,7 +61,7 @@
     return D;
   }
   function saveNow() {
-    if (frozen) return;
+    if (frozen || window.__wbReloading) return;   /* 正在按云端数据重载，别再往回写 */
     D.at = Date.now();
     try { localStorage.setItem(PK, JSON.stringify(D)); }
     catch (e) { toast('没存上：' + ((e && e.message) || e)); }
@@ -231,17 +236,19 @@
   load();
 
   /* 第一次用：主题先跟着卡片库那份，之后各调各的 */
-  if (!D.theme) {
-    try {
-      var c = JSON.parse(localStorage.getItem('wb.cards.v1') || 'null');
-      if (c && c.theme) D.theme = c.theme;
-      else {
-        var k = JSON.parse(localStorage.getItem('wb.desk.v1') || 'null');
-        if (k && k.theme) D.theme = k.theme;
-      }
-    } catch (e) {}
+  if (!SHARED) {
+    if (!D.theme) {
+      try {
+        var c0 = JSON.parse(localStorage.getItem('wb.cards.v1') || 'null');
+        if (c0 && c0.theme) D.theme = c0.theme;
+        else {
+          var k0 = JSON.parse(localStorage.getItem('wb.desk.v1') || 'null');
+          if (k0 && k0.theme) D.theme = k0.theme;
+        }
+      } catch (e) {}
+    }
+    applyTheme(D.theme === 'dark' ? 'dark' : 'light');
   }
-  applyTheme(D.theme === 'dark' ? 'dark' : 'light');
 
   ym = thisMonth();
 
@@ -330,7 +337,8 @@
     saveSoon();
   });
 
-  $('btnTheme').addEventListener('click', function () {
+  var btnTheme = SHARED ? null : $('btnTheme');
+  if (btnTheme) btnTheme.addEventListener('click', function () {
     D.theme = D.theme === 'dark' ? 'light' : 'dark';
     applyTheme(D.theme);
     saveSoon();
@@ -342,11 +350,12 @@
   });
 
   /* ---------------- 同步 ---------------- */
-  var btnSync = $('btnSync');
+  /* 单页版（sites/planner/）自己管；合并进 cards.html 后由 cards.js 统一管 */
+  var btnSync = SHARED ? null : $('btnSync');
   if (btnSync && window.WBSync) {
     btnSync.addEventListener('click', function () { window.WBSync.panel(); });
   }
-  if (window.WBSync) {
+  if (!SHARED && window.WBSync) {
     window.WBSync.init({
       onApplied: function () { frozen = true; clearTimeout(saveT); location.reload(); },
       onStatus: function (kind, text) {
