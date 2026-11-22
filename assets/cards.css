@@ -120,12 +120,12 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
-  gap: 26px;
+  grid-template-columns: 252px minmax(0, 1fr);
+  gap: 18px;
   align-items: start;
-  max-width: 1400px;
+  max-width: 1000px;              /* 收窄：这一页是拿来读的，不是画布 */
   margin: 0 auto;
-  padding: 20px 22px 70px;
+  padding: 16px 20px 60px;
 }
 
 /* 三组的颜色：树上的小方块和卡片大标题共用这一套 */
@@ -356,12 +356,22 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
 }
 .cd-back-m svg { width: 13px; height: 13px; }
 
-.cd-pane .cd-card { max-width: 820px; padding: 26px 32px 30px; min-height: 400px; }
-.cd-pane .cd-body { min-height: 240px; max-width: 700px; font-size: 14.5px; }
+/* 右栏那张「纸」：贴平的一页，别再飘成一扇窗 */
+.cd-pane .cd-card {
+  max-width: 700px;
+  padding: 17px 21px 19px;
+  min-height: 0;
+  border: 1px solid var(--dk-bd);
+  border-radius: 10px;
+  box-shadow: none;
+}
+.cd-pane .cd-card:hover { box-shadow: none; }
+[data-theme="dark"] .cd-pane .cd-card { box-shadow: none; }
+.cd-pane .cd-body { min-height: 90px; max-width: 630px; font-size: 13.5px; line-height: 1.82; }
 
 .cd-pane-empty {
-  max-width: 840px;
-  padding: 78px 24px;
+  max-width: 660px;
+  padding: 42px 24px;
   border: 1px dashed var(--dk-bd);
   border-radius: 14px;
   text-align: center;
@@ -390,8 +400,8 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
   body.cd-reading .cd-tree { display: none; }
   body.cd-reading .cd-pane { display: flex; }
   .cd-back-m { display: inline-flex; }
-  .cd-pane .cd-card { min-height: auto; padding: 20px 18px 26px; }
-  .cd-pane .cd-body { min-height: 220px; }
+  .cd-pane .cd-card { min-height: auto; padding: 15px 16px 18px; }
+  .cd-pane .cd-body { min-height: 80px; }
   .cd-sub { display: none; }
 }
 
@@ -431,8 +441,8 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
 .tw-hd {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 1px 0 14px;
+  gap: 9px;
+  margin: 1px 0 10px;
   padding-right: 30px;          /* 右上角那个 ✕ 的地盘，别和 X 标志挤一起 */
 }
 /* 头像：拿名字第一个字当形象，没填名字就是 X 那个标志 */
@@ -441,12 +451,12 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--c);
   color: var(--dk-win);         /* 反色：浅色主题白字、深色主题深字，两边都清楚 */
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0;
   user-select: none;
@@ -484,20 +494,20 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
 }
 /* 推文本来就是一行行读的，标题别撑到 30px 那么凶 */
 .cd-card[data-tk="tweet"] .cd-name {
-  font-size: 22px;
-  line-height: 1.46;
-  letter-spacing: -.018em;
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: -.016em;
 }
-.cd-card[data-tk="tweet"] .cd-body { margin-top: 11px; padding-top: 12px; }
+.cd-card[data-tk="tweet"] .cd-body { margin-top: 9px; padding-top: 10px; }
 .cd-card[data-tk="tweet"] .cd-del { top: 7px; right: 9px; }
 
 /* 大标题：原来票根卡上那个字的字体和配色，一个字没改 */
 .cd-name {
-  padding-right: 26px;
-  font-size: 30px;
-  font-weight: 800;
-  line-height: 1.32;
-  letter-spacing: -.032em;
+  padding-right: 24px;
+  font-size: 21px;
+  font-weight: 780;
+  line-height: 1.4;
+  letter-spacing: -.024em;
   background: linear-gradient(96deg, var(--c) 4%, var(--c2) 88%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -553,12 +563,12 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
 
 /* 写小字的地方 */
 .cd-body {
-  margin-top: 13px;
-  padding-top: 15px;
+  margin-top: 11px;
+  padding-top: 13px;
   border-top: 1px solid var(--dk-bd2);
-  min-height: 240px;
+  min-height: 120px;
   font-size: 13.5px;
-  line-height: 1.95;
+  line-height: 1.82;
   color: var(--dk-tx2);
   outline: none;
   word-break: break-word;

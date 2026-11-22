@@ -230,11 +230,13 @@
 
   function spRand(a, b) { return a + Math.random() * (b - a); }
 
-  function spMake() {
+  function spMake(size) {
+    var n = size || 21;
     var svg = document.createElementNS(SP_NS, 'svg');
     svg.setAttribute('viewBox', '0 0 21 21');
-    svg.setAttribute('width', '21');
-    svg.setAttribute('height', '21');
+    svg.setAttribute('width', n);
+    svg.setAttribute('height', n);
+    svg.style.margin = (-n / 2) + 'px 0 0 ' + (-n / 2) + 'px';   /* 以落点为圆心 */
     svg.setAttribute('aria-hidden', 'true');
     var p = document.createElementNS(SP_NS, 'path');
     p.setAttribute('d', SP_PATH);
@@ -275,8 +277,11 @@
       if (!txt) return;                                    /* 空标题不放星星 */
       layer.setAttribute('data-on', '1');
       var n = Math.max(12, Math.min(20, Math.round(txt.length * 1.5)));
+      /* 星星跟着标题字号走：标题缩了，星星别还顶着老尺寸 */
+      var fs = parseFloat(window.getComputedStyle(name).fontSize) || 21;
+      var sz = Math.max(10, Math.min(21, Math.round(fs * 0.66)));
       for (var i = 0; i < n; i++) {
-        var svg = spMake();
+        var svg = spMake(sz);
         spPaint(svg);
         layer.appendChild(svg);
       }
