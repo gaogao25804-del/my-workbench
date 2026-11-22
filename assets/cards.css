@@ -94,6 +94,10 @@ body.cd-page {
 }
 .cd-btn svg { width: 14px; height: 14px; }
 .cd-btn:hover { background: var(--dk-win-h); }
+
+/* 用 <a> 当按钮（比如跳到「策划」页）时，别带下划线 */
+a.cd-btn { text-decoration: none; }
+a.cd-entry { font-weight: 600; margin-left: 6px; }
 .cd-btn.is-danger { color: #d0373c; border-color: rgba(208, 55, 60, .3); }
 .cd-btn.is-danger:hover { background: rgba(208, 55, 60, .08); }
 #btnTheme { padding: 0 8px; }
