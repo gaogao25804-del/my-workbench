@@ -108,13 +108,11 @@ body.cd-page {
 }
 [data-theme="dark"] .cd-tabs button.is-on { box-shadow: 0 1px 2px rgba(0, 0, 0, .55); }
 
-/* 回收站是卡片库的东西，切到策划就收起来 */
-body[data-tab="plan"] #btnTrash { display: none; }
-
 /* 小屏顶栏：标题让位给页签，回收站只留图标 */
 @media (max-width: 660px) {
   .cd-bar { gap: 7px; padding: 0 14px; }
-  .cd-bar .cd-title { display: none; }
+  /* 页签没了以后标题得留着，不然顶栏左边空一大块 */
+  .cd-bar .cd-title { font-size: 14px; }
   .cd-tabs { margin-left: 0; }
   #btnTrash { padding: 0 8px; font-size: 0; gap: 4px; }
   #btnTrash svg { width: 15px; height: 15px; }
@@ -440,7 +438,7 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
 .cd-pane-empty .row button:hover { border-color: var(--c); color: var(--c); }
 
 @media (max-width: 880px) {
-  .cd-wrap { grid-template-columns: 1fr; gap: 12px; padding: 12px 12px 40px; }
+  .cd-wrap, .cd-main { grid-template-columns: 1fr; gap: 12px; padding: 12px 12px 40px; }
   .cd-tree { position: static; height: auto; }
   .cd-pane { display: none; }
   body.cd-reading .cd-tree { display: none; }

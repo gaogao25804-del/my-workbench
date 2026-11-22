@@ -28,8 +28,8 @@ body.cd-page {
   --pl-sh: 0 1px 2px rgba(0, 0, 0, .45), 0 18px 44px -28px rgba(0, 0, 0, .95);
 }
 
-/* ---------------- 底色：奶油到暖白 ---------------- */
-body.cd-page[data-tab="plan"] {
+/* ---------------- 底色：奶油到暖白，整页都这一套 ---------------- */
+body.cd-page {
   background-color: #fbe8da;
   background-image:
     radial-gradient(120% 78% at 50% -12%, #fbdbc4 0%, rgba(251, 219, 196, 0) 62%),
@@ -37,14 +37,14 @@ body.cd-page[data-tab="plan"] {
     linear-gradient(180deg, #fdf4ec 0%, #f8e7d9 100%);
   background-attachment: fixed;
 }
-[data-theme="dark"] body.cd-page[data-tab="plan"] {
+[data-theme="dark"] body.cd-page {
   background-color: #121214;
   background-image:
     radial-gradient(110% 70% at 50% -10%, rgba(126, 84, 52, .34) 0%, rgba(126, 84, 52, 0) 60%),
     linear-gradient(180deg, #16130f 0%, #121214 100%);
 }
-/* 策划页不要那层网格，参考图是干净的 */
-body[data-tab="plan"] .cd-bg { display: none; }
+/* 网格那层不要了，参考图是干净的 */
+.cd-bg { display: none; }
 
 /* ---------------- 顶栏：白色圆角条，浮在暖底上 ---------------- */
 .cd-bar {
@@ -62,75 +62,80 @@ body[data-tab="plan"] .cd-bg { display: none; }
   box-shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 14px 36px -24px rgba(0, 0, 0, .9);
 }
 .cd-bar .cd-title { font-size: 15.5px; letter-spacing: -.02em; }
-.cd-tabs {
-  margin-left: 16px;
-  padding: 3px;
-  border: none;
-  border-radius: 10px;
-  background: var(--pl-soft);
-  gap: 1px;
+.cd-bar .cd-sub {
+  margin-left: 2px;
+  font-size: 11.5px;
+  color: var(--pl-tx3);
 }
-.cd-tabs button {
-  height: 26px;
-  padding: 0 13px;
-  border-radius: 8px;
-  font-size: 12.5px;
-}
-.cd-tabs button.is-on {
-  background: var(--pl-card);
-  box-shadow: 0 1px 3px rgba(64, 44, 24, .16);
-}
-body[data-tab="plan"] .cd-sub { display: none; }
 
-/* ---------------- 版面 ---------------- */
-.pl-wrap {
+
+/* ================= 一屏两半：左边策划，右边卡片 ================= */
+.cd-split {
   position: relative;
   z-index: 1;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 16px 18px 72px;
+  display: grid;
+  grid-template-columns: 398px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 12px 12px 44px;
 }
 
-.pl-head {
+/* ---- 左：这个月要交什么。自己滚，右边卡片拉到多长都不影响它 ---- */
+.pl-wrap {
+  position: sticky;
+  top: 78px;
   display: flex;
-  align-items: flex-end;
-  gap: 22px;
-  padding: 2px 4px 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 11px;
+  min-width: 0;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 5px 2px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 88, 56, .18) transparent;
+}
+.pl-wrap::-webkit-scrollbar { width: 6px; }
+.pl-wrap::-webkit-scrollbar-thumb { background: rgba(120, 88, 56, .18); border-radius: 99px; }
+.pl-wrap::-webkit-scrollbar-track { background: transparent; }
+[data-theme="dark"] .pl-wrap { scrollbar-color: rgba(255, 255, 255, .14) transparent; }
+[data-theme="dark"] .pl-wrap::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .14); }
+
+.pl-head {
+  display: block;
+  padding: 3px 2px 2px;
 }
 .pl-head-t h1 {
-  margin: 0 0 4px;
-  font-size: 23px;
+  margin: 0 0 3px;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: -.025em;
+  letter-spacing: -.028em;
   color: var(--pl-tx);
 }
 .pl-head-t p {
   margin: 0;
-  font-size: 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
   color: var(--pl-tx2);
 }
 
 /* 六个账号，像参考图上面那排人 */
 .pl-people {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 0 0 100%;
-  overflow-x: auto;
-  max-width: 100%;
-  padding: 2px 2px 4px;
-  scrollbar-width: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px 4px;
+  margin-top: 9px;
+  padding: 1px 0 3px;
 }
-.pl-people::-webkit-scrollbar { display: none; }
 
 .pl-person {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 6px 12px 6px 6px;
+  gap: 6px;
+  min-width: 0;
+  padding: 5px 6px;
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: 12px;
   background: transparent;
   font: inherit;
   color: inherit;
@@ -148,41 +153,44 @@ body[data-tab="plan"] .cd-sub { display: none; }
 }
 
 .pp-av {
-  width: 34px;
-  height: 34px;
+  width: 27px;
+  height: 27px;
   flex: 0 0 auto;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 700;
   color: #3b2a17;
   background: linear-gradient(145deg, #f8dcaa, #efc473);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55);
 }
-.pp-b { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.pp-b { display: flex; flex-direction: column; gap: 0; min-width: 0; }
 .pp-b b {
-  font-size: 12.5px;
+  min-width: 0;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: -.01em;
   color: var(--pl-tx);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .pp-b i {
   font-style: normal;
-  font-size: 10.5px;
+  font-size: 9.5px;
   color: var(--pl-tx3);
   white-space: nowrap;
 }
 .pp-pill {
+  display: none;
   flex: 0 0 auto;
-  height: 19px;
-  padding: 0 8px;
+  height: 17px;
+  padding: 0 6px;
   border-radius: 999px;
-  display: inline-flex;
   align-items: center;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
   white-space: nowrap;
   background: #fbd3de;
@@ -192,14 +200,34 @@ body[data-tab="plan"] .cd-sub { display: none; }
 [data-theme="dark"] .pp-pill { background: rgba(226, 122, 152, .2); color: #ffb9cb; }
 [data-theme="dark"] .pp-pill.is-zero { background: rgba(255, 255, 255, .07); color: var(--pl-tx3); }
 
-/* ---------------- 两栏 ---------------- */
-.pl-grid {
+/* ---- 右：卡片库。树 + 这页纸，跟左边并排站着 ---- */
+.cd-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 358px;
+  grid-template-columns: 214px minmax(0, 1fr);
   gap: 14px;
   align-items: start;
+  min-width: 0;
 }
-.pl-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.cd-main > .cd-tree {
+  top: 78px;
+  height: calc(100vh - 96px);
+  border-color: var(--pl-line);
+  background: rgba(255, 253, 251, .8);
+}
+[data-theme="dark"] .cd-main > .cd-tree { background: rgba(30, 30, 33, .82); }
+
+/* 卡片也换成同一张纸的皮：白底、圆一点的角、跟左边一个边框色 */
+.cd-main .cd-pane .cd-card {
+  border-color: var(--pl-line);
+  border-radius: 16px;
+  background: var(--pl-card);
+  box-shadow: 0 1px 2px rgba(64, 44, 24, .05), 0 18px 44px -32px rgba(64, 44, 24, .7);
+}
+[data-theme="dark"] .cd-main .cd-pane .cd-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 18px 44px -32px rgba(0, 0, 0, .9);
+}
+.cd-main .cd-tree,
+.cd-main .cd-card { color: var(--pl-tx); }
 
 /* ---------------- 白卡 ---------------- */
 .pl-card {
@@ -259,8 +287,8 @@ body[data-tab="plan"] .cd-sub { display: none; }
 /* ================= 六块彩色小卡 ================= */
 .pl-tiles {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .pl-tile {
@@ -269,10 +297,10 @@ body[data-tab="plan"] .cd-sub { display: none; }
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
-  min-height: 108px;
-  padding: 12px 13px;
+  min-height: 92px;
+  padding: 10px 11px;
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   font: inherit;
   text-align: left;
   overflow: hidden;
@@ -291,15 +319,15 @@ button.pl-tile:active { transform: translateY(0); }
 .pt-h {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 11px;
+  gap: 6px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: -.01em;
   opacity: .92;
 }
 .pt-ic {
-  width: 19px;
-  height: 19px;
+  width: 17px;
+  height: 17px;
   flex: 0 0 auto;
   border-radius: 7px;
   display: flex;
@@ -309,10 +337,10 @@ button.pl-tile:active { transform: translateY(0); }
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5);
 }
 .pt-ic svg { width: 11px; height: 11px; }
-.pt-bot { display: flex; flex-direction: column; gap: 5px; }
+.pt-bot { display: flex; flex-direction: column; gap: 4px; }
 .pt-v {
   display: block;
-  font-size: 26px;
+  font-size: 23px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -.04em;
@@ -320,8 +348,8 @@ button.pl-tile:active { transform: translateY(0); }
 }
 .pt-s {
   display: block;
-  font-size: 10.5px;
-  line-height: 1.35;
+  font-size: 10px;
+  line-height: 1.4;
   opacity: .74;
 }
 .pt-go {
@@ -639,17 +667,19 @@ button.pl-tile:active { transform: translateY(0); }
 }
 .pl-empty b { display: block; font-size: 13.5px; color: var(--pl-tx2); margin-bottom: 3px; }
 
-/* ================= 右边的「这个月」 ================= */
-.pl-now { text-align: center; padding: 14px 15px 16px; }
-.pl-now .pl-hd { margin-bottom: 6px; text-align: left; }
+/* ================= 「这个月」：圆环在左，月份在右 ================= */
+.pl-now { text-align: left; padding: 12px 13px 13px; }
+.pl-now-row { display: flex; align-items: center; gap: 13px; }
+.pl-now-b { flex: 1 1 auto; min-width: 0; }
 
 .pl-ring {
   --p: 0;
-  width: 104px;
-  height: 104px;
-  margin: 4px auto 12px;
+  width: 80px;
+  height: 80px;
+  flex: 0 0 auto;
+  margin: 0;
   border-radius: 50%;
-  padding: 9px;
+  padding: 7px;
   background:
     conic-gradient(from -90deg,
       #a98cf0 0%,
@@ -672,7 +702,7 @@ button.pl-tile:active { transform: translateY(0); }
   gap: 1px;
 }
 .pl-ring-in b {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -.04em;
   color: var(--pl-tx);
@@ -683,27 +713,28 @@ button.pl-tile:active { transform: translateY(0); }
 
 .pl-now-ym {
   display: block;
-  font-size: 16.5px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -.02em;
   color: var(--pl-tx);
   font-variant-numeric: tabular-nums;
 }
 .pl-now-sub {
-  margin: 4px 4px 0;
-  font-size: 11px;
-  line-height: 1.6;
+  margin: 2px 0 0;
+  font-size: 10.5px;
+  line-height: 1.55;
   color: var(--pl-tx3);
 }
 .pl-month-nav {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 14px;
-  padding-top: 13px;
+  justify-content: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid var(--pl-line);
 }
+.pl-month-nav .pl-today { width: auto; padding: 0 9px; border-radius: 99px; }
 
 /* 圆形按钮里的月份选择器：整块透明的，点哪儿都开日历 */
 .pl-pickwrap { position: relative; overflow: hidden; cursor: pointer; }
@@ -720,8 +751,13 @@ button.pl-tile:active { transform: translateY(0); }
 }
 
 /* ================= 右边的「加一条」 ================= */
-.pl-new .pl-hd { margin-bottom: 4px; }
-.pl-new form { display: flex; flex-direction: column; }
+/* 「加一条」平时收着，点右上角 + 才展开 —— 清单要能一眼看见 */
+.pl-new .pl-hd { margin-bottom: 0; }
+.pl-new form { display: none; }
+.pl-new.is-open .pl-hd { margin-bottom: 4px; }
+.pl-new.is-open form { display: flex; flex-direction: column; }
+.pl-new-tog svg { transition: transform .18s var(--dk-ease, ease); }
+.pl-new.is-open .pl-new-tog svg { transform: rotate(45deg); }
 
 .pl-field {
   position: relative;
@@ -802,46 +838,59 @@ select.pf-in { appearance: none; -webkit-appearance: none; cursor: pointer; padd
 [data-theme="dark"] .pl-submit { background: #f0ebe4; color: #1a1714; }
 [data-theme="dark"] .pl-submit:hover { filter: brightness(1.05); }
 
-/* ================= 手机 ================= */
-@media (max-width: 1080px) {
-  .pl-grid { grid-template-columns: minmax(0, 1fr) 320px; }
-  .pl-tile { min-height: 100px; }
-  /* 六个账号这条在这个宽度放不全，右边给个渐变提示还能往右滑 */
-  .pl-people {
-    -webkit-mask-image: linear-gradient(90deg, #000 90%, transparent);
-    mask-image: linear-gradient(90deg, #000 90%, transparent);
-  }
+/* ================= 窄一点：左栏和树一起收 ================= */
+@media (max-width: 1340px) {
+  .cd-split { grid-template-columns: 358px minmax(0, 1fr); }
+  .cd-main { grid-template-columns: 198px minmax(0, 1fr); gap: 12px; }
 }
 
+/* 再窄就别硬并排了：策划整条放上面，卡片在下面，还是一页 */
+@media (max-width: 1080px) {
+  .cd-split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 10px 12px 40px;
+  }
+  .pl-wrap {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    width: 100%;
+    max-width: 640px;      /* 单列时这条别铺满整屏，中间一竖条看着才集中 */
+    margin: 0 auto;
+  }
+  /* 上下排的时候卡片区也别拉满整屏，跟上面那条对齐着看 */
+  .cd-main {
+    grid-template-columns: 220px minmax(0, 1fr);
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .cd-main > .cd-tree { top: 74px; }
+}
 
-@media (max-width: 900px) {
-  .pl-wrap { padding: 12px 12px 84px; }
-  /* 单列时两栏拆开重排：这个月 → 概览 → 加一条 → 账号进度 → 清单 */
-  .pl-grid { display: flex; flex-direction: column; }
-  .pl-col { display: contents; }
-  .pl-now { order: 1; }
-  .pl-sum { order: 2; }
-  .pl-new { order: 3; }
-  .pl-bars-card { order: 4; }
-  .pl-listcard { order: 5; }
-  .pl-head { gap: 12px; }
-  .pl-people { width: 100%; }
+/* 手机上卡片区是「树 / 正文」二选一（和原来一样），策划在最上面 */
+@media (max-width: 880px) {
+  .cd-main { display: block; }
+  .cd-main > .cd-tree { position: static; height: auto; max-height: 56vh; }
 }
 
 @media (max-width: 620px) {
   .cd-bar { margin: 0 8px; padding: 0 8px 0 12px; }
+  .cd-bar .cd-sub { display: none; }
   .pl-head-t h1 { font-size: 19px; }
   .pl-head-t p { font-size: 11px; }
   .pl-people { gap: 2px; }
-  .pl-person { padding: 5px 8px 5px 5px; }
-  .pp-av { width: 30px; height: 30px; font-size: 11.5px; }
+  .pl-person { padding: 4px 7px 4px 4px; }
+  .pp-av { width: 26px; height: 26px; font-size: 10.5px; }
   .pp-b i { display: none; }
-  .pl-card { padding: 13px 12px 14px; border-radius: 16px; }
-  .pl-tiles { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 9px; }
-  .pl-tile { min-height: 96px; padding: 11px 12px; }
-  .pt-v { font-size: 23px; }
-  .pt-h { font-size: 10.5px; }
-  .pt-s { font-size: 10px; }
+  .pl-card { padding: 12px 12px 13px; border-radius: 15px; }
+  .pl-tiles { gap: 7px; }
+  .pl-tile { min-height: 88px; padding: 9px 10px; }
+  .pt-v { font-size: 21px; }
+  .pt-h { font-size: 10px; }
+  .pt-s { font-size: 9.5px; }
   .pl-hd { gap: 7px; }
   .pl-hd .pl-chips {
     width: 100%;
@@ -852,10 +901,14 @@ select.pf-in { appearance: none; -webkit-appearance: none; cursor: pointer; padd
   }
   .pl-hd .pl-chips::-webkit-scrollbar { display: none; }
   .pl-hd .pl-chip { flex: 0 0 auto; }
-  .pl-item { grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; padding: 11px 0; }
-  .pi-b { grid-column: auto; }
+  .pl-item { grid-template-columns: minmax(0, 1fr) auto auto; gap: 7px; padding: 10px 0; }
   .pi-stw { justify-self: end; align-self: center; }
   .pi-del { justify-self: end; align-self: center; }
-  .pl-ring { width: 92px; height: 92px; }
-  .pl-ring-in b { font-size: 19px; }
+  .pl-ring { width: 74px; height: 74px; }
+  .pl-ring-in b { font-size: 16.5px; }
+}
+
+/* 系统里开了「减少动效」就别滑来滑去 */
+@media (prefers-reduced-motion: reduce) {
+  .pl-person, .pl-tile, .pl-submit { transition: none; }
 }

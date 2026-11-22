@@ -1007,7 +1007,7 @@
     /* 点空白把抽屉收起来 */
     if (!e.target.closest('.cd-card') && !e.target.closest('.cd-del')) {
       var dw = $('drawer');
-      if (dw && dw.classList.contains('is-on') && e.target.closest('.cd-wrap')) dw.classList.remove('is-on');
+      if (dw && dw.classList.contains('is-on') && e.target.closest('.cd-split')) dw.classList.remove('is-on');
     }
   });
 
