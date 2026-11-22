@@ -7,7 +7,7 @@
 <title>策划管理 · 这个月要交什么</title>
 <link rel="stylesheet" href="assets/desk.css?v=1118w">
 <link rel="stylesheet" href="assets/cards.css?v=1124a">
-<link rel="stylesheet" href="assets/planner.css?v=1123a">
+<link rel="stylesheet" href="assets/planner.css?v=1124b">
 </head>
 <body class="cd-page" data-tab="plan">
 
@@ -19,7 +19,7 @@
     <button type="button" data-tab="plan" role="tab">策划</button>
     <button type="button" data-tab="cards" role="tab">卡片库</button>
   </div>
-  <span class="cd-sub">五个账号这个月要交什么 · 卡也能翻</span>
+  <span class="cd-sub">卡和策划都在这一页，左上角换</span>
   <div class="grow"></div>
   <button class="dk-cloud" id="btnSync" type="button" title="同步：手机上打开就能看到同一份">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -63,55 +63,186 @@
 <!-- ================= 策划：一个月一张清单 ================= -->
 <main class="pl-wrap" id="planPane">
 
-  <!-- 月份 + 三个数 -->
-  <section class="pl-card pl-top">
-    <div class="pl-month">
-      <button class="pl-nav" type="button" id="plPrev" title="上个月" aria-label="上个月">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg>
-      </button>
-      <b class="pl-ym" id="plYm">2026 年 11 月</b>
-      <button class="pl-nav" type="button" id="plNext" title="下个月" aria-label="下个月">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg>
-      </button>
-      <label class="pl-pickwrap" title="直接选月份">
-        <input class="pl-pick" id="plPick" type="month" aria-label="选择月份">
-      </label>
-      <button class="cd-btn" type="button" id="plToday">回到本月</button>
+  <!-- 抬头：这个月谁还欠着 -->
+  <section class="pl-head">
+    <div class="pl-head-t">
+      <h1>这个月要交什么</h1>
+      <p id="plHeadSub">—</p>
     </div>
-    <div class="pl-stats" id="plStats">
-      <div class="pl-stat"><b id="pTotal">0</b><span>本月计划</span></div>
-      <div class="pl-stat is-doing"><b id="pDoing">0</b><span>正在推进</span></div>
-      <div class="pl-stat is-done"><b id="pDone">0</b><span>已完成</span></div>
-    </div>
+    <div class="pl-people" id="plPeople"></div>
   </section>
 
-  <!-- 加一条 -->
-  <section class="pl-card">
-    <div class="pl-hd"><b>加一条</b><span>名称必填，其他都能空着，回车就加</span></div>
-    <form class="pl-form" id="plForm" autocomplete="off">
-      <input class="pl-in is-name" id="fName" type="text" placeholder="计划名称，比如：iPhone Duo 退货那条口播">
-      <select class="pl-in" id="fAcct"></select>
-      <input class="pl-in is-due" id="fDue" type="date" title="截止日期（不填就排在最后）">
-      <input class="pl-in is-note" id="fNote" type="text" placeholder="备注（可不填）">
-      <select class="pl-in is-st" id="fSt">
-        <option value="todo">未开始</option>
-        <option value="doing">进行中</option>
-        <option value="done">已完成</option>
-      </select>
-      <button class="cd-btn pl-add" type="submit" id="plAdd">加进去</button>
-    </form>
-  </section>
+  <div class="pl-grid">
 
-  <!-- 列表 -->
-  <section class="pl-card pl-listcard">
-    <div class="pl-hd">
-      <b>这个月的计划</b>
-      <span id="plSorted">按截止日期排，没日期的垫底</span>
-      <div class="grow"></div>
-      <div class="pl-chips" id="plChips"></div>
+    <!-- ---------------- 左：概览 / 账号进度 / 清单 ---------------- -->
+    <div class="pl-col">
+
+      <section class="pl-card pl-sum">
+        <div class="pl-hd">
+          <span class="pl-hd-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.6" y="3.6" width="7.2" height="7.2" rx="2.2"/>
+              <rect x="13.2" y="3.6" width="7.2" height="7.2" rx="2.2"/>
+              <rect x="3.6" y="13.2" width="7.2" height="7.2" rx="2.2"/>
+              <rect x="13.2" y="13.2" width="7.2" height="7.2" rx="2.2"/>
+            </svg>
+          </span>
+          <b>本月概览</b>
+          <span class="pl-hd-sub" id="plSumSub">点一张卡就只看那一类</span>
+          <div class="grow"></div>
+          <button class="pl-round" type="button" id="plClear" title="取消筛选" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6.4 6.4l11.2 11.2M17.6 6.4 6.4 17.6"/></svg>
+          </button>
+        </div>
+        <div class="pl-tiles" id="plTiles"></div>
+      </section>
+
+      <section class="pl-card pl-listcard">
+        <div class="pl-hd">
+          <span class="pl-hd-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8.4 6.6h11.2M8.4 12h11.2M8.4 17.4h11.2"/>
+              <path d="M4.2 6.6h.01M4.2 12h.01M4.2 17.4h.01"/>
+            </svg>
+          </span>
+          <b>这个月的计划</b>
+          <span class="pl-hd-sub" id="plSorted">按截止日期排，没日期的垫底</span>
+          <div class="grow"></div>
+          <div class="pl-chips" id="plChips"></div>
+        </div>
+        <div class="pl-trackbox">
+          <div class="pl-track"><i id="plTrackFill"></i></div>
+          <div class="pl-ticks"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+        </div>
+        <div class="pl-rows" id="plRows"></div>
+      </section>
+
     </div>
-    <div class="pl-rows" id="plRows"></div>
-  </section>
+
+    <!-- ---------------- 右：这个月 + 加一条 ---------------- -->
+    <div class="pl-col is-side">
+
+      <section class="pl-card pl-now">
+        <div class="pl-hd">
+          <span class="pl-hd-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.4" y="5.4" width="17.2" height="15.2" rx="2.6"/>
+              <path d="M8 3.4v3.6M16 3.4v3.6M3.4 10.2h17.2"/>
+            </svg>
+          </span>
+          <b>这个月</b>
+          <div class="grow"></div>
+          <button class="pl-round" type="button" id="plToday" title="回到本月">今</button>
+        </div>
+
+        <div class="pl-ring" id="plRing">
+          <div class="pl-ring-in"><b id="plRate">0%</b><i>完成</i></div>
+        </div>
+        <b class="pl-now-ym" id="plYm">2026 年 11 月</b>
+        <p class="pl-now-sub" id="plNowSub">这个月还没排东西</p>
+
+        <div class="pl-month-nav">
+          <button class="pl-round" type="button" id="plPrev" title="上个月" aria-label="上个月">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg>
+          </button>
+          <label class="pl-round pl-pickwrap" title="直接选月份">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.4" y="5.4" width="17.2" height="15.2" rx="2.6"/>
+              <path d="M8 3.4v3.6M16 3.4v3.6M3.4 10.2h17.2"/>
+            </svg>
+            <input class="pl-pick" id="plPick" type="month" aria-label="选择月份">
+          </label>
+          <button class="pl-round" type="button" id="plNext" title="下个月" aria-label="下个月">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="pl-card pl-new">
+        <div class="pl-hd">
+          <span class="pl-hd-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5.2v13.6M5.2 12h13.6"/></svg>
+          </span>
+          <b>加一条</b>
+          <span class="pl-hd-sub">名称必填，回车就加</span>
+        </div>
+
+        <form id="plForm" autocomplete="off">
+          <label class="pl-field">
+            <span class="pf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15.4 4.6l4 4L8.2 19.8H4.2v-4z"/>
+              </svg>
+            </span>
+            <span class="pf-b"><i>计划名称</i>
+              <input class="pf-in" id="fName" type="text" placeholder="iPhone Duo 退货那条口播" spellcheck="false">
+            </span>
+          </label>
+
+          <label class="pl-field">
+            <span class="pf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8.4" r="3.6"/><path d="M5.2 19.8a6.8 6.8 0 0 1 13.6 0"/>
+              </svg>
+            </span>
+            <span class="pf-b"><i>账号</i><select class="pf-in" id="fAcct"></select></span>
+            <svg class="pf-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10l4 4 4-4"/></svg>
+          </label>
+
+          <label class="pl-field">
+            <span class="pf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3.4" y="5.4" width="17.2" height="15.2" rx="2.6"/>
+                <path d="M8 3.4v3.6M16 3.4v3.6M3.4 10.2h17.2"/>
+              </svg>
+            </span>
+            <span class="pf-b"><i>截止日期（可以不填）</i><input class="pf-in" id="fDue" type="date"></span>
+          </label>
+
+          <label class="pl-field">
+            <span class="pf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5.4 6.6h13.2M5.4 12h13.2M5.4 17.4h8"/>
+              </svg>
+            </span>
+            <span class="pf-b"><i>备注</i><input class="pf-in" id="fNote" type="text" placeholder="不一定写" spellcheck="false"></span>
+          </label>
+
+          <label class="pl-field">
+            <span class="pf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6.4 3.8v16.4"/><path d="M6.4 4.6h11l-2.4 4 2.4 4h-11z"/>
+              </svg>
+            </span>
+            <span class="pf-b"><i>进度</i>
+              <select class="pf-in" id="fSt">
+                <option value="todo">未开始</option>
+                <option value="doing">进行中</option>
+                <option value="done">已完成</option>
+              </select>
+            </span>
+            <svg class="pf-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10l4 4 4-4"/></svg>
+          </label>
+
+          <button class="pl-submit" type="submit" id="plAdd">加进去</button>
+        </form>
+      </section>
+
+      <section class="pl-card pl-bars-card">
+        <div class="pl-hd">
+          <span class="pl-hd-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.8 19.4v-7.2M12 19.4V5.2M19.2 19.4v-4.6"/>
+            </svg>
+          </span>
+          <b>账号进度</b>
+          <span class="pl-hd-sub" id="plBarsSub">这个月各交了多少</span>
+        </div>
+        <div class="pl-bars" id="plBars"></div>
+      </section>
+
+    </div>
+  </div>
 
 </main>
 
@@ -195,7 +326,7 @@
 <script src="assets/store.js?v=1120a"></script>
 <script src="assets/cards.js?v=1124a"></script>
 <script>window.CDSHARED = 1;   /* 同一个页面里，主题/同步/顶栏按钮都归 cards.js 管，策划只管自己的清单 */</script>
-<script src="assets/planner.js?v=1123a"></script>
+<script src="assets/planner.js?v=1124b"></script>
 <script>
 /* 顶部两个页签：策划 / 卡片库。记住上次停在哪一页，?tab=cards 也能直接进 */
 (function () {
