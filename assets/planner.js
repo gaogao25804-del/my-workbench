@@ -181,7 +181,7 @@
       var on = acctFilter === x.n ? ' is-on' : '';
       return '<button type="button" class="pl-person' + on + '" data-acct="' + esc(x.n) + '" title="点一下只看这个账号">' +
         '<span class="pp-av" data-c="' + x.c + '">' + x.s + '</span>' +
-        '<span class="pp-b"><b>' + esc(x.n) + '</b><i>' + mine.length + ' 条在册</i></span>' +
+        '<span class="pp-b"><b>' + esc(x.n) + '</b><i>' + (open ? open + ' 条待办' : '全清') + '</i></span>' +
         '<span class="pp-pill' + (open ? '' : ' is-zero') + '">' + (open ? open + ' 条待办' : '全清') + '</span>' +
       '</button>';
     }).join('');
@@ -490,6 +490,22 @@
   paintAll();
 
   /* ---------------- 事件 ---------------- */
+  /* 「加一条」展开 / 收起（默认收着，不占清单的地方） */
+  var newBox = $('plNew'), newTog = $('plNewTog');
+  function newOpen(open) {
+    if (!newBox) return;
+    newBox.classList.toggle('is-open', open);
+    if (newTog) newTog.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) {
+      setTimeout(function () { var f = $('fName'); if (f) f.focus(); }, 40);
+    }
+  }
+  if (newTog) {
+    newTog.addEventListener('click', function () {
+      newOpen(!newBox.classList.contains('is-open'));
+    });
+  }
+
   $('plForm').addEventListener('submit', function (e) {
     e.preventDefault();
     addPlan();
