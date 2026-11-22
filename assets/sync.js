@@ -23,12 +23,22 @@
 
   var DK = 'wb.desk.v1';             /* 画布：链接窗 / 文件窗 */
   var CK = 'wb.cards.v1';            /* 卡片库：票根卡 */
+  var PK = 'wb.planner.v1';          /* 内容策划：按月计划 */
+
+  /* 仓库根目录（形如 /my-workbench/）。页面可能在根目录，也可能在 sites/<slug>/ 下，
+     所以不能拿当前目录拼，得从路径里把仓库名截出来 */
+  var BASE = (function () {
+    try {
+      var m = location.pathname.match(/^(.*?\/my-workbench\/)/i);
+      return m ? m[1] : location.pathname.replace(/[^/]*$/, '');
+    } catch (e) { return '/'; }
+  })();
 
   /* 同域那份：页面和它在一个域名下，手机上一定打得开。
      raw.githubusercontent 在国内时不时抽风，所以读的时候先找自己家这个。 */
   var SELF = (function () {
     try {
-      return location.origin + location.pathname.replace(/[^/]*$/, '') + PATH;
+      return location.origin + BASE + PATH;
     } catch (e) { return ''; }
   })();
 
@@ -79,12 +89,26 @@
   function localState() {
     var d = readStore(DK, { v: 3, theme: 'light', wins: [], at: 0 });
     var c = readStore(CK, { v: 3, theme: 'light', wins: [], at: 0 });
+    var p = readPlanner();
     return {
       v: 3,
-      at: Math.max(d.at || 0, c.at || 0),
+      at: Math.max(d.at || 0, c.at || 0, p.at || 0),
       wat: d.at || 0, wins: d.wins,
-      nat: c.at || 0, notes: c.wins
+      nat: c.at || 0, notes: c.wins,
+      pat: p.at || 0, plans: p.months || {}
     };
+  }
+
+  /* 策划那份结构不一样（按月分桶），单独读 */
+  function readPlanner() {
+    try {
+      var o = JSON.parse(localStorage.getItem(PK) || 'null');
+      if (o && typeof o === 'object') {
+        if (!o.months || typeof o.months !== 'object') o.months = {};
+        return o;
+      }
+    } catch (e) {}
+    return { v: 1, at: 0, months: {} };
   }
 
   /* 老云端文件（v2）把卡片混在 wins 里，拆出来，不然画布会又冒出卡片 */
@@ -123,6 +147,18 @@
     if (rnat > (c.at || 0) + 800) {
       c.wins = rn; c.at = rnat; c.v = 3;
       if (writeStore(CK, c)) n++;
+    }
+
+    /* 策划：云端有这一格才动，老文件里没有就跳过，别把本地计划抹了 */
+    if (remote.plans && typeof remote.plans === 'object') {
+      var rpat = remote.pat || remote.at || 0;
+      var pl = readPlanner();
+      if (rpat > (pl.at || 0) + 800) {
+        pl.months = remote.plans;
+        pl.at = rpat;
+        pl.v = 1;
+        if (writeStore(PK, pl)) n++;
+      }
     }
     return n;
   }
