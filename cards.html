@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#fbfbfd">
 <title>策划管理 · 这个月要交什么</title>
 <link rel="stylesheet" href="assets/desk.css?v=1118w">
-<link rel="stylesheet" href="assets/cards.css?v=1123a">
+<link rel="stylesheet" href="assets/cards.css?v=1124a">
 <link rel="stylesheet" href="assets/planner.css?v=1123a">
 </head>
 <body class="cd-page" data-tab="plan">
@@ -153,6 +153,37 @@
   <button type="button" data-nt2="clear" title="清掉加粗/颜色/荧光笔/手绘标记">清</button>
 </div>
 
+<!-- 卡片底下那个「+」点开就是这个：插入代码块 / 标题 / 列表 / 引用 / 分割线 -->
+<div class="cd-addm" id="cdAddM" hidden>
+  <div class="am-t">基础</div>
+  <div class="am-grid">
+    <button type="button" data-ins="h" title="一段小标题">
+      <span class="am-gl">H1</span><i>标题</i>
+    </button>
+    <button type="button" data-ins="ul" title="一行一条">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4.7 7h.01M4.7 12h.01M4.7 17h.01"/>
+        <path d="M9.2 7h10.2M9.2 12h10.2M9.2 17h10.2"/>
+      </svg><i>列表</i>
+    </button>
+    <button type="button" data-ins="quo" title="引一段话">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M9.9 5.5C6.5 7.1 4.7 9.7 4.7 12.9c0 2.2 1.4 3.9 3.4 3.9 1.8 0 3.1-1.3 3.1-3 0-1.6-1.1-2.8-2.7-2.8h-.4c.3-1.3 1.3-2.4 2.9-3.2zM18.9 5.5c-3.4 1.6-5.2 4.2-5.2 7.4 0 2.2 1.4 3.9 3.4 3.9 1.8 0 3.1-1.3 3.1-3 0-1.6-1.1-2.8-2.7-2.8h-.4c.3-1.3 1.3-2.4 2.9-3.2z"/>
+      </svg><i>引用</i>
+    </button>
+    <button type="button" data-ins="hr" title="一条分隔线">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3.4 12h17.2"/>
+      </svg><i>分割线</i>
+    </button>
+  </div>
+  <div class="am-t">常用</div>
+  <button type="button" class="am-row" data-ins="code">
+    <span class="am-ic">{ }</span>
+    <span class="am-tx"><b>代码块</b><i>提示词、命令都写这儿，换行留得住</i></span>
+  </button>
+</div>
+
 <div class="cd-toast" id="toast"></div>
 
 <script src="assets/vendor/rough-notation.js?v=1118s"></script>
@@ -162,7 +193,7 @@
 <script src="assets/grid-bg.js?v=1118t"></script>
 <script src="assets/sync.js?v=1123a"></script>
 <script src="assets/store.js?v=1120a"></script>
-<script src="assets/cards.js?v=1123a"></script>
+<script src="assets/cards.js?v=1124a"></script>
 <script>window.CDSHARED = 1;   /* 同一个页面里，主题/同步/顶栏按钮都归 cards.js 管，策划只管自己的清单 */</script>
 <script src="assets/planner.js?v=1123a"></script>
 <script>

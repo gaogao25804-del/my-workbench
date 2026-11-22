@@ -21,6 +21,7 @@
   var selId = null;                  /* 右栏现在摆的是哪张 */
   var fold = {};
   var findTxt = '';
+  var pendingBody = null;            /* 「+」点开菜单时，等会儿要往哪块正文里插 */
 
   function $(id) { return document.getElementById(id); }
 
@@ -33,9 +34,12 @@
     return String(h == null ? '' : h).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
-  /* 存之前把画上去的笔摘掉，只留文字和 <span data-mk> 这一层壳 */
+  /* 存之前把画上去的笔摘掉，只留文字和 <span data-mk> 这一层壳；
+     代码块顶上那行「代码 · 复制 · ✕」也是画上去的，一起摘掉，重新打开时再补 */
   function htmlOf(el) {
-    return (window.Mark && window.Mark.strip) ? window.Mark.strip(el) : el.innerHTML;
+    var c = el.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll('.cd-cbar'), function (n) { n.remove(); });
+    return (window.Mark && window.Mark.strip) ? window.Mark.strip(c) : c.innerHTML;
   }
 
   var markT = null;
@@ -147,7 +151,9 @@
   function paintField(n) {
     if (!n) return;
     var t = plain(n.textContent);
-    n.setAttribute('data-empty', t ? '0' : '1');
+    /* 只有代码块、一条分割线的时候也别弹「想到什么写什么」的提示，那会压在块上面 */
+    var blk = n.querySelector ? n.querySelector('.cd-codebox, hr') : null;
+    n.setAttribute('data-empty', (t || blk) ? '0' : '1');
   }
 
   function fld(w, k, cls, ph) {
@@ -209,6 +215,14 @@
       '<div class="cd-body" contenteditable="true" spellcheck="false"' +
         ' data-w="' + w.id + '" data-f="a" data-ph="想到什么写什么……">' +
         bodyOf(f) + '</div>' +
+      /* 写字的这块底下挂一个「+」：插入代码块 / 标题 / 列表 / 引用 / 分割线 */
+      '<div class="cd-tools">' +
+        '<button class="cd-add" type="button" data-add="1" title="插入：代码块 / 标题 / 列表 / 引用 / 分割线">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">' +
+            '<path d="M12 5.4v13.2M5.4 12h13.2"/></svg>' +
+        '</button>' +
+        '<span class="cd-add-hint">插入</span>' +
+      '</div>' +
     '</div>';
   }
 
@@ -399,6 +413,7 @@
       cardHTML(w, true);
 
     Array.prototype.forEach.call(pane.querySelectorAll('[data-f]'), paintField);
+    hydrateBlocks(pane);                                /* 代码块顶上那行按钮是画出来的 */
     mountSparks(pane);
     if (window.Mark) window.Mark.refresh(pane, true);   /* 手绘标记按新位置重画 */
   }
@@ -463,9 +478,9 @@
     var d = TK[s];
     if (!d) return;
     var no = nextNo();
-    var ff = { name: d.f.name, big: '', a: d.f.a, b: '', c: '' };
-    if (d.f.au) ff.au = d.f.au;      /* 推特卡的作者和账号 */
-    if (d.f.at) ff.at = d.f.at;
+    /* 新卡就是一张白纸：标题、正文、作者全空，只在空的地方给一句浅提示（placeholder）。
+       以前这里填的是示例文案，新建一张就带一段假字，还得先删干净才能用。 */
+    var ff = {};
     var w = {
       id: uid(), fileId: uid(), name: d.name, kind: 'note', size: 0,
       url: '', x: 60, y: lowestY() + 40, w: 344, h: 640,
@@ -564,6 +579,220 @@
     toast('彻底删了，找不回来了');
   }
 
+  /* ---------------- 文档块：+ 插入 代码块 / 标题 / 列表 / 引用 / 分割线 ----------------
+     存进卡片的只有块本身：<div class="cd-codebox"><div class="cd-code">…</div></div>。
+     代码块顶上那行「代码 · 复制 · ✕」是画出来的，存盘前摘掉（见 htmlOf），重画时补回来。 */
+  var CODE_PH = '提示词、命令、JSON 都写这儿，换行和空格都留得住';
+
+  function barHTML() {
+    return '<div class="cd-cbar" contenteditable="false">' +
+      '<span class="cd-lang">代码</span>' +
+      '<span class="grow"></span>' +
+      '<button class="cd-cbtn" type="button" data-cp="1" title="整块复制">复制</button>' +
+      '<button class="cd-cbtn is-x" type="button" data-cdx="1" title="删掉这个代码块">✕</button>' +
+    '</div>';
+  }
+
+  function hydrateBlocks(root) {
+    Array.prototype.forEach.call((root || document).querySelectorAll('.cd-codebox'), function (b) {
+      if (!b.querySelector('.cd-cbar')) b.insertAdjacentHTML('afterbegin', barHTML());
+    });
+  }
+
+  function makeBlock(kind) {
+    var el;
+    if (kind === 'code') {
+      el = document.createElement('div');
+      el.className = 'cd-codebox';
+      el.innerHTML = barHTML() + '<div class="cd-code" data-ph="' + CODE_PH + '"></div>';
+      return el;
+    }
+    if (kind === 'h') { el = document.createElement('div'); el.className = 'cd-h'; return el; }
+    if (kind === 'quo') { el = document.createElement('div'); el.className = 'cd-quo'; return el; }
+    if (kind === 'ul') {
+      el = document.createElement('ul');
+      el.className = 'cd-ul';
+      el.innerHTML = '<li><br></li>';
+      return el;
+    }
+    return document.createElement('hr');
+  }
+
+  function hostOf(el) {
+    return (el && el.closest) ? el.closest('[data-f]') : null;
+  }
+  /* 光标现在落哪个元素里。
+     键盘事件的 target 永远是那个 contenteditable 宿主（.cd-body），
+     所以不能拿 e.target 判断「人在不在代码块里」，要看选区。 */
+  function caretEl() {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return null;
+    var n = sel.getRangeAt(0).startContainer;
+    return n && (n.nodeType === 1 ? n : n.parentElement);
+  }
+  /* 改完 DOM 通知一次存盘，走的还是正文那套（存 htmlOf、重算字数） */
+  function ping(host) {
+    if (host) host.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function caretRangeIn(host) {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return null;
+    var r = sel.getRangeAt(0);
+    var n = r.commonAncestorContainer;
+    n = n && (n.nodeType === 1 ? n : n.parentNode);
+    return (n && host.contains(n)) ? r : null;
+  }
+  function placeCaret(el, atStart) {
+    if (!el) return;
+    try {
+      var r = document.createRange();
+      r.selectNodeContents(el);
+      r.collapse(!!atStart);
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+    } catch (e) {}
+  }
+
+  /* 代码块里换行。
+     不能用 insertText('\n')：Chrome 会把它当「回车」去劈段落，代码块就散成好几块。
+     手插 \n 文本节点也不行：行尾那个换行会被编辑器吃掉。
+     用原生的 insertLineBreak（就是 Shift+回车那套），插的是 <br>，光标也跟得对。 */
+  function codeBreak() {
+    try { return document.execCommand('insertLineBreak'); } catch (e) { return false; }
+  }
+  /* 一大段纯文本塞进代码块：一行一行来，中间用插入换行接上，
+     这样粘一整个提示词进来也不会被拆成好几块 */
+  function codeInsert(text) {
+    var lines = String(text).replace(/\r\n?/g, '\n').split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      if (i) codeBreak();
+      if (lines[i]) document.execCommand('insertText', false, lines[i]);
+    }
+  }
+
+  function openAddMenu(btn) {
+    var m = $('cdAddM'), card = btn.closest('.cd-card');
+    if (!m || !card) return;
+    pendingBody = card.querySelector('.cd-body');
+    m.hidden = false;
+    var r = btn.getBoundingClientRect();
+    var w = m.offsetWidth || 236, h = m.offsetHeight || 200;
+    var left = Math.min(Math.max(8, r.left), Math.max(8, window.innerWidth - w - 8));
+    var top = r.bottom + 6;
+    if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+    m.style.left = Math.round(left) + 'px';
+    m.style.top = Math.round(top) + 'px';
+  }
+  function closeAddMenu() {
+    var m = $('cdAddM');
+    if (m && !m.hidden) m.hidden = true;
+  }
+
+  function insertBlock(kind) {
+    var host = pendingBody;
+    closeAddMenu();
+    if (!host || !document.body.contains(host)) return;
+    var node = makeBlock(kind);
+    var after = null;
+
+    /* 插在「现在这一段」的后面，不是插进光标里 ——
+       连着点几下「+」，块才是一层一层往下排，不会一个套一个 */
+    var top = null;
+    var r = caretRangeIn(host);
+    if (r) {
+      var n = r.startContainer;
+      n = n && (n.nodeType === 1 ? n : n.parentNode);
+      while (n && n !== host && n.parentNode !== host) n = n.parentNode;
+      if (n && n !== host && host.contains(n)) top = n;
+    }
+    if (top) top.parentNode.insertBefore(node, top.nextSibling);
+    else host.appendChild(node);
+
+    /* 后面没东西了，补一行空段落，不然新块贴在最后、光标没地方落 */
+    var nx = node.nextSibling;
+    if (!nx || (nx.nodeType === 3 && !plain(nx.nodeValue))) {
+      after = document.createElement('div');
+      after.appendChild(document.createElement('br'));
+      node.parentNode.insertBefore(after, nx);
+    } else if (nx.nodeType === 1) {
+      after = nx;
+    }
+
+    var t = node;
+    if (kind === 'ul') t = node.querySelector('li');
+    else if (kind === 'code') t = node.querySelector('.cd-code');
+    else if (kind === 'hr') t = after;
+    if (t) { try { host.focus(); } catch (e) {} }
+    placeCaret(t);
+    ping(host);
+    saveSoon();
+    toast(kind === 'code' ? '代码块加好了 · 回车就是换行' : '加好了');
+  }
+
+  function copyCode(btn) {
+    var box = btn.closest('.cd-codebox');
+    var code = box && box.querySelector('.cd-code');
+    if (!code) return;
+    var txt = code.innerText || code.textContent || '';
+    function ok() { toast('复制好了，粘哪都行'); }
+    function bye() {
+      var ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); ok(); } catch (e) { toast('没复制上，手动选一下'); }
+      ta.remove();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(ok, bye);
+    } else bye();
+  }
+
+  function removeCodeBox(btn) {
+    var box = btn.closest('.cd-codebox');
+    if (!box) return;
+    var host = hostOf(box);
+    var next = box.nextSibling;
+    box.remove();
+    ping(host);
+    /* 光标别甩到卡片最底下：落在原来这个块的下一位，没有就回到正文末尾 */
+    placeCaret(next && next.nodeType === 1 ? next : host, true);
+    toast('代码块删了');
+  }
+
+  /* 标题 / 引用里回车：这一段就到此为止，另起一行普通文字 */
+  function endBlock(blk) {
+    var host = hostOf(blk);
+    var p = document.createElement('div');
+    p.appendChild(document.createElement('br'));
+    var empty = !plain(blk.textContent);
+    blk.parentNode.insertBefore(p, blk.nextSibling);
+    if (empty) blk.remove();
+    placeCaret(p);
+    ping(host);
+    saveSoon();
+  }
+  /* 列表里空着一行回车：退出列表，回到普通文字 */
+  function exitList(li) {
+    var ul = li.parentNode, host = hostOf(li);
+    var p = document.createElement('div');
+    p.appendChild(document.createElement('br'));
+    if (ul && ul.tagName === 'UL') {
+      ul.parentNode.insertBefore(p, ul.nextSibling);
+      li.remove();
+      if (!ul.children.length) ul.remove();
+    } else {
+      li.parentNode.insertBefore(p, li.nextSibling);
+      li.remove();
+    }
+    placeCaret(p);
+    ping(host);
+    saveSoon();
+  }
+
   /* ---------------- 交互 ---------------- */
   function keyOf(t) {
     while (t && t.nodeType === 1 && !t.getAttribute('data-f')) t = t.parentElement;
@@ -623,28 +852,99 @@
 
   document.addEventListener('paste', function (e) {
     var t = e.target;
-    if (!t || !t.getAttribute || !t.getAttribute('data-f')) return;
-    if (!e.clipboardData) return;
-    var txt = e.clipboardData.getData('text/plain');
+    if (!t || !t.closest) return;
+    var txt = e.clipboardData ? e.clipboardData.getData('text/plain') : null;
     if (txt == null) return;
+    var host = t.closest('[data-f]');
+    if (!host) return;
+    /* 粘进代码块：一律纯文本，缩进和换行照原样留着 */
+    var here = caretEl() || t;
+    var code = (here.closest && here.closest('.cd-code')) || null;
+    if (code && host.contains(code)) {
+      e.preventDefault();
+      codeInsert(txt);
+      return;
+    }
     e.preventDefault();
     document.execCommand('insertText', false, txt);
   });
 
   document.addEventListener('keydown', function (e) {
     var t = e.target;
-    if (!t || !t.getAttribute || !t.getAttribute('data-f')) return;
+    if (!t || !t.closest) return;
+    var host = t.closest('[data-f]');
+    if (!host) return;
+    var here = caretEl() || t;
+    if (!host.contains(here)) here = t;
+
+    /* 代码块里：回车就是换行、Tab 就是两个空格，别让浏览器给你套 div；
+       空着的时候按退格，整块拆掉 */
+    var code = here.closest('.cd-code');
+    if (code) {
+      if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) {
+        e.preventDefault();
+        if (codeBreak()) ping(host);
+        return;
+      }
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        document.execCommand('insertText', false, '  ');
+        return;
+      }
+      if (e.key === 'Backspace' && !plain(code.textContent)) {
+        e.preventDefault();
+        removeCodeBox(code);
+        return;
+      }
+      return;
+    }
+
+    /* 标题 / 引用：回车就出这一段；列表里空一行回车就退出列表 */
+    if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) {
+      var li = here.closest('li');
+      if (li) {
+        if (!plain(li.textContent)) { e.preventDefault(); exitList(li); }
+        return;
+      }
+      var blk = here.closest('.cd-h, .cd-quo');
+      if (blk) { e.preventDefault(); endBlock(blk); return; }
+    }
+
     if (e.key !== 'Tab') return;
     e.preventDefault();
     var card = t.closest('.cd-card');
     if (!card) return;
-    var list = Array.prototype.slice.call(card.querySelectorAll('[data-f]'));
-    var i = list.indexOf(t);
-    var nx = list[i + (e.shiftKey ? -1 : 1)];
+    var fl = Array.prototype.slice.call(card.querySelectorAll('[data-f]'));
+    var i = fl.indexOf(host);
+    var nx = fl[i + (e.shiftKey ? -1 : 1)];
     if (nx) { try { nx.focus(); } catch (err) {} }
   });
 
+  /* 「+」和它弹出来的菜单：按下去别把正文的光标抢走，插到哪才准 */
+  document.addEventListener('mousedown', function (e) {
+    if (e.target.closest && e.target.closest('[data-add], #cdAddM, .cd-cbar')) e.preventDefault();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAddMenu();
+  });
+  window.addEventListener('scroll', closeAddMenu, true);
+  window.addEventListener('resize', closeAddMenu);
+
   document.addEventListener('click', function (e) {
+    if (!e.target.closest || (!e.target.closest('#cdAddM') && !e.target.closest('[data-add]'))) closeAddMenu();
+
+    var insb = e.target.closest('[data-ins]');
+    if (insb) { insertBlock(insb.getAttribute('data-ins')); return; }
+
+    var adb = e.target.closest('[data-add]');
+    if (adb) { openAddMenu(adb); return; }
+
+    var cpb = e.target.closest('[data-cp]');
+    if (cpb) { copyCode(cpb); return; }
+
+    var cxb = e.target.closest('[data-cdx]');
+    if (cxb) { removeCodeBox(cxb); return; }
+
     var nb = e.target.closest('[data-new]');
     if (nb) { newCard(nb.getAttribute('data-new')); return; }
 
