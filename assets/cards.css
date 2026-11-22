@@ -654,6 +654,193 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
 @media (hover: none) { .cd-del { opacity: 1; } }
 .cd-del:hover { background: #e5484d; color: #fff; }
 
+/* ---------------- 卡片底下那个「+」：插入代码块 / 标题 / 列表 / 引用 / 分割线 ---------------- */
+.cd-tools {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+}
+.cd-add {
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px dashed var(--dk-bd);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dk-tx3);
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.cd-add svg { width: 11px; height: 11px; }
+.cd-add:hover { color: var(--c); border-color: var(--c); background: var(--dk-win-h); }
+.cd-add-hint { font-size: 10.5px; color: var(--dk-tx3); user-select: none; }
+.cd-card:hover .cd-add-hint { color: var(--dk-tx2); }
+/* 手机上没有悬停，按钮得够手指点 */
+@media (hover: none) {
+  .cd-add { width: 25px; height: 25px; border-radius: 7px; }
+  .cd-add svg { width: 13px; height: 13px; }
+  .cd-add-hint { font-size: 11.5px; }
+}
+
+/* 弹出来的那个小面板，位置由 js 算，靠 fixed 贴着手点 */
+.cd-addm {
+  position: fixed;
+  z-index: 130;
+  width: 238px;
+  padding: 7px;
+  background: var(--dk-win);
+  border: 1px solid var(--dk-bd);
+  border-radius: 12px;
+  box-shadow: 0 18px 44px -16px rgba(0, 0, 0, .34), 0 2px 6px rgba(0, 0, 0, .06);
+  animation: cd-am-in .12s ease;
+}
+@keyframes cd-am-in {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+.am-t {
+  padding: 4px 7px 5px;
+  font-size: 10.5px;
+  color: var(--dk-tx3);
+  letter-spacing: .06em;
+}
+.am-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-bottom: 3px;
+}
+.am-grid button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 0 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dk-tx2);
+  font: inherit;
+  cursor: pointer;
+}
+.am-grid button svg { width: 15px; height: 15px; }
+.am-grid button i { font-style: normal; font-size: 10px; color: var(--dk-tx3); }
+.am-gl { font-size: 12.5px; font-weight: 700; line-height: 15px; letter-spacing: -.02em; }
+.am-grid button:hover { background: var(--dk-win-h); color: var(--c); }
+.am-grid button:hover i, .am-grid button:hover .am-gl { color: var(--c); }
+
+.am-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.am-row:hover { background: var(--dk-win-h); }
+.am-ic {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 7px;
+  background: var(--dk-win-h);
+  color: var(--dk-tx2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+}
+.am-row:hover .am-ic { color: var(--c); }
+.am-tx { min-width: 0; }
+.am-tx b { display: block; font-size: 12.5px; font-weight: 600; color: var(--dk-tx); }
+.am-tx i {
+  display: block;
+  margin-top: 1px;
+  font-style: normal;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--dk-tx3);
+}
+
+/* ---------------- 卡片里的块：代码 / 标题 / 引用 / 列表 / 分割线 ---------------- */
+.cd-codebox {
+  margin: 9px 0;
+  border: 1px solid var(--dk-bd2);
+  border-radius: 9px;
+  background: var(--dk-win-h);
+  overflow: hidden;
+}
+.cd-cbar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 3px 2px 9px;
+  border-bottom: 1px solid var(--dk-bd2);
+  color: var(--dk-tx3);
+  font-size: 10px;
+  user-select: none;
+}
+.cd-cbar .grow { flex: 1 1 auto; }
+.cd-lang { letter-spacing: .08em; }
+.cd-cbtn {
+  padding: 1px 6px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--dk-tx3);
+  font: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .14s ease, color .14s ease, background .14s ease;
+}
+.cd-codebox:hover .cd-cbtn,
+.cd-codebox:focus-within .cd-cbtn { opacity: 1; }
+.cd-cbtn:hover { background: var(--dk-bd2); color: var(--dk-tx); }
+.cd-cbtn.is-x:hover { color: #e5484d; }
+@media (hover: none) {
+  .cd-cbtn { opacity: 1; padding: 3px 8px; font-size: 11px; }
+}
+
+.cd-code {
+  padding: 8px 10px 9px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+  font-size: 11.8px;
+  line-height: 1.68;
+  color: var(--dk-tx);
+  white-space: pre-wrap;
+  word-break: break-word;
+  outline: none;
+  tab-size: 2;
+}
+.cd-code:empty::before { content: attr(data-ph); color: var(--dk-tx3); }
+
+.cd-h {
+  margin: 11px 0 3px;
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--dk-tx);
+}
+.cd-h:empty::before { content: "小标题"; color: var(--dk-tx3); font-weight: 600; }
+.cd-quo {
+  margin: 8px 0;
+  padding: 1px 0 1px 10px;
+  border-left: 2px solid var(--c);
+  color: var(--dk-tx2);
+}
+.cd-quo:empty::before { content: "引一段话"; color: var(--dk-tx3); }
+.cd-ul { margin: 6px 0; padding-left: 17px; }
+.cd-ul li { margin: 2px 0; }
+.cd-body hr { margin: 13px 0; border: 0; border-top: 1px solid var(--dk-tx3); opacity: .55; }
+
 .cd-foot {
   margin: 34px 0 0;
   text-align: center;
