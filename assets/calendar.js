@@ -367,11 +367,49 @@
     e.preventDefault();
   });
 
+  /* ---------- 从云端补数据 ----------
+     这一页只读不写，但"只读本地"会让新设备打开就是空的（策划台还没拉过）。
+     所以自己取一次 desk-data.json 的 plans 那格，比左边新就铺进本地。
+     永远不往云端写，改不了任何计划。 */
+  var pulling = false;
+  var lastPull = 0;
+
+  function pullPlans(force) {
+    if (pulling) return;
+    if (!force && Date.now() - lastPull < 60000) return;
+    pulling = true;
+    lastPull = Date.now();
+
+    fetch('desk-data.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        pulling = false;
+        if (!d || !d.plans || typeof d.plans !== 'object') return;
+
+        var rpat = d.pat || d.at || 0;
+        var cur = null;
+        try { cur = JSON.parse(localStorage.getItem(PK) || 'null'); } catch (e) { cur = null; }
+        if (!cur || typeof cur !== 'object') cur = { v: 1, at: 0, months: {} };
+        if (!(rpat > (cur.at || 0) + 800)) return;   /* 本地更新就别覆盖 */
+
+        cur.months = d.plans;
+        cur.at = rpat;
+        cur.v = 1;
+        try { localStorage.setItem(PK, JSON.stringify(cur)); } catch (e) { return; }
+
+        var before = JSON.stringify(D && D.months);
+        load();
+        if (JSON.stringify(D.months) !== before) paint();
+      })
+      .catch(function () { pulling = false; });
+  }
+
   /* 别的页面改了策划，切回来别拿旧的 */
   window.addEventListener('focus', function () {
     var before = JSON.stringify(D && D.months);
     load();
     if (JSON.stringify(D.months) !== before) paint();
+    pullPlans(false);
   });
   window.addEventListener('pageshow', function (ev) {
     if (!ev.persisted) return;
@@ -387,4 +425,5 @@
     S.sel = (S.ym === thisMonth()) ? todayStr() : (S.ym + '-01');
   }
   paint();
+  pullPlans(true);
 })();
