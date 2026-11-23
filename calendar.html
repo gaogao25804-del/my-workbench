@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f0eeec">
+<title>排期日历</title>
+<link rel="stylesheet" href="assets/calendar.css?v=1125f">
+</head>
+<body class="cl-page">
+
+<!-- 顶栏：跟策划台一个家族，导航是胶囊 -->
+<header class="cl-top">
+  <a class="cl-brand" href="index.html" title="回工作台">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3.4 16.6V9.2h9.2l3.1 3.4h4.9v4"/><circle cx="7.2" cy="17.4" r="1.7"/><circle cx="16.6" cy="17.4" r="1.7"/>
+    </svg>
+    <b>大运</b>
+  </a>
+  <nav class="cl-nav">
+    <a class="is-on" href="calendar.html">日历</a>
+    <a href="cards.html">策划台</a>
+    <a href="index.html">画布</a>
+    <a href="wenan.html">文案库</a>
+    <a href="library.html">图书馆</a>
+  </nav>
+  <div class="grow"></div>
+  <button class="cl-icon" id="btnTheme" type="button" title="深浅色" aria-label="切换深浅色">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="12" cy="12" r="4.2"/>
+      <path d="M12 2.6v2.2M12 19.2v2.2M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.4 19.6L6 18M18 6l1.6-1.6"/>
+    </svg>
+  </button>
+  <a class="cl-av" href="cards.html" title="去策划台"><img src="assets/avatar.jpg" alt=""></a>
+</header>
+
+<main class="cl-wrap">
+
+  <!-- 一号卡：抬头 + 卡车舞台 -->
+  <section class="cl-hero">
+    <div class="cl-hd">
+      <a class="cl-back" href="index.html" title="回工作台">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 6.6 8.8 12l5.6 5.4"/></svg>
+      </a>
+      <h1 class="cl-h1">排期日历</h1>
+      <div class="grow"></div>
+      <div class="cl-mnav">
+        <button id="mPrev" type="button" aria-label="上个月">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 6.6 8.8 12l5.6 5.4"/></svg>
+        </button>
+        <b id="mNow">11 月 2026</b>
+        <button id="mNext" type="button" aria-label="下个月">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 6.6 15.2 12l-5.6 5.4"/></svg>
+        </button>
+      </div>
+      <button class="cl-dark" id="mToday" type="button">回到今天</button>
+    </div>
+
+    <div class="cl-stage">
+      <img class="cl-band" src="assets/img/truck-band.webp" alt="" width="2400" height="820">
+      <div class="cl-kpis" id="kpis"></div>
+
+      <aside class="cl-day" id="dayPane">
+        <div class="cl-day-h">
+          <b id="dayTitle"></b>
+          <a class="cl-day-g" href="cards.html" title="去策划台改">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16 16 8M9.2 8H16v6.8"/></svg>
+          </a>
+        </div>
+        <div class="cl-day-b" id="dayBody"></div>
+        <div class="cl-day-f"><i id="daySum"></i><a href="cards.html">+ 加一条</a></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 二号排：接下来几天 -->
+  <section class="cl-strip" id="strip"></section>
+
+  <!-- 三号卡：账号 + 月历 -->
+  <section class="cl-board">
+    <aside class="cl-who">
+      <div class="cl-wh-h"><b>账号</b><i id="whoSum"></i></div>
+      <div id="whoList"></div>
+      <div class="cl-wh-f"><span>没排日期</span><i id="noDue">0</i></div>
+    </aside>
+    <div class="cl-cal">
+      <div class="cl-dow"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+      <div class="cl-grid" id="grid"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="assets/calendar.js?v=1125f"></script>
+</body>
+</html>
