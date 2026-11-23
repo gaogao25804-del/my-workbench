@@ -1,20 +1,28 @@
 /* ==========================================================
    排期日历 · calendar.js
-   这一页只是「看」——数据从策划台那一份读，一个字段都不改。
+   两个入口，一份代码：
+     1) 策划台内嵌（cards.html，主用法）——只读展示，点计划交回清单编辑
+     2) 独立页（calendar.html）——现在改成跳转入口，不会再启动
 
-   数据：localStorage 的 wb.planner.v1（跟 cards.html / planner.js 同一份）
+   数据：localStorage 的 wb.planner.v1（跟 planner.js 同一份）
      { v:1, at, months:{ '2026-11': [ {id,name,acct,due,st,note,ct} ] } }
-   UI 状态（看哪个月、点了哪天、筛了谁）存在 wb.cal.v1，跟策划数据互不干扰。
+   ★ 这里对业务数据只读：不写 wb.planner.v1、不 fetch 云端、不碰同步。
+     原来那段 pullPlans()（从 desk-data.json 整块覆盖 months）2026-11-23 已删除，
+     它绕过了 sync.js 的 base/墓碑合并，是第二条写入路径。
+
+   UI 状态（看哪个月、点了哪天、筛了谁、上次停在哪个视图）存 wb.cal.v1，
+   只写本机，不调 WBSync。注意：月份的唯一真相在策划台的 ym，
+   内嵌模式下 S.ym 只是它的镜像，不吃本地存的那一份。
 
    页面上认这些钩子：
      #mPrev #mNext #mToday #mNow #kpis #dayTitle #dayBody #daySum
      #strip #whoList #whoSum #noDue #grid #btnTheme
    ========================================================== */
-(function () {
+(function (root) {
   'use strict';
 
   var PK = 'wb.planner.v1';      /* 策划数据（只读） */
-  var CK = 'wb.cards.v1';        /* 主题跟卡片库共用一个 */
+  var CK = 'wb.cards.v1';        /* 主题跟卡片库共用一个（只读） */
   var UK = 'wb.cal.v1';          /* 这一页自己的 UI 状态 */
 
   var ACCTS = [
@@ -29,7 +37,12 @@
   var ST = { todo: '未开始', doing: '进行中', done: '已完成' };
 
   var D = null;
-  var S = { ym: '', sel: '', who: '' };
+  var S = { ym: '', sel: '', who: '', view: '' };
+
+  /* on: 挂载过没有 / embed: 在策划台里 / active: 这个视图现在可不可见
+     onOpen(id) 点了一条计划 / onAdd(日期) 点「这天排一条」 / onYm(k) 要翻月 */
+  var MODE = { on: false, embed: false, active: true, onOpen: null, onAdd: null, onYm: null };
+  var bound = false;
 
   function $(id) { return document.getElementById(id); }
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }
@@ -65,7 +78,7 @@
     return 'a';
   }
 
-  /* ---------------- 数据 ---------------- */
+  /* ---------------- 数据（只读） ---------------- */
   function load() {
     try { D = JSON.parse(localStorage.getItem(PK) || 'null'); } catch (e) { D = null; }
     if (!D || typeof D !== 'object') D = { v: 1, months: {} };
@@ -80,23 +93,32 @@
   }
   function isDone(p) { return (p.st || 'todo') === 'done'; }
 
-  function saveUI() {
-    try { localStorage.setItem(UK, JSON.stringify(S)); } catch (e) {}
-  }
-  function loadUI() {
+  function readUI() {
     var u = null;
     try { u = JSON.parse(localStorage.getItem(UK) || 'null'); } catch (e) {}
-    if (u && typeof u === 'object') {
-      if (/^\d{4}-\d{2}$/.test(u.ym || '')) S.ym = u.ym;
-      if (/^\d{4}-\d{2}-\d{2}$/.test(u.sel || '')) S.sel = u.sel;
-      if (typeof u.who === 'string') S.who = u.who;
-    }
+    return (u && typeof u === 'object') ? u : {};
+  }
+  function saveUI() {
+    var o = readUI();
+    o.sel = S.sel;
+    o.who = S.who;
+    if (S.view) o.view = S.view;
+    /* 内嵌模式下月份归策划台管，这里不写，免得出现第二份月份状态 */
+    if (!MODE.embed) o.ym = S.ym;
+    try { localStorage.setItem(UK, JSON.stringify(o)); } catch (e) {}
+  }
+  function loadUI() {
+    var u = readUI();
+    if (/^\d{4}-\d{2}$/.test(u.ym || '')) S.ym = u.ym;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(u.sel || '')) S.sel = u.sel;
+    if (typeof u.who === 'string') S.who = u.who;
+    if (u.view === 'cal' || u.view === 'list') S.view = u.view;
     var h = (location.hash || '').replace('#', '');
     if (/^\d{4}-\d{2}-\d{2}$/.test(h)) { S.sel = h; S.ym = h.slice(0, 7); }
     if (!S.ym) S.ym = thisMonth();
   }
 
-  /* ---------------- 主题 ---------------- */
+  /* ---------------- 主题（只有独立页用；内嵌归 cards.js） ---------------- */
   function readTheme() {
     var t = '';
     try {
@@ -164,7 +186,7 @@
     }).sort(function (a, c) { return (a.ct || 0) - (c.ct || 0); });
 
     if (!list.length) {
-      b.innerHTML = '<a class="cl-day-e" href="cards.html">+ 这天排一条</a>';
+      b.innerHTML = '<a class="cl-day-e" href="cards.html" data-add="' + esc(ds) + '">+ 这天排一条</a>';
       if (s) s.textContent = '0 条';
       return;
     }
@@ -176,7 +198,8 @@
       var em = late ? '<em class="is-late">晚 ' + daysLate(p.due) + ' 天</em>'
         : (st === 'doing' ? '<em class="is-doing">在做</em>'
           : (st === 'done' ? '<em>做完了</em>' : ''));
-      return '<div class="cl-dr' + (st === 'done' ? ' is-done' : '') + '" data-c="' + acctColor(p.acct) + '">' +
+      return '<div class="cl-dr' + (st === 'done' ? ' is-done' : '') + '" data-c="' + acctColor(p.acct) +
+        '" data-id="' + esc(p.id) + '" title="点开去清单里改">' +
         '<i></i><div><b title="' + esc(p.name) + '">' + esc(p.name) + '</b>' +
         (tag || p.note ? '<span>' + tag + (p.note ? (tag ? ' · ' : '') + esc(p.note) : '') + '</span>' : '') +
         '</div>' + em + '</div>';
@@ -289,7 +312,7 @@
         var shown = list.slice(0, 3);
         body = '<span class="cl-chips">' + shown.map(function (it) {
           return '<i class="cl-chip' + (isDone(it) ? ' is-done' : '') + '" data-c="' + acctColor(it.acct) +
-            '" title="' + esc(it.name) + '">' + esc(it.name) + '</i>';
+            '" data-id="' + esc(it.id) + '" title="' + esc(it.name) + '">' + esc(it.name) + '</i>';
         }).join('') +
           (list.length > 3 ? '<i class="cl-more">+' + (list.length - 3) + '</i>' : '') +
           '</span><span class="cl-dots">' + list.slice(0, 4).map(function (it) {
@@ -319,9 +342,15 @@
   function pick(ds) {
     if (!ds) return;
     S.sel = ds;
-    if (ds.slice(0, 7) !== S.ym) S.ym = ds.slice(0, 7);
     saveUI();
-    try { history.replaceState(null, '', '#' + ds); } catch (e) {}
+    if (ds.slice(0, 7) !== S.ym) {
+      /* 内嵌时月份归策划台翻，翻完它会回调 refresh，这儿先别自己改 */
+      if (MODE.embed && MODE.onYm) { MODE.onYm(ds.slice(0, 7)); return; }
+      S.ym = ds.slice(0, 7);
+    }
+    if (!MODE.embed) {
+      try { history.replaceState(null, '', '#' + ds); } catch (e) {}
+    }
     paint();
   }
   function gotoMonth(ym) {
@@ -329,101 +358,151 @@
     var keep = S.sel.slice(0, 7) === ym ? S.sel : ym + '-01';
     S.sel = keep;
     saveUI();
-    try { history.replaceState(null, '', '#' + keep); } catch (e) {}
+    if (!MODE.embed) {
+      try { history.replaceState(null, '', '#' + keep); } catch (e) {}
+    }
     paint();
   }
 
   /* ---------------- 事件 ---------------- */
-  document.addEventListener('click', function (e) {
-    var cell = e.target.closest('.cl-cell');
-    if (cell) { if (cell.getAttribute('data-d')) pick(cell.getAttribute('data-d')); return; }
+  function bind() {
+    if (bound) return;
+    bound = true;
 
-    var sc = e.target.closest('.cl-sc');
-    if (sc) { pick(sc.getAttribute('data-d')); return; }
+    document.addEventListener('click', function (e) {
+      if (!MODE.on) return;
+      var tg = e.target;
+      if (!tg || !tg.closest) return;
 
-    var wh = e.target.closest('.cl-wh');
-    if (wh) {
-      var w = wh.getAttribute('data-who') || '';
-      S.who = (S.who === w) ? '' : w;
-      saveUI();
+      /* 「+ 这天排一条 / + 加一条」：内嵌时交给策划台的表单 */
+      var addEl = tg.closest('[data-add]');
+      if (addEl) {
+        if (MODE.embed) {
+          e.preventDefault();
+          var ds2 = addEl.getAttribute('data-add');
+          if (ds2 === '1') ds2 = S.sel;
+          if (MODE.onAdd) MODE.onAdd(ds2);
+        }
+        return;
+      }
+
+      /* 点一条计划 → 交回清单定位编辑（独立页没有回掉，就当点空白） */
+      var chip = tg.closest('.cl-chip');
+      if (chip) {
+        var cid = chip.getAttribute('data-id');
+        if (cid && MODE.onOpen) { MODE.onOpen(cid); return; }
+      }
+      var dr = tg.closest('.cl-dr');
+      if (dr) {
+        var did = dr.getAttribute('data-id');
+        if (did && MODE.onOpen) { MODE.onOpen(did); return; }
+      }
+
+      var cell = tg.closest('.cl-cell');
+      if (cell) { if (cell.getAttribute('data-d')) pick(cell.getAttribute('data-d')); return; }
+
+      var sc = tg.closest('.cl-sc');
+      if (sc) { pick(sc.getAttribute('data-d')); return; }
+
+      var wh = tg.closest('.cl-wh');
+      if (wh) {
+        var w = wh.getAttribute('data-who') || '';
+        S.who = (S.who === w) ? '' : w;
+        saveUI();
+        paint();
+        return;
+      }
+
+      /* 底下这几个只有独立页有；内嵌归 cards.js，别抢 */
+      if (MODE.embed) return;
+      if (tg.closest('#btnTheme')) { toggleTheme(); return; }
+      if (tg.closest('#mPrev')) { gotoMonth(shiftMonth(S.ym, -1)); return; }
+      if (tg.closest('#mNext')) { gotoMonth(shiftMonth(S.ym, 1)); return; }
+      if (tg.closest('#mToday')) { pick(todayStr()); return; }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!MODE.on) return;
+      if (MODE.embed && !MODE.active) return;      /* 在清单视图别抢键盘 */
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var tn = (e.target && e.target.tagName) || '';
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(tn) || (e.target && e.target.isContentEditable)) return;
+
+      var k = e.key;
+      if (k === 'ArrowLeft' || k === 'ArrowRight') {
+        var nk = shiftMonth(S.ym, k === 'ArrowLeft' ? -1 : 1);
+        if (MODE.embed && MODE.onYm) MODE.onYm(nk);
+        else gotoMonth(nk);
+      } else if (k === 't' || k === 'T') {
+        pick(todayStr());
+      } else if (k === 'Escape' && S.who) {
+        S.who = '';
+        saveUI();
+        paint();
+      } else {
+        return;
+      }
+      e.preventDefault();
+    });
+
+    /* 别的页面改了策划，切回来别拿旧的（只重读本地，不碰云端） */
+    window.addEventListener('focus', function () {
+      if (!MODE.on) return;
+      var before = JSON.stringify(D && D.months);
+      load();
+      if (JSON.stringify(D.months) !== before) paint();
+    });
+    window.addEventListener('pageshow', function (ev) {
+      if (!MODE.on || !ev.persisted) return;
+      load();
       paint();
-      return;
+    });
+  }
+
+  /* ---------------- 挂载 ---------------- */
+  function mount(opts) {
+    opts = opts || {};
+    MODE.embed = !!opts.embed;
+    MODE.onOpen = opts.onOpen || null;
+    MODE.onAdd = opts.onAdd || null;
+    MODE.onYm = opts.onYm || null;
+
+    if (!MODE.embed) applyTheme(readTheme());
+    load();
+    loadUI();
+    /* 内嵌：月份从策划台来，本地存的那份不认 —— 月份只有一个来源 */
+    if (opts.ym && /^\d{4}-\d{2}$/.test(opts.ym)) S.ym = opts.ym;
+    if (!S.sel || S.sel.slice(0, 7) !== S.ym) {
+      S.sel = (S.ym === thisMonth()) ? todayStr() : (S.ym + '-01');
     }
-
-    if (e.target.closest('#btnTheme')) { toggleTheme(); return; }
-    if (e.target.closest('#mPrev')) { gotoMonth(shiftMonth(S.ym, -1)); return; }
-    if (e.target.closest('#mNext')) { gotoMonth(shiftMonth(S.ym, 1)); return; }
-    if (e.target.closest('#mToday')) { pick(todayStr()); return; }
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    var k = e.key;
-    if (k === 'ArrowLeft') { gotoMonth(shiftMonth(S.ym, -1)); }
-    else if (k === 'ArrowRight') { gotoMonth(shiftMonth(S.ym, 1)); }
-    else if (k === 't' || k === 'T') { pick(todayStr()); }
-    else if (k === 'Escape' && S.who) { S.who = ''; saveUI(); paint(); }
-    else return;
-    e.preventDefault();
-  });
-
-  /* ---------- 从云端补数据 ----------
-     这一页只读不写，但"只读本地"会让新设备打开就是空的（策划台还没拉过）。
-     所以自己取一次 desk-data.json 的 plans 那格，比左边新就铺进本地。
-     永远不往云端写，改不了任何计划。 */
-  var pulling = false;
-  var lastPull = 0;
-
-  function pullPlans(force) {
-    if (pulling) return;
-    if (!force && Date.now() - lastPull < 60000) return;
-    pulling = true;
-    lastPull = Date.now();
-
-    fetch('desk-data.json?t=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) {
-        pulling = false;
-        if (!d || !d.plans || typeof d.plans !== 'object') return;
-
-        var rpat = d.pat || d.at || 0;
-        var cur = null;
-        try { cur = JSON.parse(localStorage.getItem(PK) || 'null'); } catch (e) { cur = null; }
-        if (!cur || typeof cur !== 'object') cur = { v: 1, at: 0, months: {} };
-        if (!(rpat > (cur.at || 0) + 800)) return;   /* 本地更新就别覆盖 */
-
-        cur.months = d.plans;
-        cur.at = rpat;
-        cur.v = 1;
-        try { localStorage.setItem(PK, JSON.stringify(cur)); } catch (e) { return; }
-
-        var before = JSON.stringify(D && D.months);
-        load();
-        if (JSON.stringify(D.months) !== before) paint();
-      })
-      .catch(function () { pulling = false; });
-  }
-
-  /* 别的页面改了策划，切回来别拿旧的 */
-  window.addEventListener('focus', function () {
-    var before = JSON.stringify(D && D.months);
-    load();
-    if (JSON.stringify(D.months) !== before) paint();
-    pullPlans(false);
-  });
-  window.addEventListener('pageshow', function (ev) {
-    if (!ev.persisted) return;
-    load();
+    bind();
+    MODE.on = true;
     paint();
-  });
-
-  /* ---------------- 起 ---------------- */
-  applyTheme(readTheme());
-  load();
-  loadUI();
-  if (!S.sel || S.sel.slice(0, 7) !== S.ym) {
-    S.sel = (S.ym === thisMonth()) ? todayStr() : (S.ym + '-01');
   }
-  paint();
-  pullPlans(true);
-})();
+
+  /* 重新读一遍本地数据再画；给了 ym 就先换月（策划台翻月时调） */
+  function refresh(ym) {
+    if (!MODE.on) return;
+    load();
+    if (ym && /^\d{4}-\d{2}$/.test(ym)) S.ym = ym;
+    if (!S.sel || S.sel.slice(0, 7) !== S.ym) {
+      S.sel = (S.ym === thisMonth()) ? todayStr() : (S.ym + '-01');
+      saveUI();                      /* 选中日跟着月份挪了，本机记一下 */
+    }
+    paint();
+  }
+
+  function getView() { return S.view === 'cal' ? 'cal' : 'list'; }
+  function setView(v) { S.view = (v === 'cal') ? 'cal' : 'list'; saveUI(); }
+
+  root.WBCalendar = {
+    mount: mount,
+    refresh: refresh,
+    setView: setView,
+    getView: getView,
+    setActive: function (on) { MODE.active = !!on; }
+  };
+
+  /* 独立页（calendar.html）自动挂载；内嵌时由 planner-view.js 调 mount() */
+  if (document.body && document.body.classList.contains('cl-page')) mount({});
+})(window);

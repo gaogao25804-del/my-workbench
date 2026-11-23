@@ -1,0 +1,172 @@
+/* ==========================================================
+   策划台 · 视图切换 & 日历内嵌
+   planner.css 里没动一行，日历那套样式也没改，
+   覆盖全部收在这个文件里，删掉它 = 回到整合前。
+   ========================================================== */
+
+/* 切走的那个视图真的不占位（不靠 UA 默认值，怕被别的 display 盖掉） */
+.pv-body[hidden] { display: none !important; }
+
+/* ---------------- 清单 / 日历 ---------------- */
+.pv-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--lf-line);
+  border-radius: 11px;
+  background: var(--lf-inset);
+  flex: 0 0 auto;
+}
+.pv-sw {
+  height: 28px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--lf-tx2);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease;
+}
+.pv-sw:hover { color: var(--lf-tx); }
+.pv-sw.is-on {
+  background: var(--lf-dark);
+  color: var(--lf-on-dark);
+}
+
+/* ---------------- 日历塞进策划台 ----------------
+   .cl-page 原来给整页用的：min-height 100vh + 自己的底色。
+   套在策划台的容器里要去掉，剩下那套变量（--card/--line/--tx…）照用。 */
+.cl-page.cl-embed {
+  min-height: 0;
+  margin: 0;
+  background: transparent;
+}
+.cl-embed .cl-wrap {
+  max-width: none;
+  padding: 0;
+}
+.cl-embed .cl-hero {
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+/* ---------- 不摆卡车，省下的高度全给月历 ----------
+   原版是"一张 2400×820 的图铺满，三块数字和当天清单绝对定位浮在图上"，
+   一张图就吃掉 400-500px。策划台第一屏必须看见月历，所以图不要了，
+   改成 左边三块数字 / 右边当天清单 的一行，整条压到 210px 左右。 */
+.cl-embed .cl-stage {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 24px;
+  margin: 0;
+}
+
+/* 三块数字：从"浮在车顶"改成第一栏，垂直居中 */
+.cl-embed .cl-kpis {
+  position: static;
+  order: 0;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+/* 图撤掉后左边会空一大片，所以三块数字按三等分铺开、中间一道细线。
+   每块内容在自己的那一格里居中：三组数均匀落位，右边不会剩一截空的，
+   空出来的横向空间就变成列间距，不用往里塞装饰。 */
+@media (min-width: 981px) {
+  .cl-embed .cl-kpi {
+    flex: 1 1 0;
+    min-width: 0;
+    align-items: center;
+    text-align: center;
+    border-left: 1px solid var(--line);
+  }
+  .cl-embed .cl-kpi:first-child { border-left: 0; }
+  .cl-embed .cl-kpi > div { justify-content: center; }
+  .cl-embed .cl-kpi b { font-size: 34px; }
+}
+
+/* 当天清单：从"浮在车厢"改成右侧固定栏，去掉半透明和浮层投影 */
+.cl-embed .cl-day {
+  position: static;
+  order: 0;
+  flex: 0 0 292px;
+  width: auto;
+  margin: 0;
+  min-height: 132px;
+  max-height: 210px;
+  background: var(--inset2);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* 深色：图撤掉之后这两块不再"浮在浅灰照片墙上"。
+   calendar.css 里给它们硬塞了一套浅色变量（黑字＋浅底），那是配照片用的，
+   现在底没了，必须换回跟随主题的值，否则就是黑字压深色卡片。 */
+[data-theme="dark"] .cl-page.cl-embed .cl-kpis,
+[data-theme="dark"] .cl-page.cl-embed .cl-day {
+  --tx: var(--lf-tx);
+  --tx2: var(--lf-tx2);
+  --tx3: var(--lf-tx3);
+  --inset: var(--lf-inset);
+  --line: var(--lf-line);
+  --line2: var(--lf-line2);
+  --accent: var(--lf-accent);
+  --accent-tx: var(--lf-accent-tx);
+  --alarm: var(--lf-alarm);
+  color: var(--tx);
+}
+/* 深色下 .cl-stage 原来会铺一层浅灰当照片墙，内嵌不要 */
+[data-theme="dark"] .cl-page.cl-embed .cl-stage {
+  background: transparent;
+  margin: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* 窄屏：数字在上、当天清单在下（原来跟车图一起上下排的那套，图没了照样用） */
+@media (max-width: 980px) {
+  .cl-embed .cl-stage { flex-direction: column; gap: 12px; }
+  .cl-embed .cl-kpis { padding: 0; gap: 26px; }
+  .cl-embed .cl-day { flex: 0 0 auto; max-height: 260px; }
+}
+
+/* 手机上策划台顶栏本来就窄。planner.css 在 860 以下让「11 条没交」独占一整行，
+   再叠上切换按钮就成了三行。这里用中间那个空的 .grow 当换行点（占满一整行、
+   高度 0），把「11 条没交」和切换按钮归到同一行：字数在左，按钮靠右。 */
+@media (max-width: 860px) {
+  .lf-hd .grow { flex: 0 0 100%; height: 0; }
+  .lf-hd .lf-hnote { width: auto; flex: 1 1 auto; order: 8; }
+  .pv-switch { order: 9; }
+}
+
+@media (max-width: 560px) {
+  .cl-embed .cl-hero { padding: 12px; }
+  .cl-embed .cl-kpis { gap: 14px; flex-wrap: wrap; }
+  .cl-embed .cl-day { max-height: 240px; }
+  .pv-sw { height: 26px; padding: 0 11px; font-size: 12px; }
+}
+/* 日历页自己那个抬头（标题 + 月导航）在内嵌时不存在，月份归策划台管 */
+
+/* ---------------- 从日历点回清单时，那一行闪一下 ---------------- */
+.pl-item.is-focus {
+  background: rgba(230, 247, 90, .20);
+  box-shadow: 0 0 0 2px var(--lf-accent) inset;
+}
+[data-theme="dark"] .pl-item.is-focus {
+  background: rgba(211, 227, 82, .13);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pv-sw { transition: none; }
+}
