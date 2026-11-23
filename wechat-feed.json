@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-19 10:20",
+ "updated": "2026-11-23 10:21",
  "source": "搜狗微信搜索",
  "counts": {
-  "抓取": 70,
-  "入选": 7
+  "抓取": 69,
+  "入选": 4
  },
  "picks": [
   {
@@ -18,21 +18,7 @@
     "壳"
    ],
    "kw": "手机壳 折叠",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFrBP9h4xoAdQ-c_ytzVV8YVqXa8Fplpd9zW-6AEHwYTzfCrINc5l_6BAZlLoJV0FcKH2yPT5q9RbJM7RMQ0CUFcGESp61f4aGUvdcaAmd7E9Nysa3c6Ds7Ot2sCFiRCfPLbHAWP31yOrwc7SVCDQINpBqLhqaAHw626gzp3B4vD_4ArPPXS5ZA67UZCdfXcepCKwwRzIR5JN535pjGOOjYg..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=9C336FCF6119E3205C5A3CCB9D428F535C6B0FD46AFE5CF8"
-  },
-  {
-   "title": "苹果首款折叠屏iPhone Duo裂屏,拆解指向铰链而非屏幕",
-   "summary": "到了2019年的时候,话题就转到折叠屏上面去了.当年4月,一些美国媒体的Galaxy Fold评测机在几天之内出现了屏幕隆起、保护膜被...",
-   "account": "风吹.落空.",
-   "date": "11-15 10:03",
-   "score": 8,
-   "why": [
-    "折叠屏",
-    "铰链",
-    "iPhone"
-   ],
-   "kw": "折叠屏 屏幕",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFOGUhrDy3cHg-c_ytzVV8YVqXa8Fplpd9mutLrM6gA-DvOOzJZ55P6nHkjSulDKJsEX8xQpNLamMguZbTyj5KaGEm_C12e9qKTJEcQ4ZJSHn1KaYjNMMI6oLUAxIwxhNJHkIgCgU38moZdAnmxwhSKJvfJS-U3bg1g_1cYEuB0Soeqx8a6wuyqpG1RFz4_1mTIyERZEWx3Ih5Nu7CnoSqqg..&type=2&query=%E6%8A%98%E5%8F%A0%E5%B1%8F %E5%B1%8F%E5%B9%95&token=9C330747057C86443F395EA9FA3473C63F8E9CD46AFE5CE6"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MLq-8eU73Ztv7BgYaLXuT3lqXa8Fplpd9nWJUmEIdcYWlMdpwTOKME1ng2XsnuDp3Qv64cOtiJsncH4X64A15oDh-jZeApOdhDOWp0rhk1CzM7KYXtNvHOVoC2tX3mjJM_BPASbJTurMjSO2NPygx61N7yqhq1_jji9ndSE-vijKnsvz_ACarzuF52Uqv_EFYPRphDHgl_sTf3q8uRDTfkw..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=B922CEF6BFE83C27424422AB7C93F1AA43E1F1C36B03A31F"
   },
   {
    "title": "华为mate XT 2 把心电筛查装进手机里",
@@ -46,49 +32,21 @@
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9lTr1YL2b6js6Q61V9ap__eADPlsxzns4EJiRIWvOA0grQF2wjQghCisbh76DemrgpnBQ35TkyQ3JekFA0KBQaLevdgw65f918w6j-zTSZh16ZnXtfN0qKu4rQIXqx3DDEf-8hLIhbyTZOM_BcradZ1ZxyJJVLJR__Vuj_ZTsy3jwdVqCwyPdzA..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MGY1JW2bTXK77BgYaLXuT3lqXa8Fplpd9JGZ1XtCOR-NJX5BNqqYNjAvJowVQRLm7ZiW02oX654m_A5dUVih4JX-t31WR56HgsjVgSBMyR8W03idZZ7UN7n9_10dFKABWo7fAZIUkpjS1xKTLo6kH_DTlHn9kf2vFFOAbMcuUoP3GZnD8rPb02YXGAAIGVUa85VE6CYufQ-SAFV_3u-a3OQ..&type=2&query=Mate XT&token=B922BED0F0A571690D0B6EE631ACE2260EFB635E6B03A31C"
   },
   {
-   "title": "手机炒股适合商务人士吗?华为Mate XT 2 非凡大师大屏盯盘实测思路",
-   "summary": "本文围绕手机炒股这一高频场景,结合华为Mate XT 2 非凡大师与三款折叠屏产品,从大屏信息密度、多窗口交互、续航通信和商务适...",
-   "account": "优云科技网",
-   "date": "11-13 20:36",
+   "title": "今年是阔屏的元年,阔屏是手机的今后十年",
+   "summary": "所谓的“阔屏”,并不是一种新的显示技术从 2012 年到 2017 年,主流手机采用的长宽比是 16:9,iPhone 5 到 iPhone 8、小米 4、华为...",
+   "account": "九儿九儿九儿",
+   "date": "11-23 00:03",
    "score": 7,
    "why": [
-    "折叠屏",
-    "实测",
+    "阔屏",
+    "iPhone",
     "华为"
    ],
-   "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9cT-Mch0cTRIt7OhbSZpqVCvC_uJOEJdXxBhs41F-TXqXF4YiwcQWS2E_H6PdtX6_9nAnywSYYfguvuBu9YkyMPdU-kfSVsujeaKTGUBHjkvS8WSzRi-bFhfGhyDKDZWVZ3fJCNUxxPcziK8wT8WF2iHlkMfW8v18pJJR0cDcqirYl_Q5RRZQjg..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5"
-  },
-  {
-   "title": "华为Mate XT渠道价差引热议,三折叠降价七千多值得买吗",
-   "summary": "Mate XT真正让人着迷的地方就是它的独特屏幕形状了.“合”起来是6.4寸,“展”的话能有7.9英寸显示区域能够用到一部分平板的...",
-   "account": "普朗特ovo",
-   "date": "11-12 00:03",
-   "score": 7,
-   "why": [
-    "折叠屏",
-    "降价",
-    "华为"
-   ],
-   "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd97gR2w4dfF1sn4NLEz_mArO-Kcf8bQttlX43Q7ET9XgFiwOlbDyBeBq-nkCPaY3mvelAJwNXyJBVirUiSqS6TnTlilGTvvXY1h8yiTi1gz_wC9EcYtTG5f0jTOFrNf66mCs6L2xemdyJVcygHtv1cpsTAO5tT7frFrj3NIdloX47uL0unUdKkuw..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5"
-  },
-  {
-   "title": "华为Mate XT 2非凡大师三折叠上新:16GB+512GB灵盾防窥屏版本,定价22999元,今日开售!",
-   "summary": "11月13日,华为带来Mate XT 2非凡大师三折叠全新配置版本,16GB+512GB灵盾防窥屏版本正式官宣,定价22999元,开售时间为当...",
-   "account": "手机数码抢先知",
-   "date": "11-13 09:31",
-   "score": 6,
-   "why": [
-    "折叠屏",
-    "开售",
-    "华为"
-   ],
-   "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9_cBsNiFNingY7ttFGnBpHhjMP1F8jjnAYiPV1M71z4EzbE4oyWouayFmL0tFkYmu9v3_s3jqKzOXWAMwawakzUROMiiuIHMYg3yJCQMZI77x0AEt2gHL-T7_XStl6cAXKx9Xte4TWHhdWCl1uqHIfDZxxtOcdNDSqAWGSKBc08zs46dn8Efgxg..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5"
+   "kw": "阔屏手机",
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MhwoiywGT9wD7BgYaLXuT3lqXa8Fplpd9NweNgw1ZytnztnRhNj_jTDlamcBhlpyXEOL66N2s8Dmq19u2WaaumnBYCKmldkNSq9f7cO8loOvGys4MzQftZGkHJEGuuEyA3OVYMiR1bIno2b92n-HIhDc6QYFLaRUvHO1M0oJ6DJUM6cccvqp84VFLICmDfYFxAZfudomCyXLs46dn8Efgxg..&type=2&query=%E9%98%94%E5%B1%8F%E6%89%8B%E6%9C%BA&token=B922513E1D4B9F84DFD98037DE5BF9C7E085F2A16B03A309"
   },
   {
    "title": "Mate XT 一周年:从抢不到到随时买",
@@ -102,7 +60,7 @@
     "华为"
    ],
    "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS5jj02A4QurFKnmq-w1XwLw-c_ytzVV8YVqXa8Fplpd9Xq-iJ73AVuNtYVZugLelYL0t2xqJpTt_giU0HarpPYIAxDn3VB4WSllmKeeR7v24xsfHfQOFqfzdHCTkpwSeNU6XoasBx83aIud20MzYlcRdPa93PZFofg0WTD5c8UZ2oPNuna7V6y6zgM9tulB6mxjDD-WDsZMJr5VcavWCnQ7m0CtGSSkZQQ..&type=2&query=Mate XT&token=9C335D942C55AE6D17117681D2E7062717994C786AFE5CF5"
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MGY1JW2bTXK77BgYaLXuT3lqXa8Fplpd9wFmwTycYx8WvfDhUsb1nNWPanmTb5yrnHbiu_gF1KhWR-M77170__I-upd8PRQqdIAGQp56vJOPxQizA9NSXrmZ8Wpt-P8QA5YWvDKGdF7LR3OXzWL8zur5ByBJwvIgAz3rt2cyqbdZ-VeMKU58v4S72aQIB4A1Nxyu82KnE4IPS-e4Yz84xMA..&type=2&query=Mate XT&token=B922BED0F0A571690D0B6EE631ACE2260EFB635E6B03A31C"
   }
  ]
 }
