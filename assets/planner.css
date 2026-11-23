@@ -878,7 +878,20 @@ body.cd-page {
   .lf-h1 { font-size: 23px; }
   .lf-hnote { width: 100%; }
   .lf-kpi { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-  .lf-kpi-c.is-accent { grid-column: 1 / -1; }
+  /* 完成率横过来占满一行时，标签靠左、数字靠右，别让右边空一大片黄 */
+  .lf-kpi-c.is-accent {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "h f v" "bar bar bar";
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 7px;
+  }
+  .lf-kpi-c.is-accent .lf-kpi-h { grid-area: h; }
+  .lf-kpi-c.is-accent .lf-kpi-f { grid-area: f; text-align: right; }
+  .lf-kpi-c.is-accent .lf-kpi-v { grid-area: v; text-align: right; }
+  .lf-kpi-c.is-accent .lf-kpi-bar { grid-area: bar; }
   .lf-pipe { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .cd-main { grid-template-columns: minmax(0, 1fr); padding: 0; }
   .cd-tree { max-height: 54vh; }
