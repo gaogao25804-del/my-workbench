@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="assets/desk.css?v=1118w">
 <link rel="stylesheet" href="assets/cards.css?v=1125a">
 <link rel="stylesheet" href="assets/planner.css?v=1125b">
+<link rel="stylesheet" href="assets/calendar.css?v=1130a">
+<link rel="stylesheet" href="assets/planner-view.css?v=1131a">
 </head>
 <body class="cd-page">
 
@@ -15,12 +17,6 @@
 
 <header class="cd-bar">
   <b class="cd-title">策划台</b>
-  <a class="cd-btn" href="calendar.html" title="排期日历：这个月的活按天铺开" aria-label="排期日历">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3.4" y="5.2" width="17.2" height="15.4" rx="2.4"/>
-      <path d="M3.4 9.6h17.2M8.2 3.4v3.4M15.8 3.4v3.4"/>
-    </svg>
-  </a>
   <div class="grow"></div>
   <button class="dk-cloud" id="btnSync" type="button" title="同步：手机上打开就是同一份">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -68,9 +64,19 @@
       </button>
       <button class="lf-mb is-today" id="plToday" type="button" title="回到本月">今</button>
     </div>
+
+    <!-- 清单 / 日历：同一份数据，两个看法 -->
+    <div class="pv-switch" role="tablist" aria-label="切换视图">
+      <button class="pv-sw is-on" type="button" data-view="list" role="tab" aria-selected="true">清单</button>
+      <button class="pv-sw" type="button" data-view="cal" role="tab" aria-selected="false">日历</button>
+    </div>
+
     <div class="grow"></div>
     <p class="lf-hnote" id="plNowSub"></p>
   </div>
+
+  <!-- ============ 清单视图：原有内容，一行没动 ============ -->
+  <div id="plListView" class="pv-body">
 
   <!-- 一排：六个账号各自交到什么程度 + 一个总完成率 -->
   <section class="lf-kpi" id="plTiles" aria-label="各账号进度"></section>
@@ -155,6 +161,47 @@
 
   </div>
 
+  </div>
+
+  <!-- ============ 日历视图：同一份计划按天铺开，点一条回清单改 ============ -->
+  <div id="plCalView" class="pv-body" hidden>
+    <div class="cl-page cl-embed">
+      <div class="cl-wrap">
+
+        <!-- 数字 + 当天清单（原来日历页那张卡车图没搬进来：策划台是干活的界面，
+             一张图要占 400-500px，第一屏就看不到月历了） -->
+        <section class="cl-hero">
+          <div class="cl-stage">
+            <div class="cl-kpis" id="kpis"></div>
+
+            <aside class="cl-day" id="dayPane">
+              <div class="cl-day-h"><b id="dayTitle"></b></div>
+              <div class="cl-day-b" id="dayBody"></div>
+              <div class="cl-day-f"><i id="daySum"></i><a href="cards.html" data-add="1">+ 加一条</a></div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- 接下来几天 -->
+        <section class="cl-strip" id="strip"></section>
+
+        <!-- 账号 + 月历 -->
+        <section class="cl-board">
+          <aside class="cl-who">
+            <div class="cl-wh-h"><b>账号</b><i id="whoSum"></i></div>
+            <div id="whoList"></div>
+            <div class="cl-wh-f"><span>没排日期</span><i id="noDue">0</i></div>
+          </aside>
+          <div class="cl-cal">
+            <div class="cl-dow"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+            <div class="cl-grid" id="grid"></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <aside class="cd-drawer" id="drawer">
@@ -236,6 +283,8 @@
 <script src="assets/store.js?v=1120a"></script>
 <script src="assets/cards.js?v=1125a"></script>
 <script>window.CDSHARED = 1;   /* 主题/同步/顶栏按钮归 cards.js 管，策划只管自己的清单 */</script>
-<script src="assets/planner.js?v=1125a"></script>
+<script src="assets/calendar.js?v=1130a"></script>
+<script src="assets/planner.js?v=1130a"></script>
+<script src="assets/planner-view.js?v=1130a"></script>
 </body>
 </html>

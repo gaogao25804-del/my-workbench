@@ -337,6 +337,8 @@
     paintTrack();
     paintRows();
     paintNow();
+    /* 数据变了：日历视图挂在同一页，让它自己重画（没监听就什么也不发生） */
+    try { document.dispatchEvent(new CustomEvent('wb:plans')); } catch (e) {}
   }
 
   /* ---------------- 月份 ---------------- */
@@ -583,4 +585,65 @@
       }
     });
   }
+
+  /* ---------------- 对外接口（日历整合用，只暴露这三件事） ----------------
+     日历只管看和定位，改数据一律回到上面这些原有流程，不另开写入口。 */
+  function monthOfPlan(id) {
+    for (var k in D.months) {
+      if (!Object.prototype.hasOwnProperty.call(D.months, k)) continue;
+      var a = D.months[k];
+      if (!Array.isArray(a)) continue;
+      for (var i = 0; i < a.length; i++) if (a[i].id === id) return k;
+    }
+    return '';
+  }
+
+  window.WBPlanner = {
+    getYm: function () { return ym; },
+
+    /* 翻月：日历里按 ←/→ 或点跨月的日子时用，最终走这里 */
+    goto: function (k) {
+      if (!/^\d{4}-\d{2}$/.test(k || '')) return;
+      gotoMonth(k);
+    },
+
+    /* 定位一条计划：跳到它那个月、清掉筛选、滚到那行、闪一下、光标进备注框 */
+    focus: function (id) {
+      if (!id) return false;
+      var mk = monthOfPlan(id);
+      if (!mk) { toast('这条计划找不到了'); return false; }
+      ym = mk;
+      filter = 'all';
+      acctFilter = '';
+      armId = null;
+      paintAll();
+
+      var rows = document.querySelectorAll('#plRows .pl-item');
+      var row = null;
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].getAttribute('data-id') === id) { row = rows[i]; break; }
+      }
+      if (!row) return true;
+
+      try { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+      catch (e) { try { row.scrollIntoView(); } catch (e2) {} }
+      row.classList.add('is-focus');
+      setTimeout(function () { row.classList.remove('is-focus'); }, 1800);
+
+      var inp = row.querySelector('[data-act="note"]');
+      if (inp) setTimeout(function () { try { inp.focus({ preventScroll: true }); } catch (e) {} }, 320);
+      return true;
+    },
+
+    /* 打开「加一条」，截止日预填日历点的那天 */
+    add: function (due) {
+      newOpen(true);
+      var f = $('fDue');
+      if (f && /^\d{4}-\d{2}-\d{2}$/.test(due || '')) f.value = due;
+      var box = $('plNew');
+      if (box) { try { box.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }
+      var n = $('fName');
+      if (n) setTimeout(function () { try { n.focus(); } catch (e) {} }, 90);
+    }
+  };
 })();
