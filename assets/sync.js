@@ -638,9 +638,13 @@
         var n = applyMerged(merged, Date.now(), token ? remote : null, !token);
 
         var st = merged.st;
-        /* 只有真的动了数据才让页面重载。三个页面里 onApplied 就是 location.reload()，
-           判断条件写宽了会变成"拉一次刷一次"。这里按合并统计走，不看 n（n 可能只是补了 ut）。 */
-        var changed = (st.added + st.updated + st.deleted + st.restored + st.fought) > 0;
+        /* 只有本地数据真的被改写，才让页面重载。
+           不能用 st 判：墓碑命中的条目每轮都会计一次 deleted（表示"这条仍是删除状态"），
+           但本地那份其实没变 —— 按 st 判就成了 pull → onApplied → location.reload()
+           → pull … 无限刷新。2026-11-23 真机上抓到的就是这个（画布票根卡被 store.js
+           搬进卡片库，本地 4 条 / 云端 5 条，每轮 deleted=1，页面每 1.5 秒刷一次）。
+           n 是 applyMerged 真正写进 localStorage 的模块数，内容没变时它是 0。 */
+        var changed = n > 0;
         if (changed) {
           status('ok', st.fought ? ('已取回云端（' + st.fought + ' 条冲突）') : '已取回云端');
           if (opt && opt.onApplied) { try { opt.onApplied(); } catch (e) {} }
