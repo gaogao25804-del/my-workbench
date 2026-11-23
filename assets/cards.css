@@ -438,7 +438,7 @@ a.cd-entry { font-weight: 600; margin-left: 6px; }
 .cd-pane-empty .row button:hover { border-color: var(--c); color: var(--c); }
 
 @media (max-width: 880px) {
-  .cd-wrap, .cd-main { grid-template-columns: 1fr; gap: 12px; padding: 12px 12px 40px; }
+  .cd-wrap { grid-template-columns: 1fr; gap: 12px; padding: 12px 12px 40px; }
   .cd-tree { position: static; height: auto; }
   .cd-pane { display: none; }
   body.cd-reading .cd-tree { display: none; }

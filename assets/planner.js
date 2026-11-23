@@ -1,13 +1,17 @@
 /* ==========================================================
    内容策划 · planner.js
-   一个月一张清单：六个账号这月要交什么、哪条还欠着。
-   版式照参考图重排了一遍 —— 概览六块彩色小卡 / 账号进度条 /
-   带圆点的清单 / 右边「这个月」+「加一条」。
+   一屏一个月的活：上面一排账号进度、一排阶段，下面左边清单右边写卡。
 
-   数据还是原来那一份：localStorage 的 wb.planner.v1
-     { v:1, at:<时间戳>, theme:'light', months:{ '2026-11': [ 计划… ] } }
-   跟卡片库（wb.cards.v1）、画布（wb.desk.v1）完全分开，
+   数据还是那一份：localStorage 的 wb.planner.v1
+     { v:1, at:<时间戳>, theme:'light', lastAcct:'…', months:{ '2026-11': [ 计划… ] } }
+   跟卡片库（wb.cards.v1）、画布（wb.desk.v1）分开存；
    同步时是云端文件里的第三格，谁也不覆盖谁。
+
+   页面上认这些钩子（改版式别动它们）：
+     #plTiles  #plBars  #plRows  #plForm  #plNew  #plNewTog
+     #plYm #plYr #plNowSub #plPrev #plNext #plToday #plPick
+     #plClear #plSumSub #plTrackFill #fName #fAcct #fDue #fNote #fSt #plAdd
+     行：.pl-item[data-id]，内部 [data-act="st"|"note"|"del"]
    ========================================================== */
 (function () {
   'use strict';
@@ -22,10 +26,15 @@
     { n: '临时项目', s: '临', c: 'f' }
   ];
   var ST = { todo: '未开始', doing: '进行中', done: '已完成' };
+  var STAGES = [
+    { k: 'todo', n: '未开始' },
+    { k: 'doing', n: '进行中' },
+    { k: 'done', n: '已完成' },
+    { k: 'late', n: '逾期' }
+  ];
 
   /* 合并进 cards.html 之后，主题、同步、顶栏按钮都归 cards.js，
-     这边只管清单本身，别去抢那几件事（抢了会互相打架：主题被切两下等于没切、
-     WBSync 被 init 两次、重载时把云端刚拉下来的计划又写回旧的） */
+     这边只管清单本身 */
   var SHARED = !!window.CDSHARED;
 
   var D = null;
@@ -49,16 +58,14 @@
     var d = new Date();
     return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   }
-  function ymText(k) {
-    var p = k.split('-');
-    return p[0] + ' 年 ' + (parseInt(p[1], 10)) + ' 月';
-  }
+  function ymNum(k) { return parseInt(k.split('-')[1], 10); }
+  function ymYear(k) { return k.split('-')[0]; }
   function addDays(s, n) {
     var p = s.split('-');
     var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10) + n);
     return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   }
-  function mmdd(s) { return s ? s.slice(5, 7) + '-' + s.slice(8, 10) : ''; }
+  function mmdd(s) { return s ? s.slice(5, 7) + '/' + s.slice(8, 10) : ''; }
 
   function toast(msg) {
     var el = $('toast');
@@ -139,128 +146,83 @@
     return s;
   }
   function prevKey() {
-    var p = ym.split('-');
-    var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 2, 1);
+    var d = new Date(parseInt(ymYear(ym), 10), ymNum(ym) - 2, 1);
     return monthKey(d);
   }
-  function delta(now, last) {
-    if (!last && !now) return '上月也没排';
-    if (!last) return '上月没排';
-    if (now > last) return '比上月多 ' + (now - last) + ' 条';
-    if (now < last) return '比上月少 ' + (last - now) + ' 条';
-    return '跟上月一样';
+  /* 环比只用箭头 + 数字，不写句子 */
+  function dOf(now, last) {
+    if (!last) return '';
+    if (now > last) return '↑' + (now - last);
+    if (now < last) return '↓' + (last - now);
+    return '';
   }
-  function earliestLate() {
-    var a = view().filter(isLate).map(function (p) { return p.due; }).sort();
-    return a.length ? mmdd(a[0]) : '';
-  }
-
-  /* ---------------- 图标 ---------------- */
-  var IC = {
-    plan: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 3.6 7.7 12 12l8.4-4.3z"/><path d="M3.6 12.3 12 16.6l8.4-4.3"/><path d="M3.6 16.6 12 20.9l8.4-4.3"/></svg>',
-    doing: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.3"/><path d="M10.2 8.6 15.4 12l-5.2 3.4z"/></svg>',
-    done: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 12.4 9.5 17.3 19.4 6.9"/></svg>',
-    late: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.4 21 19.8H3z"/><path d="M12 10.1v3.8M12 16.6v.01"/></svg>',
-    week: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="5.4" width="17.2" height="15.2" rx="2.6"/><path d="M8 3.4v3.6M16 3.4v3.6M3.4 10.2h17.2"/></svg>',
-    rate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.2 17.8 17.8 6.2"/><circle cx="7.9" cy="7.9" r="2.1"/><circle cx="16.1" cy="16.1" r="2.1"/></svg>',
-    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 16.4 16.4 7.6M9.4 7.6h7v7"/></svg>'
-  };
 
   /* ---------------- 画画 ---------------- */
   function paintHead() {
-    var c = counts();
-    $('plHeadSub').textContent = ymText(ym) + ' · ' + c.all + ' 条在册 · ' +
-      (c.all ? (c.all - c.done) + ' 条还没交' : '一条没排');
+    var y = $('plYr');
+    if (y) y.textContent = ymYear(ym);
+    var m = $('plYm');
+    if (m) m.textContent = ymNum(ym) + ' 月';
   }
 
-  function paintPeople() {
-    var a = list();
-    $('plPeople').innerHTML = ACCTS.map(function (x) {
-      var mine = a.filter(function (p) { return (p.acct || '') === x.n; });
-      var open = mine.filter(function (p) { return (p.st || 'todo') !== 'done'; }).length;
-      var on = acctFilter === x.n ? ' is-on' : '';
-      return '<button type="button" class="pl-person' + on + '" data-acct="' + esc(x.n) + '" title="点一下只看这个账号">' +
-        '<span class="pp-av" data-c="' + x.c + '">' + x.s + '</span>' +
-        '<span class="pp-b"><b>' + esc(x.n) + '</b><i>' + (open ? open + ' 条待办' : '全清') + '</i></span>' +
-        '<span class="pp-pill' + (open ? '' : ' is-zero') + '">' + (open ? open + ' 条待办' : '全清') + '</span>' +
-      '</button>';
-    }).join('');
-  }
-
-  function tileHTML(o) {
-    var on = (o.f && filter === o.f) ? ' is-on' : '';
-    var inner =
-      '<span class="pt-h"><span class="pt-ic">' + o.ic + '</span>' + o.lab + '</span>' +
-      '<span class="pt-bot">' +
-        '<span class="pt-v">' + o.v + '</span>' +
-        '<span class="pt-s">' + o.sub + '</span>' +
-      '</span>' +
-      (o.f ? '<span class="pt-go">' + IC.arrow + '</span>' : '');
-    if (!o.f) {
-      return '<div class="pl-tile" data-k="' + o.k + '">' + inner + '</div>';
-    }
-    return '<button type="button" class="pl-tile' + on + '" data-k="' + o.k + '" data-f="' + o.f + '" title="点一下只看这一类">' + inner + '</button>';
-  }
-
+  /* 一排账号：交到什么程度，点一下就只看它 */
   function paintTiles() {
-    var c = counts();
-    var prevArr = monthOf(prevKey());
-    if (acctFilter) prevArr = prevArr.filter(function (p) { return (p.acct || '') === acctFilter; });
-    var pc = statOf(prevArr);
-    var tiles = [
-      { k: 'plan', lab: '本月计划', v: c.all, sub: delta(c.all, pc.all), f: 'all', ic: IC.plan },
-      { k: 'doing', lab: '正在推进', v: c.doing, sub: c.all ? '占 ' + Math.round(c.doing / c.all * 100) + '%' : '还没开始', f: 'doing', ic: IC.doing },
-      { k: 'done', lab: '已完成', v: c.done, sub: delta(c.done, pc.done), f: 'done', ic: IC.done },
-      { k: 'late', lab: '已逾期', v: c.late, sub: c.late ? '最早 ' + earliestLate() + ' 就该交' : '一条不欠', f: 'late', ic: IC.late },
-      { k: 'week', lab: '本周到期', v: c.week, sub: '接下来 7 天', f: 'week', ic: IC.week },
-      { k: 'rate', lab: '完成率', v: c.rate + '%', sub: pc.all ? '上月 ' + pc.rate + '%' : '上月没排', f: '', ic: IC.rate }
-    ];
-    $('plTiles').innerHTML = tiles.map(tileHTML).join('');
-    $('plClear').hidden = (filter === 'all' && !acctFilter);
-    var lab = { all: '全部', todo: '未开始', doing: '进行中', done: '已完成', late: '逾期', week: '本周' }[filter] || '';
-    var bits = [];
-    if (acctFilter) bits.push('只看「' + acctFilter + '」');
-    if (filter !== 'all') bits.push('只看「' + lab + '」');
-    $('plSumSub').textContent = bits.length ? bits.join(' · ') : '点一张卡就只看那一类';
+    var all = list();
+    var tAll = 0, tDone = 0;
+    var cards = ACCTS.map(function (x) {
+      var mine = all.filter(function (p) { return (p.acct || '') === x.n; });
+      var d = mine.filter(function (p) { return (p.st || 'todo') === 'done'; }).length;
+      var pct = mine.length ? Math.round(d / mine.length * 100) : 0;
+      tAll += mine.length; tDone += d;
+      var on = acctFilter === x.n ? ' is-on' : '';
+      return '<button type="button" class="lf-kpi-c' + on + '" data-acct="' + esc(x.n) + '"' +
+        ' aria-pressed="' + (acctFilter === x.n ? 'true' : 'false') + '"' +
+        ' title="' + esc(x.n) + ' · 完成 ' + d + ' / ' + mine.length + '">' +
+        '<span class="lf-kpi-h"><i class="lf-dot" data-c="' + x.c + '"></i>' + esc(x.n) + '</span>' +
+        '<b class="lf-kpi-v' + (mine.length ? '' : ' is-void') + '">' +
+          (mine.length ? pct + '<em>%</em>' : '—') +
+        '</b>' +
+        '<span class="lf-kpi-bar"><i style="width:' + pct + '%"></i></span>' +
+        '<span class="lf-kpi-f">' + d + ' / ' + mine.length + '</span>' +
+      '</button>';
+    });
+
+    var rate = tAll ? Math.round(tDone / tAll * 100) : 0;
+    cards.push('<div class="lf-kpi-c is-accent">' +
+      '<span class="lf-kpi-h">完成率</span>' +
+      '<b class="lf-kpi-v"><span id="plRate">' + rate + '</span><em>%</em></b>' +
+      '<span class="lf-kpi-bar"><i style="width:' + rate + '%"></i></span>' +
+      '<span class="lf-kpi-f">' + tDone + ' / ' + tAll + '</span>' +
+    '</div>');
+
+    var box = $('plTiles');
+    if (box) box.innerHTML = cards.join('');
   }
 
+  /* 一排阶段：未开始 / 进行中 / 已完成 / 逾期（黑的）。点一下只看那一档 */
   function paintBars() {
     var a = view();
-    var map = {};
-    ACCTS.forEach(function (x) { map[x.n] = { n: x.n, s: x.s, c: x.c, t: 0, d: 0, o: 0 }; });
+    var n = { todo: 0, doing: 0, done: 0, late: 0 };
     a.forEach(function (p) {
-      var g = map[p.acct];
-      if (!g) return;
-      g.t++;
-      if ((p.st || 'todo') === 'done') g.d++; else g.o++;
+      n[p.st || 'todo'] = (n[p.st || 'todo'] || 0) + 1;
+      if (isLate(p)) n.late++;
     });
-    var rows = ACCTS.map(function (x) { return map[x.n]; }).filter(function (g) { return g.t > 0; });
+    var all = a.length || 1;
 
-    $('plBarsSub').textContent = rows.length
-      ? rows.length + ' 个账号有活 · 共 ' + a.length + ' 条'
-      : '这个月还没分账号';
-
-    if (!rows.length) {
-      $('plBars').innerHTML = '<div class="pl-empty" style="padding:22px 8px 24px">' +
-        '<b>还没有能算进度的东西</b>在「加一条」里加一条、选个账号，这儿就有数了。</div>';
-      return;
-    }
-
-    $('plBars').innerHTML = rows.map(function (g) {
-      var pct = g.t ? Math.round(g.d / g.t * 100) : 0;
-      return '<div class="pb">' +
-        '<div class="pb-h">' +
-          '<span class="pb-av" data-c="' + g.c + '">' + g.s + '</span>' +
-          '<b class="pb-name">' + esc(g.n) + '</b>' +
-          '<span class="pb-pct">' + pct + '%</span>' +
-        '</div>' +
-        '<div class="pb-track"><i class="pb-fill" style="width:' + pct + '%" data-p="' + pct + '"></i></div>' +
-        '<div class="pb-nums">' +
-          '<span>计划 <b>' + g.t + '</b></span>' +
-          '<span>完成 <b>' + g.d + '</b></span>' +
-          '<span>欠着 <b' + (g.o ? ' class="is-alarm"' : '') + '>' + g.o + '</b></span>' +
-        '</div>' +
-      '</div>';
+    var box = $('plBars');
+    if (!box) return;
+    box.innerHTML = STAGES.map(function (s) {
+      var v = n[s.k] || 0;
+      var pct = Math.round(v / all * 100);
+      var on = filter === s.k ? ' is-on' : '';
+      var bk = s.k === 'late' ? ' is-black' : '';
+      return '<button type="button" class="lf-pa' + on + bk + '" data-f="' + s.k + '"' +
+        ' aria-pressed="' + (filter === s.k ? 'true' : 'false') + '" title="只看' + s.n + '">' +
+        '<span class="lf-pa-h"><span class="lf-pa-n"><i class="lf-pa-d"></i>' + s.n + '</span>' +
+          '<i>' + pct + '%</i></span>' +
+        '<span class="lf-pa-bar"><b style="width:' + pct + '%"></b></span>' +
+        '<span class="lf-pa-v">' + v + '<em>条</em></span>' +
+      '</button>';
     }).join('');
   }
 
@@ -273,65 +235,66 @@
     }
   }
 
-  function paintChips() {
-    var c = counts(), box = $('plChips');
-    if (!box) return;
-    var defs = [['all', '全部'], ['todo', '未开始'], ['doing', '进行中'], ['done', '已完成'], ['late', '逾期'], ['week', '本周']];
-    box.innerHTML = defs.map(function (d) {
-      var on = filter === d[0] ? ' is-on' : '';
-      return '<button class="pl-chip' + on + '" type="button" data-f="' + d[0] + '">' +
-        d[1] + '<i>' + (c[d[0]] || 0) + '</i></button>';
-    }).join('');
-    var sorted = $('plSorted');
-    if (sorted) {
-      var lab = '';
-      defs.forEach(function (d) { if (d[0] === filter) lab = d[1]; });
-      sorted.textContent = filter === 'all' ? '按截止日期排，没日期的垫底' : '只看「' + lab + '」';
+  /* 有筛选就在标题后面挂一个小 pill，没有就空着 */
+  function paintFilterTag() {
+    var lab = { all: '', todo: '未开始', doing: '进行中', done: '已完成', late: '逾期', week: '本周' }[filter] || '';
+    var bits = [];
+    if (acctFilter) bits.push(acctFilter);
+    if (lab) bits.push(lab);
+    var tag = $('plSumSub');
+    if (tag) {
+      tag.textContent = bits.join(' · ');
+      tag.classList.toggle('is-on', bits.length > 0);
     }
+    var clr = $('plClear');
+    if (clr) clr.hidden = (filter === 'all' && !acctFilter);
   }
 
-  function dueText(p) {
-    if (!p.due) return { t: '没定日子', cls: 'is-none' };
-    var t = mmdd(p.due);
-    if ((p.st || 'todo') === 'done') return { t: t + ' 交的', cls: '' };
+  /* 日期在左，只有「晚几天 / 还有几天」这种相对话 */
+  function relText(p) {
+    if (!p.due) return { t: '', cls: 'is-none' };
+    if ((p.st || 'todo') === 'done') return { t: '', cls: '' };
     var now = todayStr();
     if (p.due < now) {
       var dd = Math.round((new Date(now) - new Date(p.due)) / 86400000);
-      return { t: t + ' · 晚了 ' + dd + ' 天', cls: 'is-late' };
+      return { t: '晚 ' + dd + ' 天', cls: 'is-late' };
     }
-    if (p.due === now) return { t: t + ' · 今天要交', cls: 'is-today' };
+    if (p.due === now) return { t: '今天', cls: 'is-today' };
     var left = Math.round((new Date(p.due) - new Date(now)) / 86400000);
-    return { t: t + ' · 还有 ' + left + ' 天', cls: '' };
+    return { t: '还有 ' + left + ' 天', cls: '' };
   }
 
   function rowHTML(p) {
     var st = p.st || 'todo';
-    var du = dueText(p);
-    var cls = 'pl-item' + (st === 'done' ? ' is-done' : '');
-
+    var rel = relText(p);
     var opts = Object.keys(ST).map(function (k) {
       return '<option value="' + k + '"' + (k === st ? ' selected' : '') + '>' + ST[k] + '</option>';
     }).join('');
 
-    return '<div class="' + cls + '" data-id="' + p.id + '">' +
-      '<div class="pi-b">' +
-        '<div class="pi-top">' +
-          '<span class="pi-name" title="' + esc(p.name) + '">' + esc(p.name) + '</span>' +
-          '<span class="pi-acct">' + esc(p.acct || '未分账号') + '</span>' +
+    return '<div class="pl-item' + (st === 'done' ? ' is-done' : '') + '" data-id="' + p.id + '">' +
+      '<span class="lr-d' + (p.due ? '' : ' is-none') + '">' + (p.due ? mmdd(p.due) : '—') + '</span>' +
+      '<div class="lr-b">' +
+        '<div class="lr-1">' +
+          '<span class="lr-n" title="' + esc(p.name) + '">' + esc(p.name) + '</span>' +
+          '<i class="lr-a" data-c="' + (acctColor(p.acct)) + '">' + esc(p.acct || '未分') + '</i>' +
         '</div>' +
-        '<div class="pi-sub">' +
-          '<span class="pi-due ' + du.cls + '">' + du.t + '</span>' +
-          '<input class="pi-note" type="text" data-act="note" value="' + esc(p.note || '') + '" placeholder="备注…" spellcheck="false">' +
+        '<div class="lr-2">' +
+          (rel.t ? '<span class="lr-t ' + rel.cls + '">' + rel.t + '</span>' : '') +
+          '<input class="lr-note" type="text" data-act="note" value="' + esc(p.note || '') +
+            '" placeholder="备注" spellcheck="false" aria-label="备注">' +
         '</div>' +
       '</div>' +
-      '<span class="pi-stw">' +
-        '<select class="pi-st is-' + st + '" data-act="st" title="改进度">' + opts + '</select>' +
-        '<svg class="pf-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 10l4 4 4-4"/></svg>' +
+      '<span class="lr-stw">' +
+        '<select class="lr-st is-' + st + '" data-act="st" aria-label="进度">' + opts + '</select>' +
       '</span>' +
-      '<button class="pi-del' + (armId === p.id ? ' is-armed' : '') + '" type="button" data-act="del" title="删掉这条">' +
-        (armId === p.id ? '确定删?' : '✕') +
-      '</button>' +
+      '<button class="lr-x' + (armId === p.id ? ' is-armed' : '') + '" type="button" data-act="del"' +
+        ' title="删掉这条" aria-label="删掉">' + (armId === p.id ? '删?' : '✕') + '</button>' +
     '</div>';
+  }
+
+  function acctColor(n) {
+    for (var i = 0; i < ACCTS.length; i++) if (ACCTS[i].n === n) return ACCTS[i].c;
+    return 'g';
   }
 
   function paintRows() {
@@ -347,11 +310,7 @@
 
     if (!arr.length) {
       var noneAll = !view().length;
-      box.innerHTML = '<div class="pl-empty">' +
-        '<b>' + (noneAll ? '这个月还没排东西' : '这个筛选下没有计划') + '</b>' +
-        (noneAll ? '在「加一条」里填个名称，回车就加上了。截止日期不填也行。'
-                 : '换个筛选看看，或者点上面的「全部」。') +
-      '</div>';
+      box.innerHTML = '<div class="lf-empty">' + (noneAll ? '这月还没排' : '这一档没有') + '</div>';
       return;
     }
     box.innerHTML = arr.map(rowHTML).join('');
@@ -359,34 +318,22 @@
 
   function paintNow() {
     var c = counts();
-    var ring = $('plRing');
-    if (ring) {
-      ring.style.setProperty('--p', c.rate);
-      ring.classList.toggle('is-zero', c.rate <= 0);
-    }
-    $('plRate').textContent = c.rate + '%';
-    $('plYm').textContent = ymText(ym);
-
-    var bits = [];
-    if (c.all) {
-      bits.push(c.all + ' 条在册');
-      bits.push(c.done + ' 条完成');
-      if (c.late) bits.push(c.late + ' 条逾期');
-      if (c.todo) bits.push(c.todo + ' 条没动');
-    }
-    $('plNowSub').textContent = bits.length ? bits.join(' · ') : '这个月还没排东西';
+    var rate = $('plRate');
+    if (rate) rate.textContent = c.rate;
+    var sub = $('plNowSub');
+    if (sub) sub.textContent = c.all ? ((c.all - c.done) + ' 条没交') : '';
 
     var pick = $('plPick');
     if (pick && pick.value !== ym) pick.value = ym;
-    $('plToday').disabled = (ym === thisMonth());
+    var today = $('plToday');
+    if (today) today.disabled = (ym === thisMonth());
   }
 
   function paintAll() {
     paintHead();
-    paintPeople();
     paintTiles();
     paintBars();
-    paintChips();
+    paintFilterTag();
     paintTrack();
     paintRows();
     paintNow();
@@ -394,8 +341,7 @@
 
   /* ---------------- 月份 ---------------- */
   function shiftMonth(n) {
-    var p = ym.split('-');
-    var d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1 + n, 1);
+    var d = new Date(parseInt(ymYear(ym), 10), ymNum(ym) - 1 + n, 1);
     ym = monthKey(d);
     paintAll();
   }
@@ -409,7 +355,7 @@
   /* ---------------- 增删改 ---------------- */
   function addPlan() {
     var name = ($('fName').value || '').trim();
-    if (!name) { $('fName').focus(); toast('先写个计划名称'); return; }
+    if (!name) { $('fName').focus(); toast('先写个名称'); return; }
     var p = {
       id: uid(),
       name: name,
@@ -440,7 +386,7 @@
     saveNow();
     armId = null;
     paintAll();
-    toast('删掉了：' + nm);
+    toast('删了：' + nm);
   }
 
   function find(id) {
@@ -454,13 +400,12 @@
     document.documentElement.setAttribute('data-theme', t);
     document.documentElement.style.colorScheme = t;
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', t === 'dark' ? '#1c1c1e' : '#fbfbfd');
+    if (meta) meta.setAttribute('content', t === 'dark' ? '#141416' : '#f0eeec');
   }
 
   /* ---------------- 起 ---------------- */
   load();
 
-  /* 第一次用：主题先跟着卡片库那份，之后各调各的 */
   if (!SHARED) {
     if (!D.theme) {
       try {
@@ -490,37 +435,40 @@
   paintAll();
 
   /* ---------------- 事件 ---------------- */
-  /* 「加一条」展开 / 收起（默认收着，不占清单的地方） */
+  /* 「加一条」：平时收成一行，点开才出表单 */
   var newBox = $('plNew'), newTog = $('plNewTog');
   function newOpen(open) {
     if (!newBox) return;
     newBox.classList.toggle('is-open', open);
     if (newTog) newTog.setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (open) {
-      setTimeout(function () { var f = $('fName'); if (f) f.focus(); }, 40);
-    }
+    if (open) setTimeout(function () { var f = $('fName'); if (f) f.focus(); }, 40);
   }
-  if (newTog) {
-    newTog.addEventListener('click', function () {
-      newOpen(!newBox.classList.contains('is-open'));
-    });
-  }
+  if (newTog) newTog.addEventListener('click', function () {
+    newOpen(!newBox.classList.contains('is-open'));
+  });
 
-  $('plForm').addEventListener('submit', function (e) {
+  /* 顶栏那颗黑按钮：展开表单，滚到能看见 */
+  var addTop = $('plAddTop');
+  if (addTop) addTop.addEventListener('click', function () {
+    newOpen(true);
+    if (newBox) newBox.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
+
+  if ($('plForm')) $('plForm').addEventListener('submit', function (e) {
     e.preventDefault();
     addPlan();
   });
 
-  $('plPrev').addEventListener('click', function () { shiftMonth(-1); });
-  $('plNext').addEventListener('click', function () { shiftMonth(1); });
-  $('plToday').addEventListener('click', function () { gotoMonth(thisMonth()); });
-  $('plPick').addEventListener('change', function () {
+  if ($('plPrev')) $('plPrev').addEventListener('click', function () { shiftMonth(-1); });
+  if ($('plNext')) $('plNext').addEventListener('click', function () { shiftMonth(1); });
+  if ($('plToday')) $('plToday').addEventListener('click', function () { gotoMonth(thisMonth()); });
+  if ($('plPick')) $('plPick').addEventListener('change', function () {
     if (this.value) gotoMonth(this.value);
     else this.value = ym;
   });
 
-  /* 上面那一排账号：点一下只看它，再点一下放开 */
-  $('plPeople').addEventListener('click', function (e) {
+  /* 账号卡：点一下只看它，再点一下放开 */
+  if ($('plTiles')) $('plTiles').addEventListener('click', function (e) {
     var b = e.target.closest('[data-acct]');
     if (!b) return;
     var n = b.getAttribute('data-acct');
@@ -530,84 +478,77 @@
     paintAll();
   });
 
-  /* 六块小卡：点一下就只看那一类 */
-  $('plTiles').addEventListener('click', function (e) {
+  /* 阶段卡：点一下只看那一档 */
+  if ($('plBars')) $('plBars').addEventListener('click', function (e) {
     var b = e.target.closest('[data-f]');
     if (!b) return;
-    filter = b.getAttribute('data-f') || 'all';
+    var f = b.getAttribute('data-f') || 'all';
+    filter = (filter === f) ? 'all' : f;
     armId = null;
-    paintTiles();
-    paintChips();
+    paintBars();
+    paintFilterTag();
     paintRows();
     paintTrack();
   });
 
-  $('plClear').addEventListener('click', function () {
+  if ($('plClear')) $('plClear').addEventListener('click', function () {
     filter = 'all';
     acctFilter = '';
     armId = null;
     paintAll();
   });
 
-  $('plChips').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-f]');
-    if (!b) return;
-    filter = b.getAttribute('data-f') || 'all';
-    armId = null;
-    paintTiles();
-    paintChips();
-    paintRows();
-  });
+  /* 列表：改状态 / 改备注 / 删（点两下） */
+  if ($('plRows')) {
+    $('plRows').addEventListener('change', function (e) {
+      var sel = e.target.closest('[data-act="st"]');
+      if (!sel) return;
+      var row = sel.closest('.pl-item');
+      var p = row && find(row.dataset.id);
+      if (!p) return;
+      p.st = ST[sel.value] ? sel.value : 'todo';
+      p.ut = Date.now();
+      saveNow();
+      paintAll();
+    });
 
-  /* 列表：改状态 / 改备注 / 删 */
-  $('plRows').addEventListener('change', function (e) {
-    var sel = e.target.closest('[data-act="st"]');
-    if (!sel) return;
-    var row = sel.closest('.pl-item');
-    var p = row && find(row.dataset.id);
-    if (!p) return;
-    p.st = ST[sel.value] ? sel.value : 'todo';
-    p.ut = Date.now();
-    saveNow();
-    paintAll();
-  });
+    $('plRows').addEventListener('input', function (e) {
+      var inp = e.target.closest('[data-act="note"]');
+      if (!inp) return;
+      var row = inp.closest('.pl-item');
+      var p = row && find(row.dataset.id);
+      if (!p) return;
+      p.note = inp.value;
+      p.ut = Date.now();
+      saveSoon();          /* 不重画，光标留在原地 */
+    });
 
-  $('plRows').addEventListener('input', function (e) {
-    var inp = e.target.closest('[data-act="note"]');
-    if (!inp) return;
-    var row = inp.closest('.pl-item');
-    var p = row && find(row.dataset.id);
-    if (!p) return;
-    p.note = inp.value;
-    p.ut = Date.now();
-    saveSoon();          /* 不重画，光标留在原地 */
-  });
+    $('plRows').addEventListener('blur', function (e) {
+      var inp = e.target.closest && e.target.closest('[data-act="note"]');
+      if (inp) saveNow();
+    }, true);
 
-  $('plRows').addEventListener('blur', function (e) {
-    var inp = e.target.closest && e.target.closest('[data-act="note"]');
-    if (inp) saveNow();
-  }, true);
-
-  $('plRows').addEventListener('click', function (e) {
-    var btn = e.target.closest('[data-act="del"]');
-    if (!btn) return;
-    var row = btn.closest('.pl-item');
-    var id = row && row.dataset.id;
-    if (!id) return;
-    if (armId !== id) {
-      armId = id;
+    $('plRows').addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-act="del"]');
+      if (!btn) return;
+      var row = btn.closest('.pl-item');
+      var id = row && row.dataset.id;
+      if (!id) return;
+      if (armId !== id) {
+        armId = id;
+        clearTimeout(armT);
+        btn.classList.add('is-armed');
+        btn.textContent = '删?';
+        armT = setTimeout(function () { armId = null; paintRows(); }, 3600);
+        return;
+      }
       clearTimeout(armT);
-      btn.classList.add('is-armed');
-      btn.textContent = '确定删?';
-      armT = setTimeout(function () { armId = null; paintRows(); }, 3600);
-      return;
-    }
-    clearTimeout(armT);
-    delPlan(id);
-  });
+      delPlan(id);
+    });
+  }
 
-  /* 加一条时记住上次选的账号，下次不用重挑 */
-  $('fAcct').addEventListener('change', function () {
+  /* 加一条时记住上次选的账号 */
+  if ($('fAcct')) $('fAcct').addEventListener('change', function () {
     D.lastAcct = this.value;
     saveSoon();
   });
@@ -619,13 +560,11 @@
     saveSoon();
   });
 
-  /* 切标签页时把没落盘的备注写下去 */
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) saveNow();
   });
 
   /* ---------------- 同步 ---------------- */
-  /* 单页版（sites/planner/）自己管；合并进 cards.html 后由 cards.js 统一管 */
   var btnSync = SHARED ? null : $('btnSync');
   if (btnSync && window.WBSync) {
     btnSync.addEventListener('click', function () { window.WBSync.panel(); });
