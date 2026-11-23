@@ -14,6 +14,11 @@
   var canvas, stage, emptyEl, toastEl, saveEl, pickEl, replaceEl, dropEl;
   var wins = {};
   var zTop = 100;
+  /* 本机 IndexedDB 里没有文件、这次画不出来的窗口（docx/pdf/xlsx 之类）。
+     这些条目必须原样留住：用户清过缓存或换台设备打开时，它们一个都渲染不出来，
+     如果就这么丢掉，下面 scheduleSave 会把少了几条的画面写回本地、再顺手推到云端，
+     等于"用新设备打开一次，云端那几张卡就被删了"。2026-11-23 真实踩到过。 */
+  var ghostWins = [];
   var theme = 'light';
   var saveTimer = null;
   var frozen = false;              /* 云端刚覆盖、正要重载：这期间别把旧数据写回去 */
@@ -290,6 +295,16 @@
         note: w.kind === 'note' ? packNote(w.note || { style: ntStyle(w) }) : null
       };
     });
+    /* 本机缺文件、这次没画出来的窗口：原样带回去，别在保存时把它抹掉 */
+    if (ghostWins.length) {
+      var seen = {};
+      list.forEach(function (w) { seen[w.id] = 1; });
+      ghostWins.forEach(function (w) {
+        if (!w || seen[w.id]) return;
+        seen[w.id] = 1;
+        list.push(w);
+      });
+    }
     return { v: 2, theme: theme, wins: list, at: Date.now() };
   }
 
@@ -1399,6 +1414,7 @@
       (recs || []).forEach(function (r) { map[r.id] = r; });
 
       var missing = 0, ok = 0;
+      ghostWins = [];
       var jobs = [];
       raw.wins.slice().sort(function (a, b) { return (a.z || 0) - (b.z || 0); }).forEach(function (w) {
         var box = {
@@ -1423,7 +1439,8 @@
         }
 
         var rec = map[w.fileId];
-        if (!rec) { missing++; return; }
+        /* 文件不在本机：记一笔、这次不画，但数据要留着（见 ghostWins 的注释） */
+        if (!rec) { missing++; ghostWins.push(w); return; }
         var st = makeWindow(rec, box);
         st.z = w.z || ++zTop;
         var el = elOf(st);
@@ -1456,7 +1473,8 @@
       scheduleSave();
       if (saveEl) saveEl.textContent = '已恢复';
       if (missing) {
-        toast('有 ' + missing + ' 个文件在本机浏览器里找不到了（可能清过缓存），重新添加一次就行', 5200);
+        toast('有 ' + missing + ' 个文件在本机浏览器里找不到了（可能清过缓存），'
+              + '位置给你留着，重新添加一次就好；云端那份没动', 6000);
       }
       return Promise.all(jobs);
     }).catch(function (e) {
