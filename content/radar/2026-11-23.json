@@ -1,0 +1,564 @@
+{
+ "date": "2026-11-23",
+ "updated": "2026-11-23 10:20",
+ "stats": {
+  "抖音": 50,
+  "快手": 0,
+  "头条": 50,
+  "B站": 50,
+  "百度": 51,
+  "知乎": 30,
+  "微博": 30,
+  "虎扑": 20,
+  "V2EX": 30,
+  "贴吧": 30,
+  "酷安": 19,
+  "掘金": 30,
+  "少数派": 10,
+  "IT之家": 22,
+  "澎湃": 20,
+  "凤凰": 12,
+  "参考": 30,
+  "早报": 30,
+  "见闻": 8,
+  "财联社": 30,
+  "雪球": 8,
+  "格隆汇": 15,
+  "豆瓣": 20,
+  "HN": 30,
+  "GitHub": 30,
+  "PH": 30,
+  "DEV": 30,
+  "SO": 30,
+  "Lobsters": 25,
+  "TC": 20,
+  "Verge": 10,
+  "Ars": 20,
+  "WIRED": 30,
+  "ZDNET": 25,
+  "NPR": 10,
+  "CNBC": 30,
+  "TASS 塔斯社": 30,
+  "France 24": 24,
+  "Yahoo! Japan": 8,
+  "Nature": 30,
+  "New Scientist": 10,
+  "Phys.org": 30,
+  "Quanta": 5,
+  "NASA": 10,
+  "Steam": 30
+ },
+ "picks": [
+  {
+   "title": "苹果首款折叠屏手机 iPhone Duo 开启百亿补贴，电商平台优惠千元到手 14499 元起",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 13,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.ithome.com/1/030/710.htm",
+   "from": ""
+  },
+  {
+   "title": "华为OSTA星芒 O1 Pro 评测：一台真正为 AI 而生的鸿蒙手机",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 8,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1690613?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "首款鸿蒙 AI 手机发布：华为全新子品牌 OSTA 星芒有一个「增援未来计划」",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 8,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1690642?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "华为推出新子品牌星芒 首款鸿蒙AI手机5699人民币起售",
+   "source": "早报",
+   "kind": "新品",
+   "score": 8,
+   "hooks": [],
+   "url": "https://www.zaochenbao.com/news/china/202611/2286005.html",
+   "from": ""
+  },
+  {
+   "title": "折叠屏的手机壳,能不用其实就尽量别用",
+   "source": "68372",
+   "kind": "公众号",
+   "score": 8,
+   "hooks": [
+    "折叠屏",
+    "贴膜"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MLq-8eU73Ztv7BgYaLXuT3lqXa8Fplpd9nWJUmEIdcYWlMdpwTOKME1ng2XsnuDp3Qv64cOtiJsncH4X64A15oDh-jZeApOdhDOWp0rhk1CzM7KYXtNvHOVoC2tX3mjJM_BPASbJTurMjSO2NPygx61N7yqhq1_jji9ndSE-vijKnsvz_ACarzuF52Uqv_EFYPRphDHgl_sTf3q8uRDTfkw..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=B922CEF6BFE83C27424422AB7C93F1AA43E1F1C36B03A31F",
+   "from": "公众号"
+  },
+  {
+   "title": "华为mate XT 2 把心电筛查装进手机里",
+   "source": "陈娜9407",
+   "kind": "公众号",
+   "score": 8,
+   "hooks": [
+    "折叠屏",
+    "铰链"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MGY1JW2bTXK77BgYaLXuT3lqXa8Fplpd9JGZ1XtCOR-NJX5BNqqYNjAvJowVQRLm7ZiW02oX654m_A5dUVih4JX-t31WR56HgsjVgSBMyR8W03idZZ7UN7n9_10dFKABWo7fAZIUkpjS1xKTLo6kH_DTlHn9kf2vFFOAbMcuUoP3GZnD8rPb02YXGAAIGVUa85VE6CYufQ-SAFV_3u-a3OQ..&type=2&query=Mate XT&token=B922BED0F0A571690D0B6EE631ACE2260EFB635E6B03A31C",
+   "from": "公众号"
+  },
+  {
+   "title": "今年是阔屏的元年,阔屏是手机的今后十年",
+   "source": "九儿九儿九儿",
+   "kind": "公众号",
+   "score": 7,
+   "hooks": [
+    "阔屏",
+    "iPhone"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MhwoiywGT9wD7BgYaLXuT3lqXa8Fplpd9NweNgw1ZytnztnRhNj_jTDlamcBhlpyXEOL66N2s8Dmq19u2WaaumnBYCKmldkNSq9f7cO8loOvGys4MzQftZGkHJEGuuEyA3OVYMiR1bIno2b92n-HIhDc6QYFLaRUvHO1M0oJ6DJUM6cccvqp84VFLICmDfYFxAZfudomCyXLs46dn8Efgxg..&type=2&query=%E9%98%94%E5%B1%8F%E6%89%8B%E6%9C%BA&token=B922513E1D4B9F84DFD98037DE5BF9C7E085F2A16B03A309",
+   "from": "公众号"
+  },
+  {
+   "title": "华为云：DeepSeek-V4.1-Flash-1017降价",
+   "source": "财联社",
+   "kind": "新品",
+   "score": 6,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.cls.cn/detail/2541230",
+   "from": ""
+  },
+  {
+   "title": "Mate XT 一周年:从抢不到到随时买",
+   "source": "无为6222",
+   "kind": "公众号",
+   "score": 6,
+   "hooks": [
+    "折叠屏",
+    "开售"
+   ],
+   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MGY1JW2bTXK77BgYaLXuT3lqXa8Fplpd9wFmwTycYx8WvfDhUsb1nNWPanmTb5yrnHbiu_gF1KhWR-M77170__I-upd8PRQqdIAGQp56vJOPxQizA9NSXrmZ8Wpt-P8QA5YWvDKGdF7LR3OXzWL8zur5ByBJwvIgAz3rt2cyqbdZ-VeMKU58v4S72aQIB4A1Nxyu82KnE4IPS-e4Yz84xMA..&type=2&query=Mate XT&token=B922BED0F0A571690D0B6EE631ACE2260EFB635E6B03A31C",
+   "from": "公众号"
+  },
+  {
+   "title": "消息称苹果为 iPhone Duo 开发锁屏右侧纵向小组件栏，可显示更多信息",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/030/735.htm",
+   "from": ""
+  },
+  {
+   "title": "iPhone Duo Could Get More Lock Screen Widgets, Leak Suggests",
+   "source": "MacRumors",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [],
+   "url": "https://www.macrumors.com/2026/11/22/iphone-duo-could-get-more-lock-screen-widgets/",
+   "from": ""
+  },
+  {
+   "title": "MateX8第一批视频已出，总结就是把华为这么多年的牙膏挤爆了，苹果还是有实力[受虐滑稽]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.coolapk.com/feed/75215392",
+   "from": ""
+  },
+  {
+   "title": "AIDOU 就是你的 AI-Duo：一个能打电话、懂你的 AI 分身",
+   "source": "V2EX",
+   "kind": "热榜",
+   "score": 5,
+   "hooks": [],
+   "url": "https://www.v2ex.com/t/1258994",
+   "from": ""
+  },
+  {
+   "title": "东风日产 NX7 定档 11 月 27 日广州车展上市：全系宁德时代电池，预售 12.99 万元起",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱",
+    "量"
+   ],
+   "url": "https://www.ithome.com/1/030/774.htm",
+   "from": ""
+  },
+  {
+   "title": "一加 16《凡人》动画联名礼盒 11 月 27 日限量开售，购机（16GB+512GB 版）+269 元可得",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.ithome.com/1/030/753.htm",
+   "from": ""
+  },
+  {
+   "title": "小米米家智能嵌入式洗碗机灶下 13 套开售：支持 75℃ 高温煮洗、可洗红酒杯，2599 元",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.ithome.com/1/030/739.htm",
+   "from": ""
+  },
+  {
+   "title": "AI Agent 元年，苹果是最后一个入局的巨头",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱",
+    "反差"
+   ],
+   "url": "https://www.ifanr.com/1690510?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "早报｜苹果招人打造「接管电脑」的AI智能体/史上最大IPO，Anthropic上市/华为官宣Mate 90 Air主打轻薄",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.ifanr.com/1690473?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "今年是阔屏的元年，阔屏是手机的今后十年",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.ifanr.com/1690322?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "前三季度国内智能手机市场份额曝光：大盘下降约9.2%",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "量",
+    "爆料"
+   ],
+   "url": "https://www.coolapk.com/feed/75213097",
+   "from": ""
+  },
+  {
+   "title": "主播糟蹋千斤苹果仅愿赔6000元",
+   "source": "头条",
+   "kind": "热榜",
+   "score": 3,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://so.toutiao.com/search?keyword=%E4%B8%BB%E6%92%AD%E7%B3%9F%E8%B9%8B%E5%8D%83%E6%96%A4%E8%8B%B9%E6%9E%9C%E4%BB%85%E6%84%BF%E8%B5%946000%E5%85%83",
+   "from": ""
+  },
+  {
+   "title": "主播私闯果园直播带货糟蹋近 200 斤苹果，官方通报其系误入，相关损失应如何认定和赔偿？",
+   "source": "知乎",
+   "kind": "热榜",
+   "score": 3,
+   "hooks": [],
+   "url": "https://www.zhihu.com/question/2107832519722791972",
+   "from": ""
+  },
+  {
+   "title": "华为 Mate 90 Air 手机影像配置曝光：50Mp 主摄 +8Mp 超广角 +12Mp 长焦 + 红枫镜头",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 1,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/030/750.htm",
+   "from": ""
+  },
+  {
+   "title": "韩国防 AI 作弊新招：要求考生穿围裙考试、时隔 6 年重新收缴手机",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/030/770.htm",
+   "from": ""
+  },
+  {
+   "title": "古尔曼：苹果若想在 AI 时代生存下去，需进行结构和文化层面的全面改革",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/030/730.htm",
+   "from": ""
+  },
+  {
+   "title": "Mozilla 指责苹果阻止真正的 Firefox 浏览器登陆 iPhone，称现有 App 无法直接抛弃 WebKit",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/030/727.htm",
+   "from": ""
+  },
+  {
+   "title": "郑州“7·6”火灾调查报告公布：非法改装电摩入户充电，锂电池爆燃引发事故致 5 人死亡",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/030/721.htm",
+   "from": ""
+  },
+  {
+   "title": "iPhone 18 大更新，明年春天见！但苹果的挑战才刚刚开始",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1690832?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "理想造了一颗登上台积电讲台的芯片，却希望你在开车时彻底忘掉它",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1690596?utm_source=rss&utm_medium=rss&utm_campaign=",
+   "from": ""
+  },
+  {
+   "title": "MacRumors Giveaway: Win a 512GB OLED iPad Mini and a Year of Astropad Workbench",
+   "source": "MacRumors",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.macrumors.com/2026/11/20/macrumors-giveaway-astropad-workbench/",
+   "from": ""
+  },
+  {
+   "title": "First Look at iPhone Air 2 and iPhone 18 Revealed By Dummy Models",
+   "source": "MacRumors",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.macrumors.com/2026/11/20/iphone-air-2-and-iphone-18-dummy-models/",
+   "from": ""
+  },
+  {
+   "title": "兄弟们我想问个问题，我妈买个房子给我弟，目前在装家具有争持，我弟想装电磁炉来煮饭，觉得安全而且清理方便，我弟其他城市工作怕煤气没人在家不安全，我妈要装燃气，说电磁炉煮饭不好吃，说现在燃气瓶也挺安全的，而且到时候过去也不会用，功率很大用电也很多，目前争持不下，应该装哪个好 ，装的话厨房直接照着哪一款来装修#一加16# #荣耀Magic9ProMax# #小米18#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75216669",
+   "from": ""
+  },
+  {
+   "title": "IP联名的手机大家都玩过吧？像一加刻晴、神里绫华这些，确实好看，但普通手机想用上自己喜欢的IP深度定制可太难了，所以我闲着没事决定自己动手丰衣足食，做了一套大肥鱼联名主题。",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75215310",
+   "from": ""
+  },
+  {
+   "title": "黎曼猜想都能被证明 但是 AI 却删我基带分区 害我半年亏了 2500 块钱[发怒][发怒][发怒][爆怒][爆怒][爆怒] 气死我了 现在每次刷到 AI 相关的牛 x 新闻 我第一时间想到的就是我之前的 k90pm[喷][喷][喷]#RedmiK90ProMax# #AI兴趣小组# #数码日常#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "钱",
+    "反差"
+   ],
+   "url": "https://www.coolapk.com/feed/75210058",
+   "from": ""
+  },
+  {
+   "title": "【点评】先叠甲，我不是品牌粉丝，也别在我这里串，作为消费者我说出我自己的情况和大概感受，因为实际上对比pxv来说有少的配置但是少的部分没有体感的大，如果对比pxv价格少的多是可以参考的，毕竟买的人是真的掏钱，少多少钱才是大家参考的点，因为手机刚到手所以评分是主观打分，不过我感觉应该大差不差",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75216714",
+   "from": ""
+  },
+  {
+   "title": "8E还能在用几年 能不能成为我使用最最久的手机机[受虐滑稽](最长一台手机没活过两年) #小米15# #红米k100# #小米15Ultra#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.coolapk.com/feed/75182197",
+   "from": ""
+  },
+  {
+   "title": "这群在鸿蒙写应用的年轻人，只想做点「用得上」的",
+   "source": "少数派",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://sspai.com/post/119291",
+   "from": ""
+  },
+  {
+   "title": "Google Wallet comes to your iPhone – but without this feature",
+   "source": "ZDNET",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.zdnet.com/tech/google-wallet-iphone-ios-no-tap-to-pay/",
+   "from": ""
+  },
+  {
+   "title": "Own 2 Android phones? Google may let you switch service fast – like iPhone Handoff",
+   "source": "ZDNET",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.zdnet.com/tech/android-fast-switch-like-iphone-handoff/",
+   "from": ""
+  },
+  {
+   "title": "JWST finds a possible black hole that grew faster than its host galaxy in the early universe",
+   "source": "Phys.org",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://phys.org/news/2026-11-jwst-black-hole-grew-faster.html",
+   "from": ""
+  },
+  {
+   "title": "《芯片战争》作者警告美国",
+   "source": "头条",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://so.toutiao.com/search?keyword=%E3%80%8A%E8%8A%AF%E7%89%87%E6%88%98%E4%BA%89%E3%80%8B%E4%BD%9C%E8%80%85%E8%AD%A6%E5%91%8A%E7%BE%8E%E5%9B%BD",
+   "from": ""
+  },
+  {
+   "title": "主播被指私闯果园糟蹋苹果 官方通报",
+   "source": "百度",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.baidu.com/s?wd=%E4%B8%BB%E6%92%AD%E8%A2%AB%E6%8C%87%E7%A7%81%E9%97%AF%E6%9E%9C%E5%9B%AD%E7%B3%9F%E8%B9%8B%E8%8B%B9%E6%9E%9C%20%E5%AE%98%E6%96%B9%E9%80%9A%E6%8A%A5",
+   "from": ""
+  },
+  {
+   "title": "主播私闯果园直播带货糟蹋近200斤苹果，官方通报其系误入，相关损失应如何认定和赔偿？",
+   "source": "知乎",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.zhihu.com/search?type=content&q=%E4%B8%BB%E6%92%AD%E7%A7%81%E9%97%AF%E6%9E%9C%E5%9B%AD%E7%9B%B4%E6%92%AD%E5%B8%A6%E8%B4%A7%E7%B3%9F%E8%B9%8B%E8%BF%91200%E6%96%A4%E8%8B%B9%E6%9E%9C%EF%BC%8C%E5%AE%98%E6%96%B9%E9%80%9A%E6%8A%A5%E5%85%B6%E7%B3%BB%E8%AF%AF%E5%85%A5%EF%BC%8C%E7%9B%B8%E5%85%B3%E6%8D%9F%E5%A4%B1%E5%BA%94%E5%A6%82%E4%BD%95%E8%AE%A4%E5%AE%9A%E5%92%8C%E8%B5%94%E5%81%BF%EF%BC%9F",
+   "from": ""
+  },
+  {
+   "title": "【大虾沉浸式试车】首次量产折叠方向盘？！方程豹钛9 折叠智舱版👉快来快来～带你沉浸式体验！",
+   "source": "B站",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.bilibili.com/video/BV1sjyezvEYf",
+   "from": ""
+  },
+  {
+   "title": "\"ai 啷个牛逼，三年内阔以搞出充电五分钟，通话两百天的电池不\"",
+   "source": "V2EX",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.v2ex.com/t/1259008",
+   "from": ""
+  },
+  {
+   "title": "躺起编程：我给 VS Code 做了个扩展，躺在沙发上也能用手机接着和 Claude Code 写代码，从查看测试结果到追问报错，不用远程桌面，也不用重新解释项目上下文",
+   "source": "V2EX",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.v2ex.com/t/1258984",
+   "from": ""
+  },
+  {
+   "title": "Delphi 13 FireMonkey Android app crashes immediately on Huawei/Xiaomi devices but works on Samsung",
+   "source": "SO",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://stackoverflow.com/questions/80018173/delphi-13-firemonkey-android-app-crashes-immediately-on-huawei-xiaomi-devices-bu",
+   "from": ""
+  },
+  {
+   "title": "How to bring up IntelliJ/Android Studio&#39;s code analysis results?",
+   "source": "SO",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://stackoverflow.com/questions/80018139/how-to-bring-up-intellij-android-studios-code-analysis-results",
+   "from": ""
+  },
+  {
+   "title": "Pre-Render 3d Animation on Android Automotive?",
+   "source": "SO",
+   "kind": "热榜",
+   "score": 0,
+   "hooks": [],
+   "url": "https://stackoverflow.com/questions/80018120/pre-render-3d-animation-on-android-automotive",
+   "from": ""
+  }
+ ],
+ "meme": [
+  "现货黄金重返3600美元",
+  "两京十五日成毅打戏",
+  "黎曼猜想是什么",
+  "“防非反诈”系列条漫",
+  "我和斗破的故事",
+  "年轻人的广场舞接力跳",
+  "长春大冬会小冰凌来啦",
+  "AI是否已证明黎曼猜想",
+  "两京十五日首播辣评",
+  "天霸巅峰挑战赛积分断层第一",
+  "王楚然泰国录现发的一天",
+  "是苦是乐这一年都要结束了",
+  "两京十五日抖音追剧团",
+  "DONT STOP继续跳",
+  "陈伟霆生日会现场跳嗨了",
+  "冬天必解冻的心动目的地"
+ ],
+ "counts": {
+  "picks": 49,
+  "shootable": 13,
+  "meme": 16,
+  "wechat": 4
+ }
+}
