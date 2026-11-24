@@ -10,13 +10,6 @@
       "legacy": true
     },
     {
-      "name": "卡片",
-      "url": "../cards.html",
-      "desc": "知识卡片与图文排版",
-      "group": "已上线",
-      "legacy": true
-    },
-    {
       "name": "图书馆",
       "url": "../library.html",
       "desc": "读书库与书摘",
