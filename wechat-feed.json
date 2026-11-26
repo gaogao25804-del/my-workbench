@@ -1,66 +1,9 @@
 {
- "updated": "2026-11-23 10:21",
+ "updated": "2026-11-26 16:50",
  "source": "搜狗微信搜索",
  "counts": {
-  "抓取": 69,
-  "入选": 4
+  "抓取": 0,
+  "入选": 0
  },
- "picks": [
-  {
-   "title": "折叠屏的手机壳,能不用其实就尽量别用",
-   "summary": "折叠屏手机壳可以不带就尽量不要带折叠屏买回家之后的第一件事情,很多用户都会选择贴膜、戴壳等方法来保护自己的折叠屏设备....",
-   "account": "68372",
-   "date": "11-16 17:48",
-   "score": 8,
-   "why": [
-    "折叠屏",
-    "贴膜",
-    "壳"
-   ],
-   "kw": "手机壳 折叠",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MLq-8eU73Ztv7BgYaLXuT3lqXa8Fplpd9nWJUmEIdcYWlMdpwTOKME1ng2XsnuDp3Qv64cOtiJsncH4X64A15oDh-jZeApOdhDOWp0rhk1CzM7KYXtNvHOVoC2tX3mjJM_BPASbJTurMjSO2NPygx61N7yqhq1_jji9ndSE-vijKnsvz_ACarzuF52Uqv_EFYPRphDHgl_sTf3q8uRDTfkw..&type=2&query=%E6%89%8B%E6%9C%BA%E5%A3%B3 %E6%8A%98%E5%8F%A0&token=B922CEF6BFE83C27424422AB7C93F1AA43E1F1C36B03A31F"
-  },
-  {
-   "title": "华为mate XT 2 把心电筛查装进手机里",
-   "summary": "当大家还在关注三折叠的大屏、铰链和影像的时候,华为 Mate XT 2 非凡大师带来了行业重磅突破 —— 手机首发支持 ECG 心电采集,...",
-   "account": "陈娜9407",
-   "date": "11-11 11:36",
-   "score": 8,
-   "why": [
-    "折叠屏",
-    "铰链",
-    "华为"
-   ],
-   "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MGY1JW2bTXK77BgYaLXuT3lqXa8Fplpd9JGZ1XtCOR-NJX5BNqqYNjAvJowVQRLm7ZiW02oX654m_A5dUVih4JX-t31WR56HgsjVgSBMyR8W03idZZ7UN7n9_10dFKABWo7fAZIUkpjS1xKTLo6kH_DTlHn9kf2vFFOAbMcuUoP3GZnD8rPb02YXGAAIGVUa85VE6CYufQ-SAFV_3u-a3OQ..&type=2&query=Mate XT&token=B922BED0F0A571690D0B6EE631ACE2260EFB635E6B03A31C"
-  },
-  {
-   "title": "今年是阔屏的元年,阔屏是手机的今后十年",
-   "summary": "所谓的“阔屏”,并不是一种新的显示技术从 2012 年到 2017 年,主流手机采用的长宽比是 16:9,iPhone 5 到 iPhone 8、小米 4、华为...",
-   "account": "九儿九儿九儿",
-   "date": "11-23 00:03",
-   "score": 7,
-   "why": [
-    "阔屏",
-    "iPhone",
-    "华为"
-   ],
-   "kw": "阔屏手机",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MhwoiywGT9wD7BgYaLXuT3lqXa8Fplpd9NweNgw1ZytnztnRhNj_jTDlamcBhlpyXEOL66N2s8Dmq19u2WaaumnBYCKmldkNSq9f7cO8loOvGys4MzQftZGkHJEGuuEyA3OVYMiR1bIno2b92n-HIhDc6QYFLaRUvHO1M0oJ6DJUM6cccvqp84VFLICmDfYFxAZfudomCyXLs46dn8Efgxg..&type=2&query=%E9%98%94%E5%B1%8F%E6%89%8B%E6%9C%BA&token=B922513E1D4B9F84DFD98037DE5BF9C7E085F2A16B03A309"
-  },
-  {
-   "title": "Mate XT 一周年:从抢不到到随时买",
-   "summary": "到 2025 年 11 月华为 Mate XT 开售后,在线下的门店前排起长队,并且加价幅度也创下了新高.一年之后,市面上在售的量产三折叠...",
-   "account": "无为6222",
-   "date": "11-10 11:35",
-   "score": 6,
-   "why": [
-    "折叠屏",
-    "开售",
-    "华为"
-   ],
-   "kw": "Mate XT",
-   "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS4wOagRgUm_MGY1JW2bTXK77BgYaLXuT3lqXa8Fplpd9wFmwTycYx8WvfDhUsb1nNWPanmTb5yrnHbiu_gF1KhWR-M77170__I-upd8PRQqdIAGQp56vJOPxQizA9NSXrmZ8Wpt-P8QA5YWvDKGdF7LR3OXzWL8zur5ByBJwvIgAz3rt2cyqbdZ-VeMKU58v4S72aQIB4A1Nxyu82KnE4IPS-e4Yz84xMA..&type=2&query=Mate XT&token=B922BED0F0A571690D0B6EE631ACE2260EFB635E6B03A31C"
-  }
- ]
+ "picks": []
 }
