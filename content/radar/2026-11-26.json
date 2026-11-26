@@ -1,0 +1,642 @@
+{
+ "date": "2026-11-26",
+ "updated": "2026-11-26 16:50",
+ "stats": {
+  "抖音": 50,
+  "快手": 50,
+  "头条": 50,
+  "B站": 50,
+  "百度": 51,
+  "知乎": 30,
+  "微博": 30,
+  "虎扑": 20,
+  "V2EX": 30,
+  "贴吧": 29,
+  "酷安": 19,
+  "掘金": 30,
+  "少数派": 10,
+  "IT之家": 22,
+  "澎湃": 20,
+  "凤凰": 12,
+  "参考": 30,
+  "早报": 30,
+  "见闻": 30,
+  "财联社": 30,
+  "雪球": 8,
+  "格隆汇": 15,
+  "豆瓣": 20,
+  "HN": 30,
+  "GitHub": 30,
+  "PH": 30,
+  "DEV": 30,
+  "SO": 30,
+  "Lobsters": 25,
+  "TC": 20,
+  "Verge": 10,
+  "Ars": 20,
+  "WIRED": 30,
+  "ZDNET": 25,
+  "Krebs on Security": 10,
+  "NPR": 10,
+  "CNBC": 30,
+  "TASS 塔斯社": 30,
+  "France 24": 24,
+  "Yahoo! Japan": 8,
+  "Nature": 30,
+  "New Scientist": 10,
+  "Phys.org": 30,
+  "Quanta": 5,
+  "Steam": 30
+ },
+ "picks": [
+  {
+   "title": "讲真，华为折叠屏这市场占比也太离谱了吧，直接干到了七成份额[牛啤]#数码日常# #鸿蒙7# #华为MateX8#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 15,
+   "hooks": [
+    "量"
+   ],
+   "url": "https://www.coolapk.com/feed/75270277",
+   "from": ""
+  },
+  {
+   "title": "华为mateX8发布后，居然全网好评？到底是怎么做到的？ #华为MateX8# #鸿蒙7#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 11,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.coolapk.com/feed/75275647",
+   "from": ""
+  },
+  {
+   "title": "派早报：华为发布 Mate X8 与 MateBook Fold S、微软将推出自研驱动等",
+   "source": "少数派",
+   "kind": "新品",
+   "score": 11,
+   "hooks": [],
+   "url": "https://sspai.com/post/119527",
+   "from": ""
+  },
+  {
+   "title": "华为Mate X8预售火热",
+   "source": "头条",
+   "kind": "热榜",
+   "score": 8,
+   "hooks": [
+    "量"
+   ],
+   "url": "https://so.toutiao.com/search?keyword=%E5%8D%8E%E4%B8%BAMate%20X8%E9%A2%84%E5%94%AE%E7%81%AB%E7%83%AD",
+   "from": ""
+  },
+  {
+   "title": "荣耀 700 Pro 上手：4099 元起，主流价位档里的手机异类",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 6,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.ifanr.com/1695371?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "My favorite accessories every iPhone Duo owner needs to try [Video]",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/25/my-favorite-accessories-every-iphone-duo-owner-needs-to-try-video/",
+   "from": ""
+  },
+  {
+   "title": "These are my two must-have iPhone Duo accessories",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/23/these-are-my-two-must-have-iphone-duo-accessories/",
+   "from": ""
+  },
+  {
+   "title": "Apple tested a ‘complication column’ for the iPhone Duo Lock Screen, per leak",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/22/apple-tested-a-complication-column-for-the-iphone-duo-lock-screen-per-leak/",
+   "from": ""
+  },
+  {
+   "title": "Not upgrading to iPhone 18 Pro or Duo? Here’s what’s coming in 2027",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 5,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/21/heres-what-next-years-iphone-lineup-will-look-like/",
+   "from": ""
+  },
+  {
+   "title": "149 元：联想推出 thinkplus USB4 全功能伸缩数据线",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://www.ithome.com/1/032/912.htm",
+   "from": ""
+  },
+  {
+   "title": "首款鸿蒙小折叠电脑正式发布，生态创新重新定义折叠电脑体验",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1695349?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "后排空间直逼迈巴赫！配置看齐六座旗舰，吉利银河 M8 预售价 19.98 万起",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "钱",
+    "量"
+   ],
+   "url": "https://www.ifanr.com/1695444?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "华为发布了大折叠手机和小折叠电脑，但 1 亿鸿蒙设备才是最大的亮点",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [
+    "反差"
+   ],
+   "url": "https://www.ifanr.com/1691302?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "早报｜黄仁勋回归，英伟达股价一夜暴涨31%/《复仇者联盟5》发布终极预告/3399起，荣耀700系列发布",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1691119?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "华为拟披露新一代AI存储晶片 挑战三星与SK海力士",
+   "source": "早报",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [],
+   "url": "https://www.zaochenbao.com/news/china/202611/2686232.html",
+   "from": ""
+  },
+  {
+   "title": "博力威(688345.SH)：暂无相关产品供货给华为",
+   "source": "格隆汇",
+   "kind": "新品",
+   "score": 3,
+   "hooks": [],
+   "url": "https://www.gelonghui.com/news/5363245",
+   "from": ""
+  },
+  {
+   "title": "华为第二代轻薄手机将于12月开售",
+   "source": "头条",
+   "kind": "热榜",
+   "score": 3,
+   "hooks": [],
+   "url": "https://so.toutiao.com/search?keyword=%E5%8D%8E%E4%B8%BA%E7%AC%AC%E4%BA%8C%E4%BB%A3%E8%BD%BB%E8%96%84%E6%89%8B%E6%9C%BA%E5%B0%86%E4%BA%8E12%E6%9C%88%E5%BC%80%E5%94%AE",
+   "from": ""
+  },
+  {
+   "title": "这个含金量能称得上遥遥领先了，华为研制成功远超HBM4的内存",
+   "source": "虎扑",
+   "kind": "热榜",
+   "score": 3,
+   "hooks": [],
+   "url": "https://bbs.hupu.com/644192855.html",
+   "from": ""
+  },
+  {
+   "title": "华为园区，为啥碰到的高颜值妹子总是外包牌，华为工牌的基本都是资深大姐...",
+   "source": "掘金",
+   "kind": "热榜",
+   "score": 3,
+   "hooks": [],
+   "url": "https://juejin.cn/post/7712008429045317666",
+   "from": ""
+  },
+  {
+   "title": "Counterpoint：中国双 11 智能手机销量同比降 17%，畅销榜前五均为苹果 iPhone，华为逆势唯一增长",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 2,
+   "hooks": [
+    "量"
+   ],
+   "url": "https://www.ithome.com/1/032/780.htm",
+   "from": ""
+  },
+  {
+   "title": "阔家族来袭：消息称 OPPO 明年规划有 3 台阔直板新机，含搭载天玑 9 系旗舰处理器机型",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/032/933.htm",
+   "from": ""
+  },
+  {
+   "title": "消息称三星电子成立半导体工厂机器人团队，2028 年启动内部部署",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/032/931.htm",
+   "from": ""
+  },
+  {
+   "title": "smart 精灵#2 BRABUS 版申报：90kW 电机 + 宁德时代电池",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/032/923.htm",
+   "from": ""
+  },
+  {
+   "title": "荣耀海外推出 Choice T20 手机：紫光展锐 T7250 + 4GB RAM、配 7000mAh 电池",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/032/922.htm",
+   "from": ""
+  },
+  {
+   "title": "vivo S70 系列手机官宣：旗舰版自带变焦闪光灯，搭载 X 同款传感器索尼 LYTIA 610",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/032/845.htm",
+   "from": ""
+  },
+  {
+   "title": "曝苹果下架 MiniMax AI 聊天应用 Talkie：存在色情内容",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "爆料"
+   ],
+   "url": "https://www.ithome.com/1/032/835.htm",
+   "from": ""
+  },
+  {
+   "title": "三星电子将在 ISSCC 2027 展示 5XX 层超高堆叠 3D NAND",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/032/832.htm",
+   "from": ""
+  },
+  {
+   "title": "印度第七家门店：苹果 Apple Kukatpally 下月开业，专属壁纸已上线",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/032/775.htm",
+   "from": ""
+  },
+  {
+   "title": "仅 45 克：Orrorin 智能眼镜亮相，手势“捏”出苹果 Vision Pro 体验",
+   "source": "IT之家",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ithome.com/1/032/768.htm",
+   "from": ""
+  },
+  {
+   "title": "OPPO Reno17 Pro 体验：在手机里装进一只猫，分几步？",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1691222?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "早报｜黄仁勋复职后首开全员大会致歉/豆包推出AI个人助理「小豆」/华为鸿蒙终端突破1亿台",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1691400?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "「试用期」已到，苹果开始给 AI 收费了 | AG&I",
+   "source": "爱范儿",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.ifanr.com/1691186?utm_source=rss&utm_medium=rss&utm_campaign",
+   "from": ""
+  },
+  {
+   "title": "9to5Mac Daily: November 25, 2026 – CarPlay Ultra update, iPad rumors",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/25/daily-november-25-2026/",
+   "from": ""
+  },
+  {
+   "title": "iOS 27.3 release date: Here’s when new iPhone features are coming",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/25/ios-27-3-release-date-heres-when-to-expect-new-iphone-features/",
+   "from": ""
+  },
+  {
+   "title": "Apple touts ‘longest battery life ever in an iPhone’ in playful new 18 Pro Max ad",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/25/apple-touts-longest-battery-life-ever-in-an-iphone-in-playful-new-18-pro-max-ad/",
+   "from": ""
+  },
+  {
+   "title": "Apple has iPads running macOS already, but don’t get too excited",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/25/apple-has-ipads-running-macos-already-but-dont-get-too-excited/",
+   "from": ""
+  },
+  {
+   "title": "iPad Air vs iPad Pro: Which should you buy?",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/24/ipad-air-vs-ipad-pro-buying-guide/",
+   "from": ""
+  },
+  {
+   "title": "iPhone Handoff: Here’s the latest on carrier availability and pricing",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/24/iphone-handoff-carriers-support-ios-27/",
+   "from": ""
+  },
+  {
+   "title": "CAD images suggest iPhone 18e will have an odd new camera design",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/24/cad-images-suggest-iphone-18e-will-have-an-odd-new-camera-design/",
+   "from": ""
+  },
+  {
+   "title": "TIME’s Top 100 Photos of 2026 list includes a shot taken on iPhone 18 Pro",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/24/times-top-100-photos-of-2026-list-includes-a-shot-taken-on-iphone-18-pro/",
+   "from": ""
+  },
+  {
+   "title": "iOS 27 gave your iPhone an alarm feature that’s long been missing",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/23/ios-27-gave-your-iphone-an-alarm-feature-thats-long-been-missing/",
+   "from": ""
+  },
+  {
+   "title": "iOS 27.3 adds new features in six iPhone apps, details here",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/23/ios-27-3-adds-new-features-in-six-iphone-apps-details-here/",
+   "from": ""
+  },
+  {
+   "title": "iOS 27 basically turns your iPhone and AirPods into an Apple Watch at the gym",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/23/ios-27-basically-turns-your-iphone-and-airpods-into-an-apple-watch-at-the-gym/",
+   "from": ""
+  },
+  {
+   "title": "RayNeo Black Friday deals: AR smart glasses that turn your Mac and iPhone into a 307-inch screen",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/23/rayneo-black-friday-cyber-monday-deals-2026/",
+   "from": ""
+  },
+  {
+   "title": "UGREEN’s excellent liquid cooled 25W MagSafe battery for iPhone is now 40% off",
+   "source": "9to5Mac",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://9to5mac.com/2026/11/22/ugreen-25w-magsafe-liquid-cooling-battery-black-friday/",
+   "from": ""
+  },
+  {
+   "title": "小米18 标准版 价格‘大胆’预测（国补前）",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75269467",
+   "from": ""
+  },
+  {
+   "title": "极客湾影像大横评来了，一个小时，量大管饱，看完直接下班美滋滋😂",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75266800",
+   "from": ""
+  },
+  {
+   "title": "看了这个帖子，我感觉我们对小米是不是太严苛了何意味[疑问][流汗滑稽][流汗滑稽][流汗滑稽]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75264256",
+   "from": ""
+  },
+  {
+   "title": "第 1000868989届桌面布局大赛开始啦[可爱]欢迎大家分享自己的桌面布局#手机桌面搭配大赛# #MIUI主题# #HyperOS4# [哦吼吼][哦吼吼][哦吼吼]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75272505",
+   "from": ""
+  },
+  {
+   "title": "果子的锁屏依旧视觉质感在线 而且感觉16pm手机颜值也很抓人[微笑] #iOS27#",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75261159",
+   "from": ""
+  },
+  {
+   "title": "#iOS27# #鸿蒙7# 为什么苹果iOS和华为鸿蒙系统，用红果看短剧没得广告，安卓的就有，难不成这也暗中标好价格了吗？安卓刷两三集就跳一条广告[吃瓜]",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75272589",
+   "from": ""
+  },
+  {
+   "title": "小米浏览器手机、Pad 已支持扩展程序",
+   "source": "酷安",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.coolapk.com/feed/75268881",
+   "from": ""
+  },
+  {
+   "title": "怀旧手记｜Palm Pre：内藏「划时代」系统的手机",
+   "source": "少数派",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://sspai.com/post/118791",
+   "from": ""
+  },
+  {
+   "title": "社区速递 167｜迪卡侬折叠车、静电白板贴与跨系统设备协同",
+   "source": "少数派",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://sspai.com/post/119492",
+   "from": ""
+  },
+  {
+   "title": "丹麦考虑实施小学初中手机禁令",
+   "source": "参考",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://ckxxapp.ckxx.net/pages/2026/11/26/ae6f49de79d848bc8e5e96ba46270d00.html",
+   "from": ""
+  },
+  {
+   "title": "韩媒：中国通用机器人走上智能手机生产线",
+   "source": "参考",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://ckxxapp.ckxx.net/pages/2026/11/26/811249a367c14f04a5ba3ca95ae174a2.html",
+   "from": ""
+  },
+  {
+   "title": "贝森特再点名台芯片是美重大“战略弱点”",
+   "source": "参考",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://ckxxapp.ckxx.net/pages/2026/11/25/aa9c0bb0b1ca4593abc09558214445fd.html",
+   "from": ""
+  },
+  {
+   "title": "A股存储芯片板块异动拉升，大港股份、江化微双双涨停，力芯微、安集科技、利扬芯片、国科微涨超5%。",
+   "source": "见闻",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [
+    "钱"
+   ],
+   "url": "https://wallstreetcn.com/livenews/3204700",
+   "from": ""
+  },
+  {
+   "title": "马云今日现身阿里旗下芯片公司平头哥",
+   "source": "财联社",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://www.cls.cn/detail/2545438",
+   "from": ""
+  },
+  {
+   "title": "Guilty: Huawei faces steep penalties for stealing T-Mobile, Cisco trade secrets",
+   "source": "Ars",
+   "kind": "新品",
+   "score": 0,
+   "hooks": [],
+   "url": "https://arstechnica.com/tech-policy/2026/11/jury-convicts-huawei-of-stealing-us-trade-secrets-evading-iran-sanctions/",
+   "from": ""
+  }
+ ],
+ "meme": [
+  "提前预习圣诞穿搭",
+  "深圳奇迹属于奋斗者",
+  "清迈的天灯节也太美了吧",
+  "韩国央行加息25个基点",
+  "尼克斯逆转击败骑士",
+  "76人111:104热火",
+  "同频朋友是最好的生日礼物",
+  "评论区摄影作品点评大赛开启",
+  "蔡磊回应病情进入终末期",
+  "辨一辨这些食品安全谣言",
+  "太原金屋大厦火灾细节披露",
+  "申京三双助火箭复仇太阳",
+  "田曦薇闫桉亮相嫁金钗研讨会",
+  "淡人一周穿搭合集",
+  "两京十五日1516集封神",
+  "蓝色星原旅谣公测"
+ ],
+ "counts": {
+  "picks": 60,
+  "shootable": 9,
+  "meme": 16,
+  "wechat": 0
+ }
+}
